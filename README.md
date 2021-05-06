@@ -1,6 +1,6 @@
 # Necklace of Skulls (Virtual Reality Adventures)
 
-This is an implementation of the **Necklace of Skulls** game book (Virtual Reality Adventures) by Dave Morris. The game is written in C/C++ and uses the [Simple DirectMedia Library (SDL)](https://www.libsdl.org/).
+This is an implementation of the **Necklace of Skulls** game book (Virtual Reality Adventures) by [Dave Morris](https://fabledlands.blogspot.com/). The game is written in C/C++ and uses the [Simple DirectMedia Library (SDL)](https://www.libsdl.org/).
 
 # Planned Features
 
