@@ -88,7 +88,7 @@ void waitForEvent(SDL_Window *window, Uint32 event)
     }
 }
 
-bool waitForMenuSelection(SDL_Window *window, int &current, int num, bool &selected)
+bool menuHorizontal(SDL_Window *window, int &current, int num, bool &selected)
 {
     SDL_Event result;
 
@@ -135,7 +135,11 @@ bool waitForMenuSelection(SDL_Window *window, int &current, int num, bool &selec
         {
             if (result.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX)
             {
-                if (result.caxis.value < -32000)
+                if (current == -1)
+                {
+                    current = 0;
+                }
+                else if (result.caxis.value < -32000)
                 {
                     if (current > 0)
                     {
@@ -157,7 +161,11 @@ bool waitForMenuSelection(SDL_Window *window, int &current, int num, bool &selec
         }
         else if (result.type == SDL_CONTROLLERBUTTONUP)
         {
-            if (result.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT)
+            if (current == -1)
+            {
+                current = 0;
+            }
+            else if (result.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT)
             {
                 if (current > 0)
                 {
@@ -429,7 +437,7 @@ int main(int argc, char **argsv)
 
         const char *choices[4] = {"New Game", "Load Game", "About", "Exit"};
 
-        auto current = 0;
+        auto current = -1;
 
         auto quit = false;
         auto selected = false;
@@ -437,7 +445,7 @@ int main(int argc, char **argsv)
         while (!quit)
         {
             renderChoicesMenu(window, choices, 4, current, clrWH, 0, 0xFFFF0000, 48, 18);
-            quit = waitForMenuSelection(window, current, 4, selected);
+            quit = menuHorizontal(window, current, 4, selected);
 
             if (selected && current == 3)
             {
