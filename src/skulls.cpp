@@ -509,9 +509,26 @@ int main(int argc, char **argsv)
 
             quit = getHTextMenuChoice(window, current, 4, selected, 48);
 
-            if (selected && current == 3)
+            if (selected)
             {
-                quit = true;
+                switch (current)
+                {
+                case 3:
+
+                    quit = true;
+                    break;
+
+                default:
+
+                    // redraw main menu screen
+                    displaySplashScreen(window);
+                    SDL_UpdateWindowSurface(window);
+
+                    selected = false;
+                    quit = false;
+
+                    break;
+                }
             }
         }
 
