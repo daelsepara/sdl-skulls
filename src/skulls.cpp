@@ -8,6 +8,9 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
+// JSON library
+#include "nlohmann/json.hpp"
+
 // Screen dimension constants
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
