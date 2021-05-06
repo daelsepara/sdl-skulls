@@ -16,6 +16,7 @@ const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
 const double Margin = 0.05;
+const double MarginSmall = 0.05;
 const int Top = SCREEN_HEIGHT * Margin;
 const int Left = SCREEN_WIDTH * Margin;
 
@@ -154,7 +155,7 @@ bool waitForMenuSelection(SDL_Window *window, int &current, int num, bool &selec
                 break;
             }
         }
-        else if (result.type == SDL_CONTROLLERBUTTONDOWN)
+        else if (result.type == SDL_CONTROLLERBUTTONUP)
         {
             if (result.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT)
             {
@@ -335,22 +336,27 @@ void renderChoicesMenu(SDL_Window *window, const char **choices, int num, int se
 {
     if (num > 0)
     {
-        auto width = (int)(SCREEN_WIDTH * (1.0 - 2.0 * Margin));
+        auto margin1 = (1 - Margin);
+        auto margin2 = 2.0 * Margin;
+        auto marginpixels = (int)(SCREEN_WIDTH * Margin);
+        auto marginleft = (1.0 - margin2);
+
+        auto width = (int)(SCREEN_WIDTH * marginleft);
         auto spacew = width / num;
-        auto buttonw = (int)(spacew - 2.0 * Margin * SCREEN_WIDTH);
+        auto buttonw = (int)(spacew - Margin * SCREEN_WIDTH);
         auto screen = SDL_GetWindowSurface(window);
 
         for (auto i = 0; i < num; i++)
         {
             auto text = createText(choices[i], fontsize, fg, buttonw);
-            int x = Left + i * spacew + (buttonw - text->w) / 2 + Margin * SCREEN_WIDTH;
-            int y = SCREEN_HEIGHT * (1 - Margin) - buttonh + (buttonh - text->h) / 2;
+            int x = Left + i * spacew + (buttonw - text->w + marginpixels) / 2;
+            int y = SCREEN_HEIGHT * margin1 - buttonh + (buttonh - text->h) / 2;
 
             SDL_Rect rect;
             rect.w = buttonw;
             rect.h = buttonh;
-            rect.x = spacew * i + 2.0 * SCREEN_WIDTH * Margin;
-            rect.y = SCREEN_HEIGHT * (1 - Margin) - buttonh;
+            rect.x = spacew * i + 1.5 * SCREEN_WIDTH * Margin;
+            rect.y = SCREEN_HEIGHT * margin1 - buttonh;
 
             SDL_FillRect(screen, &rect, i == selected ? bgSelected : bg);
 
@@ -365,15 +371,9 @@ void renderChoicesMenu(SDL_Window *window, const char **choices, int num, int se
     }
 }
 
-int main(int argc, char **argsv)
+int initializeGamePads()
 {
-    // The window we'll be rendering to
-    SDL_Window *window = NULL;
-    SDL_Renderer *renderer = NULL;
-
-    createWindow(SDL_INIT_VIDEO, &window, &renderer, "Necklace of Skulls", SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    if (SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 1)
+        if (SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 1)
     {
         if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) != 0)
         {
@@ -381,11 +381,11 @@ int main(int argc, char **argsv)
         }
     }
 
-    int nJoysticks = SDL_NumJoysticks();
+    auto nJoysticks = SDL_NumJoysticks();
     auto numGamepads = 0;
 
     // Count how many controllers there are
-    for (int i = 0; i < nJoysticks; i++)
+    for (auto i = 0; i < nJoysticks; i++)
     {
         if (SDL_IsGameController(i))
         {
@@ -403,30 +403,43 @@ int main(int argc, char **argsv)
 
             if (SDL_GameControllerGetAttached(pad) != 1)
             {
-                std::cout << "Game pad not attached! SDL_Error: " << SDL_GetError() << std::endl;
+                std::cerr << "Game pad not attached! SDL_Error: " << SDL_GetError() << std::endl;
             }
         }
 
         SDL_GameControllerEventState(SDL_ENABLE);
     }
 
+    return numGamepads;
+}
+
+int main(int argc, char **argsv)
+{
+    // The window we'll be rendering to
+    SDL_Window *window = NULL;
+    SDL_Renderer *renderer = NULL;
+
+    createWindow(SDL_INIT_VIDEO, &window, &renderer, "Necklace of Skulls", SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    auto numGamePads = initializeGamePads();
+
     if (window)
     {
         displaySplashScreen(window);
 
-        const char *choices[3] = {"New Game", "Load Game", "Exit"};
+        const char *choices[4] = {"New Game", "Load Game", "About", "Exit"};
 
-        int current = 0;
+        auto current = 0;
 
         auto quit = false;
         auto selected = false;
 
         while (!quit)
         {
-            renderChoicesMenu(window, choices, 3, current, clrWH, 0, 0xFF00FF00, 60, 24);
-            quit = waitForMenuSelection(window, current, 3, selected);
+            renderChoicesMenu(window, choices, 4, current, clrWH, 0, 0xFFFF0000, 48, 18);
+            quit = waitForMenuSelection(window, current, 4, selected);
 
-            if (selected && current == 2)
+            if (selected && current == 3)
             {
                 quit = true;
             }
