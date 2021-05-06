@@ -93,6 +93,8 @@ bool waitForMenuSelection(SDL_Window *window, int &current, int num, bool &selec
 
     auto quit = false;
 
+    selected = false;
+
     while (1)
     {
         SDL_PollEvent(&result);
@@ -124,7 +126,56 @@ bool waitForMenuSelection(SDL_Window *window, int &current, int num, bool &selec
                 selected = true;
             }
 
-            SDL_Delay(150);
+            SDL_Delay(200);
+
+            break;
+        }
+        else if (result.type == SDL_CONTROLLERAXISMOTION)
+        {
+            if (result.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX)
+            {
+                if (result.caxis.value < -32000)
+                {
+                    if (current > 0)
+                    {
+                        current--;
+                    }
+                }
+                else if (result.caxis.value > 32000)
+                {
+                    if (current < num - 1)
+                    {
+                        current++;
+                    }
+                }
+
+                SDL_Delay(100);
+
+                break;
+            }
+        }
+        else if (result.type == SDL_CONTROLLERBUTTONDOWN)
+        {
+            if (result.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT)
+            {
+                if (current > 0)
+                {
+                    current--;
+                }
+            }
+            else if (result.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT)
+            {
+                if (current < num - 1)
+                {
+                    current++;
+                }
+            }
+            else if (result.cbutton.button == SDL_CONTROLLER_BUTTON_A)
+            {
+                selected = true;
+            }
+
+            SDL_Delay(100);
 
             break;
         }
@@ -280,7 +331,7 @@ void displaySplashScreen(SDL_Window *window)
     }
 }
 
-void renderChoicesMenu(SDL_Window *window, const char **choices, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected)
+void renderChoicesMenu(SDL_Window *window, const char **choices, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int buttonh, int fontsize)
 {
     if (num > 0)
     {
@@ -291,19 +342,19 @@ void renderChoicesMenu(SDL_Window *window, const char **choices, int num, int se
 
         for (auto i = 0; i < num; i++)
         {
-            auto text = createText(choices[i], 24, fg, buttonw);
+            auto text = createText(choices[i], fontsize, fg, buttonw);
             int x = Left + i * spacew + (buttonw - text->w) / 2 + Margin * SCREEN_WIDTH;
-            int y = SCREEN_HEIGHT * (1 - Margin) - 50 + (50 - text->h) / 2;
+            int y = SCREEN_HEIGHT * (1 - Margin) - buttonh + (buttonh - text->h) / 2;
 
             SDL_Rect rect;
             rect.w = buttonw;
-            rect.h = 50;
+            rect.h = buttonh;
             rect.x = spacew * i + 2.0 * SCREEN_WIDTH * Margin;
-            rect.y = SCREEN_HEIGHT * (1 - Margin) - 50;
+            rect.y = SCREEN_HEIGHT * (1 - Margin) - buttonh;
 
             SDL_FillRect(screen, &rect, i == selected ? bgSelected : bg);
 
-            renderText(window, text, bg, x, y, 24, 0);
+            renderText(window, text, bg, x, y, fontsize, 0);
 
             SDL_FreeSurface(text);
 
@@ -322,6 +373,43 @@ int main(int argc, char **argsv)
 
     createWindow(SDL_INIT_VIDEO, &window, &renderer, "Necklace of Skulls", SCREEN_WIDTH, SCREEN_HEIGHT);
 
+    if (SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 1)
+    {
+        if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) != 0)
+        {
+            std::cerr << "SDL could not initialize gamecontroller! SDL_Error: " << SDL_GetError() << std::endl;
+        }
+    }
+
+    int nJoysticks = SDL_NumJoysticks();
+    auto numGamepads = 0;
+
+    // Count how many controllers there are
+    for (int i = 0; i < nJoysticks; i++)
+    {
+        if (SDL_IsGameController(i))
+        {
+            numGamepads++;
+        }
+    }
+
+    // If we have some controllers attached
+    if (numGamepads > 0)
+    {
+        for (int i = 0; i < numGamepads; i++)
+        {
+            // Open the controller and add it to our list
+            auto pad = SDL_GameControllerOpen(i);
+
+            if (SDL_GameControllerGetAttached(pad) != 1)
+            {
+                std::cout << "Game pad not attached! SDL_Error: " << SDL_GetError() << std::endl;
+            }
+        }
+
+        SDL_GameControllerEventState(SDL_ENABLE);
+    }
+
     if (window)
     {
         displaySplashScreen(window);
@@ -335,7 +423,7 @@ int main(int argc, char **argsv)
 
         while (!quit)
         {
-            renderChoicesMenu(window, choices, 3, current, clrWH, 0, 0xFF00FF00);
+            renderChoicesMenu(window, choices, 3, current, clrWH, 0, 0xFF00FF00, 60, 24);
             quit = waitForMenuSelection(window, current, 3, selected);
 
             if (selected && current == 2)
