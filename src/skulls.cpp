@@ -12,6 +12,8 @@
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
+const char* instructions = "Virtual Reality Adventure Books are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
+
 void createWindow(Uint32 flags, SDL_Window** window, SDL_Renderer** renderer, const char* title, int width, int height)
 {
     // The window we'll be rendering to
@@ -156,22 +158,25 @@ SDL_Surface* createSurface(int width, int height)
     return SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
 }
 
+const SDL_Color clrBL = {0, 0, 0, 0};
+const SDL_Color clrDB = {7, 7, 58, 0};
+
 void displaySplashScreen(SDL_Window *window)
 {
     auto splash = loadImage(window, "images/skulls-cover.png");
-    auto text = createText("Necklace of Skulls", 24, {0, 0, 0, 0}, 300);
-    
+    auto instructionsText = createText(instructions, 16, clrBL, SCREEN_WIDTH * 0.85 - splash->w);
+
     // Render the image
-    if (splash && text)
+    if (splash && instructionsText)
     {
-        renderImage(window, text, SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.05);
         renderImage(window, splash, SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.10);
+        renderImage(window, instructionsText, SCREEN_WIDTH * 0.05 + splash->w + SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.10);
 
         SDL_FreeSurface(splash);
-        SDL_FreeSurface(text);
+        SDL_FreeSurface(instructionsText);
 
         splash = NULL;
-        text = NULL;
+        instructionsText = NULL;
     }
 }
 
