@@ -219,7 +219,7 @@ bool menuHorizontal(SDL_Window *window, int &current, int num, bool &selected, i
 
             break;
         }
-        else if (result.type == SDL_MOUSEBUTTONUP)
+        else if (result.type == SDL_MOUSEBUTTONUP && result.button.button == SDL_BUTTON_LEFT)
         {
             if (current >= 0 && current < num)
             {
