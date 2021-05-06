@@ -493,6 +493,7 @@ int main(int argc, char **argsv)
         while (!quit)
         {
             renderHTextMenu(window, choices, "fonts/default.ttf", 4, current, clrWH, 0, 0xFFFF0000, 48, 22, TTF_STYLE_NORMAL);
+            
             quit = getHTextMenuChoice(window, current, 4, selected, 48);
 
             if (selected && current == 3)
