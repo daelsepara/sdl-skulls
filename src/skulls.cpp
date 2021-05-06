@@ -42,13 +42,17 @@ void fillWindow(SDL_Window* window, SDL_Rect* rect, Uint32 color)
     if (window)
     {
         // Get the surface contained by the window
-        SDL_Surface* screenSurface = SDL_GetWindowSurface(window);
+        auto screen = SDL_GetWindowSurface(window);
 
         // Fill the surface with color
-        SDL_FillRect(screenSurface, rect, color);
+        SDL_FillRect(screen, rect, color);
 
         // Update the surface
         SDL_UpdateWindowSurface(window);
+
+        SDL_FreeSurface(screen);
+
+        screen = NULL;
     }
 }
 
@@ -68,8 +72,6 @@ void waitForEvent(SDL_Window* window, Uint32 event)
         // Update the surface
         SDL_UpdateWindowSurface(window);
     }
-
-    return;
 }
 
 SDL_Surface* loadImage(SDL_Window* window, const char* image)
@@ -78,9 +80,9 @@ SDL_Surface* loadImage(SDL_Window* window, const char* image)
     bool success = true;
 
     //Load splash image
-    SDL_Surface* surface = IMG_Load(image);
+    auto surface = IMG_Load(image);
     
-    if(surface == NULL)
+    if (surface == NULL)
     {
         std::cerr <<  "Unable to load image" << image << "! SDL Error: " << SDL_GetError() << std::endl;
     }
@@ -93,9 +95,9 @@ void renderImage(SDL_Window* window, SDL_Surface* image, int x, int y)
     if (window)
     {
         // Get the surface contained by the window
-        SDL_Surface* screenSurface = SDL_GetWindowSurface(window);
+        auto screen = SDL_GetWindowSurface(window);
 
-        if (image && screenSurface)
+        if (image && screen)
         {
             SDL_Rect position;
 
@@ -104,17 +106,25 @@ void renderImage(SDL_Window* window, SDL_Surface* image, int x, int y)
             position.x = x;
             position.y = y;
 
-            SDL_BlitSurface(image, NULL, screenSurface, &position);
+            SDL_BlitSurface(image, NULL, screen, &position);
+            
+            SDL_FreeSurface(screen);
+
+            screen = NULL;
         }
     }
 }
 
-SDL_Surface* createText(const char* text, int font_size, SDL_Color textColor, SDL_Color bg)
+SDL_Surface* createText(const char* text, int font_size, SDL_Color textColor, int wrap)
 {
     TTF_Init();
 
-    TTF_Font *font = TTF_OpenFont("fonts/default.ttf", font_size);
-    SDL_Surface *surface = TTF_RenderText_Shaded(font, text, textColor, bg);
+    auto font = TTF_OpenFont("fonts/default.ttf", font_size);
+    auto surface = TTF_RenderText_Blended_Wrapped(font, text, textColor, wrap);
+
+    TTF_CloseFont(font);
+
+    font  = NULL;
 
     TTF_Quit();
 
@@ -123,28 +133,44 @@ SDL_Surface* createText(const char* text, int font_size, SDL_Color textColor, SD
 
 SDL_Surface* createSurface(int width, int height)
 {
-    /* Create a 32-bit surface with the bytes of each pixel in R,G,B,A order,
-       as expected by OpenGL for textures */
-    SDL_Surface* surface;
+    // Create a 32-bit surface with the bytes of each pixel in R,G,B,A order,
+    // as expected by OpenGL for textures
     Uint32 rmask, gmask, bmask, amask;
 
-    /* SDL interprets each pixel as a 32-bit number, so our masks must depend
-       on the endianness (byte order) of the machine */
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    rmask = 0xff000000;
-    gmask = 0x00ff0000;
-    bmask = 0x0000ff00;
-    amask = 0x000000ff;
-#else
-    rmask = 0x000000ff;
-    gmask = 0x0000ff00;
-    bmask = 0x00ff0000;
-    amask = 0xff000000;
-#endif
+    // SDL interprets each pixel as a 32-bit number, so our masks must depend
+    // on the endianness (byte order) of the machine
+    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        rmask = 0xff000000;
+        gmask = 0x00ff0000;
+        bmask = 0x0000ff00;
+        amask = 0x000000ff;
+    #else
+        rmask = 0x000000ff;
+        gmask = 0x0000ff00;
+        bmask = 0x00ff0000;
+        amask = 0xff000000;
+    #endif
 
-    surface = SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
+    return SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
+}
 
-    return surface;
+void displaySplashScreen(SDL_Window *window)
+{
+    auto splash = loadImage(window, "images/skulls-cover.png");
+    auto text = createText("Necklace of Skulls", 24, {0, 0, 0, 0}, 300);
+    
+    // Render the image
+    if (splash && text)
+    {
+        renderImage(window, text, SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.05);
+        renderImage(window, splash, SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.10);
+
+        SDL_FreeSurface(splash);
+        SDL_FreeSurface(text);
+
+        splash = NULL;
+        text = NULL;
+    }
 }
 
 int main(int argc, char** argsv)
@@ -160,26 +186,16 @@ int main(int argc, char** argsv)
         // Fill the surface with white color
         fillWindow(window, NULL, 0xFFFFFF);
 
-        SDL_Surface* splashScreen = loadImage(window, "images/skulls-cover.png");
-        SDL_Surface* text = createText("Necklace of Skulls", 24, {0, 0, 0, 0}, {255, 255, 255, 255});
-        
-        // Render the image
-        if (splashScreen)
-        {
-            renderImage(window, text, SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.05);
-            renderImage(window, splashScreen, SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.10);
-        } 
+        displaySplashScreen(window);
 
         waitForEvent(window, SDL_QUIT);
-
-        if (splashScreen)
-        {
-            SDL_FreeSurface(splashScreen);
-        }
 
         // Destroy window
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
+
+        renderer = NULL;
+        window = NULL;
     }
 
     // Quit SDL subsystems
