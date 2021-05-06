@@ -87,6 +87,55 @@ void waitForEvent(SDL_Window *window, Uint32 event)
     }
 }
 
+bool waitForMenuSelection(SDL_Window *window, int &current, int num, bool &selected)
+{
+    SDL_Event result;
+
+    auto quit = false;
+
+    while (1)
+    {
+        SDL_PollEvent(&result);
+
+        if (result.type == SDL_QUIT)
+        {
+            quit = true;
+
+            break;
+        }
+        else if (result.type == SDL_KEYDOWN)
+        {
+            if (result.key.keysym.sym == SDLK_LEFT)
+            {
+                if (current > 0)
+                {
+                    current--;
+                }
+            }
+            else if (result.key.keysym.sym == SDLK_RIGHT)
+            {
+                if (current < num - 1)
+                {
+                    current++;
+                }
+            }
+            else if (result.key.keysym.sym == SDLK_KP_ENTER || result.key.keysym.sym == SDLK_RETURN || result.key.keysym.sym == SDLK_RETURN2)
+            {
+                selected = true;
+            }
+
+            SDL_Delay(150);
+
+            break;
+        }
+
+        // Update the surface
+        SDL_UpdateWindowSurface(window);
+    }
+
+    return quit;
+}
+
 SDL_Surface *createImage(SDL_Window *window, const char *image)
 {
     // Load splash image
@@ -231,6 +280,40 @@ void displaySplashScreen(SDL_Window *window)
     }
 }
 
+void renderChoicesMenu(SDL_Window *window, const char **choices, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected)
+{
+    if (num > 0)
+    {
+        auto width = (int)(SCREEN_WIDTH * (1.0 - 2.0 * Margin));
+        auto spacew = width / num;
+        auto buttonw = (int)(spacew - 2.0 * Margin * SCREEN_WIDTH);
+        auto screen = SDL_GetWindowSurface(window);
+
+        for (auto i = 0; i < num; i++)
+        {
+            auto text = createText(choices[i], 24, fg, buttonw);
+            int x = Left + i * spacew + (buttonw - text->w) / 2 + Margin * SCREEN_WIDTH;
+            int y = SCREEN_HEIGHT * (1 - Margin) - 50 + (50 - text->h) / 2;
+
+            SDL_Rect rect;
+            rect.w = buttonw;
+            rect.h = 50;
+            rect.x = spacew * i + 2.0 * SCREEN_WIDTH * Margin;
+            rect.y = SCREEN_HEIGHT * (1 - Margin) - 50;
+
+            SDL_FillRect(screen, &rect, i == selected ? bgSelected : bg);
+
+            renderText(window, text, bg, x, y, 24, 0);
+
+            SDL_FreeSurface(text);
+
+            text = NULL;
+        }
+
+        SDL_FreeSurface(screen);
+    }
+}
+
 int main(int argc, char **argsv)
 {
     // The window we'll be rendering to
@@ -243,7 +326,23 @@ int main(int argc, char **argsv)
     {
         displaySplashScreen(window);
 
-        waitForEvent(window, SDL_QUIT);
+        const char *choices[3] = {"New Game", "Load Game", "Exit"};
+
+        int current = 0;
+
+        auto quit = false;
+        auto selected = false;
+
+        while (!quit)
+        {
+            renderChoicesMenu(window, choices, 3, current, clrWH, 0, 0xFF00FF00);
+            quit = waitForMenuSelection(window, current, 3, selected);
+
+            if (selected && current == 2)
+            {
+                quit = true;
+            }
+        }
 
         // Destroy window
         SDL_DestroyRenderer(renderer);
