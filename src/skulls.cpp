@@ -488,7 +488,9 @@ int main(int argc, char **argsv)
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
 
-    createWindow(SDL_INIT_VIDEO, &window, &renderer, "Necklace of Skulls", "images/maya.png", SCREEN_WIDTH, SCREEN_HEIGHT);
+    auto title = "Necklace of Skulls";
+
+    createWindow(SDL_INIT_VIDEO, &window, &renderer, title, "images/maya.png", SCREEN_WIDTH, SCREEN_HEIGHT);
 
     auto numGamePads = initializeGamePads();
 
@@ -522,6 +524,7 @@ int main(int argc, char **argsv)
                 default:
 
                     // redraw main menu screen
+                    SDL_SetWindowTitle(window, title);
                     displaySplashScreen(window);
                     SDL_UpdateWindowSurface(window);
 
