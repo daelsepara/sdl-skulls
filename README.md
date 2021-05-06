@@ -16,3 +16,18 @@ This is an implementation of Necklace of Skulls game book (Virtual Reality Adven
 **Title screen**
 
 ![Title Screen](/screenshots/title-screen.png)
+
+# Copyright Information 
+
+```
+Originally published 1993 by Mammoth an imprint of Reed Consumer Books Limited
+Revised edition published 2013 by Fabled Lands Publishing an Imprint of Fabled Lands LLP
+
+Text copyright (c) 1993 Dave Morris
+Map copyright (c) 1993 Leo Hartas
+Interior Illustrations (c) 1993 Russ Nicholson
+Cover by Jon Hogson (c) 2013 Fabled Lands LLP
+
+
+ISBN 978-1-909905-02-3
+```
