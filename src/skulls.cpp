@@ -24,7 +24,20 @@ const SDL_Color clrBL = {0, 0, 0, 0};
 const SDL_Color clrDB = {7, 7, 58, 0};
 const SDL_Color clrWH = {255, 255, 255, 0};
 
-void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, const char *title, int width, int height)
+SDL_Surface *createImage(const char *image)
+{
+    // Load splash image
+    auto surface = IMG_Load(image);
+
+    if (surface == NULL)
+    {
+        std::cerr << "Unable to load image" << image << "! SDL Error: " << SDL_GetError() << std::endl;
+    }
+
+    return surface;
+}
+
+void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, const char *title, const char *icon, int width, int height)
 {
     // The window we'll be rendering to
     *window = NULL;
@@ -47,6 +60,19 @@ void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, co
         else if (window)
         {
             SDL_SetWindowTitle(*window, title);
+        }
+
+        auto surface = createImage(icon);
+
+        if (surface)
+        {
+            // The icon is attached to the window pointer
+            SDL_SetWindowIcon(*window, surface);
+
+            // ...and the surface containing the icon pixel data is no longer required.
+            SDL_FreeSurface(surface);
+
+            surface = NULL;
         }
     }
 }
@@ -236,19 +262,6 @@ bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selecte
     return quit;
 }
 
-SDL_Surface *createImage(SDL_Window *window, const char *image)
-{
-    // Load splash image
-    auto surface = IMG_Load(image);
-
-    if (surface == NULL)
-    {
-        std::cerr << "Unable to load image" << image << "! SDL Error: " << SDL_GetError() << std::endl;
-    }
-
-    return surface;
-}
-
 void renderImage(SDL_Window *window, SDL_Surface *image, int x, int y)
 {
     if (window)
@@ -365,7 +378,7 @@ void displaySplashScreen(SDL_Window *window)
 {
     auto *instructions = "Virtual Reality Adventure Games are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
 
-    auto splash = createImage(window, "images/skulls-cover.png");
+    auto splash = createImage("images/skulls-cover.png");
     auto text = createText(instructions, "fonts/default.ttf", 16, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
 
     // Dark Blue in ARGB format
@@ -475,7 +488,7 @@ int main(int argc, char **argsv)
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
 
-    createWindow(SDL_INIT_VIDEO, &window, &renderer, "Necklace of Skulls", SCREEN_WIDTH, SCREEN_HEIGHT);
+    createWindow(SDL_INIT_VIDEO, &window, &renderer, "Necklace of Skulls", "images/maya.png", SCREEN_WIDTH, SCREEN_HEIGHT);
 
     auto numGamePads = initializeGamePads();
 
@@ -493,7 +506,7 @@ int main(int argc, char **argsv)
         while (!quit)
         {
             renderHTextMenu(window, choices, "fonts/default.ttf", 4, current, clrWH, 0, 0xFFFF0000, 48, 22, TTF_STYLE_NORMAL);
-            
+
             quit = getHTextMenuChoice(window, current, 4, selected, 48);
 
             if (selected && current == 3)
