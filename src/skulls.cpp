@@ -88,7 +88,7 @@ void waitForEvent(SDL_Window *window, Uint32 event)
     }
 }
 
-bool menuHorizontal(SDL_Window *window, int &current, int num, bool &selected, int buttonh)
+bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selected, int buttonh)
 {
     SDL_Event result;
 
@@ -380,7 +380,7 @@ void displaySplashScreen(SDL_Window *window)
     }
 }
 
-void renderMenuHorizontal(SDL_Window *window, const char **choices, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int buttonh, int fontsize)
+void renderHTextMenu(SDL_Window *window, const char **choices, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int buttonh, int fontsize)
 {
     if (num > 0)
     {
@@ -484,8 +484,8 @@ int main(int argc, char **argsv)
 
         while (!quit)
         {
-            renderMenuHorizontal(window, choices, 4, current, clrWH, 0, 0xFFFF0000, 48, 18);
-            quit = menuHorizontal(window, current, 4, selected, 48);
+            renderHTextMenu(window, choices, 4, current, clrWH, 0, 0xFFFF0000, 48, 18);
+            quit = getHTextMenuChoice(window, current, 4, selected, 48);
 
             if (selected && current == 3)
             {
