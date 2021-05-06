@@ -479,9 +479,9 @@ bool displayAboutScreen(SDL_Window *window)
 
         while (!quit)
         {
-            renderHTextMenu(window, choices, "fonts/default.ttf", 1, current, clrWH, 0x00000000, 0xFFFF0000, 200, 48, 10, Left, starty, 20, TTF_STYLE_NORMAL);
+            renderHTextMenu(window, choices, "fonts/default.ttf", 1, current, clrWH, 0x00000000, 0xFFFF0000, 200, 48, 10, Left - 10, starty, 20, TTF_STYLE_NORMAL);
 
-            quit = getHTextMenuChoice(window, current, 4, selected, 200, 48, 10, Left, starty);
+            quit = getHTextMenuChoice(window, current, 1, selected, 200, 48, 10, Left - 10, starty);
 
             if (selected && current == 0)
             {
