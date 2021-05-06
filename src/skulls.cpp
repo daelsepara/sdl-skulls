@@ -88,13 +88,22 @@ void waitForEvent(SDL_Window *window, Uint32 event)
     }
 }
 
-bool menuHorizontal(SDL_Window *window, int &current, int num, bool &selected)
+bool menuHorizontal(SDL_Window *window, int &current, int num, bool &selected, int buttonh)
 {
     SDL_Event result;
 
     auto quit = false;
 
     selected = false;
+
+    // some computations for mouse motions
+    auto margin1 = (1 - Margin);
+    auto margin2 = 2.0 * Margin;
+    auto marginleft = (1.0 - margin2);
+
+    auto width = (int)(SCREEN_WIDTH * marginleft);
+    auto spacew = width / num;
+    auto buttonw = (int)(spacew - Margin * SCREEN_WIDTH);
 
     while (1)
     {
@@ -187,6 +196,37 @@ bool menuHorizontal(SDL_Window *window, int &current, int num, bool &selected)
             SDL_Delay(100);
 
             break;
+        }
+        else if (result.type == SDL_MOUSEMOTION)
+        {
+            auto y = SCREEN_HEIGHT * margin1 - buttonh;
+
+            for (auto i = 0; i < num; i++)
+            {
+                auto x = spacew * i + 3 * SCREEN_WIDTH * Margin / 2;
+
+                if (result.motion.x >= x && result.motion.x <= x + buttonw - 1 && result.motion.y >= y && result.motion.y <= y + buttonh - 1)
+                {
+                    current = i;
+
+                    break;
+                }
+                else
+                {
+                    current = -1;
+                }
+            }
+
+            break;
+        }
+        else if (result.type == SDL_MOUSEBUTTONUP)
+        {
+            if (current >= 0 && current < num)
+            {
+                selected = true;
+
+                break;
+            }
         }
 
         // Update the surface
@@ -340,7 +380,7 @@ void displaySplashScreen(SDL_Window *window)
     }
 }
 
-void renderChoicesMenu(SDL_Window *window, const char **choices, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int buttonh, int fontsize)
+void renderMenuHorizontal(SDL_Window *window, const char **choices, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int buttonh, int fontsize)
 {
     if (num > 0)
     {
@@ -363,7 +403,7 @@ void renderChoicesMenu(SDL_Window *window, const char **choices, int num, int se
             SDL_Rect rect;
             rect.w = buttonw;
             rect.h = buttonh;
-            rect.x = spacew * i + 1.5 * SCREEN_WIDTH * Margin;
+            rect.x = spacew * i + 3 * SCREEN_WIDTH * Margin / 2;
             rect.y = SCREEN_HEIGHT * margin1 - buttonh;
 
             SDL_FillRect(screen, &rect, i == selected ? bgSelected : bg);
@@ -444,8 +484,8 @@ int main(int argc, char **argsv)
 
         while (!quit)
         {
-            renderChoicesMenu(window, choices, 4, current, clrWH, 0, 0xFFFF0000, 48, 18);
-            quit = menuHorizontal(window, current, 4, selected);
+            renderMenuHorizontal(window, choices, 4, current, clrWH, 0, 0xFFFF0000, 48, 18);
+            quit = menuHorizontal(window, current, 4, selected, 48);
 
             if (selected && current == 3)
             {
