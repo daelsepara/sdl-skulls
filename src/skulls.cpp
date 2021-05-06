@@ -114,7 +114,7 @@ void waitForEvent(SDL_Window *window, Uint32 event)
     }
 }
 
-bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selected, int buttonh)
+bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selected, int buttonw, int buttonh, int space, int startx, int starty)
 {
     SDL_Event result;
 
@@ -122,28 +122,34 @@ bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selecte
 
     selected = false;
 
-    // some computations for mouse motions
-    auto margin1 = (1 - Margin);
-    auto margin2 = 2.0 * Margin;
-    auto marginleft = (1.0 - margin2);
-
-    auto width = (int)(SCREEN_WIDTH * marginleft);
-    auto spacew = width / num;
-    auto buttonw = (int)(spacew - Margin * SCREEN_WIDTH);
-
     while (1)
     {
         SDL_PollEvent(&result);
 
-        if (result.type == SDL_QUIT)
+        if (result.type == SDL_KEYDOWN)
         {
-            quit = true;
+            if (result.type == SDL_QUIT)
+            {
+                quit = true;
 
-            break;
-        }
-        else if (result.type == SDL_KEYDOWN)
-        {
-            if (result.key.keysym.sym == SDLK_LEFT)
+                break;
+            }
+            else if (result.key.keysym.sym == SDLK_TAB || result.key.keysym.sym == SDLK_KP_TAB || result.key.keysym.sym == SDL_SCANCODE_KP_TAB)
+            {
+                if (current < 0)
+                {
+                    current = 0;
+                }
+                else if (current == num - 1)
+                {
+                    current = 0;
+                }
+                else if (current >= 0 && current < num - 1)
+                {
+                    current++;
+                }
+            }
+            else if (result.key.keysym.sym == SDLK_LEFT)
             {
                 if (current > 0)
                 {
@@ -225,13 +231,11 @@ bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selecte
         }
         else if (result.type == SDL_MOUSEMOTION)
         {
-            auto y = SCREEN_HEIGHT * margin1 - buttonh;
-
             for (auto i = 0; i < num; i++)
             {
-                auto x = spacew * i + 3 * SCREEN_WIDTH * Margin / 2;
+                auto x = startx + i * (buttonw + space * 2) + space;
 
-                if (result.motion.x >= x && result.motion.x <= x + buttonw - 1 && result.motion.y >= y && result.motion.y <= y + buttonh - 1)
+                if (result.motion.x >= x && result.motion.x <= x + buttonw - 1 && result.motion.y >= starty && result.motion.y <= starty + buttonh - 1)
                 {
                     current = i;
 
@@ -260,6 +264,20 @@ bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selecte
     }
 
     return quit;
+}
+
+bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selected, int buttonh)
+{
+    // some computations for mouse motions
+    auto margin1 = (1 - Margin);
+    auto margin2 = 2.0 * Margin;
+    auto marginleft = (1.0 - margin2);
+
+    auto width = (int)(SCREEN_WIDTH * marginleft);
+    auto spacew = width / num;
+    auto buttonw = (int)(spacew - Margin * SCREEN_WIDTH);
+
+    return getHTextMenuChoice(window, current, num, selected, buttonw, buttonh, Margin * SCREEN_WIDTH / 2, Left, SCREEN_HEIGHT * margin1 - buttonh);
 }
 
 void renderImage(SDL_Window *window, SDL_Surface *image, int x, int y)
@@ -374,10 +392,109 @@ SDL_Surface *createSurface(int width, int height)
     return SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
 }
 
+void renderHTextMenu(SDL_Window *window, const char **choices, const char *ttf, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int buttonw, int buttonh, int space, int startx, int starty, int fontsize, int style = TTF_STYLE_NORMAL)
+{
+    if (num > 0)
+    {
+        auto screen = SDL_GetWindowSurface(window);
+
+        for (auto i = 0; i < num; i++)
+        {
+            auto text = createText(choices[i], ttf, fontsize, fg, buttonw, style);
+
+            int x = startx + i * (buttonw + space * 2) + (buttonw - text->w) / 2 + space;
+            int y = starty + (buttonh - text->h) / 2;
+
+            SDL_Rect rect;
+
+            rect.w = buttonw;
+            rect.h = buttonh;
+            rect.x = startx + i * (space * 2 + buttonw) + space;
+            rect.y = starty;
+
+            SDL_FillRect(screen, &rect, i == selected ? bgSelected : bg);
+
+            renderText(window, text, bg, x, y, fontsize, 0);
+
+            SDL_FreeSurface(text);
+
+            text = NULL;
+        }
+
+        SDL_FreeSurface(screen);
+    }
+}
+
+void renderHTextMenu(SDL_Window *window, const char **choices, const char *ttf, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int buttonh, int fontsize, int style = TTF_STYLE_NORMAL)
+{
+    if (num > 0)
+    {
+        auto margin1 = (1.0 - Margin);
+        auto margin2 = (2.0 * Margin);
+        auto marginleft = (1.0 - margin2);
+
+        auto width = (int)(SCREEN_WIDTH * marginleft);
+        auto spacew = width / num;
+        auto buttonw = (int)(spacew - Margin * SCREEN_WIDTH);
+
+        renderHTextMenu(window, choices, ttf, num, selected, fg, bg, bgSelected, buttonw, buttonh, SCREEN_WIDTH * Margin / 2, Left, SCREEN_HEIGHT * margin1 - buttonh, fontsize, style);
+    }
+}
+
+bool displayAboutScreen(SDL_Window *window)
+{
+    auto quit = false;
+
+    auto *about = "Virtual Reality Adventure Games are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
+
+    auto splash = createImage("images/skulls-cover.png");
+    auto text = createText(about, "fonts/default.ttf", 16, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
+
+    // Dark Blue in ARGB format
+    Uint32 bg = 0xFF07073A;
+
+    // Render the image
+    if (window && splash && text)
+    {
+        // Fill the surface with background color
+        fillWindow(window, NULL, bg);
+
+        renderImage(window, splash, Left, Top);
+        renderText(window, text, bg, Left * 2 + splash->w, Top, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
+
+        SDL_FreeSurface(splash);
+        SDL_FreeSurface(text);
+
+        splash = NULL;
+        text = NULL;
+
+        SDL_SetWindowTitle(window, "About the game");
+
+        const char *choices[1] = {"Back"};
+
+        auto selected = false;
+        auto current = -1;
+
+        auto starty = (int)(SCREEN_HEIGHT * (1 - Margin) - 48);
+
+        while (!quit)
+        {
+            renderHTextMenu(window, choices, "fonts/default.ttf", 1, current, clrWH, 0x00000000, 0xFFFF0000, 200, 48, 10, Left, starty, 20, TTF_STYLE_NORMAL);
+
+            quit = getHTextMenuChoice(window, current, 4, selected, 200, 48, 10, Left, starty);
+
+            if (selected && current == 0)
+            {
+                break;
+            }
+        }
+    }
+
+    return quit;
+}
+
 void displaySplashScreen(SDL_Window *window)
 {
-    auto *instructions = "Virtual Reality Adventure Games are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
-    
     auto *introduction = "The sole survivor of an expedition brings news of disaster. Your twin brother is lost in the trackless western sierra. Resolving to find out his fate, you leave the safety of your home far behind. Your quest takes you to lost jungle cities, across mountains and seas, and even into the depths of the underworld.\n\nYou will plunge into the eerie world of Mayan myth. You will confront ghosts and gods, bargain for your life against wily demons, find allies and enemies among both the living and the dead. If you are breave enough to survive the dangers of the spirit-haunted western desert, you must still confront the wizard called Necklace of skulls in a deadly contest whose stakes are nothing less than your own soul.";
 
     auto splash = createImage("images/skulls-cover.png");
@@ -400,45 +517,6 @@ void displaySplashScreen(SDL_Window *window)
 
         splash = NULL;
         text = NULL;
-    }
-}
-
-void renderHTextMenu(SDL_Window *window, const char **choices, const char *ttf, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int buttonh, int fontsize, int style = TTF_STYLE_NORMAL)
-{
-    if (num > 0)
-    {
-        auto margin1 = (1 - Margin);
-        auto margin2 = 2.0 * Margin;
-        auto marginpixels = (int)(SCREEN_WIDTH * Margin);
-        auto marginleft = (1.0 - margin2);
-
-        auto width = (int)(SCREEN_WIDTH * marginleft);
-        auto spacew = width / num;
-        auto buttonw = (int)(spacew - Margin * SCREEN_WIDTH);
-        auto screen = SDL_GetWindowSurface(window);
-
-        for (auto i = 0; i < num; i++)
-        {
-            auto text = createText(choices[i], ttf, fontsize, fg, buttonw, style);
-            int x = Left + i * spacew + (buttonw - text->w + marginpixels) / 2;
-            int y = SCREEN_HEIGHT * margin1 - buttonh + (buttonh - text->h) / 2;
-
-            SDL_Rect rect;
-            rect.w = buttonw;
-            rect.h = buttonh;
-            rect.x = spacew * i + 3 * SCREEN_WIDTH * Margin / 2;
-            rect.y = SCREEN_HEIGHT * margin1 - buttonh;
-
-            SDL_FillRect(screen, &rect, i == selected ? bgSelected : bg);
-
-            renderText(window, text, bg, x, y, fontsize, 0);
-
-            SDL_FreeSurface(text);
-
-            text = NULL;
-        }
-
-        SDL_FreeSurface(screen);
     }
 }
 
@@ -484,6 +562,13 @@ int initializeGamePads()
     return numGamepads;
 }
 
+void rerenderWindow(SDL_Window *window, const char *title)
+{
+    SDL_SetWindowTitle(window, title);
+    displaySplashScreen(window);
+    SDL_UpdateWindowSurface(window);
+}
+
 int main(int argc, char **argsv)
 {
     // The window we'll be rendering to
@@ -517,6 +602,16 @@ int main(int argc, char **argsv)
             {
                 switch (current)
                 {
+                case 2:
+
+                    quit = displayAboutScreen(window);
+
+                    current = -1;
+
+                    selected = false;
+
+                    break;
+
                 case 3:
 
                     quit = true;
@@ -525,15 +620,15 @@ int main(int argc, char **argsv)
 
                 default:
 
-                    // redraw main menu screen
-                    SDL_SetWindowTitle(window, title);
-                    displaySplashScreen(window);
-                    SDL_UpdateWindowSurface(window);
-
                     selected = false;
                     quit = false;
 
                     break;
+                }
+
+                if (!quit)
+                {
+                    rerenderWindow(window, title);
                 }
             }
         }
