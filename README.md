@@ -9,6 +9,7 @@ This is an implementation of Necklace of Skulls game book (Virtual Reality Adven
 - Quality of life improvements to record keeping
 - Load / Save game at any point
 - Sound
+- Multiplatform (Linux/Windows/OSX)
 
 # Current Progress (Screenshots)
 
