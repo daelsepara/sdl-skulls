@@ -12,7 +12,12 @@
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
-const char *instructions = "Virtual Reality Adventure Books are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
+const double Margin = 0.05;
+const int Top = SCREEN_HEIGHT * Margin;
+const int Left = SCREEN_WIDTH * Margin;
+
+const SDL_Color clrBL = {0, 0, 0, 0};
+const SDL_Color clrDB = {7, 7, 58, 0};
 
 void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, const char *title, int width, int height)
 {
@@ -78,7 +83,7 @@ void waitForEvent(SDL_Window *window, Uint32 event)
     }
 }
 
-SDL_Surface *loadImage(SDL_Window *window, const char *image)
+SDL_Surface *createImage(SDL_Window *window, const char *image)
 {
     //Loading success flag
     bool success = true;
@@ -189,32 +194,27 @@ SDL_Surface *createSurface(int width, int height)
     return SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
 }
 
-const double Margin = 0.05;
-const int Top = SCREEN_HEIGHT * Margin;
-const int Left = SCREEN_WIDTH * Margin;
-
-const SDL_Color clrBL = {0, 0, 0, 0};
-const SDL_Color clrDB = {7, 7, 58, 0};
-
 void displaySplashScreen(SDL_Window *window)
 {
-    auto splash = loadImage(window, "images/skulls-cover.png");
-    auto instructionsText = createText(instructions, 16, clrBL, SCREEN_WIDTH * 0.85 - splash->w);
+    const char *instructions = "Virtual Reality Adventure Books are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
+
+    auto splash = createImage(window, "images/skulls-cover.png");
+    auto text = createText(instructions, 16, clrBL, SCREEN_WIDTH * 0.85 - splash->w);
 
     // Render the image
-    if (window && splash && instructionsText)
+    if (window && splash && text)
     {
         // Fill the surface with white color
         fillWindow(window, NULL, 0xFFFFFF);
 
         renderImage(window, splash, Left, Top);
-        renderText(window, instructionsText, Left * 2 + splash->w, Top, instructionsText->h, 0);
+        renderText(window, text, Left * 2 + splash->w, Top, text->h, 0);
 
         SDL_FreeSurface(splash);
-        SDL_FreeSurface(instructionsText);
+        SDL_FreeSurface(text);
 
         splash = NULL;
-        instructionsText = NULL;
+        text = NULL;
     }
 }
 
