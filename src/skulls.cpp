@@ -20,9 +20,15 @@ const double MarginSmall = 0.05;
 const int Top = SCREEN_HEIGHT * Margin;
 const int Left = SCREEN_WIDTH * Margin;
 
-const SDL_Color clrBL = {0, 0, 0, 0};
+const SDL_Color clrBK = {0, 0, 0, 0};
 const SDL_Color clrDB = {7, 7, 58, 0};
 const SDL_Color clrWH = {255, 255, 255, 0};
+
+const Uint32 intBK = 0x00000000;
+const Uint32 intRD = 0XFFFF0000;
+
+// Dark Blue in ARGB format
+const Uint32 intDB = 0xFF07073A;
 
 SDL_Surface *createImage(const char *image)
 {
@@ -450,17 +456,15 @@ bool displayAboutScreen(SDL_Window *window)
     auto splash = createImage("images/skulls-cover.png");
     auto text = createText(about, "fonts/default.ttf", 16, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
 
-    // Dark Blue in ARGB format
-    Uint32 bg = 0xFF07073A;
 
     // Render the image
     if (window && splash && text)
     {
         // Fill the surface with background color
-        fillWindow(window, NULL, bg);
+        fillWindow(window, NULL, intDB);
 
         renderImage(window, splash, Left, Top);
-        renderText(window, text, bg, Left * 2 + splash->w, Top, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
+        renderText(window, text, intDB, Left * 2 + splash->w, Top, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
 
         SDL_FreeSurface(splash);
         SDL_FreeSurface(text);
@@ -476,12 +480,15 @@ bool displayAboutScreen(SDL_Window *window)
         auto current = -1;
 
         auto starty = (int)(SCREEN_HEIGHT * (1 - Margin) - 48);
+        auto buttonw = 150;
+        auto buttonh = 48;
+        auto space = 10;
 
         while (!quit)
         {
-            renderHTextMenu(window, choices, "fonts/default.ttf", 1, current, clrWH, 0x00000000, 0xFFFF0000, 200, 48, 10, Left - 10, starty, 20, TTF_STYLE_NORMAL);
+            renderHTextMenu(window, choices, "fonts/default.ttf", 1, current, clrWH, intBK, intRD, buttonw, buttonh, space, Left - space, starty, 20, TTF_STYLE_NORMAL);
 
-            quit = getHTextMenuChoice(window, current, 1, selected, 200, 48, 10, Left - 10, starty);
+            quit = getHTextMenuChoice(window, current, 1, selected, buttonw, buttonh, space, Left - space, starty);
 
             if (selected && current == 0)
             {
@@ -500,17 +507,14 @@ void displaySplashScreen(SDL_Window *window)
     auto splash = createImage("images/skulls-cover.png");
     auto text = createText(introduction, "fonts/default.ttf", 20, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
 
-    // Dark Blue in ARGB format
-    Uint32 bg = 0xFF07073A;
-
     // Render the image
     if (window && splash && text)
     {
         // Fill the surface with background color
-        fillWindow(window, NULL, bg);
+        fillWindow(window, NULL, intDB);
 
         renderImage(window, splash, Left, Top);
-        renderText(window, text, bg, Left * 2 + splash->w, Top, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
+        renderText(window, text, intDB, Left * 2 + splash->w, Top, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
 
         SDL_FreeSurface(splash);
         SDL_FreeSurface(text);
@@ -592,11 +596,13 @@ int main(int argc, char **argsv)
         auto quit = false;
         auto selected = false;
 
+        auto buttonh = 48;
+
         while (!quit)
         {
-            renderHTextMenu(window, choices, "fonts/default.ttf", 4, current, clrWH, 0, 0xFFFF0000, 48, 22, TTF_STYLE_NORMAL);
+            renderHTextMenu(window, choices, "fonts/default.ttf", 4, current, clrWH, intBK, intRD, buttonh, 22, TTF_STYLE_NORMAL);
 
-            quit = getHTextMenuChoice(window, current, 4, selected, 48);
+            quit = getHTextMenuChoice(window, current, 4, selected, buttonh);
 
             if (selected)
             {
