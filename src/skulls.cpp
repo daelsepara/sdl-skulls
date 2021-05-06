@@ -119,6 +119,37 @@ void renderImage(SDL_Window* window, SDL_Surface* image, int x, int y)
     }
 }
 
+void renderText(SDL_Window* window, SDL_Surface* text, int x, int y, int bounds, int offset)
+{
+    if (window)
+    {
+        // Get the surface contained by the window
+        auto screen = SDL_GetWindowSurface(window);
+
+        if (text && screen)
+        {
+            SDL_Rect position;
+            SDL_Rect src;
+
+            src.w = text->w;
+            src.h = bounds;
+            src.x = 0;
+            src.y = offset;
+
+            position.w = text->w;
+            position.h = bounds;
+            position.x = x;
+            position.y = y;
+
+            SDL_BlitSurface(text, &src, screen, &position);
+            
+            SDL_FreeSurface(screen);
+
+            screen = NULL;
+        }
+    }
+}
+
 SDL_Surface* createText(const char* text, int font_size, SDL_Color textColor, int wrap)
 {
     TTF_Init();
@@ -158,6 +189,10 @@ SDL_Surface* createSurface(int width, int height)
     return SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
 }
 
+const double Margin = 0.05;
+const int Top = SCREEN_HEIGHT * Margin;
+const int Left = SCREEN_WIDTH * Margin;
+
 const SDL_Color clrBL = {0, 0, 0, 0};
 const SDL_Color clrDB = {7, 7, 58, 0};
 
@@ -167,10 +202,13 @@ void displaySplashScreen(SDL_Window *window)
     auto instructionsText = createText(instructions, 16, clrBL, SCREEN_WIDTH * 0.85 - splash->w);
 
     // Render the image
-    if (splash && instructionsText)
+    if (window && splash && instructionsText)
     {
-        renderImage(window, splash, SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.10);
-        renderImage(window, instructionsText, SCREEN_WIDTH * 0.05 + splash->w + SCREEN_WIDTH * 0.05, SCREEN_HEIGHT * 0.10);
+        // Fill the surface with white color
+        fillWindow(window, NULL, 0xFFFFFF);
+
+        renderImage(window, splash, Left, Top);
+        renderText(window, instructionsText, Left * 2 + splash->w, Top, instructionsText->h, 0);
 
         SDL_FreeSurface(splash);
         SDL_FreeSurface(instructionsText);
@@ -190,9 +228,6 @@ int main(int argc, char** argsv)
 
     if (window)
     {
-        // Fill the surface with white color
-        fillWindow(window, NULL, 0xFFFFFF);
-
         displaySplashScreen(window);
 
         waitForEvent(window, SDL_QUIT);
