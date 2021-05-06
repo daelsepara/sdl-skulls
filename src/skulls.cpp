@@ -18,6 +18,7 @@ const int Left = SCREEN_WIDTH * Margin;
 
 const SDL_Color clrBL = {0, 0, 0, 0};
 const SDL_Color clrDB = {7, 7, 58, 0};
+const SDL_Color clrWH = {255, 255, 255, 0};
 
 void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, const char *title, int width, int height)
 {
@@ -85,10 +86,7 @@ void waitForEvent(SDL_Window *window, Uint32 event)
 
 SDL_Surface *createImage(SDL_Window *window, const char *image)
 {
-    //Loading success flag
-    bool success = true;
-
-    //Load splash image
+    // Load splash image
     auto surface = IMG_Load(image);
 
     if (surface == NULL)
@@ -124,7 +122,8 @@ void renderImage(SDL_Window *window, SDL_Surface *image, int x, int y)
     }
 }
 
-void renderText(SDL_Window *window, SDL_Surface *text, int x, int y, int bounds, int offset)
+// Render a portion of the text (image) on bounded surface within the specified window
+void renderText(SDL_Window *window, SDL_Surface *text, Uint32 bg, int x, int y, int bounds, int offset)
 {
     if (window)
     {
@@ -136,15 +135,22 @@ void renderText(SDL_Window *window, SDL_Surface *text, int x, int y, int bounds,
             SDL_Rect position;
             SDL_Rect src;
 
+            // select portion to render
             src.w = text->w;
             src.h = bounds;
             src.x = 0;
             src.y = offset;
 
+            // specify location within the window
             position.w = text->w;
             position.h = bounds;
             position.x = x;
             position.y = y;
+
+            if (bg != 0)
+            {
+                SDL_FillRect(screen, &position, bg);
+            }
 
             SDL_BlitSurface(text, &src, screen, &position);
 
@@ -155,6 +161,7 @@ void renderText(SDL_Window *window, SDL_Surface *text, int x, int y, int bounds,
     }
 }
 
+// create text image with line wrap limit
 SDL_Surface *createText(const char *text, int font_size, SDL_Color textColor, int wrap)
 {
     TTF_Init();
@@ -196,19 +203,22 @@ SDL_Surface *createSurface(int width, int height)
 
 void displaySplashScreen(SDL_Window *window)
 {
-    const char *instructions = "Virtual Reality Adventure Books are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
+    auto *instructions = "Virtual Reality Adventure Games are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
 
     auto splash = createImage(window, "images/skulls-cover.png");
-    auto text = createText(instructions, 16, clrBL, SCREEN_WIDTH * 0.85 - splash->w);
+    auto text = createText(instructions, 16, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
+
+    // Dark Blue in ARGB format
+    Uint32 bg = 0xFF07073A;
 
     // Render the image
     if (window && splash && text)
     {
-        // Fill the surface with white color
-        fillWindow(window, NULL, 0xFFFFFF);
+        // Fill the surface with background color
+        fillWindow(window, NULL, bg);
 
         renderImage(window, splash, Left, Top);
-        renderText(window, text, Left * 2 + splash->w, Top, text->h, 0);
+        renderText(window, text, bg, Left * 2 + splash->w, Top, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
 
         SDL_FreeSurface(splash);
         SDL_FreeSurface(text);
