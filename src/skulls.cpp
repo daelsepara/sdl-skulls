@@ -126,15 +126,15 @@ bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selecte
     {
         SDL_PollEvent(&result);
 
-        if (result.type == SDL_KEYDOWN)
+        if (result.type == SDL_QUIT)
         {
-            if (result.type == SDL_QUIT)
-            {
-                quit = true;
+            quit = true;
 
-                break;
-            }
-            else if (result.key.keysym.sym == SDLK_TAB || result.key.keysym.sym == SDLK_KP_TAB || result.key.keysym.sym == SDL_SCANCODE_KP_TAB)
+            break;
+        }
+        else if (result.type == SDL_KEYDOWN)
+        {
+            if (result.key.keysym.sym == SDLK_TAB || result.key.keysym.sym == SDLK_KP_TAB || result.key.keysym.sym == SDL_SCANCODE_KP_TAB)
             {
                 if (current < 0)
                 {

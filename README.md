@@ -17,6 +17,10 @@ This is an implementation of the **Necklace of Skulls** game book (Virtual Reali
 
 ![Title Screen](/screenshots/title-screen.png)
 
+**About screen**
+
+![ABOUT Screen](/screenshots/about-screen.png)
+
 # Copyright Information 
 
 ```
