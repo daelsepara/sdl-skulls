@@ -12,4 +12,4 @@ This is an implementation of Necklace of Skulls game book (Virtual Reality Adven
 
 # Current Progress (Screenshots)
 
-- ![Title Screen](/screenshots/title-screen.png)
+![Title Screen](/screenshots/title-screen.png)
