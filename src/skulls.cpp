@@ -373,7 +373,7 @@ void renderChoicesMenu(SDL_Window *window, const char **choices, int num, int se
 
 int initializeGamePads()
 {
-        if (SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 1)
+    if (SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 1)
     {
         if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) != 0)
         {
