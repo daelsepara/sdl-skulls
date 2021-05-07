@@ -111,9 +111,6 @@ void fillWindow(SDL_Window *window, SDL_Rect *rect, Uint32 color)
         // Fill the surface with color
         SDL_FillRect(screen, rect, color);
 
-        // Update the surface
-        SDL_UpdateWindowSurface(window);
-
         SDL_FreeSurface(screen);
 
         screen = NULL;
@@ -132,9 +129,6 @@ void waitForEvent(SDL_Window *window, Uint32 event)
         {
             break;
         }
-
-        // Update the surface
-        SDL_UpdateWindowSurface(window);
     }
 }
 
@@ -199,6 +193,9 @@ void renderText(SDL_Window *window, SDL_Surface *text, Uint32 bg, int x, int y, 
 
             screen = NULL;
         }
+
+        // Update the surface
+        SDL_UpdateWindowSurface(window);
     }
 }
 
@@ -285,6 +282,9 @@ void renderButtons(SDL_Window *window, std::vector<Button> controls, int current
         SDL_FreeSurface(screen);
 
         screen = NULL;
+
+        // Update the surface
+        SDL_UpdateWindowSurface(window);
     }
 }
 
@@ -484,7 +484,7 @@ bool storyScreen(SDL_Window *window)
                         offset = text->h - bounds;
                     }
                 }
-                else if (current == 5)
+                else if (current == 5 && !hold)
                 {
                     break;
                 }
@@ -576,8 +576,6 @@ template <typename Function>
 bool renderWindow(SDL_Window *window, Function displayScreen)
 {
     auto result = displayScreen(window);
-
-    SDL_UpdateWindowSurface(window);
 
     return result;
 }

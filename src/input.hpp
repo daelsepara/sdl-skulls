@@ -160,6 +160,7 @@ bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &se
         }
         else if (result.type == SDL_CONTROLLERBUTTONUP)
         {
+            selected = false;
             hold = false;
 
             if (current < 0)
@@ -227,13 +228,16 @@ bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &se
         }
         else if (result.type == SDL_MOUSEBUTTONUP && result.button.button == SDL_BUTTON_LEFT)
         {
-            hold = false;
-
-            if (current >= 0 && current < choices.size())
+            if (hold)
             {
-                selected = true;
+                hold = false;
 
-                break;
+                if (current >= 0 && current < choices.size())
+                {
+                    selected = true;
+
+                    break;
+                }
             }
         }
         else if (result.type == SDL_MOUSEWHEEL)
@@ -259,17 +263,11 @@ bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &se
             {
                 SDL_Delay(50);
 
-                // Update the surface
-                SDL_UpdateWindowSurface(window);
-
                 break;
             }
         }
-
-        // Update the surface
-        SDL_UpdateWindowSurface(window);
     }
 
     return quit;
-};
+}
 #endif
