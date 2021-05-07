@@ -1,5 +1,5 @@
-#ifndef __CONTROL__HPP__
-#define __CONTROL__HPP__
+#ifndef __CONTROLS__HPP__
+#define __CONTROLS__HPP__
 class Control
 {
 public:
