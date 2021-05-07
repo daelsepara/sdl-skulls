@@ -498,11 +498,11 @@ bool aboutScreen(SDL_Window *window)
         while (!quit)
         {
             auto controls = std::vector<Control>();
-            
+
             controls.push_back(Control(0, "Back", 0, 0, 0, 0, Left, starty, buttonw, buttonh));
 
             renderControls(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
-            
+
             quit = getInput(window, controls, current, selected);
 
             if (selected && current == 0)
