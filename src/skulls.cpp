@@ -37,7 +37,7 @@ SDL_Surface *createImage(const char *image)
 
     if (surface == NULL)
     {
-        std::cerr << "Unable to load image" << image << "! SDL Error: " << SDL_GetError() << std::endl;
+        std::cerr << "Unable to load image " << image << "! SDL Error: " << SDL_GetError() << std::endl;
     }
 
     return surface;
@@ -453,9 +453,8 @@ bool displayAboutScreen(SDL_Window *window)
 
     auto *about = "Virtual Reality Adventure Games are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
 
-    auto splash = createImage("images/skulls-cover.png");
+    auto splash = createImage("images/pyramid.png");
     auto text = createText(about, "fonts/default.ttf", 16, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
-
 
     // Render the image
     if (window && splash && text)
