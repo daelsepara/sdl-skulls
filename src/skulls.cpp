@@ -15,6 +15,7 @@
 #include "controls.hpp"
 #include "items.hpp"
 #include "skills.hpp"
+#include "story.hpp"
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 800;
@@ -31,6 +32,8 @@ const SDL_Color clrWH = {255, 255, 255, 0};
 
 const Uint32 intBK = 0x00000000;
 const Uint32 intRD = 0XFFFF0000;
+const Uint32 intWH = 0XFFFFFFFF;
+const Uint32 intGR = 0XFF7F7F7F;
 
 // Dark Blue in ARGB format
 const Uint32 intDB = 0xFF07073A;
@@ -125,7 +128,8 @@ void waitForEvent(SDL_Window *window, Uint32 event)
     }
 }
 
-bool getInput(SDL_Window *window, std::vector<TextButton> choices, int &current, bool &selected)
+template <typename T>
+bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &selected)
 {
     SDL_Event result;
 
@@ -314,27 +318,27 @@ void renderText(SDL_Window *window, SDL_Surface *text, Uint32 bg, int x, int y, 
 
         if (text && screen)
         {
-            SDL_Rect position;
+            SDL_Rect dst;
             SDL_Rect src;
 
             // select portion to render
             src.w = text->w;
             src.h = bounds;
-            src.x = 0;
             src.y = offset;
+            src.x = 0;
 
             // specify location within the window
-            position.w = text->w;
-            position.h = bounds;
-            position.x = x;
-            position.y = y;
+            dst.w = text->w;
+            dst.h = bounds;
+            dst.x = x;
+            dst.y = y;
 
             if (bg != 0)
             {
-                SDL_FillRect(screen, &position, bg);
+                SDL_FillRect(screen, &dst, bg);
             }
 
-            SDL_BlitSurface(text, &src, screen, &position);
+            SDL_BlitSurface(text, &src, screen, &dst);
 
             SDL_FreeSurface(screen);
 
@@ -418,6 +422,32 @@ void renderTextButtons(SDL_Window *window, std::vector<TextButton> controls, con
             SDL_FreeSurface(text);
 
             text = NULL;
+        }
+
+        SDL_FreeSurface(screen);
+
+        screen = NULL;
+    }
+}
+
+void renderButtons(SDL_Window *window, std::vector<Button> controls, int current, int fg, int bg, int pts)
+{
+    if (controls.size() > 0)
+    {
+        auto screen = SDL_GetWindowSurface(window);
+
+        for (auto i = 0; i < controls.size(); i++)
+        {
+            SDL_Rect rect;
+
+            rect.w = controls[i].W + 2 * pts;
+            rect.h = controls[i].H + 2 * pts;
+            rect.x = controls[i].X - pts;
+            rect.y = controls[i].Y - pts;
+
+            SDL_FillRect(screen, &rect, i == current ? fg : bg);
+
+            renderImage(window, controls[i].Surface, controls[i].X, controls[i].Y);
         }
 
         SDL_FreeSurface(screen);
@@ -512,6 +542,80 @@ bool aboutScreen(SDL_Window *window)
                 break;
             }
         }
+    }
+
+    return quit;
+}
+
+bool storyScreen(SDL_Window *window)
+{
+    auto quit = false;
+
+    auto splash = createImage("images/filler1.png");
+
+    auto text = createText(prologue, "fonts/default.ttf", 20, clrDB, SCREEN_WIDTH * 0.80 - splash->w);
+
+    // Render the image
+    if (window && splash && text)
+    {
+        // Fill the surface with background color
+        fillWindow(window, NULL, intWH);
+
+        renderImage(window, splash, Left, Top);
+
+        auto startx = Left * 2 + splash->w;
+        auto starty = Top;
+
+        SDL_FreeSurface(splash);
+
+        splash = NULL;
+
+        SDL_SetWindowTitle(window, "Story");
+
+        auto selected = false;
+        auto current = -1;
+
+        auto buttonw = 64;
+        auto buttonh = 64;
+        auto space = 20;
+        auto gridsize = buttonw + space;
+        auto pts = 8;
+
+        auto buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
+
+        auto controls = std::vector<Button>();
+
+        controls.push_back(Button(0, "images/map.png", 0, 1, -1, -1, Left, buttony));
+        controls.push_back(Button(1, "images/disk.png", 0, 2, -1, -1, Left + gridsize, buttony));
+        controls.push_back(Button(2, "images/next.png", 1, 3, -1, -1, Left + 2 * gridsize, buttony));
+        controls.push_back(Button(3, "images/exit.png", 2, 3, -1, -1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony));
+
+        auto offset = 0;
+        auto bounds = SCREEN_HEIGHT * (1.0 - 4 * Margin) - buttonh - space;
+
+        auto screen = SDL_GetWindowSurface(window);
+
+        SDL_FreeSurface(screen);
+
+        screen = NULL;
+
+        while (!quit)
+        {
+            renderText(window, text, intWH, startx, starty, bounds, offset);
+
+            renderButtons(window, controls, current, intGR, intWH, pts);
+
+            quit = getInput(window, controls, current, selected);
+
+            if (selected && current == 3)
+            {
+                break;
+            }
+        }
+
+        SDL_FreeSurface(text);
+
+        text = NULL;
     }
 
     return quit;
@@ -635,6 +739,18 @@ int main(int argc, char **argsv)
             {
                 switch (current)
                 {
+                case 0:
+
+                    quit = renderWindow(window, storyScreen);
+
+                    current = -1;
+
+                    selected = false;
+
+                    SDL_Delay(100);
+
+                    break;
+
                 case 2:
 
                     quit = renderWindow(window, aboutScreen);
@@ -642,6 +758,8 @@ int main(int argc, char **argsv)
                     current = -1;
 
                     selected = false;
+
+                    SDL_Delay(100);
 
                     break;
 

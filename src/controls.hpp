@@ -7,11 +7,10 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-class TextButton
+class Control
 {
 public:
     int ID = -1;
-    const char *Text = NULL;
 
     int Left = -1;
     int Right = -1;
@@ -23,6 +22,12 @@ public:
 
     int W = 0;
     int H = 0;
+};
+
+class TextButton : public Control
+{
+public:
+    const char *Text = NULL;
 
     TextButton(int id, const char *text, int left, int right, int up, int down, int x, int y, int w, int h)
     {
@@ -39,26 +44,14 @@ public:
     }
 };
 
-class Button
+class Button : public Control
 {
 public:
-    int ID = -1;
     const char *File = NULL;
-
-    int Left = -1;
-    int Right = -1;
-    int Up = -1;
-    int Down = -1;
-
-    int X = 0;
-    int Y = 0;
-
-    int W = 0;
-    int H = 0;
 
     SDL_Surface *Surface = NULL;
 
-    Button(int id, const char *file, int left, int right, int up, int down, int x, int y, int w, int h)
+    Button(int id, const char *file, int left, int right, int up, int down, int x, int y)
     {
         ID = id;
         File = file;
@@ -68,8 +61,6 @@ public:
         Down = right;
         X = x;
         Y = y;
-        W = w;
-        H = h;
 
         Surface = IMG_Load(File);
 
@@ -77,17 +68,10 @@ public:
         {
             std::cerr << "Unable to load image " << file << "! SDL Error: " << SDL_GetError() << std::endl;
         }
-    }
-
-    ~Button()
-    {
-        // Deallocate the memory that was previously reserved
-        //  for this surface.
-        if (Surface)
+        else
         {
-            SDL_FreeSurface(Surface);
-
-            Surface = NULL;
+            W = Surface->w;
+            H = Surface->h;
         }
     }
 };
