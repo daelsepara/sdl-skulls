@@ -442,7 +442,7 @@ bool storyScreen(SDL_Window *window)
 
         auto offset = 0;
 
-        auto bounds = SCREEN_HEIGHT * (1.0 - 4 * Margin) - buttonh - space;
+        auto bounds = SCREEN_HEIGHT * (1.0 - Margin * 2.0) - buttonh - space * 2;
         auto arrows = 32;
 
         controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrows, texty + pts, true));
