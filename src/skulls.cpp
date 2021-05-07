@@ -447,7 +447,7 @@ void renderHTextMenu(SDL_Window *window, const char **choices, const char *ttf, 
     }
 }
 
-bool displayAboutScreen(SDL_Window *window)
+bool aboutScreen(SDL_Window *window)
 {
     auto quit = false;
 
@@ -499,16 +499,19 @@ bool displayAboutScreen(SDL_Window *window)
     return quit;
 }
 
-void displaySplashScreen(SDL_Window *window)
+bool mainScreen(SDL_Window *window)
 {
     auto *introduction = "The sole survivor of an expedition brings news of disaster. Your twin brother is lost in the trackless western sierra. Resolving to find out his fate, you leave the safety of your home far behind. Your quest takes you to lost jungle cities, across mountains and seas, and even into the depths of the underworld.\n\nYou will plunge into the eerie world of Mayan myth. You will confront ghosts and gods, bargain for your life against wily demons, find allies and enemies among both the living and the dead. If you are breave enough to survive the dangers of the spirit-haunted western desert, you must still confront the wizard called Necklace of skulls in a deadly contest whose stakes are nothing less than your own soul.";
 
     auto splash = createImage("images/skulls-cover.png");
     auto text = createText(introduction, "fonts/default.ttf", 20, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
+    auto title = "Necklace of Skulls";
 
-    // Render the image
+    // Render window
     if (window && splash && text)
     {
+        SDL_SetWindowTitle(window, title);
+
         // Fill the surface with background color
         fillWindow(window, NULL, intDB);
 
@@ -521,6 +524,8 @@ void displaySplashScreen(SDL_Window *window)
         splash = NULL;
         text = NULL;
     }
+
+    return false;
 }
 
 int initializeGamePads()
@@ -565,11 +570,14 @@ int initializeGamePads()
     return numGamepads;
 }
 
-void rerenderWindow(SDL_Window *window, const char *title)
+template <typename Function>
+bool renderWindow(SDL_Window *window, Function displayScreen)
 {
-    SDL_SetWindowTitle(window, title);
-    displaySplashScreen(window);
+    auto result = displayScreen(window);
+
     SDL_UpdateWindowSurface(window);
+
+    return result;
 }
 
 int main(int argc, char **argsv)
@@ -583,16 +591,16 @@ int main(int argc, char **argsv)
     createWindow(SDL_INIT_VIDEO, &window, &renderer, title, "images/maya.png", SCREEN_WIDTH, SCREEN_HEIGHT);
 
     auto numGamePads = initializeGamePads();
+    auto quit = false;
 
     if (window)
     {
-        displaySplashScreen(window);
+        quit = renderWindow(window, mainScreen);
 
         const char *choices[4] = {"New Game", "Load Game", "About", "Exit"};
 
         auto current = -1;
 
-        auto quit = false;
         auto selected = false;
 
         auto buttonh = 48;
@@ -609,7 +617,7 @@ int main(int argc, char **argsv)
                 {
                 case 2:
 
-                    quit = displayAboutScreen(window);
+                    quit = renderWindow(window, aboutScreen);
 
                     current = -1;
 
@@ -633,7 +641,7 @@ int main(int argc, char **argsv)
 
                 if (!quit)
                 {
-                    rerenderWindow(window, title);
+                    quit = renderWindow(window, mainScreen);
                 }
             }
         }
