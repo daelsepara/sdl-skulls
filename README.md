@@ -31,7 +31,7 @@ This is an implementation of the **Necklace of Skulls** game book (Virtual Reali
 Originally published 1993 by Mammoth an imprint of Reed Consumer Books Limited
 Revised edition published 2013 by Fabled Lands Publishing an Imprint of Fabled Lands LLP
 
-Text copyright (c) 1993 Dave Morris
+Text copyright (c) 1993, 2013 Dave Morris
 Map copyright (c) 1993 Leo Hartas
 Interior Illustrations (c) 1993 Russ Nicholson
 Cover by Jon Hogson (c) 2013 Fabled Lands LLP
