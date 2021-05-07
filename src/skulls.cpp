@@ -19,13 +19,10 @@
 #include "story.hpp"
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1024;
+const int SCREEN_HEIGHT = 768;
 
 const double Margin = 0.05;
-const double MarginSmall = 0.05;
-const int Top = SCREEN_HEIGHT * Margin;
-const int Left = SCREEN_WIDTH * Margin;
 
 const SDL_Color clrBK = {0, 0, 0, 0};
 const SDL_Color clrDB = {7, 7, 58, 0};
@@ -55,7 +52,7 @@ SDL_Surface *createImage(const char *image)
     return surface;
 }
 
-void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, const char *title, const char *icon, int width, int height)
+void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, const char *title, const char *icon)
 {
     // The window we'll be rendering to
     *window = NULL;
@@ -68,8 +65,17 @@ void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, co
     }
     else
     {
+        /*
+        SDL_DisplayMode mode;
+
+        SDL_GetCurrentDisplayMode(0, &mode);
+
+        SCREEN_WIDTH = mode.w;
+        SCREEN_HEIGHT = mode.h;
+        */
+
         // Create window
-        SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_SHOWN, window, renderer);
+        SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN, window, renderer);
 
         if (window == NULL || renderer == NULL)
         {
@@ -221,29 +227,6 @@ SDL_Surface *createText(const char *text, const char *ttf, int font_size, SDL_Co
     return surface;
 }
 
-SDL_Surface *createSurface(int width, int height)
-{
-    // Create a 32-bit surface with the bytes of each pixel in R,G,B,A order,
-    // as expected by OpenGL for textures
-    Uint32 rmask, gmask, bmask, amask;
-
-// SDL interprets each pixel as a 32-bit number, so our masks must depend
-// on the endianness (byte order) of the machine
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    rmask = 0xff000000;
-    gmask = 0x00ff0000;
-    bmask = 0x0000ff00;
-    amask = 0x000000ff;
-#else
-    rmask = 0x000000ff;
-    gmask = 0x0000ff00;
-    bmask = 0x00ff0000;
-    amask = 0xff000000;
-#endif
-
-    return SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
-}
-
 void renderTextButtons(SDL_Window *window, std::vector<TextButton> controls, const char *ttf, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int fontsize, int style = TTF_STYLE_NORMAL)
 {
     if (controls.size() > 0)
@@ -347,7 +330,9 @@ bool aboutScreen(SDL_Window *window)
     auto *about = "Virtual Reality Adventure Games are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
 
     auto splash = createImage("images/pyramid.png");
-    auto text = createText(about, "fonts/default.ttf", 16, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
+    auto text = createText(about, "fonts/default.ttf", 24, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
+    auto startx = SCREEN_WIDTH * Margin;
+    auto starty = SCREEN_HEIGHT * Margin;
 
     // Render the image
     if (window && splash && text)
@@ -355,9 +340,9 @@ bool aboutScreen(SDL_Window *window)
         // Fill the surface with background color
         fillWindow(window, NULL, intDB);
 
-        renderImage(window, splash, Left, Top);
+        renderImage(window, splash, startx, starty);
 
-        renderText(window, text, intDB, Left * 2 + splash->w, Top, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
+        renderText(window, text, intDB, startx * 2 + splash->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
 
         SDL_FreeSurface(splash);
         SDL_FreeSurface(text);
@@ -380,9 +365,9 @@ bool aboutScreen(SDL_Window *window)
         {
             auto controls = std::vector<TextButton>();
 
-            controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, Left, starty, buttonw, buttonh));
+            controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, starty, buttonw, buttonh));
 
-            renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
+            renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 24, TTF_STYLE_NORMAL);
 
             bool scrollUp = false;
             bool scrollDown = false;
@@ -406,20 +391,22 @@ bool storyScreen(SDL_Window *window)
 
     auto splash = createImage("images/filler1.png");
 
-    auto textx = Left * 2 + splash->w;
-    auto texty = Top;
+    auto startx = (SCREEN_WIDTH * Margin);
+    auto textx = (SCREEN_WIDTH * Margin) * 2 + splash->w;
+    auto texty = (SCREEN_HEIGHT * Margin);
 
     auto buttonw = 64;
     auto buttonh = 64;
     auto space = 20;
     auto gridsize = buttonw + space;
     auto pts = 8;
+    auto arrows = 32;
 
-    auto buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
+    auto buttony = (int)(SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
 
-    auto textwidth = SCREEN_WIDTH * 0.85 - splash->w - 32 - space;
-    
-    auto text = createText(prologue, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
+    auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrows + space);
+
+    auto text = createText(prologue, "fonts/default.ttf", 24, clrDB, textwidth, TTF_STYLE_NORMAL);
 
     // Render the image
     if (window && splash && text)
@@ -427,13 +414,13 @@ bool storyScreen(SDL_Window *window)
         // Fill the surface with background color
         fillWindow(window, NULL, intWH);
 
-        renderImage(window, splash, Left, Top);
+        renderImage(window, splash, startx, texty);
 
         SDL_FreeSurface(splash);
 
         splash = NULL;
 
-        SDL_SetWindowTitle(window, "Story");
+        SDL_SetWindowTitle(window, "Necklace of Skulls: Prologue");
 
         auto selected = false;
         auto current = -1;
@@ -443,13 +430,12 @@ bool storyScreen(SDL_Window *window)
         auto offset = 0;
 
         auto bounds = SCREEN_HEIGHT * (1.0 - Margin * 2.0) - buttonh - space * 2;
-        auto arrows = 32;
 
         controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrows, texty + pts, true));
         controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrows, texty + bounds - arrows - pts, true));
-        controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, Left, buttony));
-        controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, Left + gridsize, buttony));
-        controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, Left + 2 * gridsize, buttony));
+        controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony));
+        controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony));
+        controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony));
         controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony));
 
         auto screen = SDL_GetWindowSurface(window);
@@ -518,8 +504,10 @@ bool mainScreen(SDL_Window *window)
     auto *introduction = "The sole survivor of an expedition brings news of disaster. Your twin brother is lost in the trackless western sierra. Resolving to find out his fate, you leave the safety of your home far behind. Your quest takes you to lost jungle cities, across mountains and seas, and even into the depths of the underworld.\n\nYou will plunge into the eerie world of Mayan myth. You will confront ghosts and gods, bargain for your life against wily demons, find allies and enemies among both the living and the dead. If you are breave enough to survive the dangers of the spirit-haunted western desert, you must still confront the wizard called Necklace of skulls in a deadly contest whose stakes are nothing less than your own soul.";
 
     auto splash = createImage("images/skulls-cover.png");
-    auto text = createText(introduction, "fonts/default.ttf", 20, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
+    auto text = createText(introduction, "fonts/default.ttf", 24, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
     auto title = "Necklace of Skulls";
+    auto startx = SCREEN_WIDTH * Margin;
+    auto starty = SCREEN_HEIGHT * Margin;
 
     // Render window
     if (window && splash && text)
@@ -529,8 +517,8 @@ bool mainScreen(SDL_Window *window)
         // Fill the surface with background color
         fillWindow(window, NULL, intDB);
 
-        renderImage(window, splash, Left, Top);
-        renderText(window, text, intDB, Left * 2 + splash->w, Top, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
+        renderImage(window, splash, startx, starty);
+        renderText(window, text, intDB, startx * 2 + splash->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
 
         SDL_FreeSurface(splash);
         SDL_FreeSurface(text);
@@ -602,10 +590,11 @@ int main(int argc, char **argsv)
 
     auto title = "Necklace of Skulls";
 
-    createWindow(SDL_INIT_VIDEO, &window, &renderer, title, "images/maya.png", SCREEN_WIDTH, SCREEN_HEIGHT);
+    createWindow(SDL_INIT_VIDEO, &window, &renderer, title, "images/maya.png");
 
     auto numGamePads = initializeGamePads();
     auto quit = false;
+    auto startx = SCREEN_WIDTH * Margin;
 
     if (window)
     {
@@ -621,7 +610,7 @@ int main(int argc, char **argsv)
 
         while (!quit)
         {
-            auto controls = createHTextButtons(choices, 4, buttonh, Left, SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
+            auto controls = createHTextButtons(choices, 4, buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
 
             renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 22, TTF_STYLE_NORMAL);
 

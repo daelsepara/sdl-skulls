@@ -15,6 +15,8 @@ bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &se
     scrollUp = false;
     scrollDown = false;
 
+    auto sensitivity = 32000;
+
     while (1)
     {
         SDL_PollEvent(&result);
@@ -96,18 +98,18 @@ bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &se
         {
             if (result.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX)
             {
-                if (current == -1)
+                if (current < 0)
                 {
                     current = choices[0].ID;
                 }
-                else if (result.caxis.value < -32000)
+                else if (result.caxis.value < -sensitivity)
                 {
                     if (current >= 0 && current < choices.size())
                     {
                         current = choices[current].Left;
                     }
                 }
-                else if (result.caxis.value > 32000)
+                else if (result.caxis.value > sensitivity)
                 {
                     if (current >= 0 && current < choices.size())
                     {
@@ -125,14 +127,14 @@ bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &se
                 {
                     current = choices[0].ID;
                 }
-                else if (result.caxis.value < -32000)
+                else if (result.caxis.value < -sensitivity)
                 {
                     if (current >= 0 && current < choices.size())
                     {
                         current = choices[current].Up;
                     }
                 }
-                else if (result.caxis.value > 32000)
+                else if (result.caxis.value > sensitivity)
                 {
                     if (current >= 0 && current < choices.size())
                     {
@@ -194,6 +196,8 @@ bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &se
         }
         else if (result.type == SDL_MOUSEMOTION)
         {
+            hold = false;
+
             for (auto i = 0; i < choices.size(); i++)
             {
                 if (result.motion.x >= choices[i].X && result.motion.x <= choices[i].X + choices[i].W - 1 && result.motion.y >= choices[i].Y && result.motion.y <= choices[i].Y + choices[i].H - 1)
@@ -231,6 +235,23 @@ bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &se
 
                 break;
             }
+        }
+        else if (result.type == SDL_MOUSEWHEEL)
+        {
+            current = -1;
+
+            if (result.wheel.y < 0 || result.wheel.x < 0)
+            {
+                scrollUp = false;
+                scrollDown = true;
+            }
+            else
+            {
+                scrollUp = true;
+                scrollDown = false;
+            }
+
+            break;
         }
         else if (hold)
         {
