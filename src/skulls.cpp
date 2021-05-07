@@ -13,6 +13,7 @@
 #include "nlohmann/json.hpp"
 
 #include "controls.hpp"
+#include "input.hpp"
 #include "items.hpp"
 #include "skills.hpp"
 #include "story.hpp"
@@ -37,6 +38,9 @@ const Uint32 intGR = 0XFF7F7F7F;
 
 // Dark Blue in ARGB format
 const Uint32 intDB = 0xFF07073A;
+
+// Beige in ARG format
+const Uint32 intBE = 0xFFF5F5DC;
 
 SDL_Surface *createImage(const char *image)
 {
@@ -126,161 +130,6 @@ void waitForEvent(SDL_Window *window, Uint32 event)
         // Update the surface
         SDL_UpdateWindowSurface(window);
     }
-}
-
-template <typename T>
-bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &selected)
-{
-    SDL_Event result;
-
-    auto quit = false;
-
-    selected = false;
-
-    while (1)
-    {
-        SDL_PollEvent(&result);
-
-        if (result.type == SDL_QUIT)
-        {
-            quit = true;
-
-            break;
-        }
-        else if (result.type == SDL_KEYDOWN)
-        {
-            if (current < 0)
-            {
-                current = choices[0].ID;
-            }
-            else if (result.key.keysym.sym == SDLK_TAB || result.key.keysym.sym == SDLK_KP_TAB || result.key.keysym.sym == SDL_SCANCODE_KP_TAB)
-            {
-                if (current < 0)
-                {
-                    current = choices[0].ID;
-                }
-                else if (current == choices.size() - 1)
-                {
-                    current = choices[0].ID;
-                }
-                else if (current >= 0 && current < choices.size() - 1)
-                {
-                    current = choices[current].Right;
-                }
-            }
-            else if (result.key.keysym.sym == SDLK_LEFT)
-            {
-                if (current >= 0 && current < choices.size())
-                {
-                    current = choices[current].Left;
-                }
-            }
-            else if (result.key.keysym.sym == SDLK_RIGHT)
-            {
-                if (current >= 0 && current < choices.size())
-                {
-                    current = choices[current].Right;
-                }
-            }
-            else if (result.key.keysym.sym == SDLK_KP_ENTER || result.key.keysym.sym == SDLK_RETURN || result.key.keysym.sym == SDLK_RETURN2)
-            {
-                selected = true;
-            }
-
-            SDL_Delay(200);
-
-            break;
-        }
-        else if (result.type == SDL_CONTROLLERAXISMOTION)
-        {
-            if (result.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX)
-            {
-                if (current == -1)
-                {
-                    current = choices[0].ID;
-                }
-                else if (result.caxis.value < -32000)
-                {
-                    if (current >= 0 && current < choices.size())
-                    {
-                        current = choices[current].Left;
-                    }
-                }
-                else if (result.caxis.value > 32000)
-                {
-                    if (current >= 0 && current < choices.size())
-                    {
-                        current = choices[current].Right;
-                    }
-                }
-
-                SDL_Delay(100);
-
-                break;
-            }
-        }
-        else if (result.type == SDL_CONTROLLERBUTTONUP)
-        {
-            if (current < 0)
-            {
-                current = choices[0].ID;
-            }
-            else if (result.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT)
-            {
-                if (current >= 0 && current < choices.size() - 1)
-                {
-                    current = choices[current].Left;
-                }
-            }
-            else if (result.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT)
-            {
-                if (current >= 0 && current < choices.size() - 1)
-                {
-                    current = choices[current].Right;
-                }
-            }
-            else if (result.cbutton.button == SDL_CONTROLLER_BUTTON_A)
-            {
-                selected = true;
-            }
-
-            SDL_Delay(100);
-
-            break;
-        }
-        else if (result.type == SDL_MOUSEMOTION)
-        {
-            for (auto i = 0; i < choices.size(); i++)
-            {
-                if (result.motion.x >= choices[i].X && result.motion.x <= choices[i].X + choices[i].W - 1 && result.motion.y >= choices[i].Y && result.motion.y <= choices[i].Y + choices[i].H - 1)
-                {
-                    current = choices[i].ID;
-
-                    break;
-                }
-                else
-                {
-                    current = -1;
-                }
-            }
-
-            break;
-        }
-        else if (result.type == SDL_MOUSEBUTTONUP && result.button.button == SDL_BUTTON_LEFT)
-        {
-            if (current >= 0 && current < choices.size())
-            {
-                selected = true;
-
-                break;
-            }
-        }
-
-        // Update the surface
-        SDL_UpdateWindowSurface(window);
-    }
-
-    return quit;
 }
 
 void renderImage(SDL_Window *window, SDL_Surface *image, int x, int y)
@@ -477,8 +326,8 @@ std::vector<TextButton> createHTextButtons(const char **choices, int num, int bu
         {
             int left = i > 0 ? i - 1 : i;
             int right = i < num - 1 ? i + 1 : i;
-            int up = -1;
-            int down = -1;
+            int up = i;
+            int down = i;
 
             auto x = startx + i * (buttonw + space * 2) + space;
 
@@ -535,7 +384,11 @@ bool aboutScreen(SDL_Window *window)
 
             renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
 
-            quit = getInput(window, controls, current, selected);
+            bool scrollUp = false;
+            bool scrollDown = false;
+            bool hold = false;
+
+            quit = getInput(window, controls, current, selected, scrollUp, scrollDown, hold);
 
             if (selected && current == 0)
             {
@@ -553,7 +406,20 @@ bool storyScreen(SDL_Window *window)
 
     auto splash = createImage("images/filler1.png");
 
-    auto text = createText(prologue, "fonts/default.ttf", 20, clrDB, SCREEN_WIDTH * 0.80 - splash->w);
+    auto textx = Left * 2 + splash->w;
+    auto texty = Top;
+
+    auto buttonw = 64;
+    auto buttonh = 64;
+    auto space = 20;
+    auto gridsize = buttonw + space;
+    auto pts = 8;
+
+    auto buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
+
+    auto textwidth = SCREEN_WIDTH * 0.85 - splash->w - 32 - space;
+    
+    auto text = createText(prologue, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
 
     // Render the image
     if (window && splash && text)
@@ -562,9 +428,6 @@ bool storyScreen(SDL_Window *window)
         fillWindow(window, NULL, intWH);
 
         renderImage(window, splash, Left, Top);
-
-        auto startx = Left * 2 + splash->w;
-        auto starty = Top;
 
         SDL_FreeSurface(splash);
 
@@ -575,23 +438,19 @@ bool storyScreen(SDL_Window *window)
         auto selected = false;
         auto current = -1;
 
-        auto buttonw = 64;
-        auto buttonh = 64;
-        auto space = 20;
-        auto gridsize = buttonw + space;
-        auto pts = 8;
-
-        auto buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
-
         auto controls = std::vector<Button>();
 
-        controls.push_back(Button(0, "images/map.png", 0, 1, -1, -1, Left, buttony));
-        controls.push_back(Button(1, "images/disk.png", 0, 2, -1, -1, Left + gridsize, buttony));
-        controls.push_back(Button(2, "images/next.png", 1, 3, -1, -1, Left + 2 * gridsize, buttony));
-        controls.push_back(Button(3, "images/exit.png", 2, 3, -1, -1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony));
-
         auto offset = 0;
+
         auto bounds = SCREEN_HEIGHT * (1.0 - 4 * Margin) - buttonh - space;
+        auto arrows = 32;
+
+        controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrows, texty + pts, true));
+        controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrows, texty + bounds - arrows - pts, true));
+        controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, Left, buttony));
+        controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, Left + gridsize, buttony));
+        controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, Left + 2 * gridsize, buttony));
+        controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony));
 
         auto screen = SDL_GetWindowSurface(window);
 
@@ -599,17 +458,50 @@ bool storyScreen(SDL_Window *window)
 
         screen = NULL;
 
+        auto scrollSpeed = 20;
+        auto hold = false;
+
         while (!quit)
         {
-            renderText(window, text, intWH, startx, starty, bounds, offset);
+            renderText(window, text, intBE, textx, texty, bounds, offset);
 
             renderButtons(window, controls, current, intGR, intWH, pts);
 
-            quit = getInput(window, controls, current, selected);
+            bool scrollUp = false;
+            bool scrollDown = false;
 
-            if (selected && current == 3)
+            quit = getInput(window, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected || scrollUp || scrollDown || hold)
             {
-                break;
+                if (current == 0 || scrollUp || (current == 0 && hold))
+                {
+                    if (offset > 0)
+                    {
+                        offset -= scrollSpeed;
+                    }
+
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+                }
+                else if (current == 1 || scrollDown || (current == 1 && hold))
+                {
+                    if (offset < text->h - bounds)
+                    {
+                        offset += scrollSpeed;
+                    }
+
+                    if (offset > text->h - bounds)
+                    {
+                        offset = text->h - bounds;
+                    }
+                }
+                else if (current == 5)
+                {
+                    break;
+                }
             }
         }
 
@@ -733,7 +625,11 @@ int main(int argc, char **argsv)
 
             renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 22, TTF_STYLE_NORMAL);
 
-            quit = getInput(window, controls, current, selected);
+            bool scrollUp = false;
+            bool scrollDown = false;
+            bool hold = false;
+
+            quit = getInput(window, controls, current, selected, scrollUp, scrollDown, hold);
 
             if (selected)
             {

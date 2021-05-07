@@ -19,7 +19,11 @@ This is an implementation of the **Necklace of Skulls** game book (Virtual Reali
 
 **About screen**
 
-![ABOUT Screen](/screenshots/about-screen.png)
+![About Screen](/screenshots/about-screen.png)
+
+**Story screen (Main interface)**
+
+![Story Screen](/screenshots/story-screen.png)
 
 # Copyright Information 
 

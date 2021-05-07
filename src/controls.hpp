@@ -22,6 +22,8 @@ public:
 
     int W = 0;
     int H = 0;
+
+    bool IsScroll = false;
 };
 
 class TextButton : public Control
@@ -36,7 +38,7 @@ public:
         Left = left;
         Right = right;
         Up = up;
-        Down = right;
+        Down = down;
         X = x;
         Y = y;
         W = w;
@@ -51,17 +53,18 @@ public:
 
     SDL_Surface *Surface = NULL;
 
-    Button(int id, const char *file, int left, int right, int up, int down, int x, int y)
+    Button(int id, const char *file, int left, int right, int up, int down, int x, int y, bool scroll = false)
     {
         ID = id;
         File = file;
         Left = left;
         Right = right;
         Up = up;
-        Down = right;
+        Down = down;
         X = x;
         Y = y;
-
+        IsScroll = scroll;
+        
         Surface = IMG_Load(File);
 
         if (Surface == NULL)
