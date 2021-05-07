@@ -1,6 +1,6 @@
 #ifndef __CONTROLS__HPP__
 #define __CONTROLS__HPP__
-class Control
+class TextButton
 {
 public:
     int ID = -1;
@@ -17,7 +17,7 @@ public:
     int W = 0;
     int H = 0;
 
-    Control(int id, const char *text, int left, int right, int up, int down, int x, int y, int w, int h)
+    TextButton(int id, const char *text, int left, int right, int up, int down, int x, int y, int w, int h)
     {
         ID = id;
         Text = text;

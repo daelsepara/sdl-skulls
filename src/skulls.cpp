@@ -123,7 +123,7 @@ void waitForEvent(SDL_Window *window, Uint32 event)
     }
 }
 
-bool getInput(SDL_Window *window, std::vector<Control> choices, int &current, bool &selected)
+bool getInput(SDL_Window *window, std::vector<TextButton> choices, int &current, bool &selected)
 {
     SDL_Event result;
 
@@ -389,7 +389,7 @@ SDL_Surface *createSurface(int width, int height)
     return SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
 }
 
-void renderControls(SDL_Window *window, std::vector<Control> controls, const char *ttf, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int fontsize, int style = TTF_STYLE_NORMAL)
+void renderTextButtons(SDL_Window *window, std::vector<TextButton> controls, const char *ttf, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int fontsize, int style = TTF_STYLE_NORMAL)
 {
     if (controls.size() > 0)
     {
@@ -424,9 +424,9 @@ void renderControls(SDL_Window *window, std::vector<Control> controls, const cha
     }
 }
 
-std::vector<Control> createHControls(const char **choices, int num, int buttonh, int startx, int starty)
+std::vector<TextButton> createHTextButtons(const char **choices, int num, int buttonh, int startx, int starty)
 {
-    std::vector<Control> controls = std::vector<Control>();
+    std::vector<TextButton> controls = std::vector<TextButton>();
 
     if (num > 0)
     {
@@ -450,7 +450,7 @@ std::vector<Control> createHControls(const char **choices, int num, int buttonh,
 
             auto x = startx + i * (buttonw + space * 2) + space;
 
-            auto button = Control(i, choices[i], left, right, up, down, x, starty, buttonw, buttonh);
+            auto button = TextButton(i, choices[i], left, right, up, down, x, starty, buttonw, buttonh);
 
             controls.push_back(button);
         }
@@ -497,11 +497,11 @@ bool aboutScreen(SDL_Window *window)
 
         while (!quit)
         {
-            auto controls = std::vector<Control>();
+            auto controls = std::vector<TextButton>();
 
-            controls.push_back(Control(0, "Back", 0, 0, 0, 0, Left, starty, buttonw, buttonh));
+            controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, Left, starty, buttonw, buttonh));
 
-            renderControls(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
+            renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
 
             quit = getInput(window, controls, current, selected);
 
@@ -623,9 +623,9 @@ int main(int argc, char **argsv)
 
         while (!quit)
         {
-            auto controls = createHControls(choices, 4, buttonh, Left, SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
+            auto controls = createHTextButtons(choices, 4, buttonh, Left, SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
 
-            renderControls(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 22, TTF_STYLE_NORMAL);
+            renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 22, TTF_STYLE_NORMAL);
 
             quit = getInput(window, controls, current, selected);
 
