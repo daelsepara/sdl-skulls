@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 
 // Using SDL
 #include <SDL.h>
@@ -10,6 +11,8 @@
 
 // JSON library
 #include "nlohmann/json.hpp"
+
+#include "controls.hpp"
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 800;
@@ -120,7 +123,7 @@ void waitForEvent(SDL_Window *window, Uint32 event)
     }
 }
 
-bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selected, int buttonw, int buttonh, int space, int startx, int starty)
+bool getInput(SDL_Window *window, std::vector<Control> choices, int &current, bool &selected)
 {
     SDL_Event result;
 
@@ -140,33 +143,37 @@ bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selecte
         }
         else if (result.type == SDL_KEYDOWN)
         {
-            if (result.key.keysym.sym == SDLK_TAB || result.key.keysym.sym == SDLK_KP_TAB || result.key.keysym.sym == SDL_SCANCODE_KP_TAB)
+            if (current < 0)
+            {
+                current = choices[0].ID;
+            }
+            else if (result.key.keysym.sym == SDLK_TAB || result.key.keysym.sym == SDLK_KP_TAB || result.key.keysym.sym == SDL_SCANCODE_KP_TAB)
             {
                 if (current < 0)
                 {
-                    current = 0;
+                    current = choices[0].ID;
                 }
-                else if (current == num - 1)
+                else if (current == choices.size() - 1)
                 {
-                    current = 0;
+                    current = choices[0].ID;
                 }
-                else if (current >= 0 && current < num - 1)
+                else if (current >= 0 && current < choices.size() - 1)
                 {
-                    current++;
+                    current = choices[current].Right;
                 }
             }
             else if (result.key.keysym.sym == SDLK_LEFT)
             {
-                if (current > 0)
+                if (current >= 0 && current < choices.size())
                 {
-                    current--;
+                    current = choices[current].Left;
                 }
             }
             else if (result.key.keysym.sym == SDLK_RIGHT)
             {
-                if (current < num - 1)
+                if (current >= 0 && current < choices.size())
                 {
-                    current++;
+                    current = choices[current].Right;
                 }
             }
             else if (result.key.keysym.sym == SDLK_KP_ENTER || result.key.keysym.sym == SDLK_RETURN || result.key.keysym.sym == SDLK_RETURN2)
@@ -184,20 +191,20 @@ bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selecte
             {
                 if (current == -1)
                 {
-                    current = 0;
+                    current = choices[0].ID;
                 }
                 else if (result.caxis.value < -32000)
                 {
-                    if (current > 0)
+                    if (current >= 0 && current < choices.size())
                     {
-                        current--;
+                        current = choices[current].Left;
                     }
                 }
                 else if (result.caxis.value > 32000)
                 {
-                    if (current < num - 1)
+                    if (current >= 0 && current < choices.size())
                     {
-                        current++;
+                        current = choices[current].Right;
                     }
                 }
 
@@ -208,22 +215,22 @@ bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selecte
         }
         else if (result.type == SDL_CONTROLLERBUTTONUP)
         {
-            if (current == -1)
+            if (current < 0)
             {
-                current = 0;
+                current = choices[0].ID;
             }
             else if (result.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT)
             {
-                if (current > 0)
+                if (current >= 0 && current < choices.size() - 1)
                 {
-                    current--;
+                    current = choices[current].Left;
                 }
             }
             else if (result.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT)
             {
-                if (current < num - 1)
+                if (current >= 0 && current < choices.size() - 1)
                 {
-                    current++;
+                    current = choices[current].Right;
                 }
             }
             else if (result.cbutton.button == SDL_CONTROLLER_BUTTON_A)
@@ -237,13 +244,11 @@ bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selecte
         }
         else if (result.type == SDL_MOUSEMOTION)
         {
-            for (auto i = 0; i < num; i++)
+            for (auto i = 0; i < choices.size(); i++)
             {
-                auto x = startx + i * (buttonw + space * 2) + space;
-
-                if (result.motion.x >= x && result.motion.x <= x + buttonw - 1 && result.motion.y >= starty && result.motion.y <= starty + buttonh - 1)
+                if (result.motion.x >= choices[i].X && result.motion.x <= choices[i].X + choices[i].W - 1 && result.motion.y >= choices[i].Y && result.motion.y <= choices[i].Y + choices[i].H - 1)
                 {
-                    current = i;
+                    current = choices[i].ID;
 
                     break;
                 }
@@ -257,7 +262,7 @@ bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selecte
         }
         else if (result.type == SDL_MOUSEBUTTONUP && result.button.button == SDL_BUTTON_LEFT)
         {
-            if (current >= 0 && current < num)
+            if (current >= 0 && current < choices.size())
             {
                 selected = true;
 
@@ -270,20 +275,6 @@ bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selecte
     }
 
     return quit;
-}
-
-bool getHTextMenuChoice(SDL_Window *window, int &current, int num, bool &selected, int buttonh)
-{
-    // some computations for mouse motions
-    auto margin1 = (1 - Margin);
-    auto margin2 = 2.0 * Margin;
-    auto marginleft = (1.0 - margin2);
-
-    auto width = (int)(SCREEN_WIDTH * marginleft);
-    auto spacew = width / num;
-    auto buttonw = (int)(spacew - Margin * SCREEN_WIDTH);
-
-    return getHTextMenuChoice(window, current, num, selected, buttonw, buttonh, Margin * SCREEN_WIDTH / 2, Left, SCREEN_HEIGHT * margin1 - buttonh);
 }
 
 void renderImage(SDL_Window *window, SDL_Surface *image, int x, int y)
@@ -398,25 +389,25 @@ SDL_Surface *createSurface(int width, int height)
     return SDL_CreateRGBSurface(0, width, height, 32, rmask, gmask, bmask, amask);
 }
 
-void renderHTextMenu(SDL_Window *window, const char **choices, const char *ttf, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int buttonw, int buttonh, int space, int startx, int starty, int fontsize, int style = TTF_STYLE_NORMAL)
+void renderControls(SDL_Window *window, std::vector<Control> controls, const char *ttf, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int fontsize, int style = TTF_STYLE_NORMAL)
 {
-    if (num > 0)
+    if (controls.size() > 0)
     {
         auto screen = SDL_GetWindowSurface(window);
 
-        for (auto i = 0; i < num; i++)
+        for (auto i = 0; i < controls.size(); i++)
         {
-            auto text = createText(choices[i], ttf, fontsize, fg, buttonw, style);
+            auto text = createText(controls[i].Text, ttf, fontsize, fg, controls[i].W, style);
 
-            int x = startx + i * (buttonw + space * 2) + (buttonw - text->w) / 2 + space;
-            int y = starty + (buttonh - text->h) / 2;
+            int x = controls[i].X + (controls[i].W - text->w) / 2;
+            int y = controls[i].Y + (controls[i].H - text->h) / 2;
 
             SDL_Rect rect;
 
-            rect.w = buttonw;
-            rect.h = buttonh;
-            rect.x = startx + i * (space * 2 + buttonw) + space;
-            rect.y = starty;
+            rect.w = controls[i].W;
+            rect.h = controls[i].H;
+            rect.x = controls[i].X;
+            rect.y = controls[i].Y;
 
             SDL_FillRect(screen, &rect, i == selected ? bgSelected : bg);
 
@@ -428,23 +419,44 @@ void renderHTextMenu(SDL_Window *window, const char **choices, const char *ttf, 
         }
 
         SDL_FreeSurface(screen);
+
+        screen = NULL;
     }
 }
 
-void renderHTextMenu(SDL_Window *window, const char **choices, const char *ttf, int num, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int buttonh, int fontsize, int style = TTF_STYLE_NORMAL)
+std::vector<Control> createHControls(const char **choices, int num, int buttonh, int startx, int starty)
 {
+    std::vector<Control> controls = std::vector<Control>();
+
     if (num > 0)
     {
         auto margin1 = (1.0 - Margin);
         auto margin2 = (2.0 * Margin);
         auto marginleft = (1.0 - margin2);
 
+        auto pixels = (int)(SCREEN_WIDTH * Margin);
         auto width = (int)(SCREEN_WIDTH * marginleft);
-        auto spacew = width / num;
-        auto buttonw = (int)(spacew - Margin * SCREEN_WIDTH);
 
-        renderHTextMenu(window, choices, ttf, num, selected, fg, bg, bgSelected, buttonw, buttonh, SCREEN_WIDTH * Margin / 2, Left, SCREEN_HEIGHT * margin1 - buttonh, fontsize, style);
+        auto spacew = width / num;
+        auto buttonw = spacew - pixels;
+        auto space = pixels / 2;
+
+        for (auto i = 0; i < num; i++)
+        {
+            int left = i > 0 ? i - 1 : i;
+            int right = i < num - 1 ? i + 1 : i;
+            int up = -1;
+            int down = -1;
+
+            auto x = startx + i * (buttonw + space * 2) + space;
+
+            auto button = Control(i, choices[i], left, right, up, down, x, starty, buttonw, buttonh);
+
+            controls.push_back(button);
+        }
     }
+
+    return controls;
 }
 
 bool aboutScreen(SDL_Window *window)
@@ -463,6 +475,7 @@ bool aboutScreen(SDL_Window *window)
         fillWindow(window, NULL, intDB);
 
         renderImage(window, splash, Left, Top);
+
         renderText(window, text, intDB, Left * 2 + splash->w, Top, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
 
         SDL_FreeSurface(splash);
@@ -473,21 +486,24 @@ bool aboutScreen(SDL_Window *window)
 
         SDL_SetWindowTitle(window, "About the game");
 
-        const char *choices[1] = {"Back"};
-
         auto selected = false;
         auto current = -1;
 
-        auto starty = (int)(SCREEN_HEIGHT * (1 - Margin) - 48);
         auto buttonw = 150;
         auto buttonh = 48;
         auto space = 10;
 
+        auto starty = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
+
         while (!quit)
         {
-            renderHTextMenu(window, choices, "fonts/default.ttf", 1, current, clrWH, intBK, intRD, buttonw, buttonh, space, Left - space, starty, 20, TTF_STYLE_NORMAL);
+            auto controls = std::vector<Control>();
+            
+            controls.push_back(Control(0, "Back", 0, 0, 0, 0, Left, starty, buttonw, buttonh));
 
-            quit = getHTextMenuChoice(window, current, 1, selected, buttonw, buttonh, space, Left - space, starty);
+            renderControls(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
+            
+            quit = getInput(window, controls, current, selected);
 
             if (selected && current == 0)
             {
@@ -607,9 +623,11 @@ int main(int argc, char **argsv)
 
         while (!quit)
         {
-            renderHTextMenu(window, choices, "fonts/default.ttf", 4, current, clrWH, intBK, intRD, buttonh, 22, TTF_STYLE_NORMAL);
+            auto controls = createHControls(choices, 4, buttonh, Left, SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
 
-            quit = getHTextMenuChoice(window, current, 4, selected, buttonh);
+            renderControls(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 22, TTF_STYLE_NORMAL);
+
+            quit = getInput(window, controls, current, selected);
 
             if (selected)
             {
