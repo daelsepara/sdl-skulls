@@ -13,6 +13,8 @@
 #include "nlohmann/json.hpp"
 
 #include "controls.hpp"
+#include "items.hpp"
+#include "skills.hpp"
 
 // Screen dimension constants
 const int SCREEN_WIDTH = 800;
