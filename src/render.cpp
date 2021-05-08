@@ -152,7 +152,9 @@ int main(int argc, char **argv)
     SDL_Window *window;
     SDL_Renderer *renderer;
 
-    SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_INIT_VIDEO, &window, &renderer);
+    SDL_Init(SDL_INIT_VIDEO);
+
+    SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN, &window, &renderer);
 
     if (window && renderer)
     {
