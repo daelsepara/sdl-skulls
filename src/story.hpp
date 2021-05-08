@@ -83,6 +83,7 @@ class Story
 public:
     int ID = 0;
     const char *Text = NULL;
+    const char *Image = NULL;
     std::vector<Button> Controls;
     std::vector<Choice> Choices;
     std::vector<int> Destinations;
@@ -117,16 +118,6 @@ public:
     {
         Text = text;
         type = type;
-    }
-};
-
-class NotImplemented : public Story
-{
-    NotImplemented()
-    {
-        ID = -1;
-        Text = "Not implemented";
-        Type = StoryType::UNCERTAIN;
     }
 };
 
