@@ -369,7 +369,7 @@ bool aboutScreen(SDL_Window *window)
 
             quit = getInput(window, controls, current, selected, scrollUp, scrollDown, hold);
 
-            if (selected && current >=0 && current < controls.size() && controls[current].Type == ControlType::BACK)
+            if (selected && current >= 0 && current < controls.size() && controls[current].Type == ControlType::BACK)
             {
                 break;
             }
