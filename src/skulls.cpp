@@ -19,8 +19,8 @@
 #include "story.hpp"
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 1024;
-const int SCREEN_HEIGHT = 768;
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
 
 const double Margin = 0.05;
 
@@ -193,9 +193,6 @@ void renderText(SDL_Window *window, SDL_Surface *text, Uint32 bg, int x, int y, 
 
             screen = NULL;
         }
-
-        // Update the surface
-        SDL_UpdateWindowSurface(window);
     }
 }
 
@@ -282,9 +279,6 @@ void renderButtons(SDL_Window *window, std::vector<Button> controls, int current
         SDL_FreeSurface(screen);
 
         screen = NULL;
-
-        // Update the surface
-        SDL_UpdateWindowSurface(window);
     }
 }
 
@@ -330,7 +324,7 @@ bool aboutScreen(SDL_Window *window)
     auto *about = "Virtual Reality Adventure Games are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
 
     auto splash = createImage("images/pyramid.png");
-    auto text = createText(about, "fonts/default.ttf", 24, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
+    auto text = createText(about, "fonts/default.ttf", 18, clrWH, SCREEN_WIDTH * (1.0 - 3 * Margin) - splash->w);
     auto startx = SCREEN_WIDTH * Margin;
     auto starty = SCREEN_HEIGHT * Margin;
 
@@ -367,7 +361,7 @@ bool aboutScreen(SDL_Window *window)
 
             controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, starty, buttonw, buttonh));
 
-            renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 24, TTF_STYLE_NORMAL);
+            renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
 
             bool scrollUp = false;
             bool scrollDown = false;
@@ -406,7 +400,7 @@ bool storyScreen(SDL_Window *window)
 
     auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrows + space);
 
-    auto text = createText(prologue, "fonts/default.ttf", 24, clrDB, textwidth, TTF_STYLE_NORMAL);
+    auto text = createText(prologue, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
 
     // Render the image
     if (window && splash && text)
@@ -504,7 +498,7 @@ bool mainScreen(SDL_Window *window)
     auto *introduction = "The sole survivor of an expedition brings news of disaster. Your twin brother is lost in the trackless western sierra. Resolving to find out his fate, you leave the safety of your home far behind. Your quest takes you to lost jungle cities, across mountains and seas, and even into the depths of the underworld.\n\nYou will plunge into the eerie world of Mayan myth. You will confront ghosts and gods, bargain for your life against wily demons, find allies and enemies among both the living and the dead. If you are breave enough to survive the dangers of the spirit-haunted western desert, you must still confront the wizard called Necklace of skulls in a deadly contest whose stakes are nothing less than your own soul.";
 
     auto splash = createImage("images/skulls-cover.png");
-    auto text = createText(introduction, "fonts/default.ttf", 24, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
+    auto text = createText(introduction, "fonts/default.ttf", 20, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
     auto title = "Necklace of Skulls";
     auto startx = SCREEN_WIDTH * Margin;
     auto starty = SCREEN_HEIGHT * Margin;

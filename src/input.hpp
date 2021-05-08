@@ -7,6 +7,9 @@
 template <typename T>
 bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &selected, bool &scrollUp, bool &scrollDown, bool &hold)
 {
+    // Update the surface
+    SDL_UpdateWindowSurface(window);
+
     SDL_Event result;
 
     auto quit = false;
