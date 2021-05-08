@@ -388,7 +388,7 @@ bool storyScreen(SDL_Window *window)
 {
     auto quit = false;
 
-    auto splash = createImage("images/filler1.png");
+    auto splash = createImage(prologue.Image);
 
     auto startx = (SCREEN_WIDTH * Margin);
     auto textx = (SCREEN_WIDTH * Margin) * 2 + splash->w;
@@ -405,7 +405,7 @@ bool storyScreen(SDL_Window *window)
 
     auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrows + space);
 
-    auto text = createText(prologue, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
+    auto text = createText(prologue.Text, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
 
     // Render the image
     if (window && splash && text)
@@ -678,6 +678,8 @@ int main(int argc, char **argsv)
     }
 
     // Quit SDL subsystems
+    IMG_Quit();
+
     SDL_Quit();
 
     return 0;
