@@ -154,7 +154,7 @@ bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &se
         {
             hold = true;
 
-            if (current >= 0 && current < choices.size() && choices[current].IsScroll)
+            if (current >= 0 && current < choices.size() && (choices[current].Type == ControlType::SCROLL_UP || choices[current].Type == ControlType::SCROLL_DOWN))
             {
                 selected = true;
 
@@ -222,7 +222,7 @@ bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &se
         {
             hold = true;
 
-            if (current >= 0 && current < choices.size() && choices[current].IsScroll)
+            if (current >= 0 && current < choices.size() && (choices[current].Type == ControlType::SCROLL_UP || choices[current].Type == ControlType::SCROLL_DOWN))
             {
                 selected = true;
 
@@ -262,7 +262,7 @@ bool getInput(SDL_Window *window, std::vector<T> choices, int &current, bool &se
         }
         else if (hold)
         {
-            if (current >= 0 && current < choices.size() && choices[current].IsScroll)
+            if (current >= 0 && current < choices.size() && (choices[current].Type == ControlType::SCROLL_UP || choices[current].Type == ControlType::SCROLL_DOWN))
             {
                 SDL_Delay(50);
 

@@ -7,6 +7,24 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+enum class ControlType
+{
+    ANY = 0,
+    ABOUT,
+    SCROLL_UP,
+    SCROLL_DOWN,
+    MAP,
+    CHARACTER,
+    GAME,
+    NEW,
+    LOAD,
+    SAVE,
+    NEXT,
+    ACTION,
+    BACK,
+    QUIT
+};
+
 class Control
 {
 public:
@@ -23,15 +41,14 @@ public:
     int W = 0;
     int H = 0;
 
-    bool IsScroll = false;
+    ControlType Type = ControlType::ANY;
 };
 
 class TextButton : public Control
 {
-public:
-    const char *Text = NULL;
+private:
 
-    TextButton(int id, const char *text, int left, int right, int up, int down, int x, int y, int w, int h)
+    void construct(int id, const char *text, int left, int right, int up, int down, int x, int y, int w, int h)
     {
         ID = id;
         Text = text;
@@ -44,16 +61,44 @@ public:
         W = w;
         H = h;
     }
+    
+public:
+    const char *Text = NULL;
+
+    TextButton(int id, const char *text, int left, int right, int up, int down, int x, int y, int w, int h)
+    {
+        construct(id, text, left, right, up, down, x, y, w, h);
+    }
+
+    TextButton(int id, const char *text, int left, int right, int up, int down, int x, int y, int w, int h, ControlType type)
+    {
+        Type = type;
+
+        construct(id, text, left, right, up, down, x, y, w, h);
+    }
 };
 
 class Button : public Control
 {
-public:
-    const char *File = NULL;
+private:
+    SDL_Surface *createImage(const char *file)
+    {
+        auto surface = IMG_Load(File);
 
-    SDL_Surface *Surface = NULL;
+        if (surface == NULL)
+        {
+            std::cerr << "Unable to load image " << file << "! SDL Error: " << SDL_GetError() << std::endl;
+        }
+        else
+        {
+            W = surface->w;
+            H = surface->h;
+        }
 
-    Button(int id, const char *file, int left, int right, int up, int down, int x, int y, bool scroll = false)
+        return surface;
+    }
+
+    void construct(int id, const char *file, int left, int right, int up, int down, int x, int y)
     {
         ID = id;
         File = file;
@@ -63,19 +108,25 @@ public:
         Down = down;
         X = x;
         Y = y;
-        IsScroll = scroll;
-        
-        Surface = IMG_Load(File);
 
-        if (Surface == NULL)
-        {
-            std::cerr << "Unable to load image " << file << "! SDL Error: " << SDL_GetError() << std::endl;
-        }
-        else
-        {
-            W = Surface->w;
-            H = Surface->h;
-        }
+        Surface = createImage(file);
+    }
+
+public:
+    const char *File = NULL;
+
+    SDL_Surface *Surface = NULL;
+
+    Button(int id, const char *file, int left, int right, int up, int down, int x, int y)
+    {
+        construct(id, file, left, right, up, down, x, y);
+    }
+
+    Button(int id, const char *file, int left, int right, int up, int down, int x, int y, ControlType type)
+    {
+        Type = type;
+
+        construct(id, file, left, right, up, down, x, y);
     }
 };
 #endif

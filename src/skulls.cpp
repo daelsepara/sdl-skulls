@@ -355,12 +355,12 @@ bool aboutScreen(SDL_Window *window)
 
         auto starty = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
 
+        auto controls = std::vector<TextButton>();
+
+        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, starty, buttonw, buttonh, ControlType::BACK));
+
         while (!quit)
         {
-            auto controls = std::vector<TextButton>();
-
-            controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, starty, buttonw, buttonh));
-
             renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
 
             bool scrollUp = false;
@@ -369,7 +369,7 @@ bool aboutScreen(SDL_Window *window)
 
             quit = getInput(window, controls, current, selected, scrollUp, scrollDown, hold);
 
-            if (selected && current == 0)
+            if (selected && current >=0 && current < controls.size() && controls[current].Type == ControlType::BACK)
             {
                 break;
             }
@@ -425,12 +425,12 @@ bool storyScreen(SDL_Window *window)
 
         auto bounds = SCREEN_HEIGHT * (1.0 - Margin * 2.0) - buttonh - space * 2;
 
-        controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrows, texty + pts, true));
-        controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrows, texty + bounds - arrows - pts, true));
-        controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony));
-        controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony));
-        controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony));
-        controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony));
+        controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrows, texty + pts, ControlType::SCROLL_UP));
+        controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrows, texty + bounds - arrows - pts, ControlType::SCROLL_DOWN));
+        controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, ControlType::MAP));
+        controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, ControlType::GAME));
+        controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, ControlType::NEXT));
+        controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
 
         auto screen = SDL_GetWindowSurface(window);
 
@@ -452,9 +452,9 @@ bool storyScreen(SDL_Window *window)
 
             quit = getInput(window, controls, current, selected, scrollUp, scrollDown, hold);
 
-            if (selected || scrollUp || scrollDown || hold)
+            if ((selected && current >= 0 && current < controls.size()) || scrollUp || scrollDown || hold)
             {
-                if (current == 0 || scrollUp || (current == 0 && hold))
+                if (controls[current].Type == ControlType::SCROLL_UP || (controls[current].Type == ControlType::SCROLL_UP && hold) || scrollUp)
                 {
                     if (offset > 0)
                     {
@@ -466,7 +466,7 @@ bool storyScreen(SDL_Window *window)
                         offset = 0;
                     }
                 }
-                else if (current == 1 || scrollDown || (current == 1 && hold))
+                else if (controls[current].Type == ControlType::SCROLL_DOWN || (controls[current].Type == ControlType::SCROLL_DOWN && hold) || scrollDown)
                 {
                     if (offset < text->h - bounds)
                     {
@@ -478,7 +478,7 @@ bool storyScreen(SDL_Window *window)
                         offset = text->h - bounds;
                     }
                 }
-                else if (current == 5 && !hold)
+                else if (controls[current].Type == ControlType::QUIT && !hold)
                 {
                     break;
                 }
@@ -571,6 +571,8 @@ bool renderWindow(SDL_Window *window, Function displayScreen)
 {
     auto result = displayScreen(window);
 
+    SDL_Delay(100);
+
     return result;
 }
 
@@ -600,10 +602,15 @@ int main(int argc, char **argsv)
 
         auto buttonh = 48;
 
+        auto controls = createHTextButtons(choices, 4, buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
+
+        controls[0].Type = ControlType::NEW;
+        controls[1].Type = ControlType::LOAD;
+        controls[2].Type = ControlType::ABOUT;
+        controls[3].Type = ControlType::QUIT;
+
         while (!quit)
         {
-            auto controls = createHTextButtons(choices, 4, buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
-
             renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 22, TTF_STYLE_NORMAL);
 
             bool scrollUp = false;
@@ -612,11 +619,11 @@ int main(int argc, char **argsv)
 
             quit = getInput(window, controls, current, selected, scrollUp, scrollDown, hold);
 
-            if (selected)
+            if (selected && current >= 0 && current < controls.size())
             {
-                switch (current)
+                switch (controls[current].Type)
                 {
-                case 0:
+                case ControlType::NEW:
 
                     quit = renderWindow(window, storyScreen);
 
@@ -624,11 +631,9 @@ int main(int argc, char **argsv)
 
                     selected = false;
 
-                    SDL_Delay(100);
-
                     break;
 
-                case 2:
+                case ControlType::ABOUT:
 
                     quit = renderWindow(window, aboutScreen);
 
@@ -636,11 +641,9 @@ int main(int argc, char **argsv)
 
                     selected = false;
 
-                    SDL_Delay(100);
-
                     break;
 
-                case 3:
+                case ControlType::QUIT:
 
                     quit = true;
 
