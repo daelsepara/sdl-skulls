@@ -95,7 +95,7 @@ public:
     virtual int Event() { return -1; };
 
     // Jump to next section
-    virtual int Continue(){ return -1; };
+    virtual int Continue() { return -1; };
 
     Story()
     {
