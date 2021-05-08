@@ -172,13 +172,13 @@ void renderText(SDL_Window *window, SDL_Surface *text, Uint32 bg, int x, int y, 
 
             // select portion to render
             src.w = text->w;
-            src.h = bounds;
+            src.h = text->h < bounds ? text->h : bounds;
             src.y = offset;
             src.x = 0;
 
             // specify location within the window
             dst.w = text->w;
-            dst.h = bounds;
+            dst.h = text->h < bounds ? text->h : bounds;
             dst.x = x;
             dst.y = y;
 

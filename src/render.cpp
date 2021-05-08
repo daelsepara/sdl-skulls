@@ -156,26 +156,23 @@ int main(int argc, char **argv)
 
     if (window && renderer)
     {
-        std::cerr << "R: " << 0x07 << " G: " << 0x07 << " B: " << 0x3A << std::endl;
-
-        SDL_SetRenderDrawColor(renderer, R(intDB), G(intDB), B(intDB), A(intDB));
-        SDL_RenderClear(renderer);
-
         auto image = createImage("images/skulls-cover.png");
-
+        auto text = createText(introduction, "fonts/default.ttf", 20, {255, 255, 255}, SCREEN_WIDTH * (1.0 - 3.0 * Margin) - image->w, TTF_STYLE_NORMAL);
+        
         auto startx = SCREEN_WIDTH * Margin;
         auto starty = SCREEN_HEIGHT * Margin;
 
-        renderImage(renderer, image, startx, starty);
-
-        auto text = createText(introduction, "fonts/default.ttf", 20, {255, 255, 255}, SCREEN_WIDTH * (1.0 - 3.0 * Margin) - image->w, TTF_STYLE_NORMAL);
-
-        renderText(renderer, text, intDB, startx * 2 + image->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
-
-        SDL_RenderPresent(renderer);
-
         while (1)
         {
+            SDL_SetRenderDrawColor(renderer, R(intDB), G(intDB), B(intDB), A(intDB));
+            SDL_RenderClear(renderer);
+
+            renderImage(renderer, image, startx, starty);
+            renderText(renderer, text, intDB, startx * 2 + image->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
+
+            // call after rendering everything on screen
+            SDL_RenderPresent(renderer);
+
             SDL_Event event;
 
             SDL_PollEvent(&event);
