@@ -47,7 +47,6 @@ public:
 class TextButton : public Control
 {
 private:
-
     void construct(int id, const char *text, int left, int right, int up, int down, int x, int y, int w, int h)
     {
         ID = id;
@@ -61,7 +60,7 @@ private:
         W = w;
         H = h;
     }
-    
+
 public:
     const char *Text = NULL;
 
