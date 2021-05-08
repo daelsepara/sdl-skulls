@@ -88,9 +88,29 @@ public:
     std::vector<int> Destinations;
     StoryType Type = StoryType::NORMAL;
 
+    // Handle background events
+    virtual int Background() { return -1; };
+
+    // Handle events before story branches
+    virtual int Event() { return -1; };
+
+    // Jump to next section
+    virtual int Continue(){ return -1; };
+
+    Story()
+    {
+    }
+
     Story(int id)
     {
         ID = id;
+    }
+
+    Story(int id, const char *text, StoryType type)
+    {
+        ID = id;
+        Text = text;
+        type = type;
     }
 
     Story(const char *text, StoryType type)
@@ -100,10 +120,14 @@ public:
     }
 };
 
-Story LoadStory(int id, const char* file)
+class NotImplemented : public Story
 {
-    auto story = Story(id);
+    NotImplemented()
+    {
+        ID = -1;
+        Text = "Not implemented";
+        Type = StoryType::UNCERTAIN;
+    }
+};
 
-    return story;
-}
 #endif

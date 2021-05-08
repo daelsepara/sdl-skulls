@@ -379,6 +379,11 @@ bool aboutScreen(SDL_Window *window)
     return quit;
 }
 
+template <typename T>
+void processStory(T story)
+{
+}
+
 bool storyScreen(SDL_Window *window)
 {
     auto quit = false;
