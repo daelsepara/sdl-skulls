@@ -72,7 +72,7 @@ public:
 
 enum class StoryType
 {
-    NORMAL,
+    NORMAL = 0,
     UNCERTAIN,
     GOOD,
     BAD
