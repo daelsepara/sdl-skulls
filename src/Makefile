@@ -9,5 +9,8 @@ all: clean skulls
 skulls:
 	$(CC) $(SKULLS_SOURCE) $(LINKER_FLAGS) $(INCLUDES) -o $(SKULLS_OUTPUT)
 
+render:
+	$(CC) render.cpp $(LINKER_FLAGS) $(INCLUDES) -o render.exe
+
 clean:
 	rm -f *.exe *.o
