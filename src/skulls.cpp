@@ -465,10 +465,15 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
     auto quit = false;
 
-    auto splash = createImage(prologue.Image);
+    SDL_Surface *splash = NULL;
+
+    if (prologue.Image)
+    {
+        splash = createImage(prologue.Image);
+    }
 
     auto startx = (SCREEN_WIDTH * Margin);
-    auto textx = (SCREEN_WIDTH * Margin) * 2 + splash->w;
+    auto textx = (SCREEN_WIDTH * Margin) * 2 + (splash ? splash->w : 250);
     auto texty = (SCREEN_HEIGHT * Margin);
 
     auto buttonw = 64;
@@ -486,9 +491,9 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
     auto text = createText(prologue.Text, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
 
     // Render the image
-    if (window && renderer && splash && text)
+    if (window && renderer)
     {
-        SDL_SetWindowTitle(window, "Necklace of Skulls: Prologue");
+        SDL_SetWindowTitle(window, prologue.Title);
 
         auto bounds = SCREEN_HEIGHT * (1.0 - Margin * 2.0) - buttonh - space * 2;
 
@@ -512,8 +517,17 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
         {
             // Fill the surface with background color
             fillWindow(renderer, intWH);
-            renderImage(renderer, splash, startx, texty);
-            renderText(renderer, text, intBE, textx, texty, bounds, offset);
+
+            if (prologue.Image)
+            {
+                renderImage(renderer, splash, startx, texty);
+            }
+
+            if (prologue.Text)
+            {
+                renderText(renderer, text, intBE, textx, texty, bounds, offset);
+            }
+
             renderButtons(renderer, controls, current, intGR, intWH, size, pts);
 
             bool scrollUp = false;
@@ -562,9 +576,12 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
             }
         }
 
-        SDL_FreeSurface(splash);
+        if (splash)
+        {
+            SDL_FreeSurface(splash);
 
-        splash = NULL;
+            splash = NULL;
+        }
 
         SDL_FreeSurface(text);
 
