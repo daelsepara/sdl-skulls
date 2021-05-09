@@ -93,8 +93,6 @@ bool getInput(SDL_Renderer *renderer, std::vector<T> choices, int &current, bool
                 }
             }
 
-            SDL_Delay(100);
-
             break;
         }
         else if (result.type == SDL_CONTROLLERAXISMOTION)
@@ -120,8 +118,6 @@ bool getInput(SDL_Renderer *renderer, std::vector<T> choices, int &current, bool
                     }
                 }
 
-                SDL_Delay(100);
-
                 break;
             }
             else if (result.caxis.axis == SDL_CONTROLLER_AXIS_LEFTY)
@@ -144,8 +140,6 @@ bool getInput(SDL_Renderer *renderer, std::vector<T> choices, int &current, bool
                         current = choices[current].Down;
                     }
                 }
-
-                SDL_Delay(100);
 
                 break;
             }
@@ -193,8 +187,6 @@ bool getInput(SDL_Renderer *renderer, std::vector<T> choices, int &current, bool
                     selected = true;
                 }
             }
-
-            SDL_Delay(100);
 
             break;
         }
