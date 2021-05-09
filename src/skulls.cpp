@@ -398,6 +398,61 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
     return quit;
 }
 
+bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
+{
+    auto quit = false;
+
+    auto splash = createImage("images/map-one-world.png");
+
+    auto startx = SCREEN_WIDTH * Margin;
+    auto starty = SCREEN_HEIGHT * Margin;
+
+    // Render the image
+    if (window && renderer && splash)
+    {
+        SDL_SetWindowTitle(window, "Map: One World");
+
+        auto selected = false;
+        auto current = -1;
+
+        auto buttonw = 150;
+        auto buttonh = 48;
+        auto space = 10;
+
+        auto buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
+
+        auto controls = std::vector<TextButton>();
+
+        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, buttony, buttonw, buttonh, ControlType::BACK));
+
+        while (!quit)
+        {
+            // Fill the surface with background color
+            fillWindow(renderer, intDB);
+
+            renderImage(renderer, splash, startx, starty);
+            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
+
+            bool scrollUp = false;
+            bool scrollDown = false;
+            bool hold = false;
+
+            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected && current >= 0 && current < controls.size() && controls[current].Type == ControlType::BACK)
+            {
+                break;
+            }
+        }
+
+        SDL_FreeSurface(splash);
+
+        splash = NULL;
+    }
+
+    return quit;
+}
+
 template <typename T>
 void processStory(T story)
 {
@@ -487,6 +542,14 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
                     {
                         offset = text->h - bounds;
                     }
+                }
+                else if (controls[current].Type == ControlType::MAP && !hold)
+                {
+                    quit = renderWindow(window, renderer, mapScreen);
+
+                    current = -1;
+
+                    selected = false;
                 }
                 else if (controls[current].Type == ControlType::QUIT && !hold)
                 {
