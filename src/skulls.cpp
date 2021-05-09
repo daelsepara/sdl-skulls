@@ -265,7 +265,7 @@ void renderTextButtons(SDL_Renderer *renderer, std::vector<TextButton> controls,
     }
 }
 
-void renderButtons(SDL_Renderer *renderer, std::vector<Button> controls, int current, int fg, int bg, int pts)
+void renderButtons(SDL_Renderer *renderer, std::vector<Button> controls, int current, int fg, int bg, int space, int pts)
 {
     if (controls.size() > 0)
     {
@@ -273,21 +273,24 @@ void renderButtons(SDL_Renderer *renderer, std::vector<Button> controls, int cur
         {
             SDL_Rect rect;
 
-            rect.w = controls[i].W + 2 * pts;
-            rect.h = controls[i].H + 2 * pts;
-            rect.x = controls[i].X - pts;
-            rect.y = controls[i].Y - pts;
-
-            if (i == current)
+            for (auto size = pts; size > 0; size--)
             {
-                SDL_SetRenderDrawColor(renderer, R(fg), G(fg), B(fg), A(fg));
-            }
-            else
-            {
-                SDL_SetRenderDrawColor(renderer, R(bg), G(bg), B(bg), A(bg));
-            }
+                rect.w = controls[i].W + 2 * (space - size);
+                rect.h = controls[i].H + 2 * (space - size);
+                rect.x = controls[i].X - space + size;
+                rect.y = controls[i].Y - space + size;
 
-            SDL_RenderFillRect(renderer, &rect);
+                if (i == current)
+                {
+                    SDL_SetRenderDrawColor(renderer, R(fg), G(fg), B(fg), A(fg));
+                }
+                else
+                {
+                    SDL_SetRenderDrawColor(renderer, R(bg), G(bg), B(bg), A(bg));
+                }
+
+                SDL_RenderDrawRect(renderer, &rect);
+            }
 
             renderImage(renderer, controls[i].Surface, controls[i].X, controls[i].Y);
         }
@@ -472,7 +475,8 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
     auto buttonh = 64;
     auto space = 20;
     auto gridsize = buttonw + space;
-    auto pts = 8;
+    auto size = 8;
+    auto pts = 4;
     auto arrows = 32;
 
     auto buttony = (int)(SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
@@ -490,8 +494,8 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         auto controls = std::vector<Button>();
 
-        controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrows, texty + pts, ControlType::SCROLL_UP));
-        controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrows, texty + bounds - arrows - pts, ControlType::SCROLL_DOWN));
+        controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrows, texty + size, ControlType::SCROLL_UP));
+        controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrows, texty + bounds - arrows - size, ControlType::SCROLL_DOWN));
         controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, ControlType::MAP));
         controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, ControlType::GAME));
         controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, ControlType::NEXT));
@@ -510,7 +514,7 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
             fillWindow(renderer, intWH);
             renderImage(renderer, splash, startx, texty);
             renderText(renderer, text, intBE, textx, texty, bounds, offset);
-            renderButtons(renderer, controls, current, intGR, intWH, pts);
+            renderButtons(renderer, controls, current, intGR, intWH, size, pts);
 
             bool scrollUp = false;
             bool scrollDown = false;
