@@ -39,6 +39,11 @@ const Uint32 intDB = 0xFF07073A;
 // Beige in ARG format
 const Uint32 intBE = 0xFFF5F5DC;
 
+Uint8 R(Uint32 c) { return (Uint8)((c & 0xFF0000) >> 16); }
+Uint8 G(Uint32 c) { return (Uint8)((c & 0x00FF00) >> 8); }
+Uint8 B(Uint32 c) { return (Uint8)(c & 0x0000FF); }
+Uint8 A(Uint32 c) { return (Uint8)(c >> 24); }
+
 SDL_Surface *createImage(const char *image)
 {
     // Load splash image
@@ -101,24 +106,10 @@ void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, co
     }
 }
 
-void fillWindow(SDL_Window *window, SDL_Rect *rect, Uint32 color)
+void waitForEvent(SDL_Renderer *renderer, Uint32 event)
 {
-    if (window)
-    {
-        // Get the surface contained by the window
-        auto screen = SDL_GetWindowSurface(window);
+    SDL_RenderPresent(renderer);
 
-        // Fill the surface with color
-        SDL_FillRect(screen, rect, color);
-
-        SDL_FreeSurface(screen);
-
-        screen = NULL;
-    }
-}
-
-void waitForEvent(SDL_Window *window, Uint32 event)
-{
     SDL_Event result;
 
     while (1)
@@ -132,40 +123,43 @@ void waitForEvent(SDL_Window *window, Uint32 event)
     }
 }
 
-void renderImage(SDL_Window *window, SDL_Surface *image, int x, int y)
+void renderImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y)
 {
-    if (window)
+    if (image && renderer)
     {
-        // Get the surface contained by the window
-        auto screen = SDL_GetWindowSurface(window);
+        SDL_Rect position;
 
-        if (image && screen)
+        position.w = image->w;
+        position.h = image->h;
+        position.x = x;
+        position.y = y;
+
+        auto texture = SDL_CreateTextureFromSurface(renderer, image);
+
+        if (texture)
         {
-            SDL_Rect position;
+            SDL_Rect src;
 
-            position.w = image->w;
-            position.h = image->h;
-            position.x = x;
-            position.y = y;
+            src.w = image->w;
+            src.h = image->h;
+            src.x = 0;
+            src.y = 0;
 
-            SDL_BlitSurface(image, NULL, screen, &position);
+            SDL_RenderCopy(renderer, texture, &src, &position);
 
-            SDL_FreeSurface(screen);
+            SDL_DestroyTexture(texture);
 
-            screen = NULL;
+            texture = NULL;
         }
     }
 }
 
 // Render a portion of the text (image) on bounded surface within the specified window
-void renderText(SDL_Window *window, SDL_Surface *text, Uint32 bg, int x, int y, int bounds, int offset)
+void renderText(SDL_Renderer *renderer, SDL_Surface *text, Uint32 bg, int x, int y, int bounds, int offset)
 {
-    if (window)
+    if (renderer)
     {
-        // Get the surface contained by the window
-        auto screen = SDL_GetWindowSurface(window);
-
-        if (text && screen)
+        if (text && renderer)
         {
             SDL_Rect dst;
             SDL_Rect src;
@@ -184,16 +178,28 @@ void renderText(SDL_Window *window, SDL_Surface *text, Uint32 bg, int x, int y, 
 
             if (bg != 0)
             {
-                SDL_FillRect(screen, &dst, bg);
+                SDL_SetRenderDrawColor(renderer, R(bg), G(bg), B(bg), A(bg));
+                SDL_RenderFillRect(renderer, &dst);
             }
 
-            SDL_BlitSurface(text, &src, screen, &dst);
+            auto texture = SDL_CreateTextureFromSurface(renderer, text);
 
-            SDL_FreeSurface(screen);
+            if (texture)
+            {
+                SDL_RenderCopy(renderer, texture, &src, &dst);
 
-            screen = NULL;
+                SDL_DestroyTexture(texture);
+
+                texture = NULL;
+            }
         }
     }
+}
+
+void fillWindow(SDL_Renderer *renderer, Uint32 color)
+{
+    SDL_SetRenderDrawColor(renderer, R(color), G(color), B(color), A(color));
+    SDL_RenderClear(renderer);
 }
 
 // create text image with line wrap limit
@@ -221,12 +227,10 @@ SDL_Surface *createText(const char *text, const char *ttf, int font_size, SDL_Co
     return surface;
 }
 
-void renderTextButtons(SDL_Window *window, std::vector<TextButton> controls, const char *ttf, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int fontsize, int style = TTF_STYLE_NORMAL)
+void renderTextButtons(SDL_Renderer *renderer, std::vector<TextButton> controls, const char *ttf, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int fontsize, int style = TTF_STYLE_NORMAL)
 {
     if (controls.size() > 0)
     {
-        auto screen = SDL_GetWindowSurface(window);
-
         for (auto i = 0; i < controls.size(); i++)
         {
             auto text = createText(controls[i].Text, ttf, fontsize, fg, controls[i].W, style);
@@ -241,27 +245,30 @@ void renderTextButtons(SDL_Window *window, std::vector<TextButton> controls, con
             rect.x = controls[i].X;
             rect.y = controls[i].Y;
 
-            SDL_FillRect(screen, &rect, i == selected ? bgSelected : bg);
+            if (i == selected)
+            {
+                SDL_SetRenderDrawColor(renderer, R(bgSelected), G(bgSelected), B(bgSelected), A(bgSelected));
+            }
+            else
+            {
+                SDL_SetRenderDrawColor(renderer, R(bg), G(bg), B(bg), A(bg));
+            }
 
-            renderText(window, text, bg, x, y, fontsize, 0);
+            SDL_RenderFillRect(renderer, &rect);
+
+            renderText(renderer, text, bg, x, y, fontsize, 0);
 
             SDL_FreeSurface(text);
 
             text = NULL;
         }
-
-        SDL_FreeSurface(screen);
-
-        screen = NULL;
     }
 }
 
-void renderButtons(SDL_Window *window, std::vector<Button> controls, int current, int fg, int bg, int pts)
+void renderButtons(SDL_Renderer *renderer, std::vector<Button> controls, int current, int fg, int bg, int pts)
 {
     if (controls.size() > 0)
     {
-        auto screen = SDL_GetWindowSurface(window);
-
         for (auto i = 0; i < controls.size(); i++)
         {
             SDL_Rect rect;
@@ -271,14 +278,19 @@ void renderButtons(SDL_Window *window, std::vector<Button> controls, int current
             rect.x = controls[i].X - pts;
             rect.y = controls[i].Y - pts;
 
-            SDL_FillRect(screen, &rect, i == current ? fg : bg);
+            if (i == current)
+            {
+                SDL_SetRenderDrawColor(renderer, R(fg), G(fg), B(fg), A(fg));
+            }
+            else
+            {
+                SDL_SetRenderDrawColor(renderer, R(bg), G(bg), B(bg), A(bg));
+            }
 
-            renderImage(window, controls[i].Surface, controls[i].X, controls[i].Y);
+            SDL_RenderFillRect(renderer, &rect);
+
+            renderImage(renderer, controls[i].Surface, controls[i].X, controls[i].Y);
         }
-
-        SDL_FreeSurface(screen);
-
-        screen = NULL;
     }
 }
 
@@ -317,7 +329,17 @@ std::vector<TextButton> createHTextButtons(const char **choices, int num, int bu
     return controls;
 }
 
-bool aboutScreen(SDL_Window *window)
+template <typename Function>
+bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen)
+{
+    auto result = displayScreen(window, renderer);
+
+    SDL_Delay(100);
+
+    return result;
+}
+
+bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
     auto quit = false;
 
@@ -325,25 +347,13 @@ bool aboutScreen(SDL_Window *window)
 
     auto splash = createImage("images/pyramid.png");
     auto text = createText(about, "fonts/default.ttf", 18, clrWH, SCREEN_WIDTH * (1.0 - 3 * Margin) - splash->w);
+
     auto startx = SCREEN_WIDTH * Margin;
     auto starty = SCREEN_HEIGHT * Margin;
 
     // Render the image
-    if (window && splash && text)
+    if (window && renderer && splash && text)
     {
-        // Fill the surface with background color
-        fillWindow(window, NULL, intDB);
-
-        renderImage(window, splash, startx, starty);
-
-        renderText(window, text, intDB, startx * 2 + splash->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
-
-        SDL_FreeSurface(splash);
-        SDL_FreeSurface(text);
-
-        splash = NULL;
-        text = NULL;
-
         SDL_SetWindowTitle(window, "About the game");
 
         auto selected = false;
@@ -353,27 +363,38 @@ bool aboutScreen(SDL_Window *window)
         auto buttonh = 48;
         auto space = 10;
 
-        auto starty = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
+        auto buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
 
         auto controls = std::vector<TextButton>();
 
-        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, starty, buttonw, buttonh, ControlType::BACK));
+        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, buttony, buttonw, buttonh, ControlType::BACK));
 
         while (!quit)
         {
-            renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
+            // Fill the surface with background color
+            fillWindow(renderer, intDB);
+
+            renderImage(renderer, splash, startx, starty);
+            renderText(renderer, text, intDB, startx * 2 + splash->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
+            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
 
             bool scrollUp = false;
             bool scrollDown = false;
             bool hold = false;
 
-            quit = getInput(window, controls, current, selected, scrollUp, scrollDown, hold);
+            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
             if (selected && current >= 0 && current < controls.size() && controls[current].Type == ControlType::BACK)
             {
                 break;
             }
         }
+
+        SDL_FreeSurface(splash);
+        SDL_FreeSurface(text);
+
+        splash = NULL;
+        text = NULL;
     }
 
     return quit;
@@ -384,7 +405,7 @@ void processStory(T story)
 {
 }
 
-bool storyScreen(SDL_Window *window)
+bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
     auto quit = false;
 
@@ -408,27 +429,13 @@ bool storyScreen(SDL_Window *window)
     auto text = createText(prologue.Text, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
 
     // Render the image
-    if (window && splash && text)
+    if (window && renderer && splash && text)
     {
-        // Fill the surface with background color
-        fillWindow(window, NULL, intWH);
-
-        renderImage(window, splash, startx, texty);
-
-        SDL_FreeSurface(splash);
-
-        splash = NULL;
-
         SDL_SetWindowTitle(window, "Necklace of Skulls: Prologue");
 
-        auto selected = false;
-        auto current = -1;
+        auto bounds = SCREEN_HEIGHT * (1.0 - Margin * 2.0) - buttonh - space * 2;
 
         auto controls = std::vector<Button>();
-
-        auto offset = 0;
-
-        auto bounds = SCREEN_HEIGHT * (1.0 - Margin * 2.0) - buttonh - space * 2;
 
         controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrows, texty + pts, ControlType::SCROLL_UP));
         controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrows, texty + bounds - arrows - pts, ControlType::SCROLL_DOWN));
@@ -437,25 +444,25 @@ bool storyScreen(SDL_Window *window)
         controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, ControlType::NEXT));
         controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
 
-        auto screen = SDL_GetWindowSurface(window);
-
-        SDL_FreeSurface(screen);
-
-        screen = NULL;
-
         auto scrollSpeed = 20;
         auto hold = false;
 
+        auto selected = false;
+        auto current = -1;
+        auto offset = 0;
+
         while (!quit)
         {
-            renderText(window, text, intBE, textx, texty, bounds, offset);
-
-            renderButtons(window, controls, current, intGR, intWH, pts);
+            // Fill the surface with background color
+            fillWindow(renderer, intWH);
+            renderImage(renderer, splash, startx, texty);
+            renderText(renderer, text, intBE, textx, texty, bounds, offset);
+            renderButtons(renderer, controls, current, intGR, intWH, pts);
 
             bool scrollUp = false;
             bool scrollDown = false;
 
-            quit = getInput(window, controls, current, selected, scrollUp, scrollDown, hold);
+            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
             if ((selected && current >= 0 && current < controls.size()) || scrollUp || scrollDown || hold)
             {
@@ -490,6 +497,10 @@ bool storyScreen(SDL_Window *window)
             }
         }
 
+        SDL_FreeSurface(splash);
+
+        splash = NULL;
+
         SDL_FreeSurface(text);
 
         text = NULL;
@@ -498,26 +509,94 @@ bool storyScreen(SDL_Window *window)
     return quit;
 }
 
-bool mainScreen(SDL_Window *window)
+bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
     auto *introduction = "The sole survivor of an expedition brings news of disaster. Your twin brother is lost in the trackless western sierra. Resolving to find out his fate, you leave the safety of your home far behind. Your quest takes you to lost jungle cities, across mountains and seas, and even into the depths of the underworld.\n\nYou will plunge into the eerie world of Mayan myth. You will confront ghosts and gods, bargain for your life against wily demons, find allies and enemies among both the living and the dead. If you are breave enough to survive the dangers of the spirit-haunted western desert, you must still confront the wizard called Necklace of skulls in a deadly contest whose stakes are nothing less than your own soul.";
 
     auto splash = createImage("images/skulls-cover.png");
     auto text = createText(introduction, "fonts/default.ttf", 20, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
+
     auto title = "Necklace of Skulls";
+
     auto startx = SCREEN_WIDTH * Margin;
     auto starty = SCREEN_HEIGHT * Margin;
 
     // Render window
-    if (window && splash && text)
+    if (window && renderer && splash && text)
     {
         SDL_SetWindowTitle(window, title);
 
-        // Fill the surface with background color
-        fillWindow(window, NULL, intDB);
+        const char *choices[4] = {"New Game", "Load Game", "About", "Exit"};
 
-        renderImage(window, splash, startx, starty);
-        renderText(window, text, intDB, startx * 2 + splash->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
+        auto current = -1;
+
+        auto selected = false;
+
+        auto buttonh = 48;
+
+        auto controls = createHTextButtons(choices, 4, buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
+
+        controls[0].Type = ControlType::NEW;
+        controls[1].Type = ControlType::LOAD;
+        controls[2].Type = ControlType::ABOUT;
+        controls[3].Type = ControlType::QUIT;
+
+        auto quit = false;
+
+        while (!quit)
+        {
+            // Fill the surface with background color
+            fillWindow(renderer, intDB);
+
+            renderImage(renderer, splash, startx, starty);
+            renderText(renderer, text, intDB, startx * 2 + splash->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
+            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 22, TTF_STYLE_NORMAL);
+
+            bool scrollUp = false;
+            bool scrollDown = false;
+            bool hold = false;
+
+            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected && current >= 0 && current < controls.size())
+            {
+                switch (controls[current].Type)
+                {
+                case ControlType::NEW:
+
+                    quit = renderWindow(window, renderer, storyScreen);
+
+                    current = -1;
+
+                    selected = false;
+
+                    break;
+
+                case ControlType::ABOUT:
+
+                    quit = renderWindow(window, renderer, aboutScreen);
+
+                    current = -1;
+
+                    selected = false;
+
+                    break;
+
+                case ControlType::QUIT:
+
+                    quit = true;
+
+                    break;
+
+                default:
+
+                    selected = false;
+                    quit = false;
+
+                    break;
+                }
+            }
+        }
 
         SDL_FreeSurface(splash);
         SDL_FreeSurface(text);
@@ -571,16 +650,6 @@ int initializeGamePads()
     return numGamepads;
 }
 
-template <typename Function>
-bool renderWindow(SDL_Window *window, Function displayScreen)
-{
-    auto result = displayScreen(window);
-
-    SDL_Delay(100);
-
-    return result;
-}
-
 int main(int argc, char **argsv)
 {
     // The window we'll be rendering to
@@ -592,88 +661,18 @@ int main(int argc, char **argsv)
     createWindow(SDL_INIT_VIDEO, &window, &renderer, title, "images/maya.png");
 
     auto numGamePads = initializeGamePads();
+
     auto quit = false;
-    auto startx = SCREEN_WIDTH * Margin;
 
     if (window)
     {
-        quit = renderWindow(window, mainScreen);
+        quit = renderWindow(window, renderer, mainScreen);
 
-        const char *choices[4] = {"New Game", "Load Game", "About", "Exit"};
-
-        auto current = -1;
-
-        auto selected = false;
-
-        auto buttonh = 48;
-
-        auto controls = createHTextButtons(choices, 4, buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
-
-        controls[0].Type = ControlType::NEW;
-        controls[1].Type = ControlType::LOAD;
-        controls[2].Type = ControlType::ABOUT;
-        controls[3].Type = ControlType::QUIT;
-
-        while (!quit)
-        {
-            renderTextButtons(window, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 22, TTF_STYLE_NORMAL);
-
-            bool scrollUp = false;
-            bool scrollDown = false;
-            bool hold = false;
-
-            quit = getInput(window, controls, current, selected, scrollUp, scrollDown, hold);
-
-            if (selected && current >= 0 && current < controls.size())
-            {
-                switch (controls[current].Type)
-                {
-                case ControlType::NEW:
-
-                    quit = renderWindow(window, storyScreen);
-
-                    current = -1;
-
-                    selected = false;
-
-                    break;
-
-                case ControlType::ABOUT:
-
-                    quit = renderWindow(window, aboutScreen);
-
-                    current = -1;
-
-                    selected = false;
-
-                    break;
-
-                case ControlType::QUIT:
-
-                    quit = true;
-
-                    break;
-
-                default:
-
-                    selected = false;
-                    quit = false;
-
-                    break;
-                }
-
-                if (!quit)
-                {
-                    quit = renderWindow(window, mainScreen);
-                }
-            }
-        }
-
-        // Destroy window
+        // Destroy window and renderer
         SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-
         renderer = NULL;
+
+        SDL_DestroyWindow(window);
         window = NULL;
     }
 
