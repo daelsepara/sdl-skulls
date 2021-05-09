@@ -579,7 +579,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
             renderImage(renderer, splash, startx, starty);
             renderText(renderer, text, intDB, startx * 2 + splash->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
-            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 22, TTF_STYLE_NORMAL);
+            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
 
             bool scrollUp = false;
             bool scrollDown = false;
