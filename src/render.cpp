@@ -160,7 +160,7 @@ int main(int argc, char **argv)
     {
         auto image = createImage("images/skulls-cover.png");
         auto text = createText(introduction, "fonts/default.ttf", 20, {255, 255, 255}, SCREEN_WIDTH * (1.0 - 3.0 * Margin) - image->w, TTF_STYLE_NORMAL);
-        
+
         auto startx = SCREEN_WIDTH * Margin;
         auto starty = SCREEN_HEIGHT * Margin;
 
