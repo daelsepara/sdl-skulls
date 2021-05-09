@@ -12,37 +12,12 @@
 // JSON library
 #include "nlohmann/json.hpp"
 
+#include "constants.hpp"
 #include "controls.hpp"
 #include "input.hpp"
 #include "items.hpp"
 #include "skills.hpp"
 #include "story.hpp"
-
-// Screen dimension constants
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
-
-const double Margin = 0.05;
-
-const SDL_Color clrBK = {0, 0, 0, 0};
-const SDL_Color clrDB = {7, 7, 58, 0};
-const SDL_Color clrWH = {255, 255, 255, 0};
-
-const Uint32 intBK = 0x00000000;
-const Uint32 intRD = 0XFFFF0000;
-const Uint32 intWH = 0XFFFFFFFF;
-const Uint32 intGR = 0XFF7F7F7F;
-
-// Dark Blue in ARGB format
-const Uint32 intDB = 0xFF07073A;
-
-// Beige in ARG format
-const Uint32 intBE = 0xFFF5F5DC;
-
-Uint8 R(Uint32 c) { return (Uint8)((c & 0xFF0000) >> 16); }
-Uint8 G(Uint32 c) { return (Uint8)((c & 0x00FF00) >> 8); }
-Uint8 B(Uint32 c) { return (Uint8)(c & 0x0000FF); }
-Uint8 A(Uint32 c) { return (Uint8)(c >> 24); }
 
 SDL_Surface *createImage(const char *image)
 {
@@ -297,7 +272,7 @@ void renderButtons(SDL_Renderer *renderer, std::vector<Button> controls, int cur
     }
 }
 
-std::vector<TextButton> createHTextButtons(const char **choices, int num, int buttonh, int startx, int starty)
+std::vector<TextButton> createHTextButtons(const char **choices, int num, int text_buttonh, int text_x, int text_y)
 {
     std::vector<TextButton> controls = std::vector<TextButton>();
 
@@ -310,9 +285,9 @@ std::vector<TextButton> createHTextButtons(const char **choices, int num, int bu
         auto pixels = (int)(SCREEN_WIDTH * Margin);
         auto width = (int)(SCREEN_WIDTH * marginleft);
 
-        auto spacew = width / num;
-        auto buttonw = spacew - pixels;
-        auto space = pixels / 2;
+        auto text_spacew = width / num;
+        auto text_buttonw = text_spacew - pixels;
+        auto text_space = pixels / 2;
 
         for (auto i = 0; i < num; i++)
         {
@@ -321,9 +296,9 @@ std::vector<TextButton> createHTextButtons(const char **choices, int num, int bu
             int up = i;
             int down = i;
 
-            auto x = startx + i * (buttonw + space * 2) + space;
+            auto x = text_x + i * (text_buttonw + text_space * 2) + text_space;
 
-            auto button = TextButton(i, choices[i], left, right, up, down, x, starty, buttonw, buttonh);
+            auto button = TextButton(i, choices[i], left, right, up, down, x, text_y, text_buttonw, text_buttonh);
 
             controls.push_back(button);
         }
@@ -349,9 +324,6 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
     auto splash = createImage("images/pyramid.png");
     auto text = createText(about, "fonts/default.ttf", 18, clrWH, SCREEN_WIDTH * (1.0 - 3 * Margin) - splash->w);
 
-    auto startx = SCREEN_WIDTH * Margin;
-    auto starty = SCREEN_HEIGHT * Margin;
-
     // Render the image
     if (window && renderer && splash && text)
     {
@@ -360,15 +332,14 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
         auto selected = false;
         auto current = -1;
 
-        auto buttonw = 150;
-        auto buttonh = 48;
-        auto space = 10;
+        auto about_buttonw = 150;
+        auto about_buttonh = 48;
 
-        auto buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
+        auto about_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
 
         auto controls = std::vector<TextButton>();
 
-        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, buttony, buttonw, buttonh, ControlType::BACK));
+        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, about_buttony, about_buttonw, about_buttonh, ControlType::BACK));
 
         while (!quit)
         {
@@ -407,9 +378,6 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
 
     auto splash = createImage("images/map-one-world.png");
 
-    auto startx = SCREEN_WIDTH * Margin;
-    auto starty = SCREEN_HEIGHT * Margin;
-
     // Render the image
     if (window && renderer && splash)
     {
@@ -418,15 +386,13 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
         auto selected = false;
         auto current = -1;
 
-        auto buttonw = 150;
-        auto buttonh = 48;
-        auto space = 10;
-
-        auto buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
+        const int map_buttonw = 150;
+        const int map_buttonh = 48;
+        const int map_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - map_buttonh);
 
         auto controls = std::vector<TextButton>();
 
-        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, buttony, buttonw, buttonh, ControlType::BACK));
+        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, map_buttony, map_buttonw, map_buttonh, ControlType::BACK));
 
         while (!quit)
         {
@@ -472,39 +438,19 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
         splash = createImage(prologue.Image);
     }
 
-    auto startx = (SCREEN_WIDTH * Margin);
-    auto textx = (SCREEN_WIDTH * Margin) * 2 + (splash ? splash->w : 250);
-    auto texty = (SCREEN_HEIGHT * Margin);
+    SDL_Surface *text = NULL;
 
-    auto buttonw = 64;
-    auto buttonh = 64;
-    auto space = 20;
-    auto gridsize = buttonw + space;
-    auto size = 8;
-    auto pts = 4;
-    auto arrows = 32;
+    if (prologue.Text)
+    {
+        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space);
 
-    auto buttony = (int)(SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
-
-    auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrows + space);
-
-    auto text = createText(prologue.Text, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
+        text = createText(prologue.Text, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
+    }
 
     // Render the image
     if (window && renderer)
     {
         SDL_SetWindowTitle(window, prologue.Title);
-
-        auto bounds = SCREEN_HEIGHT * (1.0 - Margin * 2.0) - buttonh - space * 2;
-
-        auto controls = std::vector<Button>();
-
-        controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrows, texty + size, ControlType::SCROLL_UP));
-        controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrows, texty + bounds - arrows - size, ControlType::SCROLL_DOWN));
-        controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, ControlType::MAP));
-        controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, ControlType::GAME));
-        controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, ControlType::NEXT));
-        controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
 
         auto scrollSpeed = 20;
         auto hold = false;
@@ -525,19 +471,19 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
 
             if (prologue.Text)
             {
-                renderText(renderer, text, intBE, textx, texty, bounds, offset);
+                renderText(renderer, text, intBE, textx, texty, text_bounds, offset);
             }
 
-            renderButtons(renderer, controls, current, intGR, intWH, size, pts);
+            renderButtons(renderer, prologue.Controls, current, intGR, intWH, border_space, border_pts);
 
             bool scrollUp = false;
             bool scrollDown = false;
 
-            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+            quit = getInput(renderer, prologue.Controls, current, selected, scrollUp, scrollDown, hold);
 
-            if ((selected && current >= 0 && current < controls.size()) || scrollUp || scrollDown || hold)
+            if ((selected && current >= 0 && current < prologue.Controls.size()) || scrollUp || scrollDown || hold)
             {
-                if (controls[current].Type == ControlType::SCROLL_UP || (controls[current].Type == ControlType::SCROLL_UP && hold) || scrollUp)
+                if (prologue.Controls[current].Type == ControlType::SCROLL_UP || (prologue.Controls[current].Type == ControlType::SCROLL_UP && hold) || scrollUp)
                 {
                     if (offset > 0)
                     {
@@ -549,19 +495,19 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
                         offset = 0;
                     }
                 }
-                else if (controls[current].Type == ControlType::SCROLL_DOWN || (controls[current].Type == ControlType::SCROLL_DOWN && hold) || scrollDown)
+                else if (prologue.Controls[current].Type == ControlType::SCROLL_DOWN || (prologue.Controls[current].Type == ControlType::SCROLL_DOWN && hold) || scrollDown)
                 {
-                    if (offset < text->h - bounds)
+                    if (offset < text->h - text_bounds)
                     {
                         offset += scrollSpeed;
                     }
 
-                    if (offset > text->h - bounds)
+                    if (offset > text->h - text_bounds)
                     {
-                        offset = text->h - bounds;
+                        offset = text->h - text_bounds;
                     }
                 }
-                else if (controls[current].Type == ControlType::MAP && !hold)
+                else if (prologue.Controls[current].Type == ControlType::MAP && !hold)
                 {
                     renderWindow(window, renderer, mapScreen);
 
@@ -569,7 +515,7 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
 
                     selected = false;
                 }
-                else if (controls[current].Type == ControlType::QUIT && !hold)
+                else if (prologue.Controls[current].Type == ControlType::QUIT && !hold)
                 {
                     break;
                 }
@@ -583,9 +529,12 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
             splash = NULL;
         }
 
-        SDL_FreeSurface(text);
+        if (text)
+        {
+            SDL_FreeSurface(text);
 
-        text = NULL;
+            text = NULL;
+        }
     }
 
     return quit;
@@ -600,9 +549,6 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
     auto title = "Necklace of Skulls";
 
-    auto startx = SCREEN_WIDTH * Margin;
-    auto starty = SCREEN_HEIGHT * Margin;
-
     // Render window
     if (window && renderer && splash && text)
     {
@@ -614,9 +560,9 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         auto selected = false;
 
-        auto buttonh = 48;
+        auto main_buttonh = 48;
 
-        auto controls = createHTextButtons(choices, 4, buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
+        auto controls = createHTextButtons(choices, 4, main_buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - main_buttonh);
 
         controls[0].Type = ControlType::NEW;
         controls[1].Type = ControlType::LOAD;
