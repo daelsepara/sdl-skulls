@@ -29,48 +29,55 @@ public:
     ItemType Item = ItemType::ANY;
     SkillType Skill = SkillType::NONE;
     int Value = 0;
+    int Destination = -1;
 
-    Choice(ChoiceType type, const char *text, ItemType item, SkillType skill, int value)
+    Choice(ChoiceType type, const char *text, int destination, ItemType item, SkillType skill, int value)
     {
         Type = type;
         Text = text;
+        Destination = destination;
         Item = item;
         Skill = skill;
         Value = value;
     }
 
-    Choice(const char *text, ItemType item, SkillType skill)
+    Choice(const char *text, int destination, ItemType item, SkillType skill)
     {
         Text = text;
+        Destination = destination;
         Type = ChoiceType::SKILL_ITEM;
         Item = item;
         Skill = skill;
     }
 
-    Choice(const char *text, ItemType item)
+    Choice(const char *text, int destination, ItemType item)
     {
         Text = text;
+        Destination = destination;
         Type = ChoiceType::ITEM;
         Item = item;
     }
 
-    Choice(const char *text, SkillType skill)
+    Choice(const char *text, int destination, SkillType skill)
     {
         Text = text;
+        Destination = destination;
         Type = ChoiceType::SKILL;
         Skill = skill;
     }
 
-    Choice(const char *text, ChoiceType type, int value)
+    Choice(const char *text, int destination, ChoiceType type, int value)
     {
         Text = text;
+        Destination = destination;
         Type = type;
         Value = value;
     }
 
-    Choice(const char *text, ChoiceType type)
+    Choice(const char *text, int destination, ChoiceType type)
     {
         Text = text;
+        Destination = destination;
         Type = type;
     }
 };
@@ -92,7 +99,6 @@ public:
     const char *Image = NULL;
     std::vector<Button> Controls;
     std::vector<Choice> Choices;
-    std::vector<int> Destinations;
     StoryType Type = StoryType::NORMAL;
 
     // Handle background events
@@ -141,6 +147,26 @@ public:
     int Continue() { return 1; };
 };
 
+class Story01 : public Story
+{
+public:
+    Story01()
+    {
+        ID = 0;
+        Title = "Necklace of Skulls";
+        Text = "Seeking an audience with the Matriarch of your clan, you are shown into a narrow steep-vaulted hall. Sunlight burns through the high window slits to leave hovering blocks of dazzling yellow light on the whitewashed wall, but the room is cool.\n\nThe Matriarch sits cross-legged on a stone bench at the end of the room, below a large painted glyph which is the symbol of the clan. A stout woman in late middle-age, she has a soft and even jolly appearance which is belied by the look of stern contemplation in her eyes. The beads sewn across here cotton mantle make a rustling sound as she waves you towards a straw mat. You bow in greeting before sitting, and a servant brings you a cup of frothy peppered cocoa.\n\nThe Matriarch fixes you with her glass-bead gaze. \"Evening Star, I understand you wish to leave Koba and travel in search of your brother.\"\n\n\"I must learn what has happened to him, my lady. If he is alive, perhaps I can rescue him; if dead, it is my duty to avenge him.\"\n\nThe Matriarch folds her fat jade-ringed fingers and rests her chin on them, watching you as though weighing the worth of your soul. \"You speak of duty,\" she says. \"Have you no duty to your clan here in Koba? Does honour demand that we lose another scion in pursuit of a hopeless quest?\"\n\nYou sip cocoa while considering your next words carefully.";
+        Image = "images/filler1.png";
+
+        Choices = std::vector<Choice>();
+        Choices.push_back(Choice("Reply that the life of your brother is more important than your duty to the clan", -1, ChoiceType::NORMAL));
+        Choices.push_back(Choice("...that on the contrary, clan honour demands that you go", -1, ChoiceType::NORMAL));
+        Choices.push_back(Choice("Say nothing", -1, ChoiceType::NORMAL));
+    }
+
+    int Continue() { return 1; };
+};
+
 auto prologue = Prologue();
+auto story01 = Story01();
 
 #endif
