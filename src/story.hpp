@@ -188,6 +188,13 @@ public:
         Choices.push_back(Choice("Reply that the life of your brother is more important than your duty to the clan", -1, ChoiceType::NORMAL));
         Choices.push_back(Choice("...that on the contrary, clan honour demands that you go", -1, ChoiceType::NORMAL));
         Choices.push_back(Choice("Say nothing", -1, ChoiceType::NORMAL));
+
+        Controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, ControlType::SCROLL_UP));
+        Controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, ControlType::SCROLL_DOWN));
+        Controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, ControlType::MAP));
+        Controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, ControlType::GAME));
+        Controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, ControlType::NEXT));
+        Controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
     }
 
     int Continue() { return 1; };
