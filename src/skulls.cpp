@@ -334,8 +334,6 @@ bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displaySc
 {
     auto result = displayScreen(window, renderer);
 
-    SDL_Delay(100);
-
     return result;
 }
 
