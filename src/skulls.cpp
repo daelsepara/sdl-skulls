@@ -545,7 +545,7 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
                 }
                 else if (controls[current].Type == ControlType::MAP && !hold)
                 {
-                    quit = renderWindow(window, renderer, mapScreen);
+                    renderWindow(window, renderer, mapScreen);
 
                     current = -1;
 
@@ -625,7 +625,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
                 {
                 case ControlType::NEW:
 
-                    quit = renderWindow(window, renderer, storyScreen);
+                    renderWindow(window, renderer, storyScreen);
 
                     current = -1;
 
@@ -635,7 +635,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
                 case ControlType::ABOUT:
 
-                    quit = renderWindow(window, renderer, aboutScreen);
+                    renderWindow(window, renderer, aboutScreen);
 
                     current = -1;
 
