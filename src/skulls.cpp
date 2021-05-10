@@ -530,7 +530,7 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
                 else if (controls[current].Type == ControlType::BACK && !hold)
                 {
                     next = story;
-                    
+
                     quit = true;
 
                     break;
