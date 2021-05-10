@@ -240,7 +240,7 @@ void renderTextButtons(SDL_Renderer *renderer, std::vector<TextButton> controls,
     }
 }
 
-void renderButtons(SDL_Renderer *renderer, std::vector<Button> controls, int current, int fg, int bg, int space, int pts)
+void renderButtons(SDL_Renderer *renderer, std::vector<Button> controls, int current, int fg, int space, int pts)
 {
     if (controls.size() > 0)
     {
@@ -248,7 +248,7 @@ void renderButtons(SDL_Renderer *renderer, std::vector<Button> controls, int cur
         {
             SDL_Rect rect;
 
-            for (auto size = pts; size > 0; size--)
+            for (auto size = pts; size >= 0; size--)
             {
                 rect.w = controls[i].W + 2 * (space - size);
                 rect.h = controls[i].H + 2 * (space - size);
@@ -258,13 +258,8 @@ void renderButtons(SDL_Renderer *renderer, std::vector<Button> controls, int cur
                 if (i == current)
                 {
                     SDL_SetRenderDrawColor(renderer, R(fg), G(fg), B(fg), A(fg));
+                    SDL_RenderDrawRect(renderer, &rect);
                 }
-                else
-                {
-                    SDL_SetRenderDrawColor(renderer, R(bg), G(bg), B(bg), A(bg));
-                }
-
-                SDL_RenderDrawRect(renderer, &rect);
             }
 
             renderImage(renderer, controls[i].Surface, controls[i].X, controls[i].Y);
@@ -311,6 +306,8 @@ template <typename Function>
 bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen)
 {
     auto result = displayScreen(window, renderer);
+
+    SDL_SetWindowTitle(window, "Necklace of Skulls");
 
     return result;
 }
@@ -430,12 +427,119 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
     return quit;
 }
 
-Story *processChoices(Story *story)
+Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
+{
+    Story *next = story;
+
+    if (renderer && story->Choices.size() > 0)
+    {
+        SDL_Surface *splash = NULL;
+
+        if (story->Image)
+        {
+            splash = createImage(story->Image);
+        }
+
+        auto choices = story->Choices;
+
+        auto choicesy = 60;
+        auto space = 20;
+
+        auto selected = false;
+        auto current = -1;
+        auto quit = false;
+        auto scrollUp = false;
+        auto scrollDown = false;
+        auto hold = false;
+
+        auto controls = std::vector<Button>();
+
+        for (int i = 0; i < choices.size(); i++)
+        {
+            auto number = std::to_string(i + 1);
+
+            std::string str = number + ") " + std::string(choices[i].Text);
+
+            auto text = createText(str.c_str(), "fonts/default.ttf", 20, clrBK, textwidth - 32 + arrow_size + button_space, TTF_STYLE_NORMAL);
+
+            auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 16);
+
+            controls.push_back(Button(i, text, i, i, (i > 0 ? i - 1 : i), (i < choices.size() ? i + 1 : i), textx + 16, y, ControlType::ACTION));
+            controls[i].W = textwidth - 32 + arrow_size + button_space;
+            controls[i].H = text->h;
+        }
+
+        auto idx = choices.size();
+
+        controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx + 1, startx, buttony, ControlType::MAP));
+        controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, ControlType::GAME));
+        controls.push_back(Button(idx + 2, "images/back-button.png", idx + 1, idx + 2, idx - 1, idx + 2, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::BACK));
+
+        while (!quit)
+        {
+            if (story->Title)
+            {
+                SDL_SetWindowTitle(window, story->Title);
+            }
+
+            fillWindow(renderer, intWH);
+
+            if (splash)
+            {
+                renderImage(renderer, splash, startx, starty);
+            }
+
+            SDL_Rect textwindow;
+
+            textwindow.w = textwidth + arrow_size + button_space;
+            textwindow.h = text_bounds;
+            textwindow.x = textx;
+            textwindow.y = texty;
+
+            SDL_SetRenderDrawColor(renderer, R(intBE), G(intBE), B(intBE), A(intBE));
+            SDL_RenderFillRect(renderer, &textwindow);
+
+            renderButtons(renderer, controls, current, intGR, 8, 4);
+
+            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected)
+            {
+                if (controls[current].Type == ControlType::MAP && !hold)
+                {
+                    renderWindow(window, renderer, mapScreen);
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == ControlType::BACK && !hold)
+                {
+                    quit = true;
+
+                    break;
+                }
+            }
+        }
+
+        if (splash)
+        {
+            SDL_FreeSurface(splash);
+
+            splash = NULL;
+        }
+    }
+
+    return next;
+}
+
+Story *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 {
     Story *next = &notImplemented;
 
     if (story->Choices.size() > 0)
     {
+        next = renderChoices(window, renderer, story);
     }
     else
     {
@@ -462,7 +566,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
         if (story->Text)
         {
-            auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space);
+            auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 16;
 
             text = createText(story->Text, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
         }
@@ -491,10 +595,21 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
                 if (story->Text)
                 {
-                    renderText(renderer, text, intBE, textx, texty, text_bounds, offset);
+                    SDL_SetRenderDrawColor(renderer, R(intBE), G(intBE), B(intBE), A(intBE));
+
+                    SDL_Rect textwindow;
+
+                    textwindow.x = textx;
+                    textwindow.y = texty;
+                    textwindow.w = textwidth;
+                    textwindow.h = text_bounds;
+
+                    SDL_RenderFillRect(renderer, &textwindow);
+
+                    renderText(renderer, text, intBE, textx + 8, texty + 8, text_bounds - 16, offset);
                 }
 
-                renderButtons(renderer, story->Controls, current, intGR, intWH, border_space, border_pts);
+                renderButtons(renderer, story->Controls, current, intGR, border_space, border_pts);
 
                 bool scrollUp = false;
                 bool scrollDown = false;
@@ -517,14 +632,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
                     }
                     else if (story->Controls[current].Type == ControlType::SCROLL_DOWN || ((story->Controls[current].Type == ControlType::SCROLL_DOWN && hold) || scrollDown))
                     {
-                        if (offset < text->h - text_bounds)
+                        if (offset < text->h - text_bounds + 16)
                         {
                             offset += scrollSpeed;
                         }
 
-                        if (offset > text->h - text_bounds)
+                        if (offset > text->h - text_bounds + 16)
                         {
-                            offset = text->h - text_bounds;
+                            offset = text->h - text_bounds + 16;
                         }
                     }
                     else if (story->Controls[current].Type == ControlType::MAP && !hold)
@@ -541,7 +656,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
                         selected = false;
 
-                        auto next = processChoices(story);
+                        auto next = processChoices(window, renderer, story);
 
                         if (next->ID != story->ID)
                         {
@@ -661,8 +776,6 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
                 case ControlType::LOAD:
 
-                    renderWindow(window, renderer, storyScreen, 1);
-
                     current = -1;
 
                     selected = false;
@@ -683,6 +796,8 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
                     break;
                 }
             }
+
+            SDL_SetWindowTitle(window, title);
         }
 
         SDL_FreeSurface(splash);

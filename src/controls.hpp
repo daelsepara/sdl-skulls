@@ -111,6 +111,17 @@ private:
         Surface = createImage(file);
     }
 
+    void construct(int id, int left, int right, int up, int down, int x, int y)
+    {
+        ID = id;
+        Left = left;
+        Right = right;
+        Up = up;
+        Down = down;
+        X = x;
+        Y = y;
+    }
+
 public:
     const char *File = NULL;
 
@@ -126,6 +137,15 @@ public:
         Type = type;
 
         construct(id, file, left, right, up, down, x, y);
+    }
+
+    Button(int id, SDL_Surface *image, int left, int right, int up, int down, int x, int y, ControlType type)
+    {
+        Type = type;
+
+        Surface = image;
+
+        construct(id, left, right, up, down, x, y);
     }
 };
 #endif
