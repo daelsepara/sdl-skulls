@@ -54,8 +54,10 @@ void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, co
         SCREEN_HEIGHT = mode.h;
         */
 
-        // Create window
+        // Create window and renderer
         SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_RENDERER_ACCELERATED, window, renderer);
+
+        SDL_SetRenderDrawBlendMode(*renderer, SDL_BLENDMODE_NONE);
 
         if (window == NULL || renderer == NULL)
         {
