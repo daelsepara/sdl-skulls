@@ -429,7 +429,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
 
 Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 {
-    Story *next = story;
+    Story *next = &notImplemented;
 
     if (renderer && story->Choices.size() > 0)
     {
@@ -505,7 +505,21 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
             if (selected)
             {
-                if (controls[current].Type == ControlType::MAP && !hold)
+                if (controls[current].Type == ControlType::ACTION && !hold)
+                {
+                    if (current >= 0 && current < story->Choices.size())
+                    {
+                        if (story->Choices[current].Type == ChoiceType::NORMAL)
+                        {
+                            next = (Story *)findStory(story->Choices[current].Destination);
+
+                            quit = true;
+
+                            break;
+                        }
+                    }
+                }
+                else if (controls[current].Type == ControlType::MAP && !hold)
                 {
                     renderWindow(window, renderer, mapScreen);
 
@@ -632,14 +646,17 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
                     }
                     else if (story->Controls[current].Type == ControlType::SCROLL_DOWN || ((story->Controls[current].Type == ControlType::SCROLL_DOWN && hold) || scrollDown))
                     {
-                        if (offset < text->h - text_bounds + 16)
+                        if (text->h >= text_bounds - 16)
                         {
-                            offset += scrollSpeed;
-                        }
+                            if (offset < text->h - text_bounds + 16)
+                            {
+                                offset += scrollSpeed;
+                            }
 
-                        if (offset > text->h - text_bounds + 16)
-                        {
-                            offset = text->h - text_bounds + 16;
+                            if (offset > text->h - text_bounds + 16)
+                            {
+                                offset = text->h - text_bounds + 16;
+                            }
                         }
                     }
                     else if (story->Controls[current].Type == ControlType::MAP && !hold)
@@ -854,7 +871,6 @@ int initializeGamePads()
 
 int main(int argc, char **argsv)
 {
-    // The window we'll be rendering to
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
 

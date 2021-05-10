@@ -135,6 +135,20 @@ public:
     }
 };
 
+std::vector<Button> StandardControls()
+{
+    auto controls = std::vector<Button>();
+
+    controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, ControlType::SCROLL_UP));
+    controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, ControlType::SCROLL_DOWN));
+    controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, ControlType::MAP));
+    controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, ControlType::GAME));
+    controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, ControlType::NEXT));
+    controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
+
+    return controls;
+}
+
 class Prologue : public Story
 {
 public:
@@ -148,22 +162,16 @@ public:
 
         Choices.clear();
 
-        Controls.clear();
-        Controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, ControlType::SCROLL_UP));
-        Controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, ControlType::SCROLL_DOWN));
-        Controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, ControlType::MAP));
-        Controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, ControlType::GAME));
-        Controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, ControlType::NEXT));
-        Controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
+        Controls = StandardControls();
     }
 
     int Continue() { return 1; };
 };
 
-class Story01 : public Story
+class Story001 : public Story
 {
 public:
-    Story01()
+    Story001()
     {
         ID = 1;
         Title = "Necklace of Skulls: 001";
@@ -171,18 +179,109 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice("Reply that the life of your brother is more important than your duty to the clan", -1, ChoiceType::NORMAL));
-        Choices.push_back(Choice("...that on the contrary, clan honour demands that you go", -1, ChoiceType::NORMAL));
-        Choices.push_back(Choice("Say nothing", -1, ChoiceType::NORMAL));
+        Choices.push_back(Choice("Reply that the life of your brother is more important than your duty to the clan", 24, ChoiceType::NORMAL));
+        Choices.push_back(Choice("...that on the contrary, clan honour demands that you go", 47, ChoiceType::NORMAL));
+        Choices.push_back(Choice("Say nothing", 70, ChoiceType::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story024 : public Story
+{
+public:
+    Story024()
+    {
+        ID = 24;
+        Title = "Necklace of Skulls: 024";
+        Text = "Convinced though you are by the strength of this argument, the Matriarch seems unimpressed. \"I wonder what you will find?\" she muses. \"The truth as to Morning Star's fate, perhaps. But also you may discover a deeper truth.\"\n\nShe turns aside to gaze up at the shimmering sunbeams slanting through the windows, showing her profile in an expression of disdain. \"You are useless to the clan until you learn wisdom, Evening Star. Depart whenever you wish.\"\n\nShe says nothing more. Awkwardly, you get to your feet and retreat from the room with a hesitant bow.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Controls = StandardControls();
+    }
+
+    int Continue() { return 93; }
+};
+
+class Story047 : public Story
+{
+public:
+    Story047()
+    {
+        ID = 47;
+        Title = "Necklace of Skulls: 047";
+        Text = "\"What would others think of our clan,\" you assert, \"if we meekly ignored the loss of my brother? Honour is like the sun: it cannot hide its face.\"\n\nThe Matriarch thrusts her head forward and stares at you along the great hook of her nose. Perched thus on her stone seat, she reminds you of a fat owl watching a mouse. You begin to fear you have offended her with your frank answer, but then to your relief she gives a rumble of approving laughter. \"Well said, young Evening Star. How like your brother you are -- and both of you like your late father, always brimming over with impatient courage.\"\n\nYou set down your cup. \"Then have I your leave to go, my lady?\"\n\nShe nods. \"Yes, but since your determination glorifies the clan, I feel that the clan should give you assistance in this quest. Consider what help you need most, Evening Star. I could arrange for you to have an audience with one of our high priests, and you could seek their advice. Or I could allow you to equip yourself with the clan's special ancestral treasures. Or would you prefer a companion on your quest?\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice("Request a meeting with one of the high priests", 116, ChoiceType::NORMAL));
+        Choices.push_back(Choice("Ask to see the ancestral treasures of the clan", 47, ChoiceType::NORMAL));
+        Choices.push_back(Choice("You think a companion would be useful", 162, ChoiceType::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story070 : public Story
+{
+public:
+    Story070()
+    {
+        ID = 70;
+        Title = "Necklace of Skulls: 070";
+        Text = "\"I can give no easy answer, my lady,\" you tell the Matriarch. \"I do not wish to shirk my duty to the clan that has nurtured me, but neither can I ignore the demands of my heart. I must go in search of my brother, since I cannot rest until I know whether he is alive or dead.\"\n\nShe heaves a deep sigh, more of resignation than disapproval. \"I know you could not be dissuaded,\" she says. \"You have your late father's impetuosity. Morning Star shared that same quality. It is the mark of a hero -- but beware, Evening Star, for it can also get you killed.\"\n\n\"I understand. I have your permission to undertake this quest, then?\"\n\n\"You have.\" She produces a letter and hands it to you. \"Take this to the town of Balak on the northern coast. Ask there for a girl named Midnight Bloom. She is a distant cousin of yours. Present her with this letter, which will introduce you and request her assistance in your quest.\"\n\n\"How can she assist me?\" you ask, taking the letter.\n\n\"She is skilled in coastal trade, and will convey you by ship to Tahil. May the gods watch over you, Evening Star.\"\n\nYou rise and bow, as you leave, your heart is full of excitement.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue() { return 93; }
+};
+
+class Story093 : public Story
+{
+public:
+    Story093()
+    {
+        ID = 93;
+        Title = "Necklace of Skulls: 093";
+        Text = "Realizing there are things you will need on your travels, you head to the market. Here, under a long colonnade festooned with coloured rugs, you can usually find almost anything. Unfortunately it is now late afternoon and many of the traders have packed up their wares and gone home, driven off by the waves of heat rising from the adjacent plaza.\n\nMaking your way along the colonnade, you identify the different goods at a glance according to the colours of the rugs. Green indicates sellers of maize, while yellow and red are used for other foodstuffs. Black is the colour of stone or glass items, with the addition of grey frets signifying weaponry. Wooden products are set out on ochre cloth, and white is reserved for clay pottery.\n\nSoon you have found a few items which might prove useful. You count the cacao in your money-pouch while considering which to buy.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
 
         Controls.clear();
         Controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, ControlType::SCROLL_UP));
         Controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, ControlType::SCROLL_DOWN));
         Controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, ControlType::MAP));
         Controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, ControlType::GAME));
-        Controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, ControlType::NEXT));
-        Controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
+        Controls.push_back(Button(4, "images/pouch-button.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, ControlType::SHOP));
+        Controls.push_back(Button(5, "images/next.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, ControlType::NEXT));
+        Controls.push_back(Button(6, "images/exit.png", 5, 6, 1, 6, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
     }
+
+    int Continue() { return 389; }
+};
+
+class Story389 : public Story
+{
+public:
+    Story389()
+    {
+        ID = 389;
+        Title = "Necklace of Skulls: 389";
+        Text = "You decide to set out early the next morning, before sunrise. This will spare your family from farewells. By lantern light in the chill grey predawn, you stand in the antechamber of your family's house and check your belongings for the journey. You are attended by only one servant, who silently fastens the straps of your pack. Your aunts have left out a parcel of maize cakes for you to eat on the road.\n\nThere is a knock on the outer door and the servant darts off to open it. Outside you see your friend the old soothsayer standing in the early twilight. You go out and greet him: \"Good morning. You came just in time to catch me. I'm about to set out.\"\n\n\"I know,\" he says. \"I came to wish you luck. And to give you this. He holds up a jade bead.\n\nYou take it with a quizzical smile. \"What's this for?\"\n\n\"There are some who'll tell you that the quickest route to Necklace of Skulls lies through the underworld. It is true, but that way is also fraught with peril and you will need certain safeguards if you hope to pass through in safety. Now, beads such as this are placed under the tongue of deceased nobles for them to use as currency in the afterlife. If you should enter the underworld, be sure to place the bead under your tongue and to keep it there until you reach the crossroads. Got that?\"\n\n\"I suppose so,\" you say, not really following his drift at all. But you pocket the jade bead. As you set out along the road, you pause and glance back, adding, \"You were wrong about the dream. It seems my brother was dead after all.\"\n\nHe shrugs. \"Right... wrong... The world isn't quite that simple, Evening Star.\"\n\nBidding him farewell, you set off towards the edge of the city. Even at this early hour, traders are already carrying their wares to market. Out in the fields, moving shadows in the smoky blue twilight show that the farmers are hard at work. It is strange to think that you might never again see this great city of Koba, which has been your home since childhood.\n\nYou turn your gaze to the west, putting such thoughts out of your head. From now on, you must think only of the success of your quest.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue() { return 25; }
 };
 
 class NotImplemented : public Story
@@ -200,14 +299,24 @@ public:
 
 auto notImplemented = NotImplemented();
 auto prologue = Prologue();
-auto story01 = Story01();
+auto story001 = Story001();
+auto story024 = Story024();
+auto story047 = Story047();
+auto story070 = Story070();
+auto story093 = Story093();
+auto story389 = Story389();
 
 auto Stories = std::vector<Story *>();
 
 void InitializeStories()
 {
     Stories.push_back(&prologue);
-    Stories.push_back(&story01);
+    Stories.push_back(&story001);
+    Stories.push_back(&story024);
+    Stories.push_back(&story047);
+    Stories.push_back(&story070);
+    Stories.push_back(&story093);
+    Stories.push_back(&story389);
 }
 
 void *findStory(int id)
@@ -220,7 +329,7 @@ void *findStory(int id)
         {
             if (((Story *)Stories[i])->ID == id)
             {
-                story = (Story *)Stories[id];
+                story = (Story *)Stories[i];
 
                 break;
             }

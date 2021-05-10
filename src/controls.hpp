@@ -19,6 +19,7 @@ enum class ControlType
     NEW,
     LOAD,
     SAVE,
+    SHOP,
     NEXT,
     ACTION,
     BACK,
