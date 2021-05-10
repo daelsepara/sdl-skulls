@@ -430,31 +430,30 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
     return quit;
 }
 
-template <typename T>
-bool processStory(SDL_Window *window, SDL_Renderer *renderer, T story)
+bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 {
     auto quit = false;
 
     SDL_Surface *splash = NULL;
 
-    if (story.Image)
+    if (story->Image)
     {
-        splash = createImage(story.Image);
+        splash = createImage(story->Image);
     }
 
     SDL_Surface *text = NULL;
 
-    if (story.Text)
+    if (story->Text)
     {
         auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space);
 
-        text = createText(story.Text, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
+        text = createText(story->Text, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
     }
 
     // Render the image
     if (window && renderer)
     {
-        SDL_SetWindowTitle(window, story.Title);
+        SDL_SetWindowTitle(window, story->Title);
 
         auto scrollSpeed = 20;
         auto hold = false;
@@ -468,26 +467,26 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, T story)
             // Fill the surface with background color
             fillWindow(renderer, intWH);
 
-            if (story.Image)
+            if (story->Image)
             {
                 renderImage(renderer, splash, startx, texty);
             }
 
-            if (story.Text)
+            if (story->Text)
             {
                 renderText(renderer, text, intBE, textx, texty, text_bounds, offset);
             }
 
-            renderButtons(renderer, story.Controls, current, intGR, intWH, border_space, border_pts);
+            renderButtons(renderer, story->Controls, current, intGR, intWH, border_space, border_pts);
 
             bool scrollUp = false;
             bool scrollDown = false;
 
-            quit = getInput(renderer, story.Controls, current, selected, scrollUp, scrollDown, hold);
+            quit = getInput(renderer, story->Controls, current, selected, scrollUp, scrollDown, hold);
 
-            if ((selected && current >= 0 && current < story.Controls.size()) || scrollUp || scrollDown || hold)
+            if ((selected && current >= 0 && current < story->Controls.size()) || scrollUp || scrollDown || hold)
             {
-                if (story.Controls[current].Type == ControlType::SCROLL_UP || (story.Controls[current].Type == ControlType::SCROLL_UP && hold) || scrollUp)
+                if (story->Controls[current].Type == ControlType::SCROLL_UP || (story->Controls[current].Type == ControlType::SCROLL_UP && hold) || scrollUp)
                 {
                     if (offset > 0)
                     {
@@ -499,7 +498,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, T story)
                         offset = 0;
                     }
                 }
-                else if (story.Controls[current].Type == ControlType::SCROLL_DOWN || ((story.Controls[current].Type == ControlType::SCROLL_DOWN && hold) || scrollDown))
+                else if (story->Controls[current].Type == ControlType::SCROLL_DOWN || ((story->Controls[current].Type == ControlType::SCROLL_DOWN && hold) || scrollDown))
                 {
                     if (offset < text->h - text_bounds)
                     {
@@ -511,7 +510,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, T story)
                         offset = text->h - text_bounds;
                     }
                 }
-                else if (story.Controls[current].Type == ControlType::MAP && !hold)
+                else if (story->Controls[current].Type == ControlType::MAP && !hold)
                 {
                     renderWindow(window, renderer, mapScreen);
 
@@ -519,7 +518,15 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, T story)
 
                     selected = false;
                 }
-                else if (story.Controls[current].Type == ControlType::QUIT && !hold)
+                else if (story->Controls[current].Type == ControlType::NEXT && !hold)
+                {
+                    std::cerr << "Continue: " << story->Continue() << std::endl;
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (story->Controls[current].Type == ControlType::QUIT && !hold)
                 {
                     break;
                 }
@@ -546,7 +553,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, T story)
 
 bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, int id)
 {
-    auto story = findStory(id);
+    auto story = (Story *)findStory(id);
 
     return processStory(window, renderer, story);
 }
@@ -561,7 +568,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
     auto title = "Necklace of Skulls";
 
     InitializeStories();
-    
+
     auto storyID = 0;
 
     // Render window

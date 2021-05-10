@@ -184,7 +184,7 @@ public:
         Controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
     }
 
-    int Continue() { return 1; };
+    int Continue() { return -1; };
 };
 
 class NotImplemented : public Story
@@ -204,25 +204,25 @@ auto notImplemented = NotImplemented();
 auto prologue = Prologue();
 auto story01 = Story01();
 
-auto Stories = std::vector<Story>();
+auto Stories = std::vector<Story *>();
 
 void InitializeStories()
 {
-    Stories.push_back(prologue);
-    Stories.push_back(story01);
+    Stories.push_back(&prologue);
+    Stories.push_back(&story01);
 }
 
-Story findStory(int id)
+void *findStory(int id)
 {
-    Story story = notImplemented;
+    Story *story = &notImplemented;
 
     if (Stories.size() > 0)
     {
         for (auto i = 0; i < Stories.size(); i++)
         {
-            if (Stories[i].ID == id)
+            if (((Story *)Stories[i])->ID == id)
             {
-                story = Stories[id];
+                story = (Story *)Stories[id];
 
                 break;
             }
