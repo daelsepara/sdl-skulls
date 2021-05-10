@@ -315,6 +315,14 @@ bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displaySc
     return result;
 }
 
+template <typename Function>
+bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, int id)
+{
+    auto result = displayScreen(window, renderer, id);
+
+    return result;
+}
+
 bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
     auto quit = false;
@@ -536,9 +544,11 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, T story)
     return quit;
 }
 
-bool storyScreen(SDL_Window *window, SDL_Renderer *renderer)
+bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, int id)
 {
-    return processStory(window, renderer, prologue);
+    auto story = findStory(id);
+
+    return processStory(window, renderer, story);
 }
 
 bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
@@ -549,6 +559,10 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
     auto text = createText(introduction, "fonts/default.ttf", 20, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
 
     auto title = "Necklace of Skulls";
+
+    InitializeStories();
+    
+    auto storyID = 0;
 
     // Render window
     if (window && renderer && splash && text)
@@ -593,7 +607,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
                 {
                 case ControlType::NEW:
 
-                    renderWindow(window, renderer, storyScreen);
+                    renderWindow(window, renderer, storyScreen, storyID);
 
                     current = -1;
 
@@ -604,6 +618,16 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
                 case ControlType::ABOUT:
 
                     renderWindow(window, renderer, aboutScreen);
+
+                    current = -1;
+
+                    selected = false;
+
+                    break;
+
+                case ControlType::LOAD:
+
+                    renderWindow(window, renderer, storyScreen, 1);
 
                     current = -1;
 

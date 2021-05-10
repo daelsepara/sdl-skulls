@@ -135,23 +135,6 @@ public:
     }
 };
 
-const int splashw = 250;
-const int startx = (SCREEN_WIDTH * Margin);
-const int starty = SCREEN_HEIGHT * Margin;
-const int textx = (SCREEN_WIDTH * Margin) * 2 + splashw;
-const int texty = (SCREEN_HEIGHT * Margin);
-const int buttonw = 64;
-const int buttonh = 64;
-const int buttony = (int)(SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
-
-const int button_space = 20;
-const int gridsize = buttonw + button_space;
-const int border_space = 8;
-const int border_pts = 4;
-const int arrow_size = 32;
-const int text_bounds = SCREEN_HEIGHT * (1.0 - Margin * 2.0) - buttonh - button_space * 2;
-const int textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space);
-
 class Prologue : public Story
 {
 public:
@@ -163,6 +146,9 @@ public:
 
         Image = "images/filler1.png";
 
+        Choices.clear();
+
+        Controls.clear();
         Controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, ControlType::SCROLL_UP));
         Controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, ControlType::SCROLL_DOWN));
         Controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, ControlType::MAP));
@@ -179,16 +165,17 @@ class Story01 : public Story
 public:
     Story01()
     {
-        ID = 0;
+        ID = 1;
         Title = "Necklace of Skulls";
         Text = "Seeking an audience with the Matriarch of your clan, you are shown into a narrow steep-vaulted hall. Sunlight burns through the high window slits to leave hovering blocks of dazzling yellow light on the whitewashed wall, but the room is cool.\n\nThe Matriarch sits cross-legged on a stone bench at the end of the room, below a large painted glyph which is the symbol of the clan. A stout woman in late middle-age, she has a soft and even jolly appearance which is belied by the look of stern contemplation in her eyes. The beads sewn across here cotton mantle make a rustling sound as she waves you towards a straw mat. You bow in greeting before sitting, and a servant brings you a cup of frothy peppered cocoa.\n\nThe Matriarch fixes you with her glass-bead gaze. \"Evening Star, I understand you wish to leave Koba and travel in search of your brother.\"\n\n\"I must learn what has happened to him, my lady. If he is alive, perhaps I can rescue him; if dead, it is my duty to avenge him.\"\n\nThe Matriarch folds her fat jade-ringed fingers and rests her chin on them, watching you as though weighing the worth of your soul. \"You speak of duty,\" she says. \"Have you no duty to your clan here in Koba? Does honour demand that we lose another scion in pursuit of a hopeless quest?\"\n\nYou sip cocoa while considering your next words carefully.";
         Image = "images/filler1.png";
 
-        Choices = std::vector<Choice>();
+        Choices.clear();
         Choices.push_back(Choice("Reply that the life of your brother is more important than your duty to the clan", -1, ChoiceType::NORMAL));
         Choices.push_back(Choice("...that on the contrary, clan honour demands that you go", -1, ChoiceType::NORMAL));
         Choices.push_back(Choice("Say nothing", -1, ChoiceType::NORMAL));
 
+        Controls.clear();
         Controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, ControlType::SCROLL_UP));
         Controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, ControlType::SCROLL_DOWN));
         Controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, ControlType::MAP));
@@ -200,7 +187,49 @@ public:
     int Continue() { return 1; };
 };
 
+class NotImplemented : public Story
+{
+public:
+    NotImplemented()
+    {
+        ID = -1;
+        Title = "Not implemented yet";
+
+        Controls.clear();
+        Controls.push_back(Button(0, "images/exit.png", 0, 0, -1, -1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
+    }
+};
+
+auto notImplemented = NotImplemented();
 auto prologue = Prologue();
 auto story01 = Story01();
+
+auto Stories = std::vector<Story>();
+
+void InitializeStories()
+{
+    Stories.push_back(prologue);
+    Stories.push_back(story01);
+}
+
+Story findStory(int id)
+{
+    Story story = notImplemented;
+
+    if (Stories.size() > 0)
+    {
+        for (auto i = 0; i < Stories.size(); i++)
+        {
+            if (Stories[i].ID == id)
+            {
+                story = Stories[id];
+
+                break;
+            }
+        }
+    }
+
+    return story;
+}
 
 #endif
