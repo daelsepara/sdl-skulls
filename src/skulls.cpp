@@ -442,9 +442,6 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
         auto choices = story->Choices;
 
-        auto choicesy = 60;
-        auto space = 20;
-
         auto selected = false;
         auto current = -1;
         auto quit = false;
@@ -456,12 +453,12 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
         for (int i = 0; i < choices.size(); i++)
         {
-            auto text = createText(choices[i].Text, "fonts/default.ttf", 20, clrBK, textwidth - 32 + arrow_size + button_space, TTF_STYLE_NORMAL);
+            auto text = createText(choices[i].Text, "fonts/default.ttf", 20, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
 
             auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 16);
 
             controls.push_back(Button(i, text, i, i, (i > 0 ? i - 1 : i), (i < choices.size() ? i + 1 : i), textx + 16, y, ControlType::ACTION));
-            controls[i].W = textwidth - 32 + arrow_size + button_space;
+            controls[i].W = textwidth + button_space;
             controls[i].H = text->h;
         }
 
