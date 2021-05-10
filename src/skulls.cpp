@@ -55,7 +55,7 @@ void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, co
         */
 
         // Create window
-        SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN, window, renderer);
+        SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_RENDERER_ACCELERATED, window, renderer);
 
         if (window == NULL || renderer == NULL)
         {
@@ -500,6 +500,23 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
             SDL_RenderFillRect(renderer, &textwindow);
 
             renderButtons(renderer, controls, current, intGR, 8, 4);
+
+            for (auto i = 0; i < story->Choices.size(); i++)
+            {
+                if (i != current)
+                {
+                    SDL_SetRenderDrawColor(renderer, R(intDB), G(intDB), B(intDB), A(intDB));
+
+                    SDL_Rect rect;
+
+                    rect.w = controls[i].W + 16;
+                    rect.h = controls[i].H + 16;
+                    rect.x = controls[i].X - 8;
+                    rect.y = controls[i].Y - 8;
+
+                    SDL_RenderDrawRect(renderer, &rect);
+                }
+            }
 
             quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
