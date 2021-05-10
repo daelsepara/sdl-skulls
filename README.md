@@ -29,6 +29,10 @@ This is an implementation of the **Necklace of Skulls** game book (Virtual Reali
 
 ![Map Screen](/screenshots/map-screen.png)
 
+**Making a choice**
+
+![Making a choice](/screenshots/making-choices.png)
+
 # Copyright Information 
 
 ```
