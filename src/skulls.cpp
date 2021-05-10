@@ -464,7 +464,7 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
         auto idx = choices.size();
 
-        controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx + 1, startx, buttony, ControlType::MAP));
+        controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, ControlType::MAP));
         controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, ControlType::GAME));
         controls.push_back(Button(idx + 2, "images/back-button.png", idx + 1, idx + 2, idx - 1, idx + 2, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::BACK));
 
