@@ -456,11 +456,7 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
         for (int i = 0; i < choices.size(); i++)
         {
-            auto number = std::to_string(i + 1);
-
-            std::string str = number + ") " + std::string(choices[i].Text);
-
-            auto text = createText(str.c_str(), "fonts/default.ttf", 20, clrBK, textwidth - 32 + arrow_size + button_space, TTF_STYLE_NORMAL);
+            auto text = createText(choices[i].Text, "fonts/default.ttf", 20, clrBK, textwidth - 32 + arrow_size + button_space, TTF_STYLE_NORMAL);
 
             auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 16);
 
