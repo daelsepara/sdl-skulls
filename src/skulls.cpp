@@ -348,7 +348,7 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         auto controls = std::vector<TextButton>();
 
-        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, about_buttony, about_buttonw, about_buttonh, ControlType::BACK));
+        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, about_buttony, about_buttonw, about_buttonh, Control::Type::BACK));
 
         while (!quit)
         {
@@ -365,7 +365,7 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 
             quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
-            if (selected && current >= 0 && current < controls.size() && controls[current].Type == ControlType::BACK)
+            if (selected && current >= 0 && current < controls.size() && controls[current].Type == Control::Type::BACK)
             {
                 break;
             }
@@ -401,7 +401,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         auto controls = std::vector<TextButton>();
 
-        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, map_buttony, map_buttonw, map_buttonh, ControlType::BACK));
+        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, map_buttony, map_buttonw, map_buttonh, Control::Type::BACK));
 
         while (!quit)
         {
@@ -417,7 +417,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
 
             quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
-            if (selected && current >= 0 && current < controls.size() && controls[current].Type == ControlType::BACK)
+            if (selected && current >= 0 && current < controls.size() && controls[current].Type == Control::Type::BACK)
             {
                 break;
             }
@@ -431,9 +431,9 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
     return quit;
 }
 
-Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
+Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
 {
-    Story *next = &notImplemented;
+    Story::Base *next = &notImplemented;
 
     if (renderer && story->Choices.size() > 0)
     {
@@ -461,16 +461,16 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
             auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 16);
 
-            controls.push_back(Button(i, text, i, i, (i > 0 ? i - 1 : i), (i < choices.size() ? i + 1 : i), textx + 16, y, ControlType::ACTION));
+            controls.push_back(Button(i, text, i, i, (i > 0 ? i - 1 : i), (i < choices.size() ? i + 1 : i), textx + 16, y, Control::Type::ACTION));
             controls[i].W = textwidth + button_space;
             controls[i].H = text->h;
         }
 
         auto idx = choices.size();
 
-        controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, ControlType::MAP));
-        controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, ControlType::GAME));
-        controls.push_back(Button(idx + 2, "images/back-button.png", idx + 1, idx + 2, idx - 1, idx + 2, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::BACK));
+        controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP));
+        controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
+        controls.push_back(Button(idx + 2, "images/back-button.png", idx + 1, idx + 2, idx - 1, idx + 2, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         while (!quit)
         {
@@ -519,13 +519,13 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
             if (selected)
             {
-                if (controls[current].Type == ControlType::ACTION && !hold)
+                if (controls[current].Type == Control::Type::ACTION && !hold)
                 {
                     if (current >= 0 && current < story->Choices.size())
                     {
-                        if (story->Choices[current].Type == ChoiceType::NORMAL)
+                        if (story->Choices[current].Type == Choice::Type::NORMAL)
                         {
-                            next = (Story *)findStory(story->Choices[current].Destination);
+                            next = (Story::Base *)findStory(story->Choices[current].Destination);
 
                             quit = true;
 
@@ -533,7 +533,7 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
                         }
                     }
                 }
-                else if (controls[current].Type == ControlType::MAP && !hold)
+                else if (controls[current].Type == Control::Type::MAP && !hold)
                 {
                     renderWindow(window, renderer, mapScreen);
 
@@ -541,7 +541,7 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
                     selected = false;
                 }
-                else if (controls[current].Type == ControlType::BACK && !hold)
+                else if (controls[current].Type == Control::Type::BACK && !hold)
                 {
                     next = story;
 
@@ -563,9 +563,9 @@ Story *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
     return next;
 }
 
-Story *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
+Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
 {
-    Story *next = &notImplemented;
+    Story::Base *next = &notImplemented;
 
     if (story->Choices.size() > 0)
     {
@@ -573,13 +573,13 @@ Story *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story *story)
     }
     else
     {
-        next = (Story *)findStory(story->Continue());
+        next = (Story::Base *)findStory(story->Continue());
     }
 
     return next;
 }
 
-bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
+bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
 {
     bool quit = false;
 
@@ -648,7 +648,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
                 if ((selected && current >= 0 && current < story->Controls.size()) || scrollUp || scrollDown || hold)
                 {
-                    if (story->Controls[current].Type == ControlType::SCROLL_UP || (story->Controls[current].Type == ControlType::SCROLL_UP && hold) || scrollUp)
+                    if (story->Controls[current].Type == Control::Type::SCROLL_UP || (story->Controls[current].Type == Control::Type::SCROLL_UP && hold) || scrollUp)
                     {
                         if (offset > 0)
                         {
@@ -660,7 +660,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
                             offset = 0;
                         }
                     }
-                    else if (story->Controls[current].Type == ControlType::SCROLL_DOWN || ((story->Controls[current].Type == ControlType::SCROLL_DOWN && hold) || scrollDown))
+                    else if (story->Controls[current].Type == Control::Type::SCROLL_DOWN || ((story->Controls[current].Type == Control::Type::SCROLL_DOWN && hold) || scrollDown))
                     {
                         if (text->h >= text_bounds - 16)
                         {
@@ -675,7 +675,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
                             }
                         }
                     }
-                    else if (story->Controls[current].Type == ControlType::MAP && !hold)
+                    else if (story->Controls[current].Type == Control::Type::MAP && !hold)
                     {
                         renderWindow(window, renderer, mapScreen);
 
@@ -683,7 +683,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
                         selected = false;
                     }
-                    else if (story->Controls[current].Type == ControlType::NEXT && !hold)
+                    else if (story->Controls[current].Type == Control::Type::NEXT && !hold)
                     {
                         current = -1;
 
@@ -698,7 +698,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
                             break;
                         }
                     }
-                    else if (story->Controls[current].Type == ControlType::QUIT && !hold)
+                    else if (story->Controls[current].Type == Control::Type::QUIT && !hold)
                     {
                         quit = true;
 
@@ -728,7 +728,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story *story)
 
 bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, int id)
 {
-    auto story = (Story *)findStory(id);
+    auto story = (Story::Base *)findStory(id);
 
     return processStory(window, renderer, story);
 }
@@ -761,10 +761,10 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         auto controls = createHTextButtons(choices, 4, main_buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - main_buttonh);
 
-        controls[0].Type = ControlType::NEW;
-        controls[1].Type = ControlType::LOAD;
-        controls[2].Type = ControlType::ABOUT;
-        controls[3].Type = ControlType::QUIT;
+        controls[0].Type = Control::Type::NEW;
+        controls[1].Type = Control::Type::LOAD;
+        controls[2].Type = Control::Type::ABOUT;
+        controls[3].Type = Control::Type::QUIT;
 
         auto quit = false;
 
@@ -787,7 +787,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
             {
                 switch (controls[current].Type)
                 {
-                case ControlType::NEW:
+                case Control::Type::NEW:
 
                     renderWindow(window, renderer, storyScreen, storyID);
 
@@ -797,7 +797,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
                     break;
 
-                case ControlType::ABOUT:
+                case Control::Type::ABOUT:
 
                     renderWindow(window, renderer, aboutScreen);
 
@@ -807,7 +807,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
                     break;
 
-                case ControlType::LOAD:
+                case Control::Type::LOAD:
 
                     current = -1;
 
@@ -815,7 +815,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
                     break;
 
-                case ControlType::QUIT:
+                case Control::Type::QUIT:
 
                     quit = true;
 

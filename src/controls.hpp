@@ -7,45 +7,48 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-enum class ControlType
+namespace Control
 {
-    ANY = 0,
-    ABOUT,
-    SCROLL_UP,
-    SCROLL_DOWN,
-    MAP,
-    CHARACTER,
-    GAME,
-    NEW,
-    LOAD,
-    SAVE,
-    SHOP,
-    NEXT,
-    ACTION,
-    BACK,
-    QUIT
-};
+    enum class Type
+    {
+        ANY = 0,
+        ABOUT,
+        SCROLL_UP,
+        SCROLL_DOWN,
+        MAP,
+        CHARACTER,
+        GAME,
+        NEW,
+        LOAD,
+        SAVE,
+        SHOP,
+        NEXT,
+        ACTION,
+        BACK,
+        QUIT
+    };
 
-class Control
-{
-public:
-    int ID = -1;
+    class Base
+    {
+    public:
+        int ID = -1;
 
-    int Left = -1;
-    int Right = -1;
-    int Up = -1;
-    int Down = -1;
+        int Left = -1;
+        int Right = -1;
+        int Up = -1;
+        int Down = -1;
 
-    int X = 0;
-    int Y = 0;
+        int X = 0;
+        int Y = 0;
 
-    int W = 0;
-    int H = 0;
+        int W = 0;
+        int H = 0;
 
-    ControlType Type = ControlType::ANY;
-};
+        Control::Type Type = Control::Type::ANY;
+    };
+}
 
-class TextButton : public Control
+class TextButton : public Control::Base
 {
 private:
     void construct(int id, const char *text, int left, int right, int up, int down, int x, int y, int w, int h)
@@ -70,7 +73,7 @@ public:
         construct(id, text, left, right, up, down, x, y, w, h);
     }
 
-    TextButton(int id, const char *text, int left, int right, int up, int down, int x, int y, int w, int h, ControlType type)
+    TextButton(int id, const char *text, int left, int right, int up, int down, int x, int y, int w, int h, Control::Type type)
     {
         Type = type;
 
@@ -78,7 +81,7 @@ public:
     }
 };
 
-class Button : public Control
+class Button : public Control::Base
 {
 private:
     SDL_Surface *createImage(const char *file)
@@ -133,14 +136,14 @@ public:
         construct(id, file, left, right, up, down, x, y);
     }
 
-    Button(int id, const char *file, int left, int right, int up, int down, int x, int y, ControlType type)
+    Button(int id, const char *file, int left, int right, int up, int down, int x, int y, Control::Type type)
     {
         Type = type;
 
         construct(id, file, left, right, up, down, x, y);
     }
 
-    Button(int id, SDL_Surface *image, int left, int right, int up, int down, int x, int y, ControlType type)
+    Button(int id, SDL_Surface *image, int left, int right, int up, int down, int x, int y, Control::Type type)
     {
         Type = type;
 

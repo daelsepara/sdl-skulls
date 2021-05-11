@@ -7,149 +7,155 @@
 #include "items.hpp"
 #include "skills.hpp"
 
-enum class ChoiceType
+namespace Choice
 {
-    NORMAL = 0, // No requirements
-    ITEM,
-    SKILL,
-    CODEWORD,
-    MONEY,
-    LIFE,
-    ANY_ITEM,
-    ANY_SKILL,
-    SKILL_ITEM,
-    FIRE_WEAPON,
-    LOSE_ITEM,
-    LOSE_LIFE
-};
+    enum class Type
+    {
+        NORMAL = 0, // No requirements
+        ITEM,
+        SKILL,
+        CODEWORD,
+        MONEY,
+        LIFE,
+        ANY_ITEM,
+        ANY_SKILL,
+        SKILL_ITEM,
+        FIRE_WEAPON,
+        LOSE_ITEM,
+        LOSE_LIFE
+    };
 
-class Choice
+    class Abstract
+    {
+    public:
+        Choice::Type Type = Choice::Type::NORMAL;
+        const char *Text = NULL;
+        Item::Type Item = Item::Type::NONE;
+        Skill::Type Skill = Skill::Type::NONE;
+        int Value = 0;
+        int Destination = -1;
+
+        Abstract(Choice::Type type, const char *text, int destination, Item::Type item, Skill::Type skill, int value)
+        {
+            Type = type;
+            Text = text;
+            Destination = destination;
+            Item = item;
+            Skill = skill;
+            Value = value;
+        }
+
+        Abstract(const char *text, int destination, Item::Type item, Skill::Type skill)
+        {
+            Text = text;
+            Destination = destination;
+            Type = Choice::Type::SKILL_ITEM;
+            Item = item;
+            Skill = skill;
+        }
+
+        Abstract(const char *text, int destination, Item::Type item)
+        {
+            Text = text;
+            Destination = destination;
+            Type = Choice::Type::ITEM;
+            Item = item;
+        }
+
+        Abstract(const char *text, int destination, Skill::Type skill)
+        {
+            Text = text;
+            Destination = destination;
+            Type = Choice::Type::SKILL;
+            Skill = skill;
+        }
+
+        Abstract(const char *text, int destination, Choice::Type type, int value)
+        {
+            Text = text;
+            Destination = destination;
+            Type = type;
+            Value = value;
+        }
+
+        Abstract(const char *text, int destination, Choice::Type type)
+        {
+            Text = text;
+            Destination = destination;
+            Type = type;
+        }
+    };
+}
+
+namespace Story
 {
-public:
-    ChoiceType Type = ChoiceType::NORMAL;
-    const char *Text = NULL;
-    Item::Type Item = Item::Type::NONE;
-    Skill::Type Skill = Skill::Type::NONE;
-    int Value = 0;
-    int Destination = -1;
-
-    Choice(ChoiceType type, const char *text, int destination, Item::Type item, Skill::Type skill, int value)
+    enum class Type
     {
-        Type = type;
-        Text = text;
-        Destination = destination;
-        Item = item;
-        Skill = skill;
-        Value = value;
-    }
+        NORMAL = 0,
+        UNCERTAIN,
+        GOOD,
+        BAD
+    };
 
-    Choice(const char *text, int destination, Item::Type item, Skill::Type skill)
+    class Base
     {
-        Text = text;
-        Destination = destination;
-        Type = ChoiceType::SKILL_ITEM;
-        Item = item;
-        Skill = skill;
-    }
+    public:
+        int ID = 0;
+        const char *Text = NULL;
+        const char *Title = NULL;
+        const char *Image = NULL;
+        std::vector<Button> Controls;
+        std::vector<Choice::Abstract> Choices;
+        Story::Type Type = Story::Type::NORMAL;
 
-    Choice(const char *text, int destination, Item::Type item)
-    {
-        Text = text;
-        Destination = destination;
-        Type = ChoiceType::ITEM;
-        Item = item;
-    }
+        // Handle background events
+        virtual int Background() { return -1; };
 
-    Choice(const char *text, int destination, Skill::Type skill)
-    {
-        Text = text;
-        Destination = destination;
-        Type = ChoiceType::SKILL;
-        Skill = skill;
-    }
+        // Handle events before story branches
+        virtual int Event() { return -1; };
 
-    Choice(const char *text, int destination, ChoiceType type, int value)
-    {
-        Text = text;
-        Destination = destination;
-        Type = type;
-        Value = value;
-    }
+        // Jump to next section
+        virtual int Continue() { return -1; };
 
-    Choice(const char *text, int destination, ChoiceType type)
-    {
-        Text = text;
-        Destination = destination;
-        Type = type;
-    }
-};
+        Base()
+        {
+        }
 
-enum class StoryType
-{
-    NORMAL = 0,
-    UNCERTAIN,
-    GOOD,
-    BAD
-};
+        Base(int id)
+        {
+            ID = id;
+        }
 
-class Story
-{
-public:
-    int ID = 0;
-    const char *Text = NULL;
-    const char *Title = NULL;
-    const char *Image = NULL;
-    std::vector<Button> Controls;
-    std::vector<Choice> Choices;
-    StoryType Type = StoryType::NORMAL;
+        Base(int id, const char *text, Story::Type type)
+        {
+            ID = id;
+            Text = text;
+            type = type;
+        }
 
-    // Handle background events
-    virtual int Background() { return -1; };
-
-    // Handle events before story branches
-    virtual int Event() { return -1; };
-
-    // Jump to next section
-    virtual int Continue() { return -1; };
-
-    Story()
-    {
-    }
-
-    Story(int id)
-    {
-        ID = id;
-    }
-
-    Story(int id, const char *text, StoryType type)
-    {
-        ID = id;
-        Text = text;
-        type = type;
-    }
-
-    Story(const char *text, StoryType type)
-    {
-        Text = text;
-        type = type;
-    }
-};
+        Base(const char *text, Story::Type type)
+        {
+            Text = text;
+            type = type;
+        }
+    };
+}
 
 std::vector<Button> StandardControls()
 {
     auto controls = std::vector<Button>();
 
-    controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, ControlType::SCROLL_UP));
-    controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, ControlType::SCROLL_DOWN));
-    controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, ControlType::MAP));
-    controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, ControlType::GAME));
-    controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, ControlType::NEXT));
-    controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
+    controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+    controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+    controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
+    controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
+    controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::NEXT));
+    controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::QUIT));
 
     return controls;
 }
 
-class Prologue : public Story
+class Prologue : public Story::Base
 {
 public:
     Prologue()
@@ -161,14 +167,13 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-
         Controls = StandardControls();
     }
 
     int Continue() { return 1; };
 };
 
-class Story001 : public Story
+class Story001 : public Story::Base
 {
 public:
     Story001()
@@ -179,15 +184,15 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice("Reply that the life of your brother is more important than your duty to the clan", 24, ChoiceType::NORMAL));
-        Choices.push_back(Choice("...that on the contrary, clan honour demands that you go", 47, ChoiceType::NORMAL));
-        Choices.push_back(Choice("Say nothing", 70, ChoiceType::NORMAL));
+        Choices.push_back(Choice::Abstract("Reply that the life of your brother is more important than your duty to the clan", 24, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Abstract("...that on the contrary, clan honour demands that you go", 47, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Abstract("Say nothing", 70, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
 };
 
-class Story024 : public Story
+class Story024 : public Story::Base
 {
 public:
     Story024()
@@ -204,7 +209,7 @@ public:
     int Continue() { return 93; }
 };
 
-class Story047 : public Story
+class Story047 : public Story::Base
 {
 public:
     Story047()
@@ -215,15 +220,15 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice("Request a meeting with one of the high priests", 116, ChoiceType::NORMAL));
-        Choices.push_back(Choice("Ask to see the ancestral treasures of the clan", 47, ChoiceType::NORMAL));
-        Choices.push_back(Choice("You think a companion would be useful", 162, ChoiceType::NORMAL));
+        Choices.push_back(Choice::Abstract("Request a meeting with one of the high priests", 116, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Abstract("Ask to see the ancestral treasures of the clan", 47, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Abstract("You think a companion would be useful", 162, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
 };
 
-class Story070 : public Story
+class Story070 : public Story::Base
 {
 public:
     Story070()
@@ -234,14 +239,13 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-
         Controls = StandardControls();
     }
 
     int Continue() { return 93; }
 };
 
-class Story093 : public Story
+class Story093 : public Story::Base
 {
 public:
     Story093()
@@ -254,19 +258,19 @@ public:
         Choices.clear();
 
         Controls.clear();
-        Controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, ControlType::SCROLL_UP));
-        Controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, ControlType::SCROLL_DOWN));
-        Controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, ControlType::MAP));
-        Controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, ControlType::GAME));
-        Controls.push_back(Button(4, "images/pouch-button.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, ControlType::SHOP));
-        Controls.push_back(Button(5, "images/next.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, ControlType::NEXT));
-        Controls.push_back(Button(6, "images/exit.png", 5, 6, 1, 6, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
+        Controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+        Controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+        Controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
+        Controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
+        Controls.push_back(Button(4, "images/pouch-button.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::SHOP));
+        Controls.push_back(Button(5, "images/next.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::NEXT));
+        Controls.push_back(Button(6, "images/exit.png", 5, 6, 1, 6, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::QUIT));
     }
 
     int Continue() { return 389; }
 };
 
-class Story389 : public Story
+class Story389 : public Story::Base
 {
 public:
     Story389()
@@ -277,14 +281,13 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-
         Controls = StandardControls();
     }
 
     int Continue() { return 25; }
 };
 
-class NotImplemented : public Story
+class NotImplemented : public Story::Base
 {
 public:
     NotImplemented()
@@ -293,9 +296,31 @@ public:
         Title = "Not implemented yet";
 
         Controls.clear();
-        Controls.push_back(Button(0, "images/exit.png", 0, 0, -1, -1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, ControlType::QUIT));
+        Controls.push_back(Button(0, "images/exit.png", 0, 0, -1, -1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::QUIT));
     }
 };
+
+auto Stories = std::vector<Story::Base *>();
+
+void *findStory(int id)
+{
+    Story::Base *story = &notImplemented;
+
+    if (Stories.size() > 0)
+    {
+        for (auto i = 0; i < Stories.size(); i++)
+        {
+            if (((Story::Base *)Stories[i])->ID == id)
+            {
+                story = (Story::Base *)Stories[i];
+
+                break;
+            }
+        }
+    }
+
+    return story;
+}
 
 auto notImplemented = NotImplemented();
 auto prologue = Prologue();
@@ -306,8 +331,6 @@ auto story070 = Story070();
 auto story093 = Story093();
 auto story389 = Story389();
 
-auto Stories = std::vector<Story *>();
-
 void InitializeStories()
 {
     Stories.push_back(&prologue);
@@ -317,26 +340,6 @@ void InitializeStories()
     Stories.push_back(&story070);
     Stories.push_back(&story093);
     Stories.push_back(&story389);
-}
-
-void *findStory(int id)
-{
-    Story *story = &notImplemented;
-
-    if (Stories.size() > 0)
-    {
-        for (auto i = 0; i < Stories.size(); i++)
-        {
-            if (((Story *)Stories[i])->ID == id)
-            {
-                story = (Story *)Stories[i];
-
-                break;
-            }
-        }
-    }
-
-    return story;
 }
 
 #endif
