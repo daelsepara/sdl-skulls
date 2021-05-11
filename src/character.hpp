@@ -92,40 +92,7 @@ namespace Character
         return found;
     }
 
-    // verify that player has the skill and ANY of the items
-    bool VERIFY_SKILL_ANY(Character::Abstract character, Skill::Type skill, std::vector<Item::Type> items)
-    {
-        auto found = false;
-
-        if (character.Skills.size() > 0 && skill != Skill::Type::NONE)
-        {
-            for (auto i = 0; i < character.Skills.size(); i++)
-            {
-                if (character.Skills[i].Type == skill)
-                {
-                    for (auto j = 0; j < items.size(); j++)
-                    {
-                        found = VERIFY_ITEM(character, items[j]);
-
-                        if (found)
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                if (found)
-                {
-                    break;
-                }
-            }
-        }
-
-        return found;
-    }
-
-    // verify that player has the skill and ALL of the items
-    bool VERIFY_SKILL_ALL(Character::Abstract character, Skill::Type skill, std::vector<Item::Type> items)
+    int FIND_SKILL_ITEMS(Character::Abstract character, Skill::Type skill, std::vector<Item::Type> items)
     {
         auto found = 0;
 
@@ -145,7 +112,19 @@ namespace Character
             }
         }
 
-        return found == items.size();
+        return found;
+    }
+
+    // verify that player has the skill and ANY of the items
+    bool VERIFY_SKILL_ANY(Character::Abstract character, Skill::Type skill, std::vector<Item::Type> items)
+    {
+        return FIND_SKILL_ITEMS(character, skill, items) > 0;
+    }
+
+    // verify that player has the skill and ALL of the items
+    bool VERIFY_SKILL_ALL(Character::Abstract character, Skill::Type skill, std::vector<Item::Type> items)
+    {
+        return FIND_SKILL_ITEMS(character, skill, items) == items.size();
     }
 
     bool VERIFY_SKILL_ITEM(Character::Abstract character, Skill::Type skill, Item::Type item)
@@ -153,7 +132,7 @@ namespace Character
         return VERIFY_SKILL_ALL(character, skill, {item});
     }
 
-    bool VERIFY_CODEWORDS_ANY(Character::Abstract character, std::vector<Codeword::Type> codewords)
+    int FIND_CODEWORDS(Character::Abstract character, std::vector<Codeword::Type> codewords)
     {
         auto found = 0;
 
@@ -170,27 +149,17 @@ namespace Character
             }
         }
 
-        return found > 0;
+        return found;
+    }
+
+    bool VERIFY_CODEWORDS_ANY(Character::Abstract character, std::vector<Codeword::Type> codewords)
+    {
+        return FIND_CODEWORDS(character, codewords) > 0;
     }
 
     bool VERIFY_CODEWORDS_ALL(Character::Abstract character, std::vector<Codeword::Type> codewords)
     {
-        auto found = 0;
-
-        if (character.Codewords.size() > 0 && codewords.size() > 0)
-        {
-            for (auto i = 0; i < codewords.size(); i++)
-            {
-                auto result = std::find(character.Codewords.begin(), character.Codewords.end(), codewords[i]);
-
-                if (result != character.Codewords.end())
-                {
-                    found++;
-                }
-            }
-        }
-
-        return found == codewords.size();
+        return FIND_CODEWORDS(character, codewords) == codewords.size();
     }
 
     bool VERIFY_CODEWORD(Character::Abstract character, Codeword::Type codeword)
