@@ -300,6 +300,8 @@ public:
     }
 };
 
+auto notImplemented = NotImplemented();
+
 auto Stories = std::vector<Story::Base *>();
 
 void *findStory(int id)
@@ -322,7 +324,6 @@ void *findStory(int id)
     return story;
 }
 
-auto notImplemented = NotImplemented();
 auto prologue = Prologue();
 auto story001 = Story001();
 auto story024 = Story024();
