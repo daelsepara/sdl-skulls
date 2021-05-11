@@ -4,6 +4,8 @@
 #include <vector>
 #include <SDL.h>
 
+#include "controls.hpp"
+
 template <typename T>
 bool getInput(SDL_Renderer *renderer, std::vector<T> choices, int &current, bool &selected, bool &scrollUp, bool &scrollDown, bool &hold)
 {
