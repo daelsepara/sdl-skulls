@@ -1,42 +1,17 @@
 #ifndef __ITEMS__HPP__
 #define __ITEMS__HPP__
 
-enum class ItemType
+namespace Item
 {
-    ANY = -1,
-    SWORD,
-    BLOWGUN,
-    First = SWORD,
-    Last = BLOWGUN
-};
-
-class Item
-{
-public:
-
-    int Quantity = 0;
-    const char *Name = NULL;
-    ItemType Type = ItemType::ANY;
-
-    Item(const char *name, ItemType type, int quantity)
+    enum class Type
     {
-        Name = name;
-        Type = type;
-        Quantity = quantity;
-    }
-
-    Item(const char *name, int quantity)
-    {
-        Name = name;
-        Quantity = quantity;
-        Type = ItemType::ANY;
-    }
-
-    Item(const char *name)
-    {
-        Name = name;
-        Quantity = 1;
-        Type = ItemType::ANY;
-    }
-};
+        NONE = -1,
+        SWORD,
+        BLOWGUN,
+        MAGIC_AMULET,
+        MAGIC_WAND,
+        First = SWORD,
+        Last = BLOWGUN
+    };
+} // namespace Item
 #endif

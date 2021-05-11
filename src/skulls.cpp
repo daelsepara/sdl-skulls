@@ -19,6 +19,8 @@
 #include "skills.hpp"
 #include "story.hpp"
 
+#include "character.hpp"
+
 SDL_Surface *createImage(const char *image)
 {
     // Load splash image

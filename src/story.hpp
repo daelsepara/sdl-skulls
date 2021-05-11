@@ -28,12 +28,12 @@ class Choice
 public:
     ChoiceType Type = ChoiceType::NORMAL;
     const char *Text = NULL;
-    ItemType Item = ItemType::ANY;
-    SkillType Skill = SkillType::NONE;
+    Item::Type Item = Item::Type::NONE;
+    Skill::Type Skill = Skill::Type::NONE;
     int Value = 0;
     int Destination = -1;
 
-    Choice(ChoiceType type, const char *text, int destination, ItemType item, SkillType skill, int value)
+    Choice(ChoiceType type, const char *text, int destination, Item::Type item, Skill::Type skill, int value)
     {
         Type = type;
         Text = text;
@@ -43,7 +43,7 @@ public:
         Value = value;
     }
 
-    Choice(const char *text, int destination, ItemType item, SkillType skill)
+    Choice(const char *text, int destination, Item::Type item, Skill::Type skill)
     {
         Text = text;
         Destination = destination;
@@ -52,7 +52,7 @@ public:
         Skill = skill;
     }
 
-    Choice(const char *text, int destination, ItemType item)
+    Choice(const char *text, int destination, Item::Type item)
     {
         Text = text;
         Destination = destination;
@@ -60,7 +60,7 @@ public:
         Item = item;
     }
 
-    Choice(const char *text, int destination, SkillType skill)
+    Choice(const char *text, int destination, Skill::Type skill)
     {
         Text = text;
         Destination = destination;
