@@ -8,6 +8,8 @@
 
 namespace Character
 {
+    const int ITEM_LIMIT = 8;
+    
     class Abstract
     {
     public:
@@ -165,6 +167,32 @@ namespace Character
     bool VERIFY_CODEWORD(Character::Abstract character, Codeword::Type codeword)
     {
         return VERIFY_CODEWORDS_ALL(character, {codeword});
+    }
+
+    bool VERIFY_LIFE(Character::Abstract character, int threshold = 0)
+    {
+        return character.Life > threshold;
+    }
+
+    bool VERIFY_POSSESSIONS(Character::Abstract character)
+    {
+        return character.Items.size() <= Character::ITEM_LIMIT;
+    }
+
+    void GET_ITEMS(Character::Abstract character, std::vector<Item::Type> items)
+    {
+        character.Items.insert(character.Items.end(), items.begin(), items.end());
+    }
+
+    void GET_UNIQUE_ITEMS(Character::Abstract character, std::vector<Item::Type> items)
+    {
+        for (auto i = 0; i < items.size(); i++)
+        {
+            if (!VERIFY_ITEM(character, items[i]))
+            {
+                character.Items.push_back(items[i]);
+            }
+        }
     }
 
 } // namespace Character

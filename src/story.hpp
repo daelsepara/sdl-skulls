@@ -106,6 +106,7 @@ namespace Story
         const char *Image = NULL;
         std::vector<Button> Controls;
         std::vector<Choice::Abstract> Choices;
+        std::vector<std::tuple<Item::Type, int>> Shop;
         Story::Type Type = Story::Type::NORMAL;
 
         // Handle background events
@@ -149,8 +150,25 @@ std::vector<Button> StandardControls()
     controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
     controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
     controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
-    controls.push_back(Button(4, "images/next.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::NEXT));
-    controls.push_back(Button(5, "images/exit.png", 4, 5, 1, 5, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::QUIT));
+    controls.push_back(Button(4, "images/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+    controls.push_back(Button(5, "images/next.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::NEXT));
+    controls.push_back(Button(6, "images/exit.png", 5, 6, 1, 6, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::QUIT));
+
+    return controls;
+}
+
+std::vector<Button> ShopControls()
+{
+    auto controls = std::vector<Button>();
+
+    controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+    controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+    controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
+    controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
+    controls.push_back(Button(4, "images/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+    controls.push_back(Button(5, "images/pouch-button.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::SHOP));
+    controls.push_back(Button(6, "images/next.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::NEXT));
+    controls.push_back(Button(7, "images/exit.png", 6, 7, 1, 7, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::QUIT));
 
     return controls;
 }
@@ -256,15 +274,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-
-        Controls.clear();
-        Controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
-        Controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
-        Controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
-        Controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
-        Controls.push_back(Button(4, "images/pouch-button.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::SHOP));
-        Controls.push_back(Button(5, "images/next.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::NEXT));
-        Controls.push_back(Button(6, "images/exit.png", 5, 6, 1, 6, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::QUIT));
+        Controls = ShopControls();
     }
 
     int Continue() { return 389; }
@@ -334,13 +344,7 @@ auto story389 = Story389();
 
 void InitializeStories()
 {
-    Stories.push_back(&prologue);
-    Stories.push_back(&story001);
-    Stories.push_back(&story024);
-    Stories.push_back(&story047);
-    Stories.push_back(&story070);
-    Stories.push_back(&story093);
-    Stories.push_back(&story389);
+    Stories = {&prologue, &story001, &story024, &story047, &story070, &story093, &story389};
 }
 
 #endif

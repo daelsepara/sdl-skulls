@@ -435,6 +435,12 @@ Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Ba
 {
     Story::Base *next = &notImplemented;
 
+    auto error = false;
+    const char *message = NULL;
+
+    Uint32 start_ticks = 0;
+    Uint32 message_duration = 5000;
+
     if (renderer && story->Choices.size() > 0)
     {
         SDL_Surface *splash = NULL;
@@ -481,9 +487,28 @@ Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Ba
 
             fillWindow(renderer, intWH);
 
-            if (splash)
+            if (error)
             {
-                renderImage(renderer, splash, startx, starty);
+                if ((SDL_GetTicks() - start_ticks) < message_duration)
+                {
+                    // display error message here
+                }
+                else
+                {
+                    error = false;
+
+                    if (splash)
+                    {
+                        renderImage(renderer, splash, startx, starty);
+                    }
+                }
+            }
+            else
+            {
+                if (splash)
+                {
+                    renderImage(renderer, splash, startx, starty);
+                }
             }
 
             SDL_Rect textwindow;
@@ -530,6 +555,23 @@ Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Ba
                             quit = true;
 
                             break;
+                        }
+                        else if (story->Choices[current].Type == Choice::Type::SKILL)
+                        {
+                            if (Character::VERIFY_SKILL(Player, story->Choices[current].Skill))
+                            {
+                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                quit = true;
+
+                                break;
+                            }
+                            else
+                            {
+                                start_ticks = SDL_GetTicks();
+                                error = true;
+                                message = std::string("You do not possess the required skill").c_str();
+                            }
                         }
                     }
                 }
@@ -581,10 +623,12 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
 
 bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
 {
-    bool quit = false;
+    auto quit = false;
 
     while (!quit)
     {
+        auto run_once = true;
+
         SDL_Surface *splash = NULL;
 
         if (story->Image)
@@ -612,6 +656,11 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
             auto selected = false;
             auto current = -1;
             auto offset = 0;
+
+            if (run_once)
+            {
+                run_once = false;
+            }
 
             while (!quit)
             {
@@ -743,6 +792,8 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
     auto title = "Necklace of Skulls";
 
     InitializeStories();
+
+    Player = Character::WARRIOR;
 
     auto storyID = 0;
 
