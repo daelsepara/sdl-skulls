@@ -16,6 +16,7 @@ namespace Choice
         NORMAL = 0, // No requirements
         ITEM,
         GET_ITEM,
+        GIVE_ITEM,
         SKILL,
         CODEWORD,
         MONEY,
@@ -96,7 +97,7 @@ namespace Choice
             Item = item;
         }
     };
-}
+} // namespace Choice
 
 namespace Story
 {
@@ -117,7 +118,8 @@ namespace Story
         const char *Image = NULL;
         std::vector<Button> Controls;
         std::vector<Choice::Abstract> Choices;
-        std::vector<std::tuple<Item::Type, int>> Shop;
+        std::map<Item::Type, int> Shop;
+        const char *Bye = NULL;
         Story::Type Type = Story::Type::NORMAL;
 
         // Handle background events
@@ -151,7 +153,7 @@ namespace Story
             type = type;
         }
     };
-}
+} // namespace Story
 
 std::vector<Button> StandardControls()
 {
@@ -236,6 +238,24 @@ public:
     int Continue() { return 93; }
 };
 
+class Story025 : public Story::Base
+{
+public:
+    Story025()
+    {
+        ID = 25;
+        Text = "The causeway to Yashuna is an arrow-straight road of packed limestone raised on stone blocks above the level of the countryside. As you walk, you scan the swaying fields of maize, the orchards and ranks of cotton plants that stretch off as far as the eye can see. Low stone walls mark the irrigation channels that ensure as much water as possible reaches the crops at this arid time of year. Peasant dwellings are scattered here and there across the countryside: oval single-storey buildings with sharply peaked roofs of dry thatch. It makes you thirsty just to watch the peasants at their back-breaking work, gathering cotton in long sacks under the sweltering sun.\n\nA dusty grove of papaya trees overhangs the causeway. Your mouth waters as you look at them. Surely on one would mind if you took just one papaya? As you reach up to pick one of the fruits, there is a sudden flurry of movement from the bole of the tree. You go rigid, and a thrill of clammy fear chills you despite the heat of the day. Poised atop the fruit is a tarantula! Its huge black forelimbs are resting on your fingers, and you can see the wet coating of venom on its fangs.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Abstract(Skill::WILDERNESS_LORE.Name, 48, Skill::Type::WILDERNESS_LORE));
+        Choices.push_back(Choice::Abstract("Jerk your hand away quickly", 71, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Abstract("Slowly reach around with your other hand to seize the tarantula from behind", 94, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story047 : public Story::Base
 {
 public:
@@ -251,6 +271,39 @@ public:
         Choices.push_back(Choice::Abstract("You think a companion would be useful", 162, Choice::Type::NORMAL));
 
         Controls = StandardControls();
+    }
+};
+
+class Story048 : public Story::Base
+{
+public:
+    Story048()
+    {
+        ID = 48;
+        Text = "You know that the spider must be torpid from the heat. Tarantulas are night hunters. It is unlikely to bite if you jerk your hand away, and even if it did the venom is little worse than a wasp sting. Touching it would be far more unpleasant, since the bristles inject a powerful irritant.\n\nThe tarantula sleepily probes your fingers with its limbs. You snatch your hand back out of its clutches. Its only reaction is to slowly curl back into the shade of the papaya fruit. You breathe a sigh of relief and step back to the middle of the causeway.\n\n\"Hey there! What're you doing?\"\n\nYou turn to see an old peasant coming through the dusty orchard towards you.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Abstract("Talk to him", 117, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Abstract("Hurry off before he gets here", 163, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+
+    void Event()
+    {
+        if (Character::VERIFY_SKILL(Player, Skill::Type::ETIQUETTE))
+        {
+            Choices[0].Destination = 139;
+            Choices[0].Type = Choice::Type::SKILL;
+            Choices[0].Skill = Skill::Type::ETIQUETTE;
+        }
+        else
+        {
+            Choices[0].Destination = 117;
+            Choices[0].Type = Choice::Type::NORMAL;
+            Choices[0].Skill = Skill::Type::NONE;
+        }
     }
 };
 
@@ -275,6 +328,39 @@ public:
     }
 };
 
+class Story071 : public Story::Base
+{
+public:
+    Story071()
+    {
+        ID = 71;
+        Text = "The tarantula drowsily probes your fingers with its bristly limbs. Its movement evokes a feeling of fascination and revulsion -- you can well imagine how a mouse might feel as one of these hairy monsters came rushing out of the dark of night to seize it! You snatch your hand back quickly. The tarantula's only reaction is to slowly curl back into the shade of the papaya fruit. You breathe a sigh of relief and step back out from under the tree.\n\n\"Hey, you there! What are you doing?\"\n\nYou turn to see an old peasant coming through the dusty orchard towards the causeway.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Abstract("Talk to him", 117, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Abstract("Hurry off before he gets here", 163, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+
+    void Event()
+    {
+        if (Character::VERIFY_SKILL(Player, Skill::Type::ETIQUETTE))
+        {
+            Choices[0].Destination = 139;
+            Choices[0].Type = Choice::Type::SKILL;
+            Choices[0].Skill = Skill::Type::ETIQUETTE;
+        }
+        else
+        {
+            Choices[0].Destination = 117;
+            Choices[0].Type = Choice::Type::NORMAL;
+            Choices[0].Skill = Skill::Type::NONE;
+        }
+    }
+};
+
 class Story093 : public Story::Base
 {
 public:
@@ -286,9 +372,33 @@ public:
 
         Choices.clear();
         Controls = ShopControls();
+
+        Shop = {
+            {Item::Type::WATERSKIN, 2},
+            {Item::Type::ROPE, 3},
+            {Item::Type::FIREBRAND, 2},
+            {Item::Type::POT_OF_DYE, 2},
+            {Item::Type::CHILLI_PEPPERS, 1}};
     }
 
     int Continue() { return 389; }
+};
+
+class Story096 : public Story::Base
+{
+public:
+    Story096()
+    {
+        ID = 96;
+        Text = "They succeed in dislodging several fat plums without disturbing any spiders. You watch as they squabble happily over the distribution of their spoils Apparently you were just unlucky in finding a tarantula in the fruit you tried to pick, but the incident has deadened your appetite and you continue on your way without stopping to collect any of the plums yourself.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Controls = StandardControls();
+    }
+
+    int Continue() { return 350; };
 };
 
 class Story116 : public Story::Base
@@ -310,6 +420,26 @@ public:
     }
 };
 
+class Story117 : public Story::Base
+{
+public:
+    Story117()
+    {
+        ID = 117;
+        Text = "\"I was very nearly bitten by a tarantula!\" you tell the peasant as he comes up to the side of the causeway.\n\nHe mops at his brow. \"They enjoy the cool and moisture under the bunches of fruit,\" he remarks. \"Sometimes I wish I too were a tarantula, and not a poor farmer who must toil in this sweltering heat.\"\n\nYou smile, familiar with the customary grumblings of peasants. \"Let us hope the rains will be abundant this year,\" you say by way of conversation. \"The crops grow worse because of the drought.\"\n\n\"In Yashuna the priests are holding a ceremony in honour of the Rain God,\" he says, nodding. Is it your imagination, or does a craft look come into his eye as he adds: \"My eldest son was going to attend the ceremony, but I need him to help me in the fields. Perhaps you would like to go in his place?\"\n\n\"I presume the priests would not appreciate all and sundry poking their nose into such sacred rituals.\"\n\n\"Quite so,\" he says. \"But I have here a jade bracelet which my son was told to wear. It authorizes him to take an intimate role in the proceedings. I could sell it to you for a cacao or two.\"\n\nYou study the bracelet he is holding out. It is in the shape of a water serpent with the glyph of the Rain God on its triangular head. \"In all candour, this is worth rather more than the sum mentioned,\" you reply cautiously.\n\nHe shrugs. \"I would be happy for any money at all in these hard times. Is it a deal, or not?";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Controls = ShopControls();
+
+        Shop = {{Item::Type::PAPAYA, 1}};
+
+        Bye = "Bidding the peasant good.day, you set off once more towards Yashuna";
+    }
+
+    int Continue() { return 163; }
+};
+
 class Story138 : public Story::Base
 {
 public:
@@ -327,13 +457,50 @@ public:
     }
 };
 
+class Story139 : public Story::Base
+{
+public:
+    Story139()
+    {
+        ID = 139;
+        Text = "Your bearing and accent immediately mark you as a member of the nobility. The peasant stands watching you with a sullen expression. \"In these times of drought my fruit is precious to me,\" he says. \"But I will sell you a PAPAYA for two cacao.\"\n\n\"Your fruit is infested with poisonous spiders,\" you reply proudly. I am doubtful whether it is worth the risk of picking it, drought or not.\"\n\nHe compresses his lips, biting back an angry retort out of deference to your status. \"One cacao, then,\" he says.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Controls = ShopControls();
+
+        Bye = "Bidding the peasant a curt good-day, you continue along the causeway towards Yashuna";
+
+        Shop = {{Item::Type::PAPAYA, 1}};
+    }
+
+    int Continue() { return 163; }
+};
+
+class Story163 : public Story::Base
+{
+public:
+    Story163()
+    {
+        ID = 163;
+        Text = "Travelling on, you see a group of small children gazing longingly at the fruit growing in the orchard beside the causeway. One of them finds a stick and goes over to prod at a bunch of juicy plums. In the light of your recent experience, you wonder if they might be in danger from tarantulas.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Abstract("Give some food from your own pack (MAIZE CAKES)", 186, Choice::Type::GIVE_ITEM, Item::Type::MAIZE_CAKES));
+        Choices.push_back(Choice::Abstract("Give some food from your own pack (PAPAYA)", 186, Choice::Type::GIVE_ITEM, Item::Type::PAPAYA));
+        Choices.push_back(Choice::Abstract("Stand by and watch them pick the fruit", 96, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story389 : public Story::Base
 {
 public:
     Story389()
     {
         ID = 389;
-        Title = "Necklace of Skulls: 389";
         Text = "You decide to set out early the next morning, before sunrise. This will spare your family from farewells. By lantern light in the chill grey predawn, you stand in the antechamber of your family's house and check your belongings for the journey. You are attended by only one servant, who silently fastens the straps of your pack. Your aunts have left out a parcel of MAIZE CAKES for you to eat on the road.\n\nThere is a knock on the outer door and the servant darts off to open it. Outside you see your friend the old soothsayer standing in the early twilight. You go out and greet him: \"Good morning. You came just in time to catch me. I'm about to set out.\"\n\n\"I know,\" he says. \"I came to wish you luck. And to give you this.\" He holds up a JADE BEAD.\n\nYou take it with a quizzical smile. \"What's this for?\"\n\n\"There are some who'll tell you that the quickest route to Necklace of Skulls lies through the underworld. It is true, but that way is also fraught with peril and you will need certain safeguards if you hope to pass through in safety. Now, beads such as this are placed under the tongue of deceased nobles for them to use as currency in the afterlife. If you should enter the underworld, be sure to place the bead under your tongue and to keep it there until you reach the crossroads. Got that?\"\n\n\"I suppose so,\" you say, not really following his drift at all. But you pocket the JADE BEAD. As you set out along the road, you pause and glance back, adding, \"You were wrong about the dream. It seems my brother was dead after all.\"\n\nHe shrugs. \"Right... wrong... The world isn't quite that simple, Evening Star.\"\n\nBidding him farewell, you set off towards the edge of the city. Even at this early hour, traders are already carrying their wares to market. Out in the fields, moving shadows in the smoky blue twilight show that the farmers are hard at work. It is strange to think that you might never again see this great city of Koba, which has been your home since childhood.\n\nYou turn your gaze to the west, putting such thoughts out of your head. From now on, you must think only of the success of your quest.";
         Image = "images/filler1.png";
 
@@ -389,16 +556,27 @@ void *findStory(int id)
 auto prologue = Prologue();
 auto story001 = Story001();
 auto story024 = Story024();
+auto story025 = Story025();
 auto story047 = Story047();
+auto story048 = Story048();
 auto story070 = Story070();
+auto story071 = Story071();
 auto story093 = Story093();
+auto story096 = Story096();
 auto story116 = Story116();
+auto story117 = Story117();
 auto story138 = Story138();
+auto story139 = Story139();
+auto story163 = Story163();
 auto story389 = Story389();
 
 void InitializeStories()
 {
-    Stories = {&prologue, &story001, &story024, &story047, &story070, &story093, &story116, &story138, &story389};
+    Stories = {
+        &prologue, &story001, &story024, &story025,
+        &story047, &story048, &story070, &story071,
+        &story093, &story096, &story116, &story117,
+        &story138, &story139, &story163, &story389};
 }
 
 #endif

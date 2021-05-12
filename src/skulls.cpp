@@ -213,6 +213,19 @@ void fillRect(SDL_Renderer *renderer, int w, int h, int x, int y, int color)
     SDL_RenderFillRect(renderer, &rect);
 }
 
+void drawRect(SDL_Renderer *renderer, int w, int h, int x, int y, int color)
+{
+    SDL_Rect rect;
+
+    rect.w = w;
+    rect.h = h;
+    rect.x = x;
+    rect.y = y;
+
+    SDL_SetRenderDrawColor(renderer, R(color), G(color), B(color), A(color));
+    SDL_RenderDrawRect(renderer, &rect);
+}
+
 void putText(SDL_Renderer *renderer, const char *text, TTF_Font *font, int space, SDL_Color fg, Uint32 bg, int style, int w, int h, int x, int y)
 {
     if (renderer)
@@ -395,7 +408,7 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
             bool scrollDown = false;
             bool hold = false;
 
-            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+            quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
             if (selected && current >= 0 && current < controls.size() && controls[current].Type == Control::Type::BACK)
             {
@@ -445,7 +458,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
             bool scrollDown = false;
             bool hold = false;
 
-            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+            quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
             if (selected && current >= 0 && current < controls.size() && controls[current].Type == Control::Type::BACK)
             {
@@ -567,7 +580,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
                 bool scrollDown = false;
                 bool hold = false;
 
-                quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+                quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
                 if (selected && current >= 0 && current < controls.size() && controls[current].Type == Control::Type::BACK)
                 {
@@ -637,6 +650,10 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
         controls.push_back(Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
         controls.push_back(Button(idx + 3, "images/back-button.png", idx + 2, idx + 3, idx - 1, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+
         while (!quit)
         {
             if (story->Title)
@@ -650,7 +667,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
             {
                 if ((SDL_GetTicks() - start_ticks) < message_duration)
                 {
-                    // display error message here
+                    putText(renderer, message, font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
                 }
                 else
                 {
@@ -678,20 +695,11 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
             {
                 if (i != current)
                 {
-                    SDL_SetRenderDrawColor(renderer, R(intDB), G(intDB), B(intDB), A(intDB));
-
-                    SDL_Rect rect;
-
-                    rect.w = controls[i].W + 16;
-                    rect.h = controls[i].H + 16;
-                    rect.x = controls[i].X - 8;
-                    rect.y = controls[i].Y - 8;
-
-                    SDL_RenderDrawRect(renderer, &rect);
+                    drawRect(renderer, controls[i].W + 16, controls[i].H + 16, controls[i].X - 8, controls[i].Y - 8, intDB);
                 }
             }
 
-            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+            quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
             if (selected)
             {
@@ -717,6 +725,25 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
 
                             break;
                         }
+                        else if (story->Choices[current].Type == Choice::Type::GIVE_ITEM)
+                        {
+                            if (Character::VERIFY_ITEM(Player, story->Choices[current].Item))
+                            {
+                                Character::LOSE_ITEM(Player, {story->Choices[current].Item});
+
+                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                quit = true;
+
+                                break;
+                            }
+                            else
+                            {
+                                message = "You do not have the required item!";
+                                start_ticks = SDL_GetTicks();
+                                error = true;
+                            }
+                        }
                         else if (story->Choices[current].Type == Choice::Type::SKILL)
                         {
                             if (Character::VERIFY_SKILL(Player, story->Choices[current].Skill))
@@ -729,9 +756,9 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
                             }
                             else
                             {
+                                message = "You do not possess the required skill!";
                                 start_ticks = SDL_GetTicks();
                                 error = true;
-                                message = std::string("You do not possess the required skill").c_str();
                             }
                         }
                     }
@@ -761,6 +788,15 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
                     break;
                 }
             }
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+
+            TTF_Quit();
         }
 
         if (splash)
@@ -861,7 +897,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
                     story->Event();
                 }
 
-                quit = getInput(renderer, story->Controls, current, selected, scrollUp, scrollDown, hold);
+                quit = Input::GetInput(renderer, story->Controls, current, selected, scrollUp, scrollDown, hold);
 
                 if ((selected && current >= 0 && current < story->Controls.size()) || scrollUp || scrollDown || hold)
                 {
@@ -918,6 +954,26 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
 
                         if (next->ID != story->ID)
                         {
+                            if (story->Bye)
+                            {
+                                auto bye = createText(story->Bye, "fonts/default.ttf", 24, clrBK, (SCREEN_WIDTH * (1.0 - 2.0 * Margin)), TTF_STYLE_NORMAL);
+
+                                if (bye)
+                                {
+                                    fillWindow(renderer, intWH);
+
+                                    renderText(renderer, bye, intBE, (SCREEN_WIDTH - bye->w) / 2, (SCREEN_HEIGHT - bye->h) / 2, SCREEN_HEIGHT, 0);
+
+                                    SDL_RenderPresent(renderer);
+
+                                    Input::WaitForNext();
+
+                                    SDL_FreeSurface(bye);
+
+                                    bye = NULL;
+                                }
+                            }
+
                             story = next;
 
                             break;
@@ -1006,7 +1062,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
             bool scrollDown = false;
             bool hold = false;
 
-            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+            quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
             if (selected && current >= 0 && current < controls.size())
             {

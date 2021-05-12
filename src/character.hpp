@@ -195,6 +195,23 @@ namespace Character
         }
     }
 
+    void LOSE_ITEM(Character::Abstract &character, std::vector<Item::Type> items)
+    {
+        if (character.Items.size() > 0 && items.size() > 0)
+        {
+            for (auto i = 0; i < items.size(); i++)
+            {
+                auto result = std::find(character.Items.begin(), character.Items.end(), items[i]);
+
+                if (result != character.Items.end())
+                {
+                    character.Items.erase(result);
+                }
+            }
+        }
+    }
+
+
 } // namespace Character
 
 Character::Abstract Player;
