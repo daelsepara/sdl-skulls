@@ -431,7 +431,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
     return quit;
 }
 
-Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
+Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
 {
     Story::Base *next = &notImplemented;
 
@@ -605,13 +605,13 @@ Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Ba
     return next;
 }
 
-Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
+Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
 {
     Story::Base *next = &notImplemented;
 
     if (story->Choices.size() > 0)
     {
-        next = renderChoices(window, renderer, story);
+        next = processChoices(window, renderer, story);
     }
     else
     {
@@ -738,7 +738,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
 
                         selected = false;
 
-                        auto next = processChoices(window, renderer, story);
+                        auto next = renderChoices(window, renderer, story);
 
                         if (next->ID != story->ID)
                         {
