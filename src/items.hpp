@@ -13,8 +13,9 @@ namespace Item
         MAIZE_CAKES,
         JADE_BEAD,
         LETTER_OF_INTRODUCTION,
+        MAN_OF_GOLD,
         First = SWORD,
-        Last = LETTER_OF_INTRODUCTION
+        Last = MAN_OF_GOLD
     };
 
     std::map<Item::Type, const char *> Descriptions = {
@@ -24,7 +25,8 @@ namespace Item
         {Item::Type::MAGIC_WAND, "MAGIC WAND"},
         {Item::Type::MAIZE_CAKES, "MAIZE CAKES"},
         {Item::Type::JADE_BEAD, "JADE BEAD"},
-        {Item::Type::LETTER_OF_INTRODUCTION, "LETTER OF INTRODUCTION"}};
+        {Item::Type::LETTER_OF_INTRODUCTION, "LETTER OF INTRODUCTION"},
+        {Item::Type::MAN_OF_GOLD, "MAN OF GOLD"}};
 
 } // namespace Item
 #endif

@@ -15,6 +15,7 @@ namespace Choice
     {
         NORMAL = 0, // No requirements
         ITEM,
+        GET_ITEM,
         SKILL,
         CODEWORD,
         MONEY,
@@ -85,6 +86,14 @@ namespace Choice
             Text = text;
             Destination = destination;
             Type = type;
+        }
+
+        Abstract(const char *text, int destination, Choice::Type type, Item::Type item)
+        {
+            Text = text;
+            Destination = destination;
+            Type = type;
+            Item = item;
         }
     };
 }
@@ -199,7 +208,6 @@ public:
     Story001()
     {
         ID = 1;
-        Title = "Necklace of Skulls: 001";
         Text = "Seeking an audience with the Matriarch of your clan, you are shown into a narrow steep-vaulted hall. Sunlight burns through the high window slits to leave hovering blocks of dazzling yellow light on the whitewashed wall, but the room is cool.\n\nThe Matriarch sits cross-legged on a stone bench at the end of the room, below a large painted glyph which is the symbol of the clan. A stout woman in late middle-age, she has a soft and even jolly appearance which is belied by the look of stern contemplation in her eyes. The beads sewn across here cotton mantle make a rustling sound as she waves you towards a straw mat. You bow in greeting before sitting, and a servant brings you a cup of frothy peppered cocoa.\n\nThe Matriarch fixes you with her glass-bead gaze. \"Evening Star, I understand you wish to leave Koba and travel in search of your brother.\"\n\n\"I must learn what has happened to him, my lady. If he is alive, perhaps I can rescue him; if dead, it is my duty to avenge him.\"\n\nThe Matriarch folds her fat jade-ringed fingers and rests her chin on them, watching you as though weighing the worth of your soul. \"You speak of duty,\" she says. \"Have you no duty to your clan here in Koba? Does honour demand that we lose another scion in pursuit of a hopeless quest?\"\n\nYou sip cocoa while considering your next words carefully.";
         Image = "images/filler1.png";
 
@@ -218,7 +226,6 @@ public:
     Story024()
     {
         ID = 24;
-        Title = "Necklace of Skulls: 024";
         Text = "Convinced though you are by the strength of this argument, the Matriarch seems unimpressed. \"I wonder what you will find?\" she muses. \"The truth as to Morning Star's fate, perhaps. But also you may discover a deeper truth.\"\n\nShe turns aside to gaze up at the shimmering sunbeams slanting through the windows, showing her profile in an expression of disdain. \"You are useless to the clan until you learn wisdom, Evening Star. Depart whenever you wish.\"\n\nShe says nothing more. Awkwardly, you get to your feet and retreat from the room with a hesitant bow.";
         Image = "images/filler1.png";
 
@@ -235,13 +242,12 @@ public:
     Story047()
     {
         ID = 47;
-        Title = "Necklace of Skulls: 047";
         Text = "\"What would others think of our clan,\" you assert, \"if we meekly ignored the loss of my brother? Honour is like the sun: it cannot hide its face.\"\n\nThe Matriarch thrusts her head forward and stares at you along the great hook of her nose. Perched thus on her stone seat, she reminds you of a fat owl watching a mouse. You begin to fear you have offended her with your frank answer, but then to your relief she gives a rumble of approving laughter. \"Well said, young Evening Star. How like your brother you are -- and both of you like your late father, always brimming over with impatient courage.\"\n\nYou set down your cup. \"Then have I your leave to go, my lady?\"\n\nShe nods. \"Yes, but since your determination glorifies the clan, I feel that the clan should give you assistance in this quest. Consider what help you need most, Evening Star. I could arrange for you to have an audience with one of our high priests, and you could seek their advice. Or I could allow you to equip yourself with the clan's special ancestral treasures. Or would you prefer a companion on your quest?\"";
         Image = "images/filler1.png";
 
         Choices.clear();
         Choices.push_back(Choice::Abstract("Request a meeting with one of the high priests", 116, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Abstract("Ask to see the ancestral treasures of the clan", 47, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Abstract("Ask to see the ancestral treasures of the clan", 138, Choice::Type::NORMAL));
         Choices.push_back(Choice::Abstract("You think a companion would be useful", 162, Choice::Type::NORMAL));
 
         Controls = StandardControls();
@@ -254,7 +260,6 @@ public:
     Story070()
     {
         ID = 70;
-        Title = "Necklace of Skulls: 070";
         Text = "\"I can give no easy answer, my lady,\" you tell the Matriarch. \"I do not wish to shirk my duty to the clan that has nurtured me, but neither can I ignore the demands of my heart. I must go in search of my brother, since I cannot rest until I know whether he is alive or dead.\"\n\nShe heaves a deep sigh, more of resignation than disapproval. \"I know you could not be dissuaded,\" she says. \"You have your late father's impetuosity. Morning Star shared that same quality. It is the mark of a hero -- but beware, Evening Star, for it can also get you killed.\"\n\n\"I understand. I have your permission to undertake this quest, then?\"\n\n\"You have.\" She produces a letter and hands it to you. \"Take this to the town of Balak on the northern coast. Ask there for a girl named Midnight Bloom. She is a distant cousin of yours. Present her with this letter, which will introduce you and request her assistance in your quest.\"\n\n\"How can she assist me?\" you ask, taking the LETTER OF INTRODUCTION.\n\n\"She is skilled in coastal trade, and will convey you by ship to Tahil. May the gods watch over you, Evening Star.\"\n\nYou rise and bow, as you leave, your heart is full of excitement.";
         Image = "images/filler1.png";
 
@@ -276,7 +281,6 @@ public:
     Story093()
     {
         ID = 93;
-        Title = "Necklace of Skulls: 093";
         Text = "Realizing there are things you will need on your travels, you head to the market. Here, under a long colonnade festooned with coloured rugs, you can usually find almost anything. Unfortunately it is now late afternoon and many of the traders have packed up their wares and gone home, driven off by the waves of heat rising from the adjacent plaza.\n\nMaking your way along the colonnade, you identify the different goods at a glance according to the colours of the rugs. Green indicates sellers of maize, while yellow and red are used for other foodstuffs. Black is the colour of stone or glass items, with the addition of grey frets signifying weaponry. Wooden products are set out on ochre cloth, and white is reserved for clay pottery.\n\nSoon you have found a few items which might prove useful. You count the cacao in your money-pouch while considering which to buy.";
         Image = "images/filler1.png";
 
@@ -285,6 +289,42 @@ public:
     }
 
     int Continue() { return 389; }
+};
+
+class Story116 : public Story::Base
+{
+public:
+    Story116()
+    {
+        ID = 116;
+        Text = "Which temple do you wish to visit?";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Abstract("Visit the temple of the War God", 231, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Abstract("Vist the temple of the Moon Goddess", 254, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Abstract("Visit the temple of the Death God", 277, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Abstract("You do not think any of the priests will be of much help,and would ask the Matriarch to let you have some of the clan treasures", 138, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story138 : public Story::Base
+{
+public:
+    Story138()
+    {
+        ID = 138;
+        Text = "The Matriarch speaks to a servant, who goes bustling out and returns shortly leading two slaves bearing a large wooden chest. This is set down in front of the Matriarch's seat and the two slaves are ushered outside before it can be opened. The Matriarch beckons you over. \"These,\" she says, delving into the interior of the chest, \"are the treasures of our ancestors.\"\n\nA golden figuring catches your eye. It is in the form of a muscular naked man with an elongated forehead. \"What is this?\" you ask.\n\nThe Man of Gold -- most ancient of all our treasures. It is said that in the earliest days of the world, the gods experimented with various substances to create life. One of the lesser gods tried using gold, but because it was so scarce he could only make a small human.\"\n\nYou lift the the MAN OF GOLD with a sense of awe. \"Is it alive, then?\"\n\n\"If you hold it in your hands long enough, it will come to life through your body's warmth. Then it will serve you with great strength and skill -- but only once.\"\n\n\"Only once?\" you ask. \"If it only works once, how does anyone know this?\"\n\nThe Matriarch responds with a sly wink. \"You have to trust your elders sometimes, Evening Star. Now, do you want the MAN OF GOLD or would you rather take a look at the other treasures?\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Abstract("Take the MAN OF GOLD", 93, Choice::Type::GET_ITEM, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Abstract("Choose from the rest of the treasures", 185, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
 };
 
 class Story389 : public Story::Base
@@ -352,11 +392,13 @@ auto story024 = Story024();
 auto story047 = Story047();
 auto story070 = Story070();
 auto story093 = Story093();
+auto story116 = Story116();
+auto story138 = Story138();
 auto story389 = Story389();
 
 void InitializeStories()
 {
-    Stories = {&prologue, &story001, &story024, &story047, &story070, &story093, &story389};
+    Stories = {&prologue, &story001, &story024, &story047, &story070, &story093, &story116, &story138, &story389};
 }
 
 #endif

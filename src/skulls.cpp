@@ -707,6 +707,16 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
 
                             break;
                         }
+                        else if (story->Choices[current].Type == Choice::Type::GET_ITEM)
+                        {
+                            Character::GET_ITEMS(Player, {story->Choices[current].Item});
+
+                            next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                            quit = true;
+
+                            break;
+                        }
                         else if (story->Choices[current].Type == Choice::Type::SKILL)
                         {
                             if (Character::VERIFY_SKILL(Player, story->Choices[current].Skill))
@@ -816,8 +826,15 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
 
             while (!quit)
             {
-                SDL_SetWindowTitle(window, story->Title);
-                
+                if (story->Title)
+                {
+                    SDL_SetWindowTitle(window, story->Title);
+                }
+                else
+                {
+                    SDL_SetWindowTitle(window, (std::string("Necklace of Skulls: ") + std::to_string(story->ID)).c_str());
+                }
+
                 // Fill the surface with background color
                 fillWindow(renderer, intWH);
 
@@ -952,8 +969,6 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
     InitializeStories();
 
-    Player = Character::WARRIOR;
-
     auto storyID = 0;
 
     // Render window
@@ -998,6 +1013,8 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
                 switch (controls[current].Type)
                 {
                 case Control::Type::NEW:
+
+                    Player = Character::WARRIOR;
 
                     renderWindow(window, renderer, storyScreen, storyID);
 
