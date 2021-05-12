@@ -179,12 +179,12 @@ namespace Character
         return character.Items.size() <= Character::ITEM_LIMIT;
     }
 
-    void GET_ITEMS(Character::Abstract character, std::vector<Item::Type> items)
+    void GET_ITEMS(Character::Abstract &character, std::vector<Item::Type> items)
     {
         character.Items.insert(character.Items.end(), items.begin(), items.end());
     }
 
-    void GET_UNIQUE_ITEMS(Character::Abstract character, std::vector<Item::Type> items)
+    void GET_UNIQUE_ITEMS(Character::Abstract &character, std::vector<Item::Type> items)
     {
         for (auto i = 0; i < items.size(); i++)
         {

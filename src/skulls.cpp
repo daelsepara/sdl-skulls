@@ -213,11 +213,13 @@ void fillRect(SDL_Renderer *renderer, int w, int h, int x, int y, int color)
     SDL_RenderFillRect(renderer, &rect);
 }
 
-void putText(SDL_Renderer *renderer, const char *text, const char *font, int fontsize, int space, SDL_Color fg, Uint32 bg, int style, int w, int h, int x, int y)
+void putText(SDL_Renderer *renderer, const char *text, TTF_Font *font, int space, SDL_Color fg, Uint32 bg, int style, int w, int h, int x, int y)
 {
     if (renderer)
     {
-        auto surface = createText(text, font, fontsize, fg, w - 2 * space, style);
+        TTF_SetFontStyle(font, style);
+
+        auto surface = TTF_RenderText_Blended_Wrapped(font, text, fg, w - 2 * space);
 
         if (surface)
         {
@@ -478,7 +480,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
         const int map_buttonh = 48;
         const int map_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - map_buttonh);
         const int profilew = SCREEN_WIDTH * (1.0 - 2.0 * Margin);
-        const int profileh = 80;
+        const int profileh = 70;
 
         std::vector<Button> controls = {Button(0, "images/back-button.png", 0, 0, -1, -1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK)};
 
@@ -488,9 +490,10 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
         auto font_size = 20;
 
         auto marginw = Margin * SCREEN_WIDTH;
-        auto marginh = Margin * SCREEN_HEIGHT;
+        auto marginh = Margin * SCREEN_HEIGHT / 2;
 
         std::string skills;
+
         for (auto i = 0; i < Player.Skills.size(); i++)
         {
             if (i > 0)
@@ -504,33 +507,82 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
         auto boxw = (profilew - marginw) / 2;
         auto boxh = (profileh) / 2;
 
-        while (!quit)
+        std::string possessions;
+
+        for (auto i = 0; i < Player.Items.size(); i++)
         {
-            // Fill the surface with background color
-            fillWindow(renderer, intWH);
-
-            putText(renderer, Player.Name, "fonts/default.ttf", font_size, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty);
-            putText(renderer, Player.Description, "fonts/default.ttf", font_size, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
-            putText(renderer, "Skills", "fonts/default.ttf", font_size, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + headerh + marginh);
-            putText(renderer, skills.c_str(), "fonts/default.ttf", font_size, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, boxh, startx, starty + profileh + 2 * headerh + marginh);
-
-            putText(renderer, "Money", "fonts/default.ttf", font_size, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 2 * headerh + 2 * marginh + boxh);
-            putText(renderer, (std::to_string(Player.Money) + " cacao").c_str(), "fonts/default.ttf", font_size, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx, starty + profileh + 3 * headerh + 2 * marginh + boxh);
-            putText(renderer, "Life", "fonts/default.ttf", font_size, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx + boxw + marginw, starty + profileh + 2 * headerh + 2 * marginh + boxh);
-            putText(renderer, std::to_string(Player.Life).c_str(), "fonts/default.ttf", font_size, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx + boxw + marginw, starty + profileh + 3 * headerh + 2 * marginh + boxh);
-
-            renderButtons(renderer, controls, current, intGR, 8, 4);
-
-            bool scrollUp = false;
-            bool scrollDown = false;
-            bool hold = false;
-
-            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
-
-            if (selected && current >= 0 && current < controls.size() && controls[current].Type == Control::Type::BACK)
+            if (i > 0)
             {
-                break;
+                possessions += ", ";
             }
+
+            possessions += Item::Descriptions.at(Player.Items[i]);
+        }
+
+        std::string codewords;
+
+        for (auto i = 0; i < Player.Codewords.size(); i++)
+        {
+            if (i > 0)
+            {
+                codewords += ", ";
+            }
+
+            codewords += Codeword::Descriptions.at(Player.Codewords[i]);
+        }
+
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", font_size);
+
+        if (font)
+        {
+            while (!quit)
+            {
+                // Fill the surface with background color
+                fillWindow(renderer, intWH);
+
+                putText(renderer, Player.Name, font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty);
+                putText(renderer, Player.Description, font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
+                putText(renderer, "Skills", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + headerh + marginh);
+                putText(renderer, skills.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, boxh, startx, starty + profileh + 2 * headerh + marginh);
+
+                putText(renderer, "Money", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 2 * headerh + 2 * marginh + boxh);
+                putText(renderer, (std::to_string(Player.Money) + " cacao").c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx, starty + profileh + 3 * headerh + 2 * marginh + boxh);
+                putText(renderer, "Life", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx + boxw + marginw, starty + profileh + 2 * headerh + 2 * marginh + boxh);
+                putText(renderer, std::to_string(Player.Life).c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx + boxw + marginw, starty + profileh + 3 * headerh + 2 * marginh + boxh);
+
+                putText(renderer, "Possessions", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 3 * headerh + 3 * marginh + 2 * boxh);
+                putText(renderer, possessions.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + profileh + 4 * headerh + 3 * marginh + 2 * boxh);
+
+                if (Player.Codewords.size() > 0)
+                {
+                    putText(renderer, "Codewords", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + 2 * profileh + 4 * headerh + 4 * marginh + 2 * boxh);
+                    putText(renderer, codewords.c_str(), font, space, clrBK, intBE, TTF_STYLE_ITALIC, profilew - buttonw - 2 * space, profileh, startx, starty + 2 * profileh + 5 * headerh + 4 * marginh + 2 * boxh);
+                }
+
+                renderButtons(renderer, controls, current, intGR, space, space / 2);
+
+                bool scrollUp = false;
+                bool scrollDown = false;
+                bool hold = false;
+
+                quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+                if (selected && current >= 0 && current < controls.size() && controls[current].Type == Control::Type::BACK)
+                {
+                    break;
+                }
+            }
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+
+            TTF_Quit();
         }
     }
 
