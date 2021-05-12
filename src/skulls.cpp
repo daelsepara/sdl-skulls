@@ -807,8 +807,6 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
         // Render the image
         if (window && renderer)
         {
-            SDL_SetWindowTitle(window, story->Title);
-
             auto scrollSpeed = 20;
             auto hold = false;
 
@@ -818,6 +816,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
 
             while (!quit)
             {
+                SDL_SetWindowTitle(window, story->Title);
+                
                 // Fill the surface with background color
                 fillWindow(renderer, intWH);
 
