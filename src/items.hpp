@@ -10,6 +10,8 @@ namespace Item
         BLOWGUN,
         MAGIC_AMULET,
         MAGIC_WAND,
+        MAIZE_CAKES,
+        JADE_BEAD,
         First = SWORD,
         Last = BLOWGUN
     };

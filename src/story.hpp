@@ -4,8 +4,10 @@
 #include <vector>
 #include "constants.hpp"
 #include "controls.hpp"
+#include "codewords.hpp"
 #include "items.hpp"
 #include "skills.hpp"
+#include "character.hpp"
 
 namespace Choice
 {
@@ -113,7 +115,7 @@ namespace Story
         virtual int Background() { return -1; };
 
         // Handle events before story branches
-        virtual int Event() { return -1; };
+        virtual void Event() { };
 
         // Jump to next section
         virtual int Continue() { return -1; };
@@ -295,6 +297,11 @@ public:
     }
 
     int Continue() { return 25; }
+
+    void Event()
+    {
+        Character::GET_ITEMS(Player, {Item::Type::JADE_BEAD, Item::Type::MAIZE_CAKES});
+    }
 };
 
 class NotImplemented : public Story::Base

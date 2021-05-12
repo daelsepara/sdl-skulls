@@ -657,11 +657,6 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
             auto current = -1;
             auto offset = 0;
 
-            if (run_once)
-            {
-                run_once = false;
-            }
-
             while (!quit)
             {
                 // Fill the surface with background color
@@ -692,6 +687,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
 
                 bool scrollUp = false;
                 bool scrollDown = false;
+
+                if (run_once)
+                {
+                    run_once = false;
+
+                    story->Event();
+                }
 
                 quit = getInput(renderer, story->Controls, current, selected, scrollUp, scrollDown, hold);
 
