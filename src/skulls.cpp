@@ -175,12 +175,6 @@ void renderText(SDL_Renderer *renderer, SDL_Surface *text, Uint32 bg, int x, int
     }
 }
 
-void fillWindow(SDL_Renderer *renderer, Uint32 color)
-{
-    SDL_SetRenderDrawColor(renderer, R(color), G(color), B(color), A(color));
-    SDL_RenderClear(renderer);
-}
-
 // create text image with line wrap limit
 SDL_Surface *createText(const char *text, const char *ttf, int font_size, SDL_Color textColor, int wrap, int style = TTF_STYLE_NORMAL)
 {
@@ -204,6 +198,44 @@ SDL_Surface *createText(const char *text, const char *ttf, int font_size, SDL_Co
     TTF_Quit();
 
     return surface;
+}
+
+void fillRect(SDL_Renderer *renderer, int w, int h, int x, int y, int color)
+{
+    SDL_Rect rect;
+
+    rect.w = w;
+    rect.h = h;
+    rect.x = x;
+    rect.y = y;
+
+    SDL_SetRenderDrawColor(renderer, R(color), G(color), B(color), A(color));
+    SDL_RenderFillRect(renderer, &rect);
+}
+
+void putText(SDL_Renderer *renderer, const char *text, const char *font, int fontsize, int space, SDL_Color fg, Uint32 bg, int style, int w, int h, int x, int y)
+{
+    if (renderer)
+    {
+        auto surface = createText(text, font, fontsize, fg, w - 2 * space, style);
+
+        if (surface)
+        {
+            fillRect(renderer, w, h, x, y, bg);
+
+            renderText(renderer, surface, bg, x + space, y + space, h - 2 * space, 0);
+
+            SDL_FreeSurface(surface);
+
+            surface = NULL;
+        }
+    }
+}
+
+void fillWindow(SDL_Renderer *renderer, Uint32 color)
+{
+    SDL_SetRenderDrawColor(renderer, R(color), G(color), B(color), A(color));
+    SDL_RenderClear(renderer);
 }
 
 void renderTextButtons(SDL_Renderer *renderer, std::vector<TextButton> controls, const char *ttf, int selected, SDL_Color fg, Uint32 bg, Uint32 bgSelected, int fontsize, int style = TTF_STYLE_NORMAL)
@@ -346,7 +378,7 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         auto about_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
 
-        std::vector<TextButton> controls = {TextButton(0, "Back", 0, 0, 0, 0, startx, about_buttony, about_buttonh, about_buttonh, Control::Type::BACK)};
+        std::vector<TextButton> controls = {TextButton(0, "Back", 0, 0, 0, 0, startx, about_buttony, about_buttonw, about_buttonh, Control::Type::BACK)};
 
         while (!quit)
         {
@@ -429,7 +461,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
 
 bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
-    std::string title = "Necklace of Skulls: " + std::string(Player.Name);
+    std::string title = "Necklace of Skulls: Adventure Sheet";
 
     auto quit = false;
 
@@ -445,15 +477,49 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
         const int map_buttonw = 150;
         const int map_buttonh = 48;
         const int map_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - map_buttonh);
+        const int profilew = SCREEN_WIDTH * (1.0 - 2.0 * Margin);
+        const int profileh = 80;
 
-        std::vector<TextButton> controls = {TextButton(0, "Back", 0, 0, 0, 0, startx, map_buttony, map_buttonw, map_buttonh, Control::Type::BACK)};
+        std::vector<Button> controls = {Button(0, "images/back-button.png", 0, 0, -1, -1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK)};
+
+        auto headerw = 150;
+        auto headerh = 36;
+        auto space = 8;
+        auto font_size = 20;
+
+        auto marginw = Margin * SCREEN_WIDTH;
+        auto marginh = Margin * SCREEN_HEIGHT;
+
+        std::string skills;
+        for (auto i = 0; i < Player.Skills.size(); i++)
+        {
+            if (i > 0)
+            {
+                skills += ", ";
+            }
+
+            skills += Player.Skills[i].Name;
+        }
+
+        auto boxw = (profilew - marginw) / 2;
+        auto boxh = (profileh) / 2;
 
         while (!quit)
         {
             // Fill the surface with background color
-            fillWindow(renderer, intDB);
+            fillWindow(renderer, intWH);
 
-            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
+            putText(renderer, Player.Name, "fonts/default.ttf", font_size, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty);
+            putText(renderer, Player.Description, "fonts/default.ttf", font_size, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
+            putText(renderer, "Skills", "fonts/default.ttf", font_size, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + headerh + marginh);
+            putText(renderer, skills.c_str(), "fonts/default.ttf", font_size, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, boxh, startx, starty + profileh + 2 * headerh + marginh);
+
+            putText(renderer, "Money", "fonts/default.ttf", font_size, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 2 * headerh + 2 * marginh + boxh);
+            putText(renderer, (std::to_string(Player.Money) + " cacao").c_str(), "fonts/default.ttf", font_size, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx, starty + profileh + 3 * headerh + 2 * marginh + boxh);
+            putText(renderer, "Life", "fonts/default.ttf", font_size, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx + boxw + marginw, starty + profileh + 2 * headerh + 2 * marginh + boxh);
+            putText(renderer, std::to_string(Player.Life).c_str(), "fonts/default.ttf", font_size, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx + boxw + marginw, starty + profileh + 3 * headerh + 2 * marginh + boxh);
+
+            renderButtons(renderer, controls, current, intGR, 8, 4);
 
             bool scrollUp = false;
             bool scrollDown = false;
@@ -552,15 +618,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
                 }
             }
 
-            SDL_Rect textwindow;
-
-            textwindow.w = textwidth + arrow_size + button_space;
-            textwindow.h = text_bounds;
-            textwindow.x = textx;
-            textwindow.y = texty;
-
-            SDL_SetRenderDrawColor(renderer, R(intBE), G(intBE), B(intBE), A(intBE));
-            SDL_RenderFillRect(renderer, &textwindow);
+            fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
             renderButtons(renderer, controls, current, intGR, 8, 4);
 
@@ -718,17 +776,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
 
                 if (story->Text)
                 {
-                    SDL_SetRenderDrawColor(renderer, R(intBE), G(intBE), B(intBE), A(intBE));
-
-                    SDL_Rect textwindow;
-
-                    textwindow.x = textx;
-                    textwindow.y = texty;
-                    textwindow.w = textwidth;
-                    textwindow.h = text_bounds;
-
-                    SDL_RenderFillRect(renderer, &textwindow);
-
+                    fillRect(renderer, textwidth, text_bounds, textx, texty, intBE);
                     renderText(renderer, text, intBE, textx + 8, texty + 8, text_bounds - 16, offset);
                 }
 
