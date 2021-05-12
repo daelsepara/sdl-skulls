@@ -33,6 +33,10 @@ This is an implementation of the **Necklace of Skulls** game book (Virtual Reali
 
 ![Making a choice](/screenshots/making-choices.png)
 
+**Adventure Sheet**
+
+![Adventure Sheet](/screenshots/adventure-sheet.png)
+
 # Copyright Information 
 
 ```
