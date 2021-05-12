@@ -115,7 +115,7 @@ namespace Story
         virtual int Background() { return -1; };
 
         // Handle events before story branches
-        virtual void Event() { };
+        virtual void Event(){};
 
         // Jump to next section
         virtual int Continue() { return -1; };

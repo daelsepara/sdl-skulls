@@ -346,9 +346,7 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         auto about_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - buttonh);
 
-        auto controls = std::vector<TextButton>();
-
-        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, about_buttony, about_buttonw, about_buttonh, Control::Type::BACK));
+        std::vector<TextButton> controls = {TextButton(0, "Back", 0, 0, 0, 0, startx, about_buttony, about_buttonh, about_buttonh, Control::Type::BACK)};
 
         while (!quit)
         {
@@ -399,9 +397,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
         const int map_buttonh = 48;
         const int map_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - map_buttonh);
 
-        auto controls = std::vector<TextButton>();
-
-        controls.push_back(TextButton(0, "Back", 0, 0, 0, 0, startx, map_buttony, map_buttonw, map_buttonh, Control::Type::BACK));
+        std::vector<TextButton> controls = {TextButton(0, "Back", 0, 0, 0, 0, startx, map_buttony, map_buttonw, map_buttonh, Control::Type::BACK)};
 
         while (!quit)
         {
@@ -429,6 +425,50 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
     }
 
     return quit;
+}
+
+bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
+{
+    std::string title = "Necklace of Skulls: " + std::string(Player.Name);
+
+    auto quit = false;
+
+    // Render the image
+    if (window && renderer)
+    {
+
+        SDL_SetWindowTitle(window, title.c_str());
+
+        auto selected = false;
+        auto current = -1;
+
+        const int map_buttonw = 150;
+        const int map_buttonh = 48;
+        const int map_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - map_buttonh);
+
+        std::vector<TextButton> controls = {TextButton(0, "Back", 0, 0, 0, 0, startx, map_buttony, map_buttonw, map_buttonh, Control::Type::BACK)};
+
+        while (!quit)
+        {
+            // Fill the surface with background color
+            fillWindow(renderer, intDB);
+
+            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
+
+            bool scrollUp = false;
+            bool scrollDown = false;
+            bool hold = false;
+
+            quit = getInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected && current >= 0 && current < controls.size() && controls[current].Type == Control::Type::BACK)
+            {
+                break;
+            }
+        }
+    }
+
+    return false;
 }
 
 Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
@@ -476,7 +516,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
 
         controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP));
         controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
-        controls.push_back(Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::GAME));
+        controls.push_back(Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
         controls.push_back(Button(idx + 3, "images/back-button.png", idx + 2, idx + 3, idx - 1, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         while (!quit)
@@ -575,6 +615,14 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
                             }
                         }
                     }
+                }
+                else if (controls[current].Type == Control::Type::CHARACTER && !hold)
+                {
+                    renderWindow(window, renderer, characterScreen);
+
+                    current = -1;
+
+                    selected = false;
                 }
                 else if (controls[current].Type == Control::Type::MAP && !hold)
                 {
@@ -726,6 +774,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
                                 offset = text->h - text_bounds + 16;
                             }
                         }
+                    }
+                    else if (story->Controls[current].Type == Control::Type::CHARACTER && !hold)
+                    {
+                        renderWindow(window, renderer, characterScreen);
+
+                        current = -1;
+
+                        selected = false;
                     }
                     else if (story->Controls[current].Type == Control::Type::MAP && !hold)
                     {
