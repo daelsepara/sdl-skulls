@@ -518,6 +518,65 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
     return quit;
 }
 
+void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Character::Base &player)
+{
+    auto main_buttonh = 48;
+
+    const int profilew = SCREEN_WIDTH * (1.0 - 2.0 * Margin);
+    const int profileh = 70;
+
+    auto headerw = 150;
+    auto headerh = 36;
+    auto space = 8;
+    auto font_size = 18;
+
+    auto marginw = Margin * SCREEN_WIDTH;
+    auto marginh = Margin * SCREEN_HEIGHT / 2;
+
+    std::string skills;
+
+    for (auto i = 0; i < player.Skills.size(); i++)
+    {
+        if (i > 0)
+        {
+            skills += ", ";
+        }
+
+        skills += player.Skills[i].Name;
+    }
+
+    auto boxw = (profilew - marginw) / 2;
+    auto boxh = (profileh) / 2;
+
+    std::string possessions;
+
+    for (auto i = 0; i < player.Items.size(); i++)
+    {
+        if (i > 0)
+        {
+            possessions += ", ";
+        }
+
+        possessions += Item::Descriptions.at(player.Items[i]);
+    }
+
+    // Fill the surface with background color
+    fillWindow(renderer, intWH);
+
+    putText(renderer, player.Name, font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty);
+    putText(renderer, player.Description, font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
+    putText(renderer, "Skills", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + headerh + marginh);
+    putText(renderer, skills.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, boxh, startx, starty + profileh + 2 * headerh + marginh);
+
+    putText(renderer, "Money", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 2 * headerh + 2 * marginh + boxh);
+    putText(renderer, (std::to_string(player.Money) + " cacao").c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx, starty + profileh + 3 * headerh + 2 * marginh + boxh);
+    putText(renderer, "Life", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx + boxw + marginw, starty + profileh + 2 * headerh + 2 * marginh + boxh);
+    putText(renderer, std::to_string(player.Life).c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx + boxw + marginw, starty + profileh + 3 * headerh + 2 * marginh + boxh);
+
+    putText(renderer, "Possessions", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 3 * headerh + 3 * marginh + 2 * boxh);
+    putText(renderer, possessions.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + profileh + 4 * headerh + 3 * marginh + 2 * boxh);
+}
+
 bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player)
 {
     std::string title = "Necklace of Skulls: Adventure Sheet";
@@ -548,32 +607,8 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
         auto marginw = Margin * SCREEN_WIDTH;
         auto marginh = Margin * SCREEN_HEIGHT / 2;
 
-        std::string skills;
-
-        for (auto i = 0; i < player.Skills.size(); i++)
-        {
-            if (i > 0)
-            {
-                skills += ", ";
-            }
-
-            skills += player.Skills[i].Name;
-        }
-
         auto boxw = (profilew - marginw) / 2;
         auto boxh = (profileh) / 2;
-
-        std::string possessions;
-
-        for (auto i = 0; i < player.Items.size(); i++)
-        {
-            if (i > 0)
-            {
-                possessions += ", ";
-            }
-
-            possessions += Item::Descriptions.at(player.Items[i]);
-        }
 
         std::string codewords;
 
@@ -598,18 +633,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                 // Fill the surface with background color
                 fillWindow(renderer, intWH);
 
-                putText(renderer, player.Name, font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty);
-                putText(renderer, player.Description, font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
-                putText(renderer, "Skills", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + headerh + marginh);
-                putText(renderer, skills.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, boxh, startx, starty + profileh + 2 * headerh + marginh);
-
-                putText(renderer, "Money", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 2 * headerh + 2 * marginh + boxh);
-                putText(renderer, (std::to_string(player.Money) + " cacao").c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx, starty + profileh + 3 * headerh + 2 * marginh + boxh);
-                putText(renderer, "Life", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx + boxw + marginw, starty + profileh + 2 * headerh + 2 * marginh + boxh);
-                putText(renderer, std::to_string(player.Life).c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx + boxw + marginw, starty + profileh + 3 * headerh + 2 * marginh + boxh);
-
-                putText(renderer, "Possessions", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 3 * headerh + 3 * marginh + 2 * boxh);
-                putText(renderer, possessions.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + profileh + 4 * headerh + 3 * marginh + 2 * boxh);
+                renderAdventurer(window, renderer, font, player);
 
                 if (player.Codewords.size() > 0)
                 {
@@ -675,13 +699,14 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
         auto marginw = Margin * SCREEN_WIDTH;
         auto marginh = Margin * SCREEN_HEIGHT / 2;
 
-        const char *choices[3] = {"Previous", "Next", "Start"};
+        const char *choices[4] = {"Previous", "Next", "Glossary", "Start"};
 
-        auto controls = createHTextButtons(choices, 3, main_buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - main_buttonh);
+        auto controls = createHTextButtons(choices, 4, main_buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - main_buttonh);
 
         controls[0].Type = Control::Type::BACK;
         controls[1].Type = Control::Type::NEXT;
         controls[2].Type = Control::Type::ACTION;
+        controls[3].Type = Control::Type::NEW;
 
         TTF_Init();
 
@@ -691,48 +716,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
         {
             while (!quit)
             {
-                std::string skills;
-
-                for (auto i = 0; i < Character::Classes[character].Skills.size(); i++)
-                {
-                    if (i > 0)
-                    {
-                        skills += ", ";
-                    }
-
-                    skills += Character::Classes[character].Skills[i].Name;
-                }
-
-                auto boxw = (profilew - marginw) / 2;
-                auto boxh = (profileh) / 2;
-
-                std::string possessions;
-
-                for (auto i = 0; i < Character::Classes[character].Items.size(); i++)
-                {
-                    if (i > 0)
-                    {
-                        possessions += ", ";
-                    }
-
-                    possessions += Item::Descriptions.at(Character::Classes[character].Items[i]);
-                }
-
-                // Fill the surface with background color
-                fillWindow(renderer, intWH);
-
-                putText(renderer, Character::Classes[character].Name, font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty);
-                putText(renderer, Character::Classes[character].Description, font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
-                putText(renderer, "Skills", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + headerh + marginh);
-                putText(renderer, skills.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, boxh, startx, starty + profileh + 2 * headerh + marginh);
-
-                putText(renderer, "Money", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 2 * headerh + 2 * marginh + boxh);
-                putText(renderer, (std::to_string(Character::Classes[character].Money) + " cacao").c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx, starty + profileh + 3 * headerh + 2 * marginh + boxh);
-                putText(renderer, "Life", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx + boxw + marginw, starty + profileh + 2 * headerh + 2 * marginh + boxh);
-                putText(renderer, std::to_string(Character::Classes[character].Life).c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx + boxw + marginw, starty + profileh + 3 * headerh + 2 * marginh + boxh);
-
-                putText(renderer, "Possessions", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 3 * headerh + 3 * marginh + 2 * boxh);
-                putText(renderer, possessions.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + profileh + 4 * headerh + 3 * marginh + 2 * boxh);
+                renderAdventurer(window, renderer, font, Character::Classes[character]);
 
                 renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
 
@@ -744,7 +728,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 
                 if (selected && current >= 0 && current < controls.size())
                 {
-                    if (controls[current].Type == Control::Type::ACTION)
+                    if (controls[current].Type == Control::Type::NEW)
                     {
                         player = Character::Classes[character];
 
