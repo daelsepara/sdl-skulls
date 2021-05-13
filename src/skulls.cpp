@@ -756,7 +756,15 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
                             }
                             else
                             {
-                                message = "You do not possess the required skill!";
+                                if (Character::HAS_SKILL(Player, story->Choices[current].Skill))
+                                {
+                                    message = "You do not have the required item to use with this skill!";
+                                }
+                                else
+                                {
+                                    message = "You do not possess the required skill!";
+                                }
+                                
                                 start_ticks = SDL_GetTicks();
                                 error = true;
                             }

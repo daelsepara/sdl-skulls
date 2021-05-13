@@ -9,7 +9,7 @@
 namespace Character
 {
     const int ITEM_LIMIT = 8;
-    
+
     class Abstract
     {
     public:
@@ -67,6 +67,7 @@ namespace Character
         return found;
     }
 
+    // Checks if player has the skill and the required item
     bool VERIFY_SKILL(Character::Abstract character, Skill::Type skill)
     {
         auto found = false;
@@ -85,6 +86,26 @@ namespace Character
                     {
                         found = true;
                     }
+
+                    break;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    bool HAS_SKILL(Character::Abstract character, Skill::Type skill)
+    {
+        auto found = false;
+
+        if (character.Skills.size() > 0 && skill != Skill::Type::NONE)
+        {
+            for (auto i = 0; i < character.Skills.size(); i++)
+            {
+                if (character.Skills[i].Type == skill)
+                {
+                    found = true;
 
                     break;
                 }
@@ -210,7 +231,6 @@ namespace Character
             }
         }
     }
-
 
 } // namespace Character
 

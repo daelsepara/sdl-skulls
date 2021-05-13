@@ -62,6 +62,11 @@ namespace Skill
     const auto UNARMED_COMBAT = Abstract("UNARMED COMBAT", "Fisticuffs, wrestling holds, jabs and kicks, and the tricks of infighting. Not as effective as SWORDPLAY, but you do not need weapons - your own body is the weapon!", Type::UNARMED_COMBAT);
     const auto WILDERNESS_LORE = Abstract("WILDERNESS LORE", "A talent for survival in the wild - whether it be forest, desert, swamp or mountain peak.", Type::WILDERNESS_LORE);
 
+    std::vector<Skill::Abstract> ALL = {
+        AGILITY, CHARMS, CUNNING, ETIQUETTE,
+        FOLKLORE, ROGUERY, SEAFARING, SPELLS,
+        SWORDPLAY, TARGETING, UNARMED_COMBAT, WILDERNESS_LORE};
+
 } // namespace Skill
 
 #endif
