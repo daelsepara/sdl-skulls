@@ -8,6 +8,48 @@
 
 namespace Input
 {
+    int InitializeGamePads()
+    {
+        if (SDL_WasInit(SDL_INIT_GAMECONTROLLER) != 1)
+        {
+            if (SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER) != 0)
+            {
+                std::cerr << "SDL could not initialize gamecontroller! SDL_Error: " << SDL_GetError() << std::endl;
+            }
+        }
+
+        auto nJoysticks = SDL_NumJoysticks();
+        auto numGamepads = 0;
+
+        // Count how many controllers there are
+        for (auto i = 0; i < nJoysticks; i++)
+        {
+            if (SDL_IsGameController(i))
+            {
+                numGamepads++;
+            }
+        }
+
+        // If we have some controllers attached
+        if (numGamepads > 0)
+        {
+            for (int i = 0; i < numGamepads; i++)
+            {
+                // Open the controller and add it to our list
+                auto pad = SDL_GameControllerOpen(i);
+
+                if (SDL_GameControllerGetAttached(pad) != 1)
+                {
+                    std::cerr << "Game pad not attached! SDL_Error: " << SDL_GetError() << std::endl;
+                }
+            }
+
+            SDL_GameControllerEventState(SDL_ENABLE);
+        }
+
+        return numGamepads;
+    }
+
     template <typename T>
     bool GetInput(SDL_Renderer *renderer, std::vector<T> choices, int &current, bool &selected, bool &scrollUp, bool &scrollDown, bool &hold)
     {
@@ -33,6 +75,12 @@ namespace Input
                 quit = true;
 
                 break;
+            }
+            else if (result.type == SDL_CONTROLLERDEVICEADDED)
+            {
+                InitializeGamePads();
+
+                continue;
             }
             else if (result.type == SDL_KEYDOWN)
             {
@@ -281,6 +329,10 @@ namespace Input
             if (result.type == SDL_QUIT)
             {
                 break;
+            }
+            else if (result.type == SDL_CONTROLLERDEVICEADDED)
+            {
+                InitializeGamePads();
             }
             else if (result.type == SDL_KEYDOWN)
             {
