@@ -1,6 +1,8 @@
 #ifndef __ITEMS__HPP__
 #define __ITEMS__HPP__
 
+#include <map>
+
 namespace Item
 {
     enum class Type
@@ -41,6 +43,27 @@ namespace Item
         {Item::Type::CHILLI_PEPPERS, "CHILLI PEPPERS"},
         {Item::Type::PAPAYA, "PAPAYA"},
         {Item::Type::SERPENT_BRACELET, "SERPENT BRACELET"}};
+
+    std::vector<Item::Type> UniqueItems = {
+        Item::Type::LETTER_OF_INTRODUCTION,
+        Item::Type::SERPENT_BRACELET};
+
+    bool IsUnique(Item::Type item)
+    {
+        auto unique = false;
+
+        for (auto i = 0; i < Item::UniqueItems.size(); i++)
+        {
+            if (Item::UniqueItems[i] == item)
+            {
+                unique = true;
+
+                break;
+            }
+        }
+
+        return unique;
+    }
 
 } // namespace Item
 #endif

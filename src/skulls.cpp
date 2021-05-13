@@ -799,11 +799,13 @@ std::vector<Button> createItemControls(Character::Base &player)
     auto button_map = Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP);
     auto button_disk = Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME);
     auto button_user = Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER);
-    auto button_back = Button(idx + 3, "images/back-button.png", idx + 2, idx + 3, idx - 1, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK);
+    auto button_items = Button(idx + 3, "images/items.png", idx + 2, idx + 4, idx - 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE);
+    auto button_back = Button(idx + 4, "images/back-button.png", idx + 3, idx + 4, idx - 1, idx + 4, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK);
 
     controls.push_back(button_map);
     controls.push_back(button_disk);
     controls.push_back(button_user);
+    controls.push_back(button_items);
     controls.push_back(button_back);
 
     return controls;
@@ -990,11 +992,12 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
         controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP));
         controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
         controls.push_back(Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
-        controls.push_back(Button(idx + 3, "images/back-button.png", idx + 2, idx + 3, idx - 1, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+        controls.push_back(Button(idx + 3, "images/items.png", idx + 2, idx + 4, idx - 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
+        controls.push_back(Button(idx + 4, "images/back-button.png", idx + 3, idx + 4, idx - 1, idx + 4, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+        auto font = TTF_OpenFont("fonts/default.ttf", 16);
 
         auto selected = false;
         auto current = -1;
@@ -1041,7 +1044,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
             if (!error && !purchased)
             {
-                putText(renderer, "Select an item to buy", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 75, startx, starty);
+                putText(renderer, "Select an item to buy", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
             }
 
             putText(renderer, "Money", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 36, startx, starty + text_bounds - 111);
@@ -1073,22 +1076,35 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
                         if (player.Money >= price)
                         {
-                            Character::GET_ITEMS(player, {item});
-
-                            player.Money -= price;
-
-                            while (!Character::VERIFY_POSSESSIONS(player))
+                            if (Item::IsUnique(item) && Character::VERIFY_ITEM(player, item))
                             {
-                                renderWindow(window, renderer, inventoryScreen, player, Control::Type::DROP);
+                                message = std::string("You already have this item!");
+
+                                start_ticks = SDL_GetTicks();
+
+                                purchased = false;
+
+                                error = true;
                             }
+                            else
+                            {
+                                Character::GET_ITEMS(player, {item});
 
-                            message = std::string(std::string(Item::Descriptions[item]) + " purchased.");
+                                player.Money -= price;
 
-                            start_ticks = SDL_GetTicks();
+                                while (!Character::VERIFY_POSSESSIONS(player))
+                                {
+                                    renderWindow(window, renderer, inventoryScreen, player, Control::Type::DROP);
+                                }
 
-                            purchased = true;
+                                message = std::string(std::string(Item::Descriptions[item]) + " purchased.");
 
-                            error = false;
+                                start_ticks = SDL_GetTicks();
+
+                                purchased = true;
+
+                                error = false;
+                            }
                         }
                         else
                         {
@@ -1097,6 +1113,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                             start_ticks = SDL_GetTicks();
 
                             purchased = false;
+
                             error = true;
                         }
                     }
@@ -1104,6 +1121,14 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 else if (controls[current].Type == Control::Type::CHARACTER && !hold)
                 {
                     renderWindow(window, renderer, characterScreen, player);
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::USE && !hold)
+                {
+                    renderWindow(window, renderer, inventoryScreen, player, Control::Type::USE);
 
                     current = -1;
 
@@ -1188,7 +1213,8 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
         controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP));
         controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
         controls.push_back(Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
-        controls.push_back(Button(idx + 3, "images/back-button.png", idx + 2, idx + 3, idx - 1, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+        controls.push_back(Button(idx + 3, "images/items.png", idx + 2, idx + 4, idx - 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
+        controls.push_back(Button(idx + 4, "images/back-button.png", idx + 3, idx + 4, idx - 1, idx + 4, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         TTF_Init();
 
@@ -1314,6 +1340,14 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 else if (controls[current].Type == Control::Type::CHARACTER && !hold)
                 {
                     renderWindow(window, renderer, characterScreen, player);
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::USE && !hold)
+                {
+                    renderWindow(window, renderer, inventoryScreen, player, Control::Type::USE);
 
                     current = -1;
 
@@ -1496,6 +1530,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     else if (story->Controls[current].Type == Control::Type::MAP && !hold)
                     {
                         renderWindow(window, renderer, mapScreen);
+
+                        current = -1;
+
+                        selected = false;
+                    }
+                    else if (story->Controls[current].Type == Control::Type::USE && !hold)
+                    {
+                        renderWindow(window, renderer, inventoryScreen, player, Control::Type::USE);
 
                         current = -1;
 

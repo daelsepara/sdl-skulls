@@ -1,6 +1,8 @@
 #ifndef __SKILLS__HPP__
 #define __SKILLS__HPP__
 
+#include <vector>
+
 #include "items.hpp"
 
 namespace Skill

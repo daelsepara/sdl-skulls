@@ -164,8 +164,9 @@ std::vector<Button> StandardControls()
     controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
     controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
     controls.push_back(Button(4, "images/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
-    controls.push_back(Button(5, "images/next.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::NEXT));
-    controls.push_back(Button(6, "images/exit.png", 5, 6, 1, 6, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+    controls.push_back(Button(5, "images/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
+    controls.push_back(Button(6, "images/next.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::NEXT));
+    controls.push_back(Button(7, "images/exit.png", 6, 7, 1, 7, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
     return controls;
 }
@@ -179,9 +180,10 @@ std::vector<Button> ShopControls()
     controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
     controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
     controls.push_back(Button(4, "images/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
-    controls.push_back(Button(5, "images/pouch-button.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::SHOP));
-    controls.push_back(Button(6, "images/next.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::NEXT));
-    controls.push_back(Button(7, "images/exit.png", 6, 7, 1, 7, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+    controls.push_back(Button(5, "images/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
+    controls.push_back(Button(6, "images/shop.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::SHOP));
+    controls.push_back(Button(7, "images/next.png", 6, 8, 1, 7, startx + 5 * gridsize, buttony, Control::Type::NEXT));
+    controls.push_back(Button(8, "images/exit.png", 7, 8, 1, 8, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
     return controls;
 }
@@ -390,7 +392,7 @@ public:
     Story096()
     {
         ID = 96;
-        Text = "They succeed in dislodging several fat plums without disturbing any spiders. You watch as they squabble happily over the distribution of their spoils Apparently you were just unlucky in finding a tarantula in the fruit you tried to pick, but the incident has deadened your appetite and you continue on your way without stopping to collect any of the plums yourself.";
+        Text = "They succeed in dislodging several fat plums without disturbing any spiders. You watch as they squabble happily over the distribution of their spoils. Apparently you were just unlucky in finding a tarantula in the fruit you tried to pick, but the incident has deadened your appetite and you continue on your way without stopping to collect any of the plums yourself.";
 
         Image = "images/filler1.png";
 
@@ -432,7 +434,7 @@ public:
         Choices.clear();
         Controls = ShopControls();
 
-        Shop = {{Item::Type::PAPAYA, 1}};
+        Shop = {{Item::Type::SERPENT_BRACELET, 1}};
 
         Bye = "Bidding the peasant good.day, you set off once more towards Yashuna";
     }
@@ -446,7 +448,7 @@ public:
     Story138()
     {
         ID = 138;
-        Text = "The Matriarch speaks to a servant, who goes bustling out and returns shortly leading two slaves bearing a large wooden chest. This is set down in front of the Matriarch's seat and the two slaves are ushered outside before it can be opened. The Matriarch beckons you over. \"These,\" she says, delving into the interior of the chest, \"are the treasures of our ancestors.\"\n\nA golden figuring catches your eye. It is in the form of a muscular naked man with an elongated forehead. \"What is this?\" you ask.\n\nThe MAN OF GOLD -- most ancient of all our treasures. It is said that in the earliest days of the world, the gods experimented with various substances to create life. One of the lesser gods tried using gold, but because it was so scarce he could only make a small human.\"\n\nYou lift the the MAN OF GOLD with a sense of awe. \"Is it alive, then?\"\n\n\"If you hold it in your hands long enough, it will come to life through your body's warmth. Then it will serve you with great strength and skill -- but only once.\"\n\n\"Only once?\" you ask. \"If it only works once, how does anyone know this?\"\n\nThe Matriarch responds with a sly wink. \"You have to trust your elders sometimes, Evening Star. Now, do you want the MAN OF GOLD or would you rather take a look at the other treasures?\"";
+        Text = "The Matriarch speaks to a servant, who goes bustling out and returns shortly leading two slaves bearing a large wooden chest. This is set down in front of the Matriarch's seat and the two slaves are ushered outside before it can be opened. The Matriarch beckons you over. \"These,\" she says, delving into the interior of the chest, \"are the treasures of our ancestors.\"\n\nA golden figuring catches your eye. It is in the form of a muscular naked man with an elongated forehead. \"What is this?\" you ask.\n\n\"The MAN OF GOLD -- most ancient of all our treasures. It is said that in the earliest days of the world, the gods experimented with various substances to create life. One of the lesser gods tried using gold, but because it was so scarce he could only make a small human.\"\n\nYou lift the the MAN OF GOLD with a sense of awe. \"Is it alive, then?\"\n\n\"If you hold it in your hands long enough, it will come to life through your body's warmth. Then it will serve you with great strength and skill -- but only once.\"\n\n\"Only once?\" you ask. \"If it only works once, how does anyone know this?\"\n\nThe Matriarch responds with a sly wink. \"You have to trust your elders sometimes, Evening Star. Now, do you want the MAN OF GOLD or would you rather take a look at the other treasures?\"";
         Image = "images/filler1.png";
 
         Choices.clear();

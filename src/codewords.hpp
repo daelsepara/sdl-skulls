@@ -1,6 +1,8 @@
 #ifndef __CODEWORDS__HPP__
 #define __CODEWORDS__HPP__
 
+#include <map>
+
 namespace Codeword
 {
     enum class Type

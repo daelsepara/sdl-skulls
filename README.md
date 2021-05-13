@@ -37,6 +37,14 @@ This is an implementation of the **Necklace of Skulls** game book (Virtual Reali
 
 ![Adventure Sheet](/screenshots/adventure-sheet.png)
 
+**Shop Screen**
+
+![Shop Screen](/screenshots/shop-screen.png)
+
+**Inventory Screen**
+
+![Inventory Screen](/screenshots/iventory-screen.png)
+
 # Copyright Information 
 
 ```
