@@ -1079,7 +1079,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
             {
                 if ((SDL_GetTicks() - start_ticks) < message_duration)
                 {
-                    putText(renderer, message, font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
+                    putText(renderer, message, font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
                 }
                 else
                 {
