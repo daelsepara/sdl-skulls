@@ -133,6 +133,20 @@ void renderImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y)
     }
 }
 
+void putImage(SDL_Renderer *renderer, const char *image, int x, int y)
+{
+    auto surface = createImage(image);
+
+    if (surface)
+    {
+        renderImage(renderer, surface, x, y);
+
+        SDL_FreeSurface(surface);
+
+        surface = NULL;
+    }
+}
+
 // Render a portion of the text (image) on bounded surface within the specified window
 void renderText(SDL_Renderer *renderer, SDL_Surface *text, Uint32 bg, int x, int y, int bounds, int offset)
 {
@@ -764,7 +778,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
                                 {
                                     message = "You do not possess the required skill!";
                                 }
-                                
+
                                 start_ticks = SDL_GetTicks();
                                 error = true;
                             }
@@ -965,12 +979,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
                             if (story->Bye)
                             {
                                 auto bye = createText(story->Bye, "fonts/default.ttf", 24, clrBK, (SCREEN_WIDTH * (1.0 - 2.0 * Margin)), TTF_STYLE_NORMAL);
+                                auto forward = createImage("images/next.png");
 
-                                if (bye)
+                                if (bye && forward)
                                 {
                                     fillWindow(renderer, intWH);
 
                                     renderText(renderer, bye, intBE, (SCREEN_WIDTH - bye->w) / 2, (SCREEN_HEIGHT - bye->h) / 2, SCREEN_HEIGHT, 0);
+                                    renderImage(renderer, forward, SCREEN_WIDTH * (1.0 - Margin) - buttonw - button_space, buttony);
 
                                     SDL_RenderPresent(renderer);
 
@@ -979,6 +995,10 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
                                     SDL_FreeSurface(bye);
 
                                     bye = NULL;
+
+                                    SDL_FreeSurface(forward);
+
+                                    forward = NULL;
                                 }
                             }
 
