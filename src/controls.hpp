@@ -25,6 +25,8 @@ namespace Control
         NEXT,
         ACTION,
         BACK,
+        USE,
+        DROP,
         QUIT
     };
 

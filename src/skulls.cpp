@@ -405,6 +405,16 @@ bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displaySc
     return result;
 }
 
+template <typename Function>
+bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, Character::Base &player, Control::Type mode)
+{
+    auto result = displayScreen(window, renderer, player, mode);
+
+    SDL_SetWindowTitle(window, "Necklace of Skulls");
+
+    return result;
+}
+
 bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
     auto quit = false;
@@ -635,15 +645,191 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
     return false;
 }
 
-bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
+std::vector<Button> createItemControls(Character::Base &player)
 {
-    if (story->Shop.size() > 0)
+    auto text_space = 8;
+    auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+
+    auto controls = std::vector<Button>();
+
+    controls.clear();
+
+    for (auto idx = 0; idx < player.Items.size(); idx++)
+    {
+        auto text = createText(Item::Descriptions[player.Items[idx]], "fonts/default.ttf", 16, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
+
+        auto y = texty + (idx > 0 ? controls[idx - 1].Y + controls[idx - 1].H : 2 * text_space);
+
+        controls.push_back(Button(idx, text, idx, idx, (idx > 0 ? idx - 1 : idx), (idx < player.Items.size() ? idx + 1 : idx), textx + 2 * text_space, y, Control::Type::ACTION));
+
+        controls[idx].W = textwidth + button_space;
+        controls[idx].H = text->h;
+    }
+
+    auto idx = controls.size();
+
+    auto button_map = Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP);
+    auto button_disk = Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME);
+    auto button_user = Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER);
+    auto button_back = Button(idx + 3, "images/back-button.png", idx + 2, idx + 3, idx - 1, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK);
+
+    controls.push_back(button_map);
+    controls.push_back(button_disk);
+    controls.push_back(button_user);
+    controls.push_back(button_back);
+
+    return controls;
+}
+
+bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Control::Type mode)
+{
+    if (player.Items.size() > 0)
     {
         auto error = false;
         const char *message = NULL;
 
         Uint32 start_ticks = 0;
         Uint32 message_duration = 5000;
+
+        auto done = false;
+
+        auto text_space = 8;
+
+        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+
+        auto controls = createItemControls(player);
+
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", 16);
+
+        auto selected = false;
+        auto current = -1;
+        auto quit = false;
+        auto scrollUp = false;
+        auto scrollDown = false;
+        auto hold = false;
+
+        while (!done)
+        {
+            SDL_SetWindowTitle(window, "Necklace of Skulls: Possessions");
+
+            fillWindow(renderer, intWH);
+
+            if (error)
+            {
+                if ((SDL_GetTicks() - start_ticks) < message_duration)
+                {
+                    putText(renderer, message, font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
+                }
+                else
+                {
+                    error = false;
+                }
+            }
+
+            if (!error)
+            {
+                if (mode == Control::Type::DROP)
+                {
+                    putText(renderer, "You are carrying too many items. Select an item to DROP.", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 75, startx, starty);
+                }
+                else if (mode == Control::Type::USE)
+                {
+                    putText(renderer, "Select an item to USE", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 75, startx, starty);
+                }
+                else
+                {
+                    putText(renderer, "You are carrying these items", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 75, startx, starty);
+                }
+            }
+
+            fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
+
+            renderButtons(renderer, controls, current, intGR, 8, 4);
+
+            for (auto i = 0; i < player.Items.size(); i++)
+            {
+                if (i != current)
+                {
+                    drawRect(renderer, controls[i].W + 16, controls[i].H + 16, controls[i].X - 8, controls[i].Y - 8, intDB);
+                }
+            }
+
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected)
+            {
+                if (controls[current].Type == Control::Type::ACTION && !hold)
+                {
+                    if (current >= 0 && current < player.Items.size())
+                    {
+                        auto item = player.Items[current];
+
+                        if (mode == Control::Type::DROP)
+                        {
+                            Character::LOSE_ITEM(player, {item});
+
+                            controls.clear();
+
+                            controls = createItemControls(player);
+                        }
+                        else if (mode == Control::Type::USE)
+                        {
+                        }
+                        else
+                        {
+                        }
+                    }
+                }
+                else if (controls[current].Type == Control::Type::CHARACTER && !hold)
+                {
+                    renderWindow(window, renderer, characterScreen, player);
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::MAP && !hold)
+                {
+                    renderWindow(window, renderer, mapScreen);
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::BACK && !hold)
+                {
+                    done = true;
+
+                    break;
+                }
+            }
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+
+            TTF_Quit();
+        }
+    }
+
+    return false;
+}
+
+bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
+{
+    if (story->Shop.size() > 0)
+    {
+        auto error = false;
+        auto purchased = false;
+        std::string message;
+
+        Uint32 start_ticks = 0;
+        Uint32 message_duration = 3000;
 
         auto done = false;
 
@@ -662,7 +848,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
             std::string choice = std::string(Item::Descriptions[item]) + " (" + std::to_string(price) + " cacao)";
 
-            auto text = createText(choice.c_str(), "fonts/default.ttf", 20, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
+            auto text = createText(choice.c_str(), "fonts/default.ttf", 16, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
 
             auto y = texty + (idx > 0 ? controls[idx - 1].Y + controls[idx - 1].H : 2 * text_space);
 
@@ -706,15 +892,26 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
             {
                 if ((SDL_GetTicks() - start_ticks) < message_duration)
                 {
-                    putText(renderer, message, font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
+                    putText(renderer, message.c_str(), font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
                 }
                 else
                 {
                     error = false;
                 }
             }
+            else if (purchased)
+            {
+                if ((SDL_GetTicks() - start_ticks) < message_duration)
+                {
+                    putText(renderer, message.c_str(), font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
+                }
+                else
+                {
+                    purchased = false;
+                }
+            }
 
-            if (!error)
+            if (!error && !purchased)
             {
                 putText(renderer, "Select an item to buy", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 75, startx, starty);
             }
@@ -751,13 +948,27 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                             Character::GET_ITEMS(player, {item});
 
                             player.Money -= price;
-                        }
-                        else
-                        {
-                            message = "You do not have enough cacao to buy that!";
+
+                            while (!Character::VERIFY_POSSESSIONS(player))
+                            {
+                                renderWindow(window, renderer, inventoryScreen, player, Control::Type::DROP);
+                            }
+
+                            message = std::string(std::string(Item::Descriptions[item]) + " purchased.");
 
                             start_ticks = SDL_GetTicks();
 
+                            purchased = true;
+
+                            error = false;
+                        }
+                        else
+                        {
+                            message = std::string("You do not have enough cacao to buy that!");
+
+                            start_ticks = SDL_GetTicks();
+
+                            purchased = false;
                             error = true;
                         }
                     }
@@ -1035,11 +1246,6 @@ Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Character
     return next;
 }
 
-bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player)
-{
-    return false;
-}
-
 bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     auto quit = false;
@@ -1177,6 +1383,11 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                     else if (story->Controls[current].Type == Control::Type::NEXT && !hold)
                     {
+                        while (!Character::VERIFY_POSSESSIONS(player))
+                        {
+                            renderWindow(window, renderer, inventoryScreen, player, Control::Type::DROP);
+                        }
+
                         current = -1;
 
                         selected = false;

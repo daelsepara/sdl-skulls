@@ -38,7 +38,7 @@ namespace Item
         {Item::Type::ROPE, "ROPE"},
         {Item::Type::FIREBRAND, "FIREBRAND"},
         {Item::Type::POT_OF_DYE, "POT OF DYE"},
-        {Item::Type::CHILLI_PEPPERS, "CHILLI_PEPPERS"},
+        {Item::Type::CHILLI_PEPPERS, "CHILLI PEPPERS"},
         {Item::Type::PAPAYA, "PAPAYA"},
         {Item::Type::SERPENT_BRACELET, "SERPENT BRACELET"}};
 
