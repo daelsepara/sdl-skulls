@@ -786,8 +786,7 @@ std::vector<Button> createItemControls(Character::Base &player)
     controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP));
     controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
     controls.push_back(Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
-    controls.push_back(Button(idx + 3, "images/items.png", idx + 2, idx + 4, idx - 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
-    controls.push_back(Button(idx + 4, "images/back-button.png", idx + 3, idx + 4, idx - 1, idx + 4, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+    controls.push_back(Button(idx + 3, "images/back-button.png", idx + 2, idx + 3, idx - 1, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
     return controls;
 }
