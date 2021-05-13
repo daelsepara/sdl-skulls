@@ -17,9 +17,8 @@
 #include "input.hpp"
 #include "items.hpp"
 #include "skills.hpp"
-#include "story.hpp"
-
 #include "character.hpp"
+#include "story.hpp"
 
 SDL_Surface *createImage(const char *image)
 {
