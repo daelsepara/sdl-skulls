@@ -47,7 +47,7 @@ namespace Character
 
     std::vector<Character::Base> Classes = {WARRIOR, HUNTER, MYSTIC, WAYFARER, MERCHANT, ACOLYTE, SORCERER};
 
-    bool VERIFY_ITEM(Character::Base player, Item::Type item)
+    bool VERIFY_ITEM(Character::Base &player, Item::Type item)
     {
         auto found = false;
 
@@ -67,8 +67,28 @@ namespace Character
         return found;
     }
 
+    int FIND_ITEM(Character::Base &player, Item::Type item)
+    {
+        auto found = -1;
+
+        if (player.Items.size() > 0)
+        {
+            for (auto i = 0; i < player.Items.size(); i++)
+            {
+                if (player.Items[i] == item)
+                {
+                    found = i;
+
+                    break;
+                }
+            }
+        }
+
+        return found;
+    }
+
     // Checks if player has the skill and the required item
-    bool VERIFY_SKILL(Character::Base player, Skill::Type skill)
+    bool VERIFY_SKILL(Character::Base &player, Skill::Type skill)
     {
         auto found = false;
 
@@ -95,7 +115,7 @@ namespace Character
         return found;
     }
 
-    bool HAS_SKILL(Character::Base player, Skill::Type skill)
+    bool HAS_SKILL(Character::Base &player, Skill::Type skill)
     {
         auto found = false;
 
@@ -115,7 +135,7 @@ namespace Character
         return found;
     }
 
-    int FIND_SKILL_ITEMS(Character::Base player, Skill::Type skill, std::vector<Item::Type> items)
+    int FIND_SKILL_ITEMS(Character::Base &player, Skill::Type skill, std::vector<Item::Type> items)
     {
         auto found = 0;
 
@@ -125,9 +145,9 @@ namespace Character
             {
                 if (player.Skills[i].Type == skill)
                 {
-                    auto result = std::find(player.Items.begin(), player.Items.end(), items[i]);
+                    auto result = FIND_ITEM(player, items[i]);
 
-                    if (result != player.Items.end())
+                    if (result >= 0)
                     {
                         found++;
                     }
@@ -139,23 +159,43 @@ namespace Character
     }
 
     // verify that player has the skill and ANY of the items
-    bool VERIFY_SKILL_ANY(Character::Base player, Skill::Type skill, std::vector<Item::Type> items)
+    bool VERIFY_SKILL_ANY(Character::Base &player, Skill::Type skill, std::vector<Item::Type> items)
     {
         return FIND_SKILL_ITEMS(player, skill, items) > 0;
     }
 
     // verify that player has the skill and ALL of the items
-    bool VERIFY_SKILL_ALL(Character::Base player, Skill::Type skill, std::vector<Item::Type> items)
+    bool VERIFY_SKILL_ALL(Character::Base &player, Skill::Type skill, std::vector<Item::Type> items)
     {
         return FIND_SKILL_ITEMS(player, skill, items) == items.size();
     }
 
-    bool VERIFY_SKILL_ITEM(Character::Base player, Skill::Type skill, Item::Type item)
+    bool VERIFY_SKILL_ITEM(Character::Base &player, Skill::Type skill, Item::Type item)
     {
         return VERIFY_SKILL_ALL(player, skill, {item});
     }
 
-    int FIND_CODEWORDS(Character::Base player, std::vector<Codeword::Type> codewords)
+    int FIND_CODEWORD(Character::Base &player, Codeword::Type codeword)
+    {
+        auto found = -1;
+
+        if (player.Codewords.size() > 0)
+        {
+            for (auto i = 0; i < player.Codewords.size(); i++)
+            {
+                if (player.Codewords[i] == codeword)
+                {
+                    found = i;
+
+                    break;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    int FIND_CODEWORDS(Character::Base &player, std::vector<Codeword::Type> codewords)
     {
         auto found = 0;
 
@@ -163,9 +203,9 @@ namespace Character
         {
             for (auto i = 0; i < codewords.size(); i++)
             {
-                auto result = std::find(player.Codewords.begin(), player.Codewords.end(), codewords[i]);
+                auto result = FIND_CODEWORD(player, codewords[i]);
 
-                if (result != player.Codewords.end())
+                if (result >= 0)
                 {
                     found++;
                 }
@@ -175,27 +215,27 @@ namespace Character
         return found;
     }
 
-    bool VERIFY_CODEWORDS_ANY(Character::Base player, std::vector<Codeword::Type> codewords)
+    bool VERIFY_CODEWORDS_ANY(Character::Base &player, std::vector<Codeword::Type> codewords)
     {
         return FIND_CODEWORDS(player, codewords) > 0;
     }
 
-    bool VERIFY_CODEWORDS_ALL(Character::Base player, std::vector<Codeword::Type> codewords)
+    bool VERIFY_CODEWORDS_ALL(Character::Base &player, std::vector<Codeword::Type> codewords)
     {
         return FIND_CODEWORDS(player, codewords) == codewords.size();
     }
 
-    bool VERIFY_CODEWORD(Character::Base player, Codeword::Type codeword)
+    bool VERIFY_CODEWORD(Character::Base &player, Codeword::Type codeword)
     {
         return VERIFY_CODEWORDS_ALL(player, {codeword});
     }
 
-    bool VERIFY_LIFE(Character::Base player, int threshold = 0)
+    bool VERIFY_LIFE(Character::Base &player, int threshold = 0)
     {
         return player.Life > threshold;
     }
 
-    bool VERIFY_POSSESSIONS(Character::Base player)
+    bool VERIFY_POSSESSIONS(Character::Base &player)
     {
         return player.Items.size() <= Character::ITEM_LIMIT;
     }
@@ -203,6 +243,17 @@ namespace Character
     void GET_ITEMS(Character::Base &player, std::vector<Item::Type> items)
     {
         player.Items.insert(player.Items.end(), items.begin(), items.end());
+    }
+
+    void GET_CODEWORDS(Character::Base &player, std::vector<Codeword::Type> codewords)
+    {
+        for (auto i = 0; i < codewords.size(); i++)
+        {
+            if (!VERIFY_CODEWORD(player, codewords[i]))
+            {
+                player.Codewords.push_back(codewords[i]);
+            }
+        }
     }
 
     void GET_UNIQUE_ITEMS(Character::Base &player, std::vector<Item::Type> items)
@@ -222,11 +273,11 @@ namespace Character
         {
             for (auto i = 0; i < items.size(); i++)
             {
-                auto result = std::find(player.Items.begin(), player.Items.end(), items[i]);
+                auto result = FIND_ITEM(player, items[i]);
 
-                if (result != player.Items.end())
+                if (result >= 0)
                 {
-                    player.Items.erase(result);
+                    player.Items.erase(player.Items.begin() + result);
                 }
             }
         }
