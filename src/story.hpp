@@ -118,7 +118,7 @@ namespace Story
         const char *Image = NULL;
         std::vector<Button> Controls;
         std::vector<Choice::Base> Choices;
-        std::map<Item::Type, int> Shop;
+        std::vector<std::pair<Item::Type, int>> Shop;
         const char *Bye = NULL;
         Story::Type Type = Story::Type::NORMAL;
 

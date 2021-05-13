@@ -395,6 +395,16 @@ bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displaySc
     return result;
 }
 
+template <typename Function>
+bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, Character::Base &player, Story::Base *story)
+{
+    auto result = displayScreen(window, renderer, player, story);
+
+    SDL_SetWindowTitle(window, "Necklace of Skulls");
+
+    return result;
+}
+
 bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
     auto quit = false;
@@ -507,7 +517,6 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
     // Render the image
     if (window && renderer)
     {
-
         SDL_SetWindowTitle(window, title.c_str());
 
         auto selected = false;
@@ -626,6 +635,171 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
     return false;
 }
 
+bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
+{
+    if (story->Shop.size() > 0)
+    {
+        auto error = false;
+        const char *message = NULL;
+
+        Uint32 start_ticks = 0;
+        Uint32 message_duration = 5000;
+
+        auto done = false;
+
+        auto controls = std::vector<Button>();
+
+        auto text_space = 8;
+
+        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+
+        auto idx = 0;
+
+        for (auto i = story->Shop.begin(); i != story->Shop.end(); i++)
+        {
+            auto item = i->first;
+            auto price = i->second;
+
+            std::string choice = std::string(Item::Descriptions[item]) + " (" + std::to_string(price) + " cacao)";
+
+            auto text = createText(choice.c_str(), "fonts/default.ttf", 20, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
+
+            auto y = texty + (idx > 0 ? controls[idx - 1].Y + controls[idx - 1].H : 2 * text_space);
+
+            controls.push_back(Button(idx, text, idx, idx, (idx > 0 ? idx - 1 : idx), (idx < story->Shop.size() ? idx + 1 : idx), textx + 2 * text_space, y, Control::Type::ACTION));
+            controls[idx].W = textwidth + button_space;
+            controls[idx].H = text->h;
+
+            idx++;
+        }
+
+        controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP));
+        controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
+        controls.push_back(Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+        controls.push_back(Button(idx + 3, "images/back-button.png", idx + 2, idx + 3, idx - 1, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+
+        auto selected = false;
+        auto current = -1;
+        auto quit = false;
+        auto scrollUp = false;
+        auto scrollDown = false;
+        auto hold = false;
+
+        while (!done)
+        {
+            if (story->Title)
+            {
+                SDL_SetWindowTitle(window, story->Title);
+            }
+            else
+            {
+                SDL_SetWindowTitle(window, "Necklace of Skulls: Shop");
+            }
+
+            fillWindow(renderer, intWH);
+
+            if (error)
+            {
+                if ((SDL_GetTicks() - start_ticks) < message_duration)
+                {
+                    putText(renderer, message, font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
+                }
+                else
+                {
+                    error = false;
+                }
+            }
+
+            if (!error)
+            {
+                putText(renderer, "Select an item to buy", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 75, startx, starty);
+            }
+
+            putText(renderer, "Money", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 36, startx, starty + text_bounds - 111);
+            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, 8, clrBK, intBE, TTF_STYLE_NORMAL, splashw, 75, startx, starty + text_bounds - 75);
+
+            fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
+
+            renderButtons(renderer, controls, current, intGR, 8, 4);
+
+            for (auto i = 0; i < story->Shop.size(); i++)
+            {
+                if (i != current)
+                {
+                    drawRect(renderer, controls[i].W + 16, controls[i].H + 16, controls[i].X - 8, controls[i].Y - 8, intDB);
+                }
+            }
+
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected)
+            {
+                if (controls[current].Type == Control::Type::ACTION && !hold)
+                {
+                    if (current >= 0 && current < story->Shop.size())
+                    {
+                        auto element = story->Shop.at(current);
+                        auto item = element.first;
+                        auto price = element.second;
+
+                        if (player.Money >= price)
+                        {
+                            Character::GET_ITEMS(player, {item});
+
+                            player.Money -= price;
+                        }
+                        else
+                        {
+                            message = "You do not have enough cacao to buy that!";
+
+                            start_ticks = SDL_GetTicks();
+
+                            error = true;
+                        }
+                    }
+                }
+                else if (controls[current].Type == Control::Type::CHARACTER && !hold)
+                {
+                    renderWindow(window, renderer, characterScreen, player);
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::MAP && !hold)
+                {
+                    renderWindow(window, renderer, mapScreen);
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::BACK && !hold)
+                {
+                    done = true;
+
+                    break;
+                }
+            }
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+
+            TTF_Quit();
+        }
+    }
+
+    return false;
+}
+
 Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     Story::Base *next = &notImplemented;
@@ -656,11 +830,14 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
         auto controls = std::vector<Button>();
 
+        auto text_space = 8;
+        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+
         for (int i = 0; i < choices.size(); i++)
         {
             auto text = createText(choices[i].Text, "fonts/default.ttf", 20, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
 
-            auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 16);
+            auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 2 * text_space);
 
             controls.push_back(Button(i, text, i, i, (i > 0 ? i - 1 : i), (i < choices.size() ? i + 1 : i), textx + 16, y, Control::Type::ACTION));
             controls[i].W = textwidth + button_space;
@@ -858,6 +1035,11 @@ Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Character
     return next;
 }
 
+bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player)
+{
+    return false;
+}
+
 bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     auto quit = false;
@@ -980,6 +1162,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     else if (story->Controls[current].Type == Control::Type::MAP && !hold)
                     {
                         renderWindow(window, renderer, mapScreen);
+
+                        current = -1;
+
+                        selected = false;
+                    }
+                    else if (story->Controls[current].Type == Control::Type::SHOP && !hold)
+                    {
+                        renderWindow(window, renderer, shopScreen, player, story);
 
                         current = -1;
 
