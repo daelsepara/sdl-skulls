@@ -664,6 +664,113 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
     return false;
 }
 
+bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer)
+{
+    std::string title = "Necklace of Skulls: Skills Glossary";
+
+    if (window && renderer)
+    {
+        auto space = 8;
+        auto font_size = 20;
+
+        const int glossary_width = SCREEN_WIDTH * (1.0 - 2.0 * Margin) - arrow_size - 2 * space;
+
+        std::string text;
+
+        for (auto i = 0; i < Skill::ALL.size(); i++)
+        {
+            if (i > 0)
+            {
+                text += "\n";
+            }
+
+            text += std::string(Skill::ALL[i].Name) + "\n";
+            text += "----------------\n\n";
+            text += std::string(Skill::ALL[i].Description) + "\n";
+        }
+
+        auto glossary = createText(text.c_str(), "fonts/default.ttf", font_size, clrBK, glossary_width - 2 * space, TTF_STYLE_NORMAL);
+
+        auto quit = false;
+
+        auto controls = std::vector<Button>();
+        controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+        controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+        controls.push_back(Button(2, "images/exit.png", 1, 2, 1, 2, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        auto scrollSpeed = 20;
+        auto hold = false;
+
+        auto selected = false;
+        auto current = -1;
+        auto offset = 0;
+
+        while (!quit)
+        {
+            SDL_SetWindowTitle(window, title.c_str());
+
+            // Fill the surface with background color
+            fillWindow(renderer, intWH);
+
+            fillRect(renderer, glossary_width, text_bounds, startx, starty, intBE);
+            renderText(renderer, glossary, intBE, startx + space, starty + space, text_bounds - 2 * space, offset);
+
+            renderButtons(renderer, controls, current, intGR, border_space, border_pts);
+
+            bool scrollUp = false;
+            bool scrollDown = false;
+
+            quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if ((selected && current >= 0 && current < controls.size()) || scrollUp || scrollDown || hold)
+            {
+                if (controls[current].Type == Control::Type::SCROLL_UP || (controls[current].Type == Control::Type::SCROLL_UP && hold) || scrollUp)
+                {
+                    if (offset > 0)
+                    {
+                        offset -= scrollSpeed;
+                    }
+
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+                }
+                else if (controls[current].Type == Control::Type::SCROLL_DOWN || ((controls[current].Type == Control::Type::SCROLL_DOWN && hold) || scrollDown))
+                {
+                    if (glossary->h >= text_bounds - 2 * space)
+                    {
+                        if (offset < glossary->h - text_bounds + 2 * space)
+                        {
+                            offset += scrollSpeed;
+                        }
+
+                        if (offset > glossary->h - text_bounds + 2 * space)
+                        {
+                            offset = glossary->h - text_bounds + 2 * space;
+                        }
+                    }
+                }
+                else if (controls[current].Type == Control::Type::BACK && !hold)
+                {
+                    quit = true;
+
+                    break;
+                }
+            }
+        }
+
+        if (glossary)
+        {
+            SDL_FreeSurface(glossary);
+
+            glossary = NULL;
+        }
+    }
+
+    return false;
+}
+
 Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 {
     std::string title = "Necklace of Skulls: Select Character";
@@ -675,8 +782,6 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
     // Render the image
     if (window && renderer)
     {
-        SDL_SetWindowTitle(window, title.c_str());
-
         auto selected = false;
         auto current = -1;
         auto character = 0;
@@ -702,6 +807,8 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
         {
             while (!quit)
             {
+                SDL_SetWindowTitle(window, title.c_str());
+
                 renderAdventurer(window, renderer, font, Character::Classes[character]);
 
                 renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
@@ -739,6 +846,12 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
                         {
                             character++;
                         }
+                    }
+                    else if (controls[current].Type == Control::Type::ACTION)
+                    {
+                        renderWindow(window, renderer, glossaryScreen);
+
+                        current = -1;
                     }
 
                     selected = false;
