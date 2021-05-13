@@ -820,6 +820,9 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
         auto scrollDown = false;
         auto hold = false;
 
+        auto infoh = 36;
+        auto boxh = 75;
+
         while (!done)
         {
             SDL_SetWindowTitle(window, "Necklace of Skulls: Possessions");
@@ -830,7 +833,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
             {
                 if ((SDL_GetTicks() - start_ticks) < duration)
                 {
-                    putText(renderer, message, font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
+                    putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, boxh * 2, startx, starty);
                 }
                 else
                 {
@@ -842,27 +845,30 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
             {
                 if (mode == Control::Type::DROP)
                 {
-                    putText(renderer, "You are carrying too many items. Select an item to DROP.", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 75, startx, starty);
+                    putText(renderer, "You are carrying too many items. Select an item to DROP.", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
                 }
                 else if (mode == Control::Type::USE)
                 {
-                    putText(renderer, "Select an item to USE", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 75, startx, starty);
+                    putText(renderer, "Select an item to USE", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
                 }
                 else
                 {
-                    putText(renderer, "You are carrying these items", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 75, startx, starty);
+                    putText(renderer, "You are carrying these items", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
                 }
             }
 
+            putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
-            renderButtons(renderer, controls, current, intGR, 8, 4);
+            renderButtons(renderer, controls, current, intGR, text_space, text_space / 2);
 
             for (auto i = 0; i < player.Items.size(); i++)
             {
                 if (i != current)
                 {
-                    drawRect(renderer, controls[i].W + 16, controls[i].H + 16, controls[i].X - 8, controls[i].Y - 8, intDB);
+                    drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intDB);
                 }
             }
 
@@ -990,6 +996,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
         auto messageh = 150;
         auto boxh = 75;
         auto infoh = 36;
+        auto box_space = 10;
 
         while (!done)
         {
@@ -1008,7 +1015,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
             {
                 if ((SDL_GetTicks() - start_ticks) < duration)
                 {
-                    putText(renderer, message.c_str(), font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
+                    putText(renderer, message.c_str(), font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
                 }
                 else
                 {
@@ -1019,7 +1026,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
             {
                 if ((SDL_GetTicks() - start_ticks) < duration)
                 {
-                    putText(renderer, message.c_str(), font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
+                    putText(renderer, message.c_str(), font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
                 }
                 else
                 {
@@ -1032,8 +1039,11 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 putText(renderer, "Select an item to buy", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
             }
 
-            putText(renderer, "Money", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
             putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+
+            putText(renderer, "Possessions", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+            putText(renderer, (std::to_string(player.Items.size()) + std::string(" item(s)")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
@@ -1219,7 +1229,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
             {
                 if ((SDL_GetTicks() - start_ticks) < duration)
                 {
-                    putText(renderer, message, font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
+                    putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
                 }
                 else
                 {
