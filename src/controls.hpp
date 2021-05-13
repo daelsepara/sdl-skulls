@@ -23,6 +23,7 @@ namespace Control
         SAVE,
         SHOP,
         NEXT,
+        GLOSSARY,
         ACTION,
         BACK,
         USE,

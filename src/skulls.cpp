@@ -20,6 +20,15 @@
 #include "character.hpp"
 #include "story.hpp"
 
+// Forward declarations
+bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer);
+bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player);
+bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Control::Type mode);
+bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer);
+bool mainScreen(SDL_Window *window, SDL_Renderer *renderer);
+bool mapScreen(SDL_Window *window, SDL_Renderer *renderer);
+bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int id);
+
 SDL_Surface *createImage(const char *image)
 {
     // Load splash image
@@ -646,7 +655,7 @@ bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer)
         auto controls = std::vector<Button>();
         controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
         controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
-        controls.push_back(Button(2, "images/exit.png", 1, 2, 1, 2, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+        controls.push_back(Button(2, "images/back-button.png", 1, 2, 1, 2, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         auto scrollSpeed = 20;
         auto hold = false;
@@ -750,9 +759,11 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
         auto boxh = (profileh) / 2;
 
         auto skills = createHeaderButton(window, "Skills", clrWH, intDB, headerw, headerh, space);
+        auto possessions = createHeaderButton(window, "Possessions", clrWH, intDB, headerw, headerh, space);
 
-        controls.push_back(Button(0, skills, 0, 1, 0, 1, startx, starty + profileh + headerh + marginh, Control::Type::ACTION));
-        controls.push_back(Button(1, "images/back-button.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+        controls.push_back(Button(0, skills, 0, 1, 0, 1, startx, starty + profileh + headerh + marginh, Control::Type::GLOSSARY));
+        controls.push_back(Button(1, possessions, 0, 2, 0, 2, startx, starty + profileh + 3 * headerh + 3 * marginh + 2 * boxh, Control::Type::ACTION));
+        controls.push_back(Button(2, "images/back-button.png", 1, 2, 1, 2, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         std::string codewords;
 
@@ -801,9 +812,17 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                     {
                         break;
                     }
-                    else
+                    else if (controls[current].Type == Control::Type::GLOSSARY)
                     {
                         renderWindow(window, renderer, glossaryScreen);
+
+                        current = -1;
+
+                        selected = false;
+                    }
+                    else if (controls[current].Type == Control::Type::ACTION)
+                    {
+                        renderWindow(window, renderer, inventoryScreen, player, Control::Type::USE);
 
                         current = -1;
 
@@ -818,6 +837,13 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
             SDL_FreeSurface(skills);
 
             skills = NULL;
+        }
+
+        if (possessions)
+        {
+            SDL_FreeSurface(possessions);
+
+            possessions = NULL;
         }
 
         if (font)
@@ -858,7 +884,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 
         controls[0].Type = Control::Type::BACK;
         controls[1].Type = Control::Type::NEXT;
-        controls[2].Type = Control::Type::ACTION;
+        controls[2].Type = Control::Type::GLOSSARY;
         controls[3].Type = Control::Type::NEW;
 
         TTF_Init();
@@ -909,7 +935,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
                             character++;
                         }
                     }
-                    else if (controls[current].Type == Control::Type::ACTION)
+                    else if (controls[current].Type == Control::Type::GLOSSARY)
                     {
                         renderWindow(window, renderer, glossaryScreen);
 
@@ -957,10 +983,7 @@ std::vector<Button> createItemControls(Character::Base &player)
 
     auto idx = controls.size();
 
-    controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP));
-    controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
-    controls.push_back(Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
-    controls.push_back(Button(idx + 3, "images/back-button.png", idx + 2, idx + 3, idx - 1, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+    controls.push_back(Button(idx, "images/back-button.png", idx - 1, idx, idx - 1, idx, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
     return controls;
 }
@@ -1151,11 +1174,8 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
             idx++;
         }
 
-        controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP));
-        controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
-        controls.push_back(Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
-        controls.push_back(Button(idx + 3, "images/items.png", idx + 2, idx + 4, idx - 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
-        controls.push_back(Button(idx + 4, "images/back-button.png", idx + 3, idx + 4, idx - 1, idx + 4, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+        controls.push_back(Button(idx, "images/items.png", idx - 1, idx + 1, idx - 1, idx + 1, startx, buttony, Control::Type::USE));
+        controls.push_back(Button(idx + 1, "images/back-button.png", idx, idx + 1, idx - 1, idx + 1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         TTF_Init();
 
