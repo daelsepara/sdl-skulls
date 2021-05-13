@@ -868,7 +868,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
 
             if (jump >= 0)
             {
-                story = (Story::Base*)findStory(jump);
+                story = (Story::Base *)findStory(jump);
 
                 continue;
             }
