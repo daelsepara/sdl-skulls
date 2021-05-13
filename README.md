@@ -21,6 +21,14 @@ This is an implementation of the **Necklace of Skulls** game book (Virtual Reali
 
 ![About Screen](/screenshots/about-screen.png)
 
+**Select Character**
+
+![Select Character](/screenshots/select-character.png)
+
+**Skills Glossary**
+
+![Skills Glossary](/screenshots/skills-glossary.png)
+
 **Story screen (Main interface)**
 
 ![Story Screen](/screenshots/story-screen.png)
