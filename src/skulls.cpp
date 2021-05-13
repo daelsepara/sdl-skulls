@@ -1590,6 +1590,18 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
     auto font_size = 20;
 
+    auto error = false;
+    const char *message = NULL;
+
+    Uint32 start_ticks = 0;
+    Uint32 duration = 5000;
+
+    TTF_Init();
+
+    auto font = TTF_OpenFont("fonts/default.ttf", 18);
+    auto text_space = 8;
+    auto messageh = 150;
+
     while (!quit)
     {
         auto run_once = true;
@@ -1650,9 +1662,24 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                 // Fill the surface with background color
                 fillWindow(renderer, intWH);
 
-                if (story->Image)
+                if (error)
                 {
-                    renderImage(renderer, splash, startx, texty);
+                    if ((SDL_GetTicks() - start_ticks) < duration)
+                    {
+                        putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
+                    }
+                    else
+                    {
+                        error = false;
+                    }
+                }
+
+                if (!error)
+                {
+                    if (story->Image)
+                    {
+                        renderImage(renderer, splash, startx, texty);
+                    }
                 }
 
                 if (story->Text)
@@ -1731,52 +1758,71 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                     else if (story->Controls[current].Type == Control::Type::NEXT && !hold)
                     {
-                        if (player.Life > 0)
+                        if (story->Type == Story::Type::NORMAL)
                         {
-                            while (!Character::VERIFY_POSSESSIONS(player))
+                            if (player.Life > 0)
                             {
-                                renderWindow(window, renderer, inventoryScreen, player, Control::Type::DROP);
-                            }
-
-                            current = -1;
-
-                            selected = false;
-
-                            auto next = renderChoices(window, renderer, player, story);
-
-                            if (next->ID != story->ID)
-                            {
-                                if (story->Bye)
+                                while (!Character::VERIFY_POSSESSIONS(player))
                                 {
-                                    auto bye = createText(story->Bye, "fonts/default.ttf", font_size + 4, clrBK, (SCREEN_WIDTH * (1.0 - 2.0 * Margin)), TTF_STYLE_NORMAL);
-                                    auto forward = createImage("images/next.png");
-
-                                    if (bye && forward)
-                                    {
-                                        fillWindow(renderer, intWH);
-
-                                        renderText(renderer, bye, intBE, (SCREEN_WIDTH - bye->w) / 2, (SCREEN_HEIGHT - bye->h) / 2, SCREEN_HEIGHT, 0);
-
-                                        renderImage(renderer, forward, SCREEN_WIDTH * (1.0 - Margin) - buttonw - button_space, buttony);
-
-                                        SDL_RenderPresent(renderer);
-
-                                        Input::WaitForNext();
-
-                                        SDL_FreeSurface(bye);
-
-                                        bye = NULL;
-
-                                        SDL_FreeSurface(forward);
-
-                                        forward = NULL;
-                                    }
+                                    renderWindow(window, renderer, inventoryScreen, player, Control::Type::DROP);
                                 }
 
-                                story = next;
+                                current = -1;
 
-                                break;
+                                selected = false;
+
+                                auto next = renderChoices(window, renderer, player, story);
+
+                                if (next->ID != story->ID)
+                                {
+                                    if (story->Bye)
+                                    {
+                                        auto bye = createText(story->Bye, "fonts/default.ttf", font_size + 4, clrBK, (SCREEN_WIDTH * (1.0 - 2.0 * Margin)), TTF_STYLE_NORMAL);
+                                        auto forward = createImage("images/next.png");
+
+                                        if (bye && forward)
+                                        {
+                                            fillWindow(renderer, intWH);
+
+                                            renderText(renderer, bye, intBE, (SCREEN_WIDTH - bye->w) / 2, (SCREEN_HEIGHT - bye->h) / 2, SCREEN_HEIGHT, 0);
+
+                                            renderImage(renderer, forward, SCREEN_WIDTH * (1.0 - Margin) - buttonw - button_space, buttony);
+
+                                            SDL_RenderPresent(renderer);
+
+                                            Input::WaitForNext();
+
+                                            SDL_FreeSurface(bye);
+
+                                            bye = NULL;
+
+                                            SDL_FreeSurface(forward);
+
+                                            forward = NULL;
+                                        }
+                                    }
+
+                                    story = next;
+
+                                    break;
+                                }
                             }
+                            else
+                            {
+                                message = "This adventure is over. You have died.";
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
+                        else if (story->Type == Story::Type::BAD)
+                        {
+                            message = "This adventure is over.";
+
+                            start_ticks = SDL_GetTicks();
+
+                            error = true;
                         }
                     }
                     else if (story->Controls[current].Type == Control::Type::BACK && !hold)
@@ -1803,6 +1849,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
             }
         }
     }
+
+    if (font)
+    {
+        TTF_CloseFont(font);
+    }
+
+    TTF_Quit();
 
     return quit;
 }
