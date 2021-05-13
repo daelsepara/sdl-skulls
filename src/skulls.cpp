@@ -575,93 +575,43 @@ void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font
     putText(renderer, possessions.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + profileh + 4 * headerh + 3 * marginh + 2 * boxh);
 }
 
-bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player)
+SDL_Surface *createHeaderButton(SDL_Window *window, const char *text, SDL_Color color, Uint32 bg, int w, int h, int x)
 {
-    std::string title = "Necklace of Skulls: Adventure Sheet";
+    auto button = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+    auto text_surface = createText(text, "fonts/default.ttf", 18, clrWH, w, TTF_STYLE_NORMAL);
 
-    auto quit = false;
-
-    // Render the image
-    if (window && renderer)
+    if (button && text_surface)
     {
-        SDL_SetWindowTitle(window, title.c_str());
+        SDL_Rect src;
 
-        auto selected = false;
-        auto current = -1;
+        src.w = text_surface->w;
+        src.h = text_surface->h;
+        src.x = 0;
+        src.y = 0;
 
-        const int back_buttonh = 48;
-        const int profilew = SCREEN_WIDTH * (1.0 - 2.0 * Margin);
-        const int profileh = 70;
+        SDL_Rect dst;
 
-        std::vector<Button> controls = {Button(0, "images/back-button.png", 0, 0, -1, -1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK)};
+        dst.w = button->w;
+        dst.h = button->h;
+        dst.x = 0;
+        dst.y = 0;
 
-        auto headerw = 150;
-        auto headerh = 36;
-        auto space = 8;
-        auto font_size = 18;
+        SDL_FillRect(button, &dst, intDB);
 
-        auto marginw = Margin * SCREEN_WIDTH;
-        auto marginh = Margin * SCREEN_HEIGHT / 2;
+        dst.x = x;
+        dst.y = (button->h - text_surface->h) / 2;
 
-        auto boxh = (profileh) / 2;
-
-        std::string codewords;
-
-        for (auto i = 0; i < player.Codewords.size(); i++)
-        {
-            if (i > 0)
-            {
-                codewords += ", ";
-            }
-
-            codewords += Codeword::Descriptions.at(player.Codewords[i]);
-        }
-
-        TTF_Init();
-
-        auto font = TTF_OpenFont("fonts/default.ttf", font_size);
-
-        if (font)
-        {
-            while (!quit)
-            {
-                // Fill the surface with background color
-                fillWindow(renderer, intWH);
-
-                renderAdventurer(window, renderer, font, player);
-
-                if (player.Codewords.size() > 0)
-                {
-                    putText(renderer, "Codewords", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + 2 * profileh + 4 * headerh + 4 * marginh + 2 * boxh);
-                    putText(renderer, codewords.c_str(), font, space, clrBK, intBE, TTF_STYLE_ITALIC, profilew - buttonw - 2 * space, profileh, startx, starty + 2 * profileh + 5 * headerh + 4 * marginh + 2 * boxh);
-                }
-
-                renderButtons(renderer, controls, current, intGR, space, space / 2);
-
-                bool scrollUp = false;
-                bool scrollDown = false;
-                bool hold = false;
-
-                quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
-
-                if (selected && current >= 0 && current < controls.size() && controls[current].Type == Control::Type::BACK)
-                {
-                    break;
-                }
-            }
-        }
-
-        if (font)
-        {
-            TTF_CloseFont(font);
-
-            font = NULL;
-        }
-
-        TTF_Quit();
+        SDL_BlitSurface(text_surface, &src, button, &dst);
     }
 
-    return false;
+    if (text_surface)
+    {
+        SDL_FreeSurface(text_surface);
+
+        text_surface = NULL;
+    }
+
+    return button;
 }
 
 bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer)
@@ -766,6 +716,118 @@ bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer)
 
             glossary = NULL;
         }
+    }
+
+    return false;
+}
+
+bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player)
+{
+    std::string title = "Necklace of Skulls: Adventure Sheet";
+
+    auto quit = false;
+
+    // Render the image
+    if (window && renderer)
+    {
+        auto selected = false;
+        auto current = -1;
+
+        const int back_buttonh = 48;
+        const int profilew = SCREEN_WIDTH * (1.0 - 2.0 * Margin);
+        const int profileh = 70;
+
+        auto controls = std::vector<Button>();
+
+        auto marginw = Margin * SCREEN_WIDTH;
+        auto marginh = Margin * SCREEN_HEIGHT / 2;
+
+        auto headerw = 150;
+        auto headerh = 36;
+        auto space = 8;
+        auto font_size = 18;
+
+        auto boxh = (profileh) / 2;
+
+        auto skills = createHeaderButton(window, "Skills", clrWH, intDB, headerw, headerh, space);
+
+        controls.push_back(Button(0, skills, 0, 1, 0, 1, startx, starty + profileh + headerh + marginh, Control::Type::ACTION));
+        controls.push_back(Button(1, "images/back-button.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        std::string codewords;
+
+        for (auto i = 0; i < player.Codewords.size(); i++)
+        {
+            if (i > 0)
+            {
+                codewords += ", ";
+            }
+
+            codewords += Codeword::Descriptions.at(player.Codewords[i]);
+        }
+
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", font_size);
+
+        if (font)
+        {
+            while (!quit)
+            {
+                SDL_SetWindowTitle(window, title.c_str());
+
+                // Fill the surface with background color
+                fillWindow(renderer, intWH);
+
+                renderAdventurer(window, renderer, font, player);
+
+                if (player.Codewords.size() > 0)
+                {
+                    putText(renderer, "Codewords", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + 2 * profileh + 4 * headerh + 4 * marginh + 2 * boxh);
+                    putText(renderer, codewords.c_str(), font, space, clrBK, intBE, TTF_STYLE_ITALIC, profilew - buttonw - 2 * space, profileh, startx, starty + 2 * profileh + 5 * headerh + 4 * marginh + 2 * boxh);
+                }
+
+                renderButtons(renderer, controls, current, intGR, space, space / 2);
+
+                bool scrollUp = false;
+                bool scrollDown = false;
+                bool hold = false;
+
+                quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+                if (selected && current >= 0 && current < controls.size())
+                {
+                    if (controls[current].Type == Control::Type::BACK)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        renderWindow(window, renderer, glossaryScreen);
+
+                        current = -1;
+
+                        selected = false;
+                    }
+                }
+            }
+        }
+
+        if (skills)
+        {
+            SDL_FreeSurface(skills);
+
+            skills = NULL;
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+        }
+
+        TTF_Quit();
     }
 
     return false;
