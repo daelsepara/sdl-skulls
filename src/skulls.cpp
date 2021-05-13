@@ -378,9 +378,19 @@ bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displaySc
 }
 
 template <typename Function>
-bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, int id)
+bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, Character::Base &player)
 {
-    auto result = displayScreen(window, renderer, id);
+    auto result = displayScreen(window, renderer, player);
+
+    SDL_SetWindowTitle(window, "Necklace of Skulls");
+
+    return result;
+}
+
+template <typename Function>
+bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, Character::Base &player, int id)
+{
+    auto result = displayScreen(window, renderer, player, id);
 
     return result;
 }
@@ -488,7 +498,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
     return quit;
 }
 
-bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
+bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player)
 {
     std::string title = "Necklace of Skulls: Adventure Sheet";
 
@@ -521,14 +531,14 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         std::string skills;
 
-        for (auto i = 0; i < Player.Skills.size(); i++)
+        for (auto i = 0; i < player.Skills.size(); i++)
         {
             if (i > 0)
             {
                 skills += ", ";
             }
 
-            skills += Player.Skills[i].Name;
+            skills += player.Skills[i].Name;
         }
 
         auto boxw = (profilew - marginw) / 2;
@@ -536,26 +546,26 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         std::string possessions;
 
-        for (auto i = 0; i < Player.Items.size(); i++)
+        for (auto i = 0; i < player.Items.size(); i++)
         {
             if (i > 0)
             {
                 possessions += ", ";
             }
 
-            possessions += Item::Descriptions.at(Player.Items[i]);
+            possessions += Item::Descriptions.at(player.Items[i]);
         }
 
         std::string codewords;
 
-        for (auto i = 0; i < Player.Codewords.size(); i++)
+        for (auto i = 0; i < player.Codewords.size(); i++)
         {
             if (i > 0)
             {
                 codewords += ", ";
             }
 
-            codewords += Codeword::Descriptions.at(Player.Codewords[i]);
+            codewords += Codeword::Descriptions.at(player.Codewords[i]);
         }
 
         TTF_Init();
@@ -569,20 +579,20 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
                 // Fill the surface with background color
                 fillWindow(renderer, intWH);
 
-                putText(renderer, Player.Name, font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty);
-                putText(renderer, Player.Description, font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
+                putText(renderer, player.Name, font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty);
+                putText(renderer, player.Description, font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
                 putText(renderer, "Skills", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + headerh + marginh);
                 putText(renderer, skills.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, boxh, startx, starty + profileh + 2 * headerh + marginh);
 
                 putText(renderer, "Money", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 2 * headerh + 2 * marginh + boxh);
-                putText(renderer, (std::to_string(Player.Money) + " cacao").c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx, starty + profileh + 3 * headerh + 2 * marginh + boxh);
+                putText(renderer, (std::to_string(player.Money) + " cacao").c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx, starty + profileh + 3 * headerh + 2 * marginh + boxh);
                 putText(renderer, "Life", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx + boxw + marginw, starty + profileh + 2 * headerh + 2 * marginh + boxh);
-                putText(renderer, std::to_string(Player.Life).c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx + boxw + marginw, starty + profileh + 3 * headerh + 2 * marginh + boxh);
+                putText(renderer, std::to_string(player.Life).c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx + boxw + marginw, starty + profileh + 3 * headerh + 2 * marginh + boxh);
 
                 putText(renderer, "Possessions", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 3 * headerh + 3 * marginh + 2 * boxh);
                 putText(renderer, possessions.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + profileh + 4 * headerh + 3 * marginh + 2 * boxh);
 
-                if (Player.Codewords.size() > 0)
+                if (player.Codewords.size() > 0)
                 {
                     putText(renderer, "Codewords", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + 2 * profileh + 4 * headerh + 4 * marginh + 2 * boxh);
                     putText(renderer, codewords.c_str(), font, space, clrBK, intBE, TTF_STYLE_ITALIC, profilew - buttonw - 2 * space, profileh, startx, starty + 2 * profileh + 5 * headerh + 4 * marginh + 2 * boxh);
@@ -616,7 +626,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer)
     return false;
 }
 
-Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
+Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     Story::Base *next = &notImplemented;
 
@@ -731,7 +741,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
                         }
                         else if (story->Choices[current].Type == Choice::Type::GET_ITEM)
                         {
-                            Character::GET_ITEMS(Player, {story->Choices[current].Item});
+                            Character::GET_ITEMS(player, {story->Choices[current].Item});
 
                             next = (Story::Base *)findStory(story->Choices[current].Destination);
 
@@ -741,9 +751,9 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
                         }
                         else if (story->Choices[current].Type == Choice::Type::GIVE_ITEM)
                         {
-                            if (Character::VERIFY_ITEM(Player, story->Choices[current].Item))
+                            if (Character::VERIFY_ITEM(player, story->Choices[current].Item))
                             {
-                                Character::LOSE_ITEM(Player, {story->Choices[current].Item});
+                                Character::LOSE_ITEM(player, {story->Choices[current].Item});
 
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
@@ -760,7 +770,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
                         }
                         else if (story->Choices[current].Type == Choice::Type::SKILL)
                         {
-                            if (Character::VERIFY_SKILL(Player, story->Choices[current].Skill))
+                            if (Character::VERIFY_SKILL(player, story->Choices[current].Skill))
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
@@ -770,7 +780,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
                             }
                             else
                             {
-                                if (Character::HAS_SKILL(Player, story->Choices[current].Skill))
+                                if (Character::HAS_SKILL(player, story->Choices[current].Skill))
                                 {
                                     message = "You do not have the required item to use with this skill!";
                                 }
@@ -787,7 +797,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
                 }
                 else if (controls[current].Type == Control::Type::CHARACTER && !hold)
                 {
-                    renderWindow(window, renderer, characterScreen);
+                    renderWindow(window, renderer, characterScreen, player);
 
                     current = -1;
 
@@ -832,23 +842,23 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Story::B
     return next;
 }
 
-Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
+Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     Story::Base *next = &notImplemented;
 
     if (story->Choices.size() > 0)
     {
-        next = processChoices(window, renderer, story);
+        next = processChoices(window, renderer, player, story);
     }
     else
     {
-        next = (Story::Base *)findStory(story->Continue());
+        next = (Story::Base *)findStory(story->Continue(player));
     }
 
     return next;
 }
 
-bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story)
+bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     auto quit = false;
 
@@ -864,7 +874,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
         {
             run_once = false;
 
-            auto jump = story->Background();
+            auto jump = story->Background(player);
 
             if (jump >= 0)
             {
@@ -873,7 +883,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
                 continue;
             }
 
-            story->Event();
+            story->Event(player);
         }
 
         if (story->Image)
@@ -961,7 +971,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
                     }
                     else if (story->Controls[current].Type == Control::Type::CHARACTER && !hold)
                     {
-                        renderWindow(window, renderer, characterScreen);
+                        renderWindow(window, renderer, characterScreen, player);
 
                         current = -1;
 
@@ -981,7 +991,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
 
                         selected = false;
 
-                        auto next = renderChoices(window, renderer, story);
+                        auto next = renderChoices(window, renderer, player, story);
 
                         if (next->ID != story->ID)
                         {
@@ -1044,11 +1054,11 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
     return quit;
 }
 
-bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, int id)
+bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int id)
 {
     auto story = (Story::Base *)findStory(id);
 
-    return processStory(window, renderer, story);
+    return processStory(window, renderer, player, story);
 }
 
 bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
@@ -1062,6 +1072,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
     InitializeStories();
 
+    Character::Base Player;
     auto storyID = 0;
 
     // Render window
@@ -1109,7 +1120,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
                     Player = Character::WARRIOR;
 
-                    renderWindow(window, renderer, storyScreen, storyID);
+                    renderWindow(window, renderer, storyScreen, Player, storyID);
 
                     current = -1;
 

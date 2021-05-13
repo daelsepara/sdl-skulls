@@ -234,6 +234,4 @@ namespace Character
 
 } // namespace Character
 
-Character::Base Player;
-
 #endif

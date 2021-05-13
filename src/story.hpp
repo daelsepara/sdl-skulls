@@ -123,13 +123,13 @@ namespace Story
         Story::Type Type = Story::Type::NORMAL;
 
         // Handle background events
-        virtual int Background() { return -1; };
+        virtual int Background(Character::Base &player) { return -1; };
 
         // Handle events before story branches
-        virtual void Event(){};
+        virtual void Event(Character::Base &player){};
 
         // Jump to next section
-        virtual int Continue() { return -1; };
+        virtual int Continue(Character::Base &player) { return -1; };
 
         Base()
         {
@@ -201,7 +201,7 @@ public:
         Controls = StandardControls();
     }
 
-    int Continue() { return 1; };
+    int Continue(Character::Base &player) { return 1; };
 };
 
 class Story001 : public Story::Base
@@ -235,7 +235,7 @@ public:
         Controls = StandardControls();
     }
 
-    int Continue() { return 93; }
+    int Continue(Character::Base &player) { return 93; }
 };
 
 class Story025 : public Story::Base
@@ -290,9 +290,9 @@ public:
         Controls = StandardControls();
     }
 
-    void Event()
+    void Event(Character::Base &player)
     {
-        if (Character::VERIFY_SKILL(Player, Skill::Type::ETIQUETTE))
+        if (Character::VERIFY_SKILL(player, Skill::Type::ETIQUETTE))
         {
             Choices[0].Destination = 139;
             Choices[0].Type = Choice::Type::SKILL;
@@ -320,11 +320,11 @@ public:
         Controls = StandardControls();
     }
 
-    int Continue() { return 93; }
+    int Continue(Character::Base &player) { return 93; }
 
-    void Event()
+    void Event(Character::Base &player)
     {
-        Character::GET_ITEMS(Player, {Item::Type::LETTER_OF_INTRODUCTION});
+        Character::GET_ITEMS(player, {Item::Type::LETTER_OF_INTRODUCTION});
     }
 };
 
@@ -344,9 +344,9 @@ public:
         Controls = StandardControls();
     }
 
-    void Event()
+    void Event(Character::Base &player)
     {
-        if (Character::VERIFY_SKILL(Player, Skill::Type::ETIQUETTE))
+        if (Character::VERIFY_SKILL(player, Skill::Type::ETIQUETTE))
         {
             Choices[0].Destination = 139;
             Choices[0].Type = Choice::Type::SKILL;
@@ -381,7 +381,7 @@ public:
             {Item::Type::CHILLI_PEPPERS, 1}};
     }
 
-    int Continue() { return 389; }
+    int Continue(Character::Base &player) { return 389; }
 };
 
 class Story096 : public Story::Base
@@ -398,7 +398,7 @@ public:
         Controls = StandardControls();
     }
 
-    int Continue() { return 350; };
+    int Continue(Character::Base &player) { return 350; };
 };
 
 class Story116 : public Story::Base
@@ -437,7 +437,7 @@ public:
         Bye = "Bidding the peasant good.day, you set off once more towards Yashuna";
     }
 
-    int Continue() { return 163; }
+    int Continue(Character::Base &player) { return 163; }
 };
 
 class Story138 : public Story::Base
@@ -474,7 +474,7 @@ public:
         Shop = {{Item::Type::PAPAYA, 1}};
     }
 
-    int Continue() { return 163; }
+    int Continue(Character::Base &player) { return 163; }
 };
 
 class Story163 : public Story::Base
@@ -508,11 +508,11 @@ public:
         Controls = StandardControls();
     }
 
-    int Continue() { return 25; }
+    int Continue(Character::Base &player) { return 25; }
 
-    void Event()
+    void Event(Character::Base &player)
     {
-        Character::GET_ITEMS(Player, {Item::Type::JADE_BEAD, Item::Type::MAIZE_CAKES});
+        Character::GET_ITEMS(player, {Item::Type::JADE_BEAD, Item::Type::MAIZE_CAKES});
     }
 };
 
