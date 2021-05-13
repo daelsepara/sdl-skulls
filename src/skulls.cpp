@@ -865,6 +865,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
 
         SDL_Surface *text = NULL;
 
+        if (run_once)
+        {
+            run_once = false;
+
+            story->Event();
+        }
+
         if (story->Text)
         {
             auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 16;
@@ -911,13 +918,6 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
 
                 bool scrollUp = false;
                 bool scrollDown = false;
-
-                if (run_once)
-                {
-                    run_once = false;
-
-                    story->Event();
-                }
 
                 quit = Input::GetInput(renderer, story->Controls, current, selected, scrollUp, scrollDown, hold);
 
