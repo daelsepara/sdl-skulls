@@ -43,7 +43,7 @@ This is an implementation of the **Necklace of Skulls** game book (Virtual Reali
 
 **Inventory Screen**
 
-![Inventory Screen](/screenshots/iventory-screen.png)
+![Inventory Screen](/screenshots/inventory-screen.png)
 
 # Copyright Information 
 
