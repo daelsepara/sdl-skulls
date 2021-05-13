@@ -858,18 +858,27 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
 
         SDL_Surface *splash = NULL;
 
-        if (story->Image)
-        {
-            splash = createImage(story->Image);
-        }
-
         SDL_Surface *text = NULL;
 
         if (run_once)
         {
             run_once = false;
 
+            auto jump = story->Background();
+
+            if (jump >= 0)
+            {
+                story = (Story::Base*)findStory(jump);
+
+                continue;
+            }
+
             story->Event();
+        }
+
+        if (story->Image)
+        {
+            splash = createImage(story->Image);
         }
 
         if (story->Text)
@@ -1007,7 +1016,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story
                             break;
                         }
                     }
-                    else if (story->Controls[current].Type == Control::Type::QUIT && !hold)
+                    else if (story->Controls[current].Type == Control::Type::BACK && !hold)
                     {
                         quit = true;
 

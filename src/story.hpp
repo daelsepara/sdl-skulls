@@ -29,7 +29,7 @@ namespace Choice
         LOSE_LIFE
     };
 
-    class Abstract
+    class Base
     {
     public:
         Choice::Type Type = Choice::Type::NORMAL;
@@ -39,7 +39,7 @@ namespace Choice
         int Value = 0;
         int Destination = -1;
 
-        Abstract(Choice::Type type, const char *text, int destination, Item::Type item, Skill::Type skill, int value)
+        Base(Choice::Type type, const char *text, int destination, Item::Type item, Skill::Type skill, int value)
         {
             Type = type;
             Text = text;
@@ -49,7 +49,7 @@ namespace Choice
             Value = value;
         }
 
-        Abstract(const char *text, int destination, Item::Type item, Skill::Type skill)
+        Base(const char *text, int destination, Item::Type item, Skill::Type skill)
         {
             Text = text;
             Destination = destination;
@@ -58,7 +58,7 @@ namespace Choice
             Skill = skill;
         }
 
-        Abstract(const char *text, int destination, Item::Type item)
+        Base(const char *text, int destination, Item::Type item)
         {
             Text = text;
             Destination = destination;
@@ -66,7 +66,7 @@ namespace Choice
             Item = item;
         }
 
-        Abstract(const char *text, int destination, Skill::Type skill)
+        Base(const char *text, int destination, Skill::Type skill)
         {
             Text = text;
             Destination = destination;
@@ -74,7 +74,7 @@ namespace Choice
             Skill = skill;
         }
 
-        Abstract(const char *text, int destination, Choice::Type type, int value)
+        Base(const char *text, int destination, Choice::Type type, int value)
         {
             Text = text;
             Destination = destination;
@@ -82,14 +82,14 @@ namespace Choice
             Value = value;
         }
 
-        Abstract(const char *text, int destination, Choice::Type type)
+        Base(const char *text, int destination, Choice::Type type)
         {
             Text = text;
             Destination = destination;
             Type = type;
         }
 
-        Abstract(const char *text, int destination, Choice::Type type, Item::Type item)
+        Base(const char *text, int destination, Choice::Type type, Item::Type item)
         {
             Text = text;
             Destination = destination;
@@ -117,7 +117,7 @@ namespace Story
         const char *Title = NULL;
         const char *Image = NULL;
         std::vector<Button> Controls;
-        std::vector<Choice::Abstract> Choices;
+        std::vector<Choice::Base> Choices;
         std::map<Item::Type, int> Shop;
         const char *Bye = NULL;
         Story::Type Type = Story::Type::NORMAL;
@@ -165,7 +165,7 @@ std::vector<Button> StandardControls()
     controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
     controls.push_back(Button(4, "images/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
     controls.push_back(Button(5, "images/next.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::NEXT));
-    controls.push_back(Button(6, "images/exit.png", 5, 6, 1, 6, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::QUIT));
+    controls.push_back(Button(6, "images/exit.png", 5, 6, 1, 6, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
     return controls;
 }
@@ -181,7 +181,7 @@ std::vector<Button> ShopControls()
     controls.push_back(Button(4, "images/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
     controls.push_back(Button(5, "images/pouch-button.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::SHOP));
     controls.push_back(Button(6, "images/next.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::NEXT));
-    controls.push_back(Button(7, "images/exit.png", 6, 7, 1, 7, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::QUIT));
+    controls.push_back(Button(7, "images/exit.png", 6, 7, 1, 7, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
     return controls;
 }
@@ -214,9 +214,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Abstract("Reply that the life of your brother is more important than your duty to the clan", 24, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Abstract("...that on the contrary, clan honour demands that you go", 47, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Abstract("Say nothing", 70, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Reply that the life of your brother is more important than your duty to the clan", 24, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("...that on the contrary, clan honour demands that you go", 47, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Say nothing", 70, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
@@ -248,9 +248,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Abstract(Skill::WILDERNESS_LORE.Name, 48, Skill::Type::WILDERNESS_LORE));
-        Choices.push_back(Choice::Abstract("Jerk your hand away quickly", 71, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Abstract("Slowly reach around with your other hand to seize the tarantula from behind", 94, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base(Skill::WILDERNESS_LORE.Name, 48, Skill::Type::WILDERNESS_LORE));
+        Choices.push_back(Choice::Base("Jerk your hand away quickly", 71, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Slowly reach around with your other hand to seize the tarantula from behind", 94, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
@@ -266,9 +266,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Abstract("Request a meeting with one of the high priests", 116, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Abstract("Ask to see the ancestral treasures of the clan", 138, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Abstract("You think a companion would be useful", 162, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Request a meeting with one of the high priests", 116, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Ask to see the ancestral treasures of the clan", 138, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("You think a companion would be useful", 162, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
@@ -284,8 +284,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Abstract("Talk to him", 117, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Abstract("Hurry off before he gets here", 163, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Talk to him", 117, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Hurry off before he gets here", 163, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
@@ -338,8 +338,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Abstract("Talk to him", 117, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Abstract("Hurry off before he gets here", 163, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Talk to him", 117, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Hurry off before he gets here", 163, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
@@ -411,10 +411,10 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Abstract("Visit the temple of the War God", 231, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Abstract("Vist the temple of the Moon Goddess", 254, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Abstract("Visit the temple of the Death God", 277, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Abstract("You do not think any of the priests will be of much help,and would ask the Matriarch to let you have some of the clan treasures", 138, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Visit the temple of the War God", 231, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Vist the temple of the Moon Goddess", 254, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Visit the temple of the Death God", 277, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("You do not think any of the priests will be of much help,and would ask the Matriarch to let you have some of the clan treasures", 138, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
@@ -450,8 +450,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Abstract("Take the MAN OF GOLD", 93, Choice::Type::GET_ITEM, Item::Type::MAN_OF_GOLD));
-        Choices.push_back(Choice::Abstract("Choose from the rest of the treasures", 185, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Take the MAN OF GOLD", 93, Choice::Type::GET_ITEM, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Choose from the rest of the treasures", 185, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
@@ -487,9 +487,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Abstract("Give some food from your own pack (MAIZE CAKES)", 186, Choice::Type::GIVE_ITEM, Item::Type::MAIZE_CAKES));
-        Choices.push_back(Choice::Abstract("Give some food from your own pack (PAPAYA)", 186, Choice::Type::GIVE_ITEM, Item::Type::PAPAYA));
-        Choices.push_back(Choice::Abstract("Stand by and watch them pick the fruit", 96, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Give some food from your own pack (MAIZE CAKES)", 186, Choice::Type::GIVE_ITEM, Item::Type::MAIZE_CAKES));
+        Choices.push_back(Choice::Base("Give some food from your own pack (PAPAYA)", 186, Choice::Type::GIVE_ITEM, Item::Type::PAPAYA));
+        Choices.push_back(Choice::Base("Stand by and watch them pick the fruit", 96, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
@@ -525,7 +525,7 @@ public:
         Title = "Not implemented yet";
 
         Controls.clear();
-        Controls.push_back(Button(0, "images/exit.png", 0, 0, -1, -1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::QUIT));
+        Controls.push_back(Button(0, "images/exit.png", 0, 0, -1, -1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
     }
 };
 
