@@ -338,7 +338,6 @@ std::vector<TextButton> createHTextButtons(const char **choices, int num, int te
 
     if (num > 0)
     {
-        auto margin1 = (1.0 - Margin);
         auto margin2 = (2.0 * Margin);
         auto marginleft = (1.0 - margin2);
 
@@ -591,9 +590,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
         auto selected = false;
         auto current = -1;
 
-        const int map_buttonw = 150;
-        const int map_buttonh = 48;
-        const int map_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - map_buttonh);
+        const int back_buttonh = 48;
         const int profilew = SCREEN_WIDTH * (1.0 - 2.0 * Margin);
         const int profileh = 70;
 
@@ -607,7 +604,6 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
         auto marginw = Margin * SCREEN_WIDTH;
         auto marginh = Margin * SCREEN_HEIGHT / 2;
 
-        auto boxw = (profilew - marginw) / 2;
         auto boxh = (profileh) / 2;
 
         std::string codewords;
@@ -661,9 +657,9 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
             TTF_CloseFont(font);
 
             font = NULL;
-
-            TTF_Quit();
         }
+
+        TTF_Quit();
     }
 
     return false;
@@ -688,20 +684,11 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 
         auto main_buttonh = 48;
 
-        const int profilew = SCREEN_WIDTH * (1.0 - 2.0 * Margin);
-        const int profileh = 70;
-
-        auto headerw = 150;
-        auto headerh = 36;
-        auto space = 8;
         auto font_size = 18;
-
-        auto marginw = Margin * SCREEN_WIDTH;
-        auto marginh = Margin * SCREEN_HEIGHT / 2;
 
         const char *choices[4] = {"Previous", "Next", "Glossary", "Start"};
 
-        auto controls = createHTextButtons(choices, 4, main_buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - main_buttonh);
+        auto controls = createHTextButtons(choices, 4, main_buttonh, startx - 20, SCREEN_HEIGHT * (1.0 - Margin) - main_buttonh);
 
         controls[0].Type = Control::Type::BACK;
         controls[1].Type = Control::Type::NEXT;
@@ -765,9 +752,9 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
             TTF_CloseFont(font);
 
             font = NULL;
-
-            TTF_Quit();
         }
+
+        TTF_Quit();
     }
 
     return player;
@@ -796,17 +783,11 @@ std::vector<Button> createItemControls(Character::Base &player)
 
     auto idx = controls.size();
 
-    auto button_map = Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP);
-    auto button_disk = Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME);
-    auto button_user = Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER);
-    auto button_items = Button(idx + 3, "images/items.png", idx + 2, idx + 4, idx - 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE);
-    auto button_back = Button(idx + 4, "images/back-button.png", idx + 3, idx + 4, idx - 1, idx + 4, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK);
-
-    controls.push_back(button_map);
-    controls.push_back(button_disk);
-    controls.push_back(button_user);
-    controls.push_back(button_items);
-    controls.push_back(button_back);
+    controls.push_back(Button(idx, "images/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP));
+    controls.push_back(Button(idx + 1, "images/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
+    controls.push_back(Button(idx + 2, "images/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+    controls.push_back(Button(idx + 3, "images/items.png", idx + 2, idx + 4, idx - 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
+    controls.push_back(Button(idx + 4, "images/back-button.png", idx + 3, idx + 4, idx - 1, idx + 4, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
     return controls;
 }
@@ -815,11 +796,12 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 {
     if (player.Items.size() > 0)
     {
-        auto error = false;
         const char *message = NULL;
 
+        auto error = false;
+
         Uint32 start_ticks = 0;
-        Uint32 message_duration = 5000;
+        Uint32 duration = 3000;
 
         auto done = false;
 
@@ -848,7 +830,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
             if (error)
             {
-                if ((SDL_GetTicks() - start_ticks) < message_duration)
+                if ((SDL_GetTicks() - start_ticks) < duration)
                 {
                     putText(renderer, message, font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
                 }
@@ -942,9 +924,9 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
             TTF_CloseFont(font);
 
             font = NULL;
-
-            TTF_Quit();
         }
+
+        TTF_Quit();
     }
 
     return false;
@@ -954,12 +936,13 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 {
     if (story->Shop.size() > 0)
     {
-        auto error = false;
-        auto purchased = false;
         std::string message;
 
+        auto error = false;
+        auto purchased = false;
+
         Uint32 start_ticks = 0;
-        Uint32 message_duration = 3000;
+        Uint32 duration = 3000;
 
         auto done = false;
 
@@ -1006,6 +989,10 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
         auto scrollDown = false;
         auto hold = false;
 
+        auto messageh = 150;
+        auto boxh = 75;
+        auto infoh = 36;
+
         while (!done)
         {
             if (story->Title)
@@ -1021,9 +1008,9 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
             if (error)
             {
-                if ((SDL_GetTicks() - start_ticks) < message_duration)
+                if ((SDL_GetTicks() - start_ticks) < duration)
                 {
-                    putText(renderer, message.c_str(), font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
+                    putText(renderer, message.c_str(), font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
                 }
                 else
                 {
@@ -1032,9 +1019,9 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
             }
             else if (purchased)
             {
-                if ((SDL_GetTicks() - start_ticks) < message_duration)
+                if ((SDL_GetTicks() - start_ticks) < duration)
                 {
-                    putText(renderer, message.c_str(), font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
+                    putText(renderer, message.c_str(), font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
                 }
                 else
                 {
@@ -1044,21 +1031,21 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
             if (!error && !purchased)
             {
-                putText(renderer, "Select an item to buy", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
+                putText(renderer, "Select an item to buy", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
             }
 
-            putText(renderer, "Money", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, 36, startx, starty + text_bounds - 111);
-            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, 8, clrBK, intBE, TTF_STYLE_NORMAL, splashw, 75, startx, starty + text_bounds - 75);
+            putText(renderer, "Money", font, 8, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
-            renderButtons(renderer, controls, current, intGR, 8, 4);
+            renderButtons(renderer, controls, current, intGR, text_space, text_space / 2);
 
             for (auto i = 0; i < story->Shop.size(); i++)
             {
                 if (i != current)
                 {
-                    drawRect(renderer, controls[i].W + 16, controls[i].H + 16, controls[i].X - 8, controls[i].Y - 8, intDB);
+                    drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intDB);
                 }
             }
 
@@ -1156,9 +1143,9 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
             TTF_CloseFont(font);
 
             font = NULL;
-
-            TTF_Quit();
         }
+
+        TTF_Quit();
     }
 
     return false;
@@ -1172,7 +1159,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
     const char *message = NULL;
 
     Uint32 start_ticks = 0;
-    Uint32 message_duration = 5000;
+    Uint32 duration = 5000;
 
     if (renderer && story->Choices.size() > 0)
     {
@@ -1196,6 +1183,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
         auto text_space = 8;
         auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+        auto messageh = 150;
 
         for (int i = 0; i < choices.size(); i++)
         {
@@ -1231,9 +1219,9 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
             if (error)
             {
-                if ((SDL_GetTicks() - start_ticks) < message_duration)
+                if ((SDL_GetTicks() - start_ticks) < duration)
                 {
-                    putText(renderer, message, font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, 150, startx, starty);
+                    putText(renderer, message, font, 8, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
                 }
                 else
                 {
@@ -1255,13 +1243,13 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
-            renderButtons(renderer, controls, current, intGR, 8, 4);
+            renderButtons(renderer, controls, current, intGR, text_space, text_space / 2);
 
             for (auto i = 0; i < story->Choices.size(); i++)
             {
                 if (i != current)
                 {
-                    drawRect(renderer, controls[i].W + 16, controls[i].H + 16, controls[i].X - 8, controls[i].Y - 8, intDB);
+                    drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intDB);
                 }
             }
 
@@ -1306,7 +1294,9 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             else
                             {
                                 message = "You do not have the required item!";
+
                                 start_ticks = SDL_GetTicks();
+
                                 error = true;
                             }
                         }
@@ -1332,6 +1322,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 }
 
                                 start_ticks = SDL_GetTicks();
+
                                 error = true;
                             }
                         }
@@ -1377,9 +1368,9 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
             TTF_CloseFont(font);
 
             font = NULL;
-
-            TTF_Quit();
         }
+
+        TTF_Quit();
 
         if (splash)
         {
@@ -1412,6 +1403,10 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 {
     auto quit = false;
 
+    auto space = 8;
+
+    auto font_size = 20;
+
     while (!quit)
     {
         auto run_once = true;
@@ -1443,9 +1438,9 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
         if (story->Text)
         {
-            auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 16;
+            auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * space;
 
-            text = createText(story->Text, "fonts/default.ttf", 20, clrDB, textwidth, TTF_STYLE_NORMAL);
+            text = createText(story->Text, "fonts/default.ttf", font_size, clrDB, textwidth, TTF_STYLE_NORMAL);
         }
 
         // Render the image
@@ -1480,7 +1475,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                 if (story->Text)
                 {
                     fillRect(renderer, textwidth, text_bounds, textx, texty, intBE);
-                    renderText(renderer, text, intBE, textx + 8, texty + 8, text_bounds - 16, offset);
+                    renderText(renderer, text, intBE, textx + space, texty + space, text_bounds - 2 * space, offset);
                 }
 
                 renderButtons(renderer, story->Controls, current, intGR, border_space, border_pts);
@@ -1506,16 +1501,16 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                     else if (story->Controls[current].Type == Control::Type::SCROLL_DOWN || ((story->Controls[current].Type == Control::Type::SCROLL_DOWN && hold) || scrollDown))
                     {
-                        if (text->h >= text_bounds - 16)
+                        if (text->h >= text_bounds - 2 * space)
                         {
-                            if (offset < text->h - text_bounds + 16)
+                            if (offset < text->h - text_bounds + 2 * space)
                             {
                                 offset += scrollSpeed;
                             }
 
-                            if (offset > text->h - text_bounds + 16)
+                            if (offset > text->h - text_bounds + 2 * space)
                             {
-                                offset = text->h - text_bounds + 16;
+                                offset = text->h - text_bounds + 2 * space;
                             }
                         }
                     }
@@ -1570,7 +1565,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             {
                                 if (story->Bye)
                                 {
-                                    auto bye = createText(story->Bye, "fonts/default.ttf", 24, clrBK, (SCREEN_WIDTH * (1.0 - 2.0 * Margin)), TTF_STYLE_NORMAL);
+                                    auto bye = createText(story->Bye, "fonts/default.ttf", font_size + 4, clrBK, (SCREEN_WIDTH * (1.0 - 2.0 * Margin)), TTF_STYLE_NORMAL);
                                     auto forward = createImage("images/next.png");
 
                                     if (bye && forward)
@@ -1578,6 +1573,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                                         fillWindow(renderer, intWH);
 
                                         renderText(renderer, bye, intBE, (SCREEN_WIDTH - bye->w) / 2, (SCREEN_HEIGHT - bye->h) / 2, SCREEN_HEIGHT, 0);
+
                                         renderImage(renderer, forward, SCREEN_WIDTH * (1.0 - Margin) - buttonw - button_space, buttony);
 
                                         SDL_RenderPresent(renderer);
@@ -1637,16 +1633,20 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pl
 
 bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
+    auto font_size = 20;
+
     auto *introduction = "The sole survivor of an expedition brings news of disaster. Your twin brother is lost in the trackless western sierra. Resolving to find out his fate, you leave the safety of your home far behind. Your quest takes you to lost jungle cities, across mountains and seas, and even into the depths of the underworld.\n\nYou will plunge into the eerie world of Mayan myth. You will confront ghosts and gods, bargain for your life against wily demons, find allies and enemies among both the living and the dead. If you are breave enough to survive the dangers of the spirit-haunted western desert, you must still confront the wizard called Necklace of skulls in a deadly contest whose stakes are nothing less than your own soul.";
 
     auto splash = createImage("images/skulls-cover.png");
-    auto text = createText(introduction, "fonts/default.ttf", 20, clrWH, SCREEN_WIDTH * 0.85 - splash->w);
+
+    auto text = createText(introduction, "fonts/default.ttf", font_size, clrWH, SCREEN_WIDTH * (1.0 - 3.0 * Margin) - splash->w);
 
     auto title = "Necklace of Skulls";
 
     InitializeStories();
 
     Character::Base Player;
+
     auto storyID = 0;
 
     // Render window
@@ -1678,7 +1678,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
             renderImage(renderer, splash, startx, starty);
             renderText(renderer, text, intDB, startx * 2 + splash->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
-            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
+            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, font_size, TTF_STYLE_NORMAL);
 
             bool scrollUp = false;
             bool scrollDown = false;
@@ -1729,6 +1729,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
                 default:
 
                     selected = false;
+
                     quit = false;
 
                     break;
