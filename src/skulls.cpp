@@ -24,7 +24,7 @@
 bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player);
 bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Control::Type mode);
-bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer);
+bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skill::Base> Skills);
 bool mainScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool mapScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int id);
@@ -93,23 +93,6 @@ void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, co
     }
 }
 
-void waitForEvent(SDL_Renderer *renderer, Uint32 event)
-{
-    SDL_RenderPresent(renderer);
-
-    SDL_Event result;
-
-    while (1)
-    {
-        SDL_PollEvent(&result);
-
-        if (result.type == event)
-        {
-            break;
-        }
-    }
-}
-
 void renderImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y)
 {
     if (image && renderer)
@@ -138,20 +121,6 @@ void renderImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y)
 
             texture = NULL;
         }
-    }
-}
-
-void putImage(SDL_Renderer *renderer, const char *image, int x, int y)
-{
-    auto surface = createImage(image);
-
-    if (surface)
-    {
-        renderImage(renderer, surface, x, y);
-
-        SDL_FreeSurface(surface);
-
-        surface = NULL;
     }
 }
 
@@ -422,6 +391,16 @@ bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displaySc
     return result;
 }
 
+template <typename Function>
+bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, std::vector<Skill::Base> Skills)
+{
+    auto result = displayScreen(window, renderer, Skills);
+
+    SDL_SetWindowTitle(window, "Necklace of Skulls");
+
+    return result;
+}
+
 bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
     auto quit = false;
@@ -623,7 +602,7 @@ SDL_Surface *createHeaderButton(SDL_Window *window, const char *text, SDL_Color 
     return button;
 }
 
-bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer)
+bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skill::Base> Skills)
 {
     std::string title = "Necklace of Skulls: Skills Glossary";
 
@@ -636,15 +615,14 @@ bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         std::string text;
 
-        for (auto i = 0; i < Skill::ALL.size(); i++)
+        for (auto i = 0; i < Skills.size(); i++)
         {
             if (i > 0)
             {
-                text += "\n";
+                text += "\n" + std::string(70, '-') + "\n";
             }
 
-            text += std::string(Skill::ALL[i].Name) + "\n";
-            text += "----------------\n\n";
+            text += std::string(Skills[i].Name) + "\n\n";
             text += std::string(Skill::ALL[i].Description) + "\n";
         }
 
@@ -814,7 +792,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                     }
                     else if (controls[current].Type == Control::Type::GLOSSARY)
                     {
-                        renderWindow(window, renderer, glossaryScreen);
+                        renderWindow(window, renderer, glossaryScreen, player.Skills);
 
                         current = -1;
 
@@ -937,7 +915,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
                     }
                     else if (controls[current].Type == Control::Type::GLOSSARY)
                     {
-                        renderWindow(window, renderer, glossaryScreen);
+                        renderWindow(window, renderer, glossaryScreen, Skill::ALL);
 
                         current = -1;
                     }
