@@ -447,9 +447,7 @@ public:
                 Choices[0].Skill = Skill::Type::NONE;
             }
 
-            PreText += "\nHey, you there! What are you doing?\"\n\nYou look up to see an old peasant hurrying through the dusty orchard towards the causeway.";
-
-            Text = PreText.c_str();
+            Text = (PreText + "\nHey, you there! What are you doing?\"\n\nYou look up to see an old peasant hurrying through the dusty orchard towards the causeway.") .c_str();
         }
         else
         {
