@@ -29,7 +29,9 @@ namespace Control
         USE,
         DROP,
         TAKE,
-        QUIT
+        QUIT,
+        PLUS,
+        MINUS
     };
 
     class Base

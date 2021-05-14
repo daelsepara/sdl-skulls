@@ -118,7 +118,7 @@ namespace Input
                     }
                     else if (current >= 0 && current < choices.size() - 1)
                     {
-                        current = choices[current].Right;
+                        current = choices[choices.size() - 1].ID;
                     }
                 }
                 else if (current >= 0 && current < choices.size())

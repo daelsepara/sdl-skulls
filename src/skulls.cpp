@@ -531,7 +531,7 @@ SDL_Surface *createHeaderButton(SDL_Window *window, const char *text, SDL_Color 
 
         SDL_FillRect(button, &dst, intDB);
 
-        dst.x = x;
+        dst.x = x < 0 ? (button->w - text_surface->w) / 2 : x;
         dst.y = (button->h - text_surface->h) / 2;
 
         SDL_BlitSurface(text_surface, &src, button, &dst);
@@ -1198,6 +1198,151 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
     return done;
 }
 
+bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player)
+{
+    auto done = false;
+
+    if (player.Money > 0)
+    {
+        const char *message = NULL;
+
+        auto error = false;
+
+        Uint32 start_ticks = 0;
+        Uint32 duration = 3000;
+
+        auto text_space = 8;
+
+        auto box_space = 10;
+
+        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+
+        auto controls = std::vector<Button>();
+
+        auto idx = 0;
+
+        auto button_plus = createHeaderButton(window, "+", clrWH, intDB, 32, 32, -1);
+        auto button_minus = createHeaderButton(window, "-", clrWH, intDB, 32, 32, -1);
+
+        controls.push_back(Button(idx, button_plus, idx, idx + 1, idx, idx + 2, textx + 2 * text_space, texty + 35 + 2 * box_space, Control::Type::PLUS));
+        controls.push_back(Button(idx + 1, button_minus, idx, idx + 1, idx, idx + 2, textx + 2 * text_space + button_space + 32, texty + 35 + 2 * box_space, Control::Type::MINUS));
+        controls.push_back(Button(idx + 2, "images/yes.png", idx + 2, idx + 2, idx + 1, idx + 2, startx, buttony, Control::Type::ACTION));
+        controls.push_back(Button(idx + 3, "images/back-button.png", idx + 3, idx + 3, idx, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+
+        auto selected = false;
+        auto current = -1;
+        auto quit = false;
+        auto scrollUp = false;
+        auto scrollDown = false;
+        auto hold = false;
+
+        auto infoh = 36;
+        auto boxh = 75;
+
+        auto donation = 1;
+
+        while (!done)
+        {
+            SDL_SetWindowTitle(window, "Make a Donation");
+
+            fillWindow(renderer, intWH);
+
+            if (error)
+            {
+                if ((SDL_GetTicks() - start_ticks) < duration)
+                {
+                    putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, boxh * 2, startx, starty);
+                }
+                else
+                {
+                    error = false;
+                }
+            }
+
+            if (!error)
+            {
+                putText(renderer, "Select amount to DONATE", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
+            }
+
+            putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+
+            putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+            putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+
+            fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
+
+            std::string donation_text = "DONATE " + (std::to_string(donation)) + " cacao";
+            putText(renderer, donation_text.c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, textwidth, 35, textx + text_space, texty + text_space);
+
+            renderButtons(renderer, controls, current, intGR, text_space, text_space / 2);
+
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected)
+            {
+                if (controls[current].Type == Control::Type::ACTION && !hold)
+                {
+                    Story::DONATION = donation;
+
+                    player.Money -= donation;
+
+                    done = true;
+
+                    current = -1;
+
+                    selected = false;
+
+                    break;
+                }
+                else if (controls[current].Type == Control::Type::PLUS && !hold)
+                {
+                    if (donation < player.Money)
+                    {
+                        donation++;
+                    }
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::MINUS && !hold)
+                {
+                    if (donation > 0)
+                    {
+                        donation--;
+                    }
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::BACK && !hold)
+                {
+                    done = false;
+
+                    break;
+                }
+            }
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+        }
+
+        TTF_Quit();
+    }
+
+    return done;
+}
+
 bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     if (story->Shop.size() > 0)
@@ -1522,7 +1667,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
             quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
-            if (selected)
+            if (selected && current >= 0 && current < controls.size())
             {
                 if (controls[current].Type == Control::Type::ACTION && !hold)
                 {
@@ -1567,6 +1712,27 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 error = true;
                             }
                         }
+                        else if (story->Choices[current].Type == Choice::Type::LOSE_MONEY)
+                        {
+                            if (player.Money >= story->Choices[current].Value)
+                            {
+                                player.Money -= story->Choices[current].Value;
+
+                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                quit = true;
+
+                                break;
+                            }
+                            else
+                            {
+                                message = "You do not have enough money!";
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
                         else if (story->Choices[current].Type == Choice::Type::SKILL)
                         {
                             if (Character::VERIFY_SKILL(player, story->Choices[current].Skill))
@@ -1587,6 +1753,34 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 {
                                     message = "You do not possess the required skill!";
                                 }
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
+                        else if (story->Choices[current].Type == Choice::Type::GIVE_MONEY)
+                        {
+                            if (player.Money > 0)
+                            {
+                                auto done = donateScreen(window, renderer, player);
+
+                                if (done)
+                                {
+                                    next = (Story::Base *)findStory(story->Choices[current].Destination);
+                                }
+                                else
+                                {
+                                    next = story;
+                                }
+
+                                quit = true;
+
+                                break;
+                            }
+                            else
+                            {
+                                message = "You do not have any money!";
 
                                 start_ticks = SDL_GetTicks();
 

@@ -28,7 +28,9 @@ namespace Choice
         SKILL_ALL,
         FIRE_WEAPON,
         LOSE_ITEM,
-        LOSE_LIFE
+        LOSE_LIFE,
+        LOSE_MONEY,
+        GIVE_MONEY
     };
 
     class Base
@@ -177,6 +179,11 @@ namespace Story
             type = type;
         }
     };
+
+    int DONATION = 0;
+
+    int BLESSING_WAR_GOD = false;
+
 } // namespace Story
 
 std::vector<Button> StandardControls()
@@ -246,6 +253,25 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story002 : public Story::Base
+{
+public:
+    Story002()
+    {
+        ID = 2;
+        Text = "The priest accepts your offering, glancing at the cacao with a slight smile before dropping them into his belt pouch. \"I consulted the oracle before you came, and here is the advice given. Travel first to the town of Balak on the northern coast. Do not put to sea at once; wait a week before you set sail. You might be tempted to put in at the Isle of the Iguana, but be warned that only an accomplished seafarer should venture out of sight of land.\"\n\n\"What about the desert?\" you ask.\n\n\"I told you already, buy a waterskin. And there's one other thing that the oracle revealed. You must seek the blood that is like sap.\"\n\n\"Enigmatic,\" you say, considering this, \"but I suppose that's the way of oracles.\"\n\nThe priest beams happily. \"Just so. Before you go, can I interest you in a companion for the journey?\" He claps his hands, and a novitiate priest steps out from around the side side of the shrine carrying a bird on his arm.\n\nYou look from the high priest to the bird to the novitiate. \"A companion, you say? Do you mean this lad, or the owl?\"\n\n\"The owl. The lad is needed here to trim the votive lamps in the shrine each evening. But I think you will find the owl a personable companion. Just keep it fed on small rodents and the like. The price is three cacao.\"\n\nYou peer closely at the owl. \"Isn't the owl the symbol of death? Additionally, unless I am much mistaken this bird has only one leg.\"\n\nThe high priest shrugs. \"Call it two cacao, then. And let me set your mind at rest: the owl is also a symbol of night and the moon.\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = ShopControls();
+
+        Shop = {{Item::Type::OWL, 2}};
+    }
+
+    int Continue(Character::Base &player) { return 93; }
 };
 
 class Story024 : public Story::Base
@@ -449,7 +475,7 @@ public:
                 Choices[0].Skill = Skill::Type::NONE;
             }
 
-            PreText += "\nHey, you there! What are you doing?\"\n\nYou look up to see an old peasant hurrying through the dusty orchard towards the causeway.";
+            PreText += "\n\"Hey, you there! What are you doing?\"\n\nYou look up to see an old peasant hurrying through the dusty orchard towards the causeway.";
 
             Text = PreText.c_str();
         }
@@ -623,6 +649,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
         Controls = StandardControls();
     }
 
@@ -696,6 +723,148 @@ public:
     int Continue(Character::Base &player) { return 93; };
 };
 
+class Story231 : public Story::Base
+{
+public:
+    Story231()
+    {
+        ID = 231;
+        Text = "The high priest of the War God is a grizzled old soldier, sturdy in spite of his years. You find him at the arena practising the ball contest which is both a sport and a sacred ritual for your people. Clad in heavy protective padding, he swipes at the rubber ball with his forearms and knees, now and again running up along the slanting walls of the arena to drive the ball towards the goal: a stone ring set high up off the arena floor. You watch for a while, marvelling at his strength and grace. Each impact of the ball costs him an effort which can be heard in his grunts and gasps, but he plays on despite the heat of the afternoon, which has sent many a younger man off to a siesta.\n\nAt last he concludes his practice. Pulling off his protective helmet, he wipes back his sweat-soaked greying hair and walks towards you. \"So you're Evening Star,\" he says, clasping your hand. \"Going after your brother, are you? Good, I admire that! Sort that damned sorcerer out, eh?\"\n\nIt is not the custom of your people to be so direct, and is manner leaves you discomposed. \"Um... your ball practice was very impressive,\" you say lamely.\n\n\"For someone of my age, you were going to say?\" He laughs heartily. \"Well, I prefer a bit of killing, if the truth be told, but Koba's not at war with anyone at the moment. Now, as to this quest of yours -- I take it you'll be going by the land route? Take the causeway as far as Yashuna, then turn south and head cross-country of Nachan. There's fine deer to be had in the forest, I can tell you. You are taking all this in, aren't you?\"\n\n\"Er, yes.\"\n\n\"Good. Now, watch out for the stabai when you're in the forest. They're sort of magical nymphs -- can be mischievous, or downright nasty. After Nachan you'll head up through the mountains to the western desert. Make sure you've got a waterskin, by the way, or you won't survive two days in the desert. Do you want to make an offering to the god?\"\n\nAn offering might bring you good fortune on your journey.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Make a Donation", 301, Choice::Type::GIVE_MONEY));
+        Choices.push_back(Choice::Base("Leave the Temple", 301, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Story::DONATION = 0;
+    }
+};
+
+class Story254 : public Story::Base
+{
+public:
+    Story254()
+    {
+        ID = 254;
+        Text = "The Moon Goddess has a small shrine off the northern edge of the temple plaza. You look up the pyramid steps to where the high priest awaits you, and he beckons for you to ascend. You compress your lips in annoyance; you had hoped he would come down to you. Even a small temple involves a steep climb.\n\nAs you make your way up the steps, you see stone effigies that depict the Nine Lords of the Night bearing the full moon up towards the shrine at the summit of the pyramid. The effigies are painted in the simple cream-gold hue of moonlight, with none of the bright daubings favoured by the other temples.\n\nThe high priest, too, has a manner quite unlike the priests of other gods. He wears a plain white robe, and a thin silver chain hangs around his waist. His smile of welcome seems modest and unaffected, but you sense a slight air of smugness behind the diffidently averted eyes. \"Good afternoon,\" he says. \"You must be Evening Star.\"\n\n\"Let me get my breath back,\" you say, stooping as you reach the top of the steps. The baking sun on your back sends rivulets of sweat trickling off your brow. You glance down at the plaza twenty metres below. \"That's quite a climb.\"\n\nThe high priest smiles. \"You are out of condition.\"\n\nYou give him a wry look and sweep out your arm to indicate the flat landscape of fields and savannah surrounding the city. \"In these parts, only the holy get plenty of climbing practice. I've come to you for advice on my quest into the western desert.\"\n\n\"Buy a waterskin.\"\n\nYou're unsure how to take that remark. You watch him, but the only trace that he might be joking is a sly curl of the lips. \"Is that all you have to suggest?\" you ask.\n\nHe glances at the shrine behind him. \"See this stucco? Flaking away, I'm afraid. The whole outer facade needs repairs.\"\n\nIn his roundabout way, he's asking for a donation.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Make a DONATION (1 cacao)", 424, Choice::Type::LOSE_MONEY, 1));
+        Choices.push_back(Choice::Base("Make a DONATION (2 cacao)", 2, Choice::Type::LOSE_MONEY, 2));
+        Choices.push_back(Choice::Base("You are not prepared to make any donation and you need to hurry over to the market and spend your money on supplies instead", 93, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story277 : public Story::Base
+{
+public:
+    Story277()
+    {
+        ID = 277;
+        Text = "The high priest of the Death God is a portly short-sighted man wrapped in a black kilt. White paint is daubed in streaks around his belly as if to represent the fleshless ribcage of a corpse -- though you cannot help smiling as you reflect how his own ribs are so well covered. His head-dress is a rather intimidating effigy of a skull without its lower jaw, with long earpieces of jointed fingerbones hanging on neither side of his rotund face, but the priest removes this as soon as you are both seated in the shade of the outer shrine.\n\n\"I have come to you for advice,\" you begin by saying, \"I must undertake a journey to the west in search of my brother, Morning Star\"\n\nHe wipes a slick of sweat off his brow with one plump hand. \"I have heard the story. Only one man has entered the great desert and left it alive -- the veteran who accompanied your brother. What makes you think you will fare better?\"\n\n\"One man survived. Why shouldn't I\"\n\nThe priest shakes his head. \"He was one man from an expedition of thirty. Did you not hear his account of the perils of the desert -- the devil-driven sands, the monstrous serpents?\"\n\n\"Then you counsel me to stay here in Koba? To abandon my quest?\"\n\nHe casts a quick gaze towards the shadowy archway leading to the inner shrine. \"The advice of the god is not so easily obtained. Are you willing to make an offering?\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Make an OFFERING (5 cacao)", 408, Choice::Type::LOSE_MONEY, 5));
+        Choices.push_back(Choice::Base("You cannot spare the money and must bid the priest farewell and see about getting supplies for the trip", 93, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story301 : public Story::Base
+{
+public:
+    Story301()
+    {
+        ID = 301;
+
+        Choices.clear();
+        Controls.clear();
+    }
+
+    int Background(Character::Base &player)
+    {
+        if (Story::DONATION > 4)
+        {
+            return 323;
+        }
+        else
+        {
+            return 346;
+        }
+    }
+};
+
+class Story323 : public Story::Base
+{
+public:
+    Story323()
+    {
+        ID = 323;
+        Text = "\"A generous donation.\" The high priest puts the money into his belt-pouch. \"I shall see that a ritual of benediction is performed for you at the temple tomorrow morning. You will carry the blessing of the god.\n\nThe blessing of the War God means that you can ignore any one injury taken at any point of your choice during the adventure. Remember that it only works once.\n\n\"How about a spot of ball practice?\" suggests the high priest.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Join him for a practice bout in the arena", 368, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("You had better get on with the rest of your preparations for the journey", 93, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Story::BLESSING_WAR_GOD = true;
+    }
+};
+
+class Story346 : public Story::Base
+{
+public:
+    Story346()
+    {
+        ID = 346;
+        Text = "The high priest looks disappointed, but seems to understand when you explain that you have barely enough to purchase the supplies you will need for the journey.\n\n\"A coil of rope might not be a bad idea,\" he suggests. \"I've often found the rope to come in handy. Oh, and a decent sword of course -- assuming you know how to use one.\" He juggles the heavy rubber ball he's carrying from one hand to the other. \"What about a practice session in the arena before you head off?\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Practice the ball contest with him", 368, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Get on with preparations for your journey", 93, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story368 : public Story::Base
+{
+public:
+    Story368()
+    {
+        ID = 368;
+        Text = "He flings the the ball against the slanting wall of the arena and it bounces towards you.. Leaping up with all your strength, you manage to strike it a glancing blow with your arm. A moment of stinging pain is followed by numbness, and the ball thuds to the court at your feet.\n\n\"No, no!\" says the priest, stepping forward to retrieve the ball. \"You have to judge the angle of impact perfectly, otherwise you end up bruised and the ball goes nowhere.\"\n\nHe demonstrates, swinging his hips for momentum a she slams his muscular forearm against the ball. It goes careering across the arena to ricochet off the side wall. This time you manage to intercept it, sending it skidding back along the slant of the wall towards the priest.\n\n\"You've got the hang of it now,\" he says some time later, leaning on his knees to get his breath back. \"The object is to keep the ball from touching the ground. It represents the sun, you see, so it has to stay aloft or else it's 'eclipse', meaning you lose a point.\"\n\nYou toss the ball up and catch it, enjoying the contest now you know more about it. \"And what about the stone rings at the top of the wall?\"\n\n\"Ah!\" says the priest. \"If you can get the ball through the ring then you've scored a 'sunrise' and you win outright. But it's not easy as it looks, believe me.\"\n\nYou stare up at the ring. It is tree man-heights off the ground and barely wider than the ball itself. \"But it doesn't look at all easy!\"\n\nThe priest grins. \"Precisely.\"\n\nIt is now getting late. Thanking the priest, you make your way back home. Tomorrow you will set out in search of your brother.\n\nYou gained the codeword POKTAPOK.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 389; }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::POKTAPOK});
+    }
+};
+
 class Story389 : public Story::Base
 {
 public:
@@ -715,6 +884,45 @@ public:
     {
         Character::GET_ITEMS(player, {Item::Type::JADE_BEAD, Item::Type::MAIZE_CAKES});
     }
+};
+
+class Story408 : public Story::Base
+{
+public:
+    Story408()
+    {
+        ID = 408;
+        Text = "The high priest winds a white cloth across your eyes and leads you through to the inner shrine. A deep chill abides here; the thick stone blocks of the Death God's temple walls are never warmed by the sun. The sweet tarry smell of incense hangs in the air. You feel a hand on your shoulder, guiding you to kneel.\n\nA long period of utter silence ensues. You did not hear the high priest withdraw from the chamber, but you gradually become sure that he has left you here alone. You dare not remove the blindfold; to gaze directly on the holy of holies would drive you instantly insane.\n\nA whispering slithers slowly out of the silence. At first you take it for a trick of your unsettle imagination, but by straining your ears you begin to make out words. \"The way to the west lies through the underworld,\" the whispering tells you. \"Go to the city of Yashuna. North of the city lies a sacred well which is the entrance to the underworld. Take this path, which is dangerous but swift, and you will emerge at the western rim of the world. From there it is but a short journey back through the desert to your goal.\"\n\nThe whispers fade, drowned out by the thudding of your heart. Frozen with terror at the words of the god, yo crouch motionless on the cold flagstones. The cloying scent of incense grows almost unbearable.\n\nSuddenly a hand touches your shoulder. After the initial jolt of alarm, you allow yourself to be led out onto the portico of the temple, where the blindfold is removed. You blink in the dazzling sunlight. You feel as weak as a baby and the smell of incense clings to your clothes. After the cool of the shrine, the heat of the afternoon sun makes you feel slightly sick.\n\nThe podgy priest is looking up into your eyes. \"You head the voice of the god,\" he says simply.\n\nYou gained the codeword CENOTE.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 93; }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::CENOTE});
+    }
+};
+
+class Story424 : public Story::Base
+{
+public:
+    Story424()
+    {
+        ID = 424;
+        Text = "\"The goddess oversees the tides,\" says the priest, accepting your gift with a heavy-lidded smile. \"Betake yourself to the town of Balak. Do not put to sea at once; wait a week before you set sail. Stay close to shore if you wish to avoid a hazardous adventure.\"\n\nYou wait for more, but he seems to have finished speaking. \"You haven't even mentioned the western desert,\" you say in a tone verging on indignation.\n\n\"I have given my advice on that. There is just one think I might add: seek the blood that is like sap.\"\n\nYou suck your teeth. \"Enigmatic,\" you comment drily.\n\n\"If it's clarity you're after, consult a merchant.\"\n\nSomewhat disgruntled, you retreat down the temple steps. You would have preferred to proudly turn your back on the smug priest, but custom forbids you to avert your face from any shrine as you leave it for fear of offending the deity within. Also, these temple steps are alarmingly steep; descending backwards is less nerve-wracking.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 93; };
 };
 
 class NotImplemented : public Story::Base
@@ -756,6 +964,7 @@ void *findStory(int id)
 
 auto prologue = Prologue();
 auto story001 = Story001();
+auto story002 = Story002();
 auto story024 = Story024();
 auto story025 = Story025();
 auto story047 = Story047();
@@ -774,16 +983,26 @@ auto story163 = Story163();
 auto story185 = Story185();
 auto story186 = Story186();
 auto story208 = Story208();
+auto story231 = Story231();
+auto story254 = Story254();
+auto story277 = Story277();
+auto story301 = Story301();
+auto story323 = Story323();
+auto story346 = Story346();
+auto story368 = Story368();
 auto story389 = Story389();
+auto story408 = Story408();
+auto story424 = Story424();
 
 void InitializeStories()
 {
     Stories = {
-        &prologue, &story001, &story024, &story025,
+        &prologue, &story001, &story002, &story024, &story025,
         &story047, &story048, &story070, &story071,
         &story093, &story094, &story096, &story116, &story117,
         &story138, &story139, &story162, &story163, &story185,
-        &story186, &story208, &story389};
+        &story186, &story208, &story231, &story254, &story277, &story301, &story323, &story346,
+        &story368, &story389, &story408, &story424};
 }
 
 #endif
