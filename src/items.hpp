@@ -23,8 +23,11 @@ namespace Item
         CHILLI_PEPPERS,
         PAPAYA,
         SERPENT_BRACELET,
+        GREEN_MIRROR,
+        MAGIC_POTION,
+        JADE_SWORD,
         First = SWORD,
-        Last = SERPENT_BRACELET
+        Last = JADE_SWORD
     };
 
     std::map<Item::Type, const char *> Descriptions = {
@@ -42,11 +45,16 @@ namespace Item
         {Item::Type::POT_OF_DYE, "POT OF DYE"},
         {Item::Type::CHILLI_PEPPERS, "CHILLI PEPPERS"},
         {Item::Type::PAPAYA, "PAPAYA"},
-        {Item::Type::SERPENT_BRACELET, "SERPENT BRACELET"}};
+        {Item::Type::SERPENT_BRACELET, "SERPENT BRACELET"},
+        {Item::Type::GREEN_MIRROR, "GREEN MIRROR"},
+        {Item::Type::MAGIC_POTION, "MAGIC POTION"},
+        {Item::Type::JADE_SWORD, "JADE SWORD"}};
 
     std::vector<Item::Type> UniqueItems = {
         Item::Type::LETTER_OF_INTRODUCTION,
-        Item::Type::SERPENT_BRACELET};
+        Item::Type::SERPENT_BRACELET,
+        Item::Type::GREEN_MIRROR,
+        Item::Type::JADE_SWORD};
 
     bool IsUnique(Item::Type item)
     {
@@ -63,6 +71,67 @@ namespace Item
         }
 
         return unique;
+    }
+
+    void REMOVE(std::vector<Item::Type> &items, Item::Type item)
+    {
+        if (items.size() > 0)
+        {
+            for (auto i = 0; i < items.size(); i++)
+            {
+                if (items[i] == item)
+                {
+                    items.erase(items.begin() + i);
+
+                    break;
+                }
+            }
+        }
+    }
+
+    void ADD(std::vector<Item::Type> &items, Item::Type item)
+    {
+        if (items.size() > 0)
+        {
+            auto found = 0;
+
+            for (auto i = 0; i < items.size(); i++)
+            {
+                if (items[i] == item)
+                {
+                    found++;
+                }
+            }
+
+            if (found == 0)
+            {
+                items.push_back(item);
+            }
+        }
+        else
+        {
+            items.push_back(item);
+        }
+    }
+
+    bool VERIFY(std::vector<Item::Type> &items, Item::Type item)
+    {
+        auto has = false;
+
+        if (items.size() > 0)
+        {
+            for (auto i = 0; i < items.size(); i++)
+            {
+                if (items[i] == item)
+                {
+                    has = true;
+
+                    break;
+                }
+            }
+        }
+
+        return has;
     }
 
 } // namespace Item

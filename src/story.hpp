@@ -24,6 +24,8 @@ namespace Choice
         ANY_ITEM,
         ANY_SKILL,
         SKILL_ITEM,
+        SKILL_ANY,
+        SKILL_ALL,
         FIRE_WEAPON,
         LOSE_ITEM,
         LOSE_LIFE
@@ -32,11 +34,17 @@ namespace Choice
     class Base
     {
     public:
-        Choice::Type Type = Choice::Type::NORMAL;
         const char *Text = NULL;
-        Item::Type Item = Item::Type::NONE;
+
+        Choice::Type Type = Choice::Type::NORMAL;
+
         Skill::Type Skill = Skill::Type::NONE;
+
+        std::vector<Item::Type> Items = std::vector<Item::Type>();
+        Item::Type Item = Item::Type::NONE;
+
         int Value = 0;
+
         int Destination = -1;
 
         Base(Choice::Type type, const char *text, int destination, Item::Type item, Skill::Type skill, int value)
@@ -96,6 +104,14 @@ namespace Choice
             Type = type;
             Item = item;
         }
+
+        Base(const char *text, int destination, Choice::Type type, std::vector<Item::Type> items)
+        {
+            Text = text;
+            Destination = destination;
+            Type = type;
+            Items = items;
+        }
     };
 } // namespace Choice
 
@@ -113,13 +129,21 @@ namespace Story
     {
     public:
         int ID = 0;
+
         const char *Text = NULL;
         const char *Title = NULL;
-        const char *Image = NULL;
-        std::vector<Button> Controls;
-        std::vector<Choice::Base> Choices;
-        std::vector<std::pair<Item::Type, int>> Shop;
         const char *Bye = NULL;
+
+        const char *Image = NULL;
+
+        std::vector<Button> Controls = std::vector<Button>();
+        std::vector<Choice::Base> Choices = std::vector<Choice::Base>();
+        std::vector<std::pair<Item::Type, int>> Shop = std::vector<std::pair<Item::Type, int>>();
+
+        // Player selects items to take up to a certain limit
+        std::vector<Item::Type> Take = std::vector<Item::Type>();
+        int TakeLimit = 0;
+
         Story::Type Type = Story::Type::NORMAL;
 
         // Handle background events
@@ -326,7 +350,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::GET_ITEMS(player, {Item::Type::LETTER_OF_INTRODUCTION});
+        Character::GET_UNIQUE_ITEMS(player, {Item::Type::LETTER_OF_INTRODUCTION});
     }
 };
 
@@ -384,6 +408,54 @@ public:
     }
 
     int Continue(Character::Base &player) { return 389; }
+};
+
+class Story094 : public Story::Base
+{
+public:
+    std::string PreText = "The spider's bristly limbs send a shiver through you as they slowly probe your outstretched hand. It takes every shred of nerve to remain motionless while you carefully reach around behind it with your other hand. Its multiple eyes gleam horribly, full of the ruthless intensity of the predator. It looks like a demon carved from polished mahogany, more nightmarish than any image on the walls of the Temple of Death.\n\nAs you take hold of it, it starts to twitch its legs furiously. With a sob of revulsion, you hurl it away. It falls with an audible thud somewhere off among the trees, but then a stab of pain convulses your hand. Did it bite you after all? You have to prise your fingers apart, but instead of a bite you find dozens of tiny pinpricks all over your palm. The tarantula's bristles were razor-sharp, and seem to have injected a stinging chemical into your skin.\n\nYou LOSE 1 Life Point\n";
+
+    Story094()
+    {
+        ID = 94;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Talk to him", 117, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Hurry off before he gets here", 163, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.Life -= 1;
+
+        if (player.Life > 0)
+        {
+            if (Character::VERIFY_SKILL(player, Skill::Type::ETIQUETTE))
+            {
+                Choices[0].Destination = 139;
+                Choices[0].Type = Choice::Type::SKILL;
+                Choices[0].Skill = Skill::Type::ETIQUETTE;
+            }
+            else
+            {
+                Choices[0].Destination = 117;
+                Choices[0].Type = Choice::Type::NORMAL;
+                Choices[0].Skill = Skill::Type::NONE;
+            }
+
+            PreText += "\nHey, you there! What are you doing?\"\n\nYou look up to see an old peasant hurrying through the dusty orchard towards the causeway.";
+
+            Text = PreText.c_str();
+        }
+        else
+        {
+            Text = PreText.c_str();
+        }
+    }
 };
 
 class Story096 : public Story::Base
@@ -479,6 +551,27 @@ public:
     int Continue(Character::Base &player) { return 163; }
 };
 
+class Story162 : public Story::Base
+{
+public:
+    Story162()
+    {
+        ID = 162;
+        Text = "The Matriarch hands you a letter. \"Present this to Midnight Bloom, a distant cousin of yours who lives in the town of Balak on the northern coast,\" she explains. \"Midnight Bloom is an experienced seafarer, having traded the clan's goods with the distant city of Tahil for several years, and can arrange a passage for you there. Once in Tahil, you are halfway to your goal.\"\n\nYou take the LETTER OF INTRODUCTION. Rising to your feet, you bow to the Matriarch. \"I shall strive always to conduct myself with honour during my quest,\" you say.\n\n\"See that you do,\" she replies. \"You wear the clan's honour on your shoulders.\" As you reach the door, she calls after you: \"Oh, and Evening Star --\"\n\nYou turn. \"My lady?\"\n\n\"Good luck.\" She gives you one of her rare smiles -- a momentary crack in the sober mask of clan authority -- and waves you out into the bright sunshine.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 93; }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_UNIQUE_ITEMS(player, {Item::Type::LETTER_OF_INTRODUCTION});
+    }
+};
+
 class Story163 : public Story::Base
 {
 public:
@@ -495,6 +588,93 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story185 : public Story::Base
+{
+public:
+    Story185()
+    {
+        ID = 185;
+        Text = "\"I cannot take this,\" you decide, replacing the golden statuette in the chest. \"It is too precious; the clan might one day need to use it.\"\n\n\"Well said!\" declares the Matriarch, her eyes almost vanishing in her plump face as she beams with satisfaction at your answer. \"The treasures that remain are less potent in their magic, but may also prove useful.\"\n\nThere are three other items. The first is a small mirror of dark green glass with a powerful spell inscribed around the rim. \"It can be used to see into the future,\" the Matriarch tells you. \"As for this next item --\" she holds up a sealed jar \"-- it contains a magic drink concocted by your great-grandfather which is capable of healing grievous wounds.\"\n\n\"And what of this?\" you ask, taking out a sword of sharpened green jade adorned with tiny glyphs.\n\n\"That also belonged to your great-grandfather. It served him both as a weapon of war and as a tool of his sorcery.\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Controls = StandardControls();
+
+        Take = {{Item::Type::GREEN_MIRROR, Item::Type::MAGIC_POTION, Item::Type::JADE_SWORD}};
+
+        TakeLimit = 2;
+    }
+
+    int Continue(Character::Base &player) { return 208; }
+};
+
+class Story208 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story208()
+    {
+        ID = 208;
+
+        Image = "images/filler1.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        int selected = 0;
+
+        PreText = "";
+
+        if (Character::VERIFY_ITEM(player, Item::Type::MAGIC_POTION))
+        {
+            PreText += std::string(Item::Descriptions[Item::Type::MAGIC_POTION]);
+            PreText += "\n\nIt can be used once during your adventure. It will restore 5 lost Life Points, up to the limit of your initial Life Points score.\n";
+
+            selected++;
+        }
+
+        if (Character::VERIFY_ITEM(player, Item::Type::GREEN_MIRROR))
+        {
+            if (selected > 0)
+            {
+                PreText += "\n";
+            }
+
+            PreText += std::string(Item::Descriptions[Item::Type::GREEN_MIRROR]);
+            PreText += "\n\nIt can be used once -- and only once -- at any point in your adventure before deciding which you will choose.\n";
+
+            selected++;
+        }
+
+        if (Character::VERIFY_ITEM(player, Item::Type::JADE_SWORD))
+        {
+            if (selected > 0)
+            {
+                PreText += "\n";
+            }
+
+            PreText += std::string(Item::Descriptions[Item::Type::JADE_SWORD]);
+            PreText += "\n\nIt counts as both a sword and a wand for the purposes of skill-use.\n";
+
+            selected++;
+        }
+
+        if (selected > 0)
+        {
+            Text = PreText.c_str();
+        }
+        else
+        {
+            Text = "You chose not to take any of your clan's ancestral treasures.";
+        }
+    }
+
+    int Continue(Character::Base &player) { return 93; };
 };
 
 class Story389 : public Story::Base
@@ -564,12 +744,16 @@ auto story048 = Story048();
 auto story070 = Story070();
 auto story071 = Story071();
 auto story093 = Story093();
+auto story094 = Story094();
 auto story096 = Story096();
 auto story116 = Story116();
 auto story117 = Story117();
 auto story138 = Story138();
 auto story139 = Story139();
+auto story162 = Story162();
 auto story163 = Story163();
+auto story185 = Story185();
+auto story208 = Story208();
 auto story389 = Story389();
 
 void InitializeStories()
@@ -577,8 +761,9 @@ void InitializeStories()
     Stories = {
         &prologue, &story001, &story024, &story025,
         &story047, &story048, &story070, &story071,
-        &story093, &story096, &story116, &story117,
-        &story138, &story139, &story163, &story389};
+        &story093, &story094, &story096, &story116, &story117,
+        &story138, &story139, &story162, &story163, &story185,
+        &story208, &story389};
 }
 
 #endif

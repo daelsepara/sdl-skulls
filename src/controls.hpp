@@ -28,6 +28,7 @@ namespace Control
         BACK,
         USE,
         DROP,
+        TAKE,
         QUIT
     };
 

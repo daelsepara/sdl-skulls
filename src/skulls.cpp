@@ -28,6 +28,7 @@ bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skil
 bool mainScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool mapScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int id);
+bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit);
 
 SDL_Surface *createImage(const char *image)
 {
@@ -343,64 +344,6 @@ std::vector<TextButton> createHTextButtons(const char **choices, int num, int te
     return controls;
 }
 
-template <typename Function>
-bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen)
-{
-    auto result = displayScreen(window, renderer);
-
-    SDL_SetWindowTitle(window, "Necklace of Skulls");
-
-    return result;
-}
-
-template <typename Function>
-bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, Character::Base &player)
-{
-    auto result = displayScreen(window, renderer, player);
-
-    SDL_SetWindowTitle(window, "Necklace of Skulls");
-
-    return result;
-}
-
-template <typename Function>
-bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, Character::Base &player, int id)
-{
-    auto result = displayScreen(window, renderer, player, id);
-
-    return result;
-}
-
-template <typename Function>
-bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, Character::Base &player, Story::Base *story)
-{
-    auto result = displayScreen(window, renderer, player, story);
-
-    SDL_SetWindowTitle(window, "Necklace of Skulls");
-
-    return result;
-}
-
-template <typename Function>
-bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, Character::Base &player, Control::Type mode)
-{
-    auto result = displayScreen(window, renderer, player, mode);
-
-    SDL_SetWindowTitle(window, "Necklace of Skulls");
-
-    return result;
-}
-
-template <typename Function>
-bool renderWindow(SDL_Window *window, SDL_Renderer *renderer, Function displayScreen, std::vector<Skill::Base> Skills)
-{
-    auto result = displayScreen(window, renderer, Skills);
-
-    SDL_SetWindowTitle(window, "Necklace of Skulls");
-
-    return result;
-}
-
 bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
     auto quit = false;
@@ -551,11 +494,13 @@ void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font
 
     putText(renderer, player.Name, font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty);
     putText(renderer, player.Description, font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
+
     putText(renderer, "Skills", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + headerh + marginh);
     putText(renderer, skills.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, boxh, startx, starty + profileh + 2 * headerh + marginh);
 
     putText(renderer, "Money", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 2 * headerh + 2 * marginh + boxh);
     putText(renderer, (std::to_string(player.Money) + " cacao").c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx, starty + profileh + 3 * headerh + 2 * marginh + boxh);
+
     putText(renderer, "Life", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx + boxw + marginw, starty + profileh + 2 * headerh + 2 * marginh + boxh);
     putText(renderer, std::to_string(player.Life).c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx + boxw + marginw, starty + profileh + 3 * headerh + 2 * marginh + boxh);
 
@@ -631,6 +576,7 @@ bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skil
         auto quit = false;
 
         auto controls = std::vector<Button>();
+
         controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
         controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
         controls.push_back(Button(2, "images/back-button.png", 1, 2, 1, 2, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
@@ -792,7 +738,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                     }
                     else if (controls[current].Type == Control::Type::GLOSSARY)
                     {
-                        renderWindow(window, renderer, glossaryScreen, player.Skills);
+                        glossaryScreen(window, renderer, player.Skills);
 
                         current = -1;
 
@@ -800,7 +746,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                     }
                     else if (controls[current].Type == Control::Type::ACTION)
                     {
-                        renderWindow(window, renderer, inventoryScreen, player, Control::Type::USE);
+                        inventoryScreen(window, renderer, player, Control::Type::USE);
 
                         current = -1;
 
@@ -915,7 +861,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
                     }
                     else if (controls[current].Type == Control::Type::GLOSSARY)
                     {
-                        renderWindow(window, renderer, glossaryScreen, Skill::ALL);
+                        glossaryScreen(window, renderer, Skill::ALL);
 
                         current = -1;
                     }
@@ -938,7 +884,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
     return player;
 }
 
-std::vector<Button> createItemControls(Character::Base &player)
+std::vector<Button> createItemControls(std::vector<Item::Type> Items)
 {
     auto text_space = 8;
     auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
@@ -947,13 +893,13 @@ std::vector<Button> createItemControls(Character::Base &player)
 
     controls.clear();
 
-    for (auto idx = 0; idx < player.Items.size(); idx++)
+    for (auto idx = 0; idx < Items.size(); idx++)
     {
-        auto text = createText(Item::Descriptions[player.Items[idx]], "fonts/default.ttf", 16, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
+        auto text = createText(Item::Descriptions[Items[idx]], "fonts/default.ttf", 16, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
 
         auto y = texty + (idx > 0 ? controls[idx - 1].Y + controls[idx - 1].H : 2 * text_space);
 
-        controls.push_back(Button(idx, text, idx, idx, (idx > 0 ? idx - 1 : idx), (idx < player.Items.size() ? idx + 1 : idx), textx + 2 * text_space, y, Control::Type::ACTION));
+        controls.push_back(Button(idx, text, idx, idx, (idx > 0 ? idx - 1 : idx), (idx < Items.size() ? idx + 1 : idx), textx + 2 * text_space, y, Control::Type::ACTION));
 
         controls[idx].W = textwidth + button_space;
         controls[idx].H = text->h;
@@ -983,7 +929,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
         auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
 
-        auto controls = createItemControls(player);
+        auto controls = createItemControls(player.Items);
 
         TTF_Init();
 
@@ -1064,7 +1010,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
                             controls.clear();
 
-                            controls = createItemControls(player);
+                            controls = createItemControls(player.Items);
                         }
                         else if (mode == Control::Type::USE)
                         {
@@ -1073,22 +1019,6 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                         {
                         }
                     }
-                }
-                else if (controls[current].Type == Control::Type::CHARACTER && !hold)
-                {
-                    renderWindow(window, renderer, characterScreen, player);
-
-                    current = -1;
-
-                    selected = false;
-                }
-                else if (controls[current].Type == Control::Type::MAP && !hold)
-                {
-                    renderWindow(window, renderer, mapScreen);
-
-                    current = -1;
-
-                    selected = false;
                 }
                 else if (controls[current].Type == Control::Type::BACK && !hold)
                 {
@@ -1110,6 +1040,162 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
     }
 
     return false;
+}
+
+bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit)
+{
+    auto done = false;
+
+    if (player.Items.size() > 0)
+    {
+        const char *message = NULL;
+
+        auto error = false;
+
+        Uint32 start_ticks = 0;
+        Uint32 duration = 3000;
+
+        auto text_space = 8;
+
+        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+
+        auto controls = createItemControls(items);
+
+        auto idx = items.size();
+
+        controls.erase(controls.begin() + idx);
+
+        controls.push_back(Button(idx, "images/yes.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::TAKE));
+        controls.push_back(Button(idx + 1, "images/back-button.png", idx, idx + 1, idx - 1, idx + 1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", 16);
+
+        auto selected = false;
+        auto current = -1;
+        auto quit = false;
+        auto scrollUp = false;
+        auto scrollDown = false;
+        auto hold = false;
+
+        auto infoh = 36;
+        auto boxh = 75;
+
+        auto selection = std::vector<Item::Type>();
+
+        while (!done)
+        {
+            SDL_SetWindowTitle(window, "Necklace of Skulls");
+
+            fillWindow(renderer, intWH);
+
+            if (error)
+            {
+                if ((SDL_GetTicks() - start_ticks) < duration)
+                {
+                    putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, boxh * 2, startx, starty);
+                }
+                else
+                {
+                    error = false;
+                }
+            }
+
+            if (!error)
+            {
+                std::string take_message = "Select " + std::string((limit > 1) ? "items" : "an item") + " to TAKE." + (limit > 1 ? ("You can take up to " + std::to_string(limit) + " items.") : "");
+
+                putText(renderer, take_message.c_str(), font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
+            }
+
+            std::string take = "";
+
+            if (selection.size() > 0)
+            {
+                for (auto i = 0; i < selection.size(); i++)
+                {
+                    if (i > 0)
+                    {
+                        take += ", ";
+                    }
+
+                    take += std::string(Item::Descriptions[selection[i]]);
+                }
+            }
+
+            putText(renderer, "ITEMS", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, take.size() > 0 ? take.c_str() : "(None)", font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+
+            fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
+
+            renderButtons(renderer, controls, current, intGR, text_space, text_space / 2);
+
+            for (auto i = 0; i < items.size(); i++)
+            {
+                if (Item::VERIFY(selection, items[i]))
+                {
+                    drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intDB);
+                }
+            }
+
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected)
+            {
+                if (controls[current].Type == Control::Type::ACTION && !hold)
+                {
+                    if (current >= 0 && current < items.size())
+                    {
+                        if (Item::VERIFY(selection, items[current]))
+                        {
+                            Item::REMOVE(selection, items[current]);
+                        }
+                        else
+                        {
+                            if (selection.size() < limit)
+                            {
+                                Item::ADD(selection, items[current]);
+                            }
+                        }
+                    }
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::TAKE && !hold)
+                {
+                    Character::GET_ITEMS(player, selection);
+
+                    current = -1;
+
+                    selected = false;
+
+                    done = true;
+
+                    break;
+                }
+                else if (controls[current].Type == Control::Type::BACK && !hold)
+                {
+                    done = false;
+
+                    break;
+                }
+            }
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+        }
+
+        TTF_Quit();
+    }
+
+    return done;
 }
 
 bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
@@ -1262,7 +1348,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
                                 while (!Character::VERIFY_POSSESSIONS(player))
                                 {
-                                    renderWindow(window, renderer, inventoryScreen, player, Control::Type::DROP);
+                                    inventoryScreen(window, renderer, player, Control::Type::DROP);
                                 }
 
                                 message = std::string(std::string(Item::Descriptions[item]) + " purchased.");
@@ -1288,7 +1374,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 }
                 else if (controls[current].Type == Control::Type::CHARACTER && !hold)
                 {
-                    renderWindow(window, renderer, characterScreen, player);
+                    characterScreen(window, renderer, player);
 
                     current = -1;
 
@@ -1296,15 +1382,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 }
                 else if (controls[current].Type == Control::Type::USE && !hold)
                 {
-                    renderWindow(window, renderer, inventoryScreen, player, Control::Type::USE);
-
-                    current = -1;
-
-                    selected = false;
-                }
-                else if (controls[current].Type == Control::Type::MAP && !hold)
-                {
-                    renderWindow(window, renderer, mapScreen);
+                    inventoryScreen(window, renderer, player, Control::Type::USE);
 
                     current = -1;
 
@@ -1511,7 +1589,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 }
                 else if (controls[current].Type == Control::Type::CHARACTER && !hold)
                 {
-                    renderWindow(window, renderer, characterScreen, player);
+                    characterScreen(window, renderer, player);
 
                     current = -1;
 
@@ -1519,7 +1597,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 }
                 else if (controls[current].Type == Control::Type::USE && !hold)
                 {
-                    renderWindow(window, renderer, inventoryScreen, player, Control::Type::USE);
+                    inventoryScreen(window, renderer, player, Control::Type::USE);
 
                     current = -1;
 
@@ -1527,7 +1605,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 }
                 else if (controls[current].Type == Control::Type::MAP && !hold)
                 {
-                    renderWindow(window, renderer, mapScreen);
+                    mapScreen(window, renderer);
 
                     current = -1;
 
@@ -1724,7 +1802,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                     else if (story->Controls[current].Type == Control::Type::CHARACTER && !hold)
                     {
-                        renderWindow(window, renderer, characterScreen, player);
+                        characterScreen(window, renderer, player);
 
                         current = -1;
 
@@ -1732,7 +1810,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                     else if (story->Controls[current].Type == Control::Type::MAP && !hold)
                     {
-                        renderWindow(window, renderer, mapScreen);
+                        mapScreen(window, renderer);
 
                         current = -1;
 
@@ -1740,7 +1818,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                     else if (story->Controls[current].Type == Control::Type::USE && !hold)
                     {
-                        renderWindow(window, renderer, inventoryScreen, player, Control::Type::USE);
+                        inventoryScreen(window, renderer, player, Control::Type::USE);
 
                         current = -1;
 
@@ -1748,7 +1826,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                     else if (story->Controls[current].Type == Control::Type::SHOP && !hold)
                     {
-                        renderWindow(window, renderer, shopScreen, player, story);
+                        shopScreen(window, renderer, player, story);
 
                         current = -1;
 
@@ -1760,9 +1838,19 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                         {
                             if (player.Life > 0)
                             {
+                                if (story->Take.size() > 0)
+                                {
+                                    auto done = takeScreen(window, renderer, player, story->Take, story->TakeLimit);
+
+                                    if (!done)
+                                    {
+                                        continue;
+                                    }
+                                }
+
                                 while (!Character::VERIFY_POSSESSIONS(player))
                                 {
-                                    renderWindow(window, renderer, inventoryScreen, player, Control::Type::DROP);
+                                    inventoryScreen(window, renderer, player, Control::Type::DROP);
                                 }
 
                                 current = -1;
@@ -1928,7 +2016,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
                     Player = selectCharacter(window, renderer);
 
-                    renderWindow(window, renderer, storyScreen, Player, storyID);
+                    storyScreen(window, renderer, Player, storyID);
 
                     current = -1;
 
@@ -1938,7 +2026,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
 
                 case Control::Type::ABOUT:
 
-                    renderWindow(window, renderer, aboutScreen);
+                    aboutScreen(window, renderer);
 
                     current = -1;
 
@@ -1998,13 +2086,15 @@ int main(int argc, char **argsv)
 
     if (window)
     {
-        quit = renderWindow(window, renderer, mainScreen);
+        quit = mainScreen(window, renderer);
 
         // Destroy window and renderer
         SDL_DestroyRenderer(renderer);
+
         renderer = NULL;
 
         SDL_DestroyWindow(window);
+
         window = NULL;
     }
 
