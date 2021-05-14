@@ -413,7 +413,7 @@ public:
 class Story094 : public Story::Base
 {
 public:
-    std::string PreText = "The spider's bristly limbs send a shiver through you as they slowly probe your outstretched hand. It takes every shred of nerve to remain motionless while you carefully reach around behind it with your other hand. Its multiple eyes gleam horribly, full of the ruthless intensity of the predator. It looks like a demon carved from polished mahogany, more nightmarish than any image on the walls of the Temple of Death.\n\nAs you take hold of it, it starts to twitch its legs furiously. With a sob of revulsion, you hurl it away. It falls with an audible thud somewhere off among the trees, but then a stab of pain convulses your hand. Did it bite you after all? You have to prise your fingers apart, but instead of a bite you find dozens of tiny pinpricks all over your palm. The tarantula's bristles were razor-sharp, and seem to have injected a stinging chemical into your skin.\n\nYou LOSE 1 Life Point\n";
+    std::string PreText = "";
 
     Story094()
     {
@@ -430,6 +430,8 @@ public:
 
     void Event(Character::Base &player)
     {
+        PreText = "The spider's bristly limbs send a shiver through you as they slowly probe your outstretched hand. It takes every shred of nerve to remain motionless while you carefully reach around behind it with your other hand. Its multiple eyes gleam horribly, full of the ruthless intensity of the predator. It looks like a demon carved from polished mahogany, more nightmarish than any image on the walls of the Temple of Death.\n\nAs you take hold of it, it starts to twitch its legs furiously. With a sob of revulsion, you hurl it away. It falls with an audible thud somewhere off among the trees, but then a stab of pain convulses your hand. Did it bite you after all? You have to prise your fingers apart, but instead of a bite you find dozens of tiny pinpricks all over your palm. The tarantula's bristles were razor-sharp, and seem to have injected a stinging chemical into your skin.\n\nYou LOSE 1 Life Point.\n";
+
         player.Life -= 1;
 
         if (player.Life > 0)
@@ -447,7 +449,9 @@ public:
                 Choices[0].Skill = Skill::Type::NONE;
             }
 
-            Text = (PreText + "\nHey, you there! What are you doing?\"\n\nYou look up to see an old peasant hurrying through the dusty orchard towards the causeway.") .c_str();
+            PreText += "\nHey, you there! What are you doing?\"\n\nYou look up to see an old peasant hurrying through the dusty orchard towards the causeway.";
+
+            Text = PreText.c_str();
         }
         else
         {
@@ -608,6 +612,23 @@ public:
     int Continue(Character::Base &player) { return 208; }
 };
 
+class Story186 : public Story::Base
+{
+public:
+    Story186()
+    {
+        ID = 186;
+        Text = "The children accept your gift with a look of open-mouthed astonishment before darting shyly off through the orchard. Pleased with yourself at your good deed, you whistle a jaunty tune as you continue towards Yashuna.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 350; };
+};
+
 class Story208 : public Story::Base
 {
 public:
@@ -751,6 +772,7 @@ auto story139 = Story139();
 auto story162 = Story162();
 auto story163 = Story163();
 auto story185 = Story185();
+auto story186 = Story186();
 auto story208 = Story208();
 auto story389 = Story389();
 
@@ -761,7 +783,7 @@ void InitializeStories()
         &story047, &story048, &story070, &story071,
         &story093, &story094, &story096, &story116, &story117,
         &story138, &story139, &story162, &story163, &story185,
-        &story208, &story389};
+        &story186, &story208, &story389};
 }
 
 #endif
