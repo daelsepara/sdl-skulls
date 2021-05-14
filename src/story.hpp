@@ -981,7 +981,7 @@ public:
     Story323()
     {
         ID = 323;
-        Text = "\"A generous donation.\" The high priest puts the money into his belt-pouch. \"I shall see that a ritual of benediction is performed for you at the temple tomorrow morning. You will carry the blessing of the god.\n\nThe blessing of the War God means that you can ignore any one injury taken at any point of your choice during the adventure. Remember that it only works once.\n\n\"How about a spot of ball practice?\" suggests the high priest.";
+        Text = "\"A generous donation.\" The high priest puts the money into his belt-pouch. \"I shall see that a ritual of benediction is performed for you at the temple tomorrow morning. You will carry the blessing of the god.\"\n\nThe blessing of the War God means that you can ignore any one injury taken at any point of your choice during the adventure. Remember that it only works once.\n\n\"How about a spot of ball practice?\" suggests the high priest.";
         Image = "images/filler1.png";
 
         Choices.clear();
