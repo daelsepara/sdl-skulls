@@ -1683,6 +1683,25 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                             break;
                         }
+                        else if (story->Choices[current].Type == Choice::Type::ITEM)
+                        {
+                            if (Character::VERIFY_ITEM(player, story->Choices[current].Item))
+                            {
+                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                quit = true;
+
+                                break;
+                            }
+                            else
+                            {
+                                message = "You do not have the required item!";
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
                         else if (story->Choices[current].Type == Choice::Type::GET_ITEM)
                         {
                             Character::GET_ITEMS(player, {story->Choices[current].Item});

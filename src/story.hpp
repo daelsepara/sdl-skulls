@@ -240,6 +240,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
         Controls = StandardControls();
     }
 
@@ -293,6 +294,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
         Controls = StandardControls();
     }
 
@@ -378,6 +380,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
         Controls = StandardControls();
     }
 
@@ -432,6 +435,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
         Controls = ShopControls();
 
         Shop = {
@@ -506,6 +510,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
         Controls = StandardControls();
     }
 
@@ -558,6 +563,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
         Controls = ShopControls();
 
         Shop = {{Item::Type::SERPENT_BRACELET, 1}};
@@ -595,6 +601,24 @@ public:
     }
 };
 
+class Story127 : public Story::Base
+{
+public:
+    Story127()
+    {
+        ID = 127;
+        Text = "You turn away and push your way out of the crowd. There are those who say it is a great honour to be chosen for sacrifice, but you have no desire to witness the death of the two young people so soon after your own bereavement.\n\nYou journey north until the causeway ends. Dusty tracks fringed with scrubland carry you the rest of the way to the coast. A farmer directs you to the village of Balak. You pass through the streets, pace quickening as you catch the enticing smell of salt spray on the air. You emerge from between two high-roofed houses and there is the sea spread out in front of you, glittering under a cloudless blue sky.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Use LETTER OF INTRODUCTION", 370, Item::Type::LETTER_OF_INTRODUCTION));
+        Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 391, Skill::Type::SEAFARING));
+        Choices.push_back(Choice::Base("Otherwise", 158, Choice::Type::NORMAL));
+
+        Controls = ShopControls();
+    }
+};
+
 class Story138 : public Story::Base
 {
 public:
@@ -622,6 +646,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
         Controls = ShopControls();
 
         Bye = "Bidding the peasant a curt good-day, you continue along the causeway towards Yashuna";
@@ -658,6 +683,23 @@ public:
     int Continue(Character::Base &player) { return 188; }
 };
 
+class Story158 : public Story::Base
+{
+public:
+    Story158()
+    {
+        ID = 158;
+        Text = "You strike up conversation with a couple of traders who are down on the shore making repairs to their vessels. The first tells you he is setting out for Tahil tomorrow, and would be pleased to take you along. \"Not only for the sake of civilized company, either,\" he adds. There are pirates in the area, and an extra hand would be useful in deterring them.\"\n\n\"I have a better deterrent in mind,\" says the other man, looking up from his work. \"I shall delay my journey for a week or so. By that time, the pirates will have already made enough from raiding other vessels to sail back to their homeland, leaving the coast clear.\"\n\n\"Perhaps I could travel with you?\" you ask him.\n\nHe snorts. \"Not for free! I am partially deaf, so company is of no interest whether it be civilized or not. Also, I have just explained why I won't need a guard. If you want to come along, you can pay four cacao for your passage.\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Sail with the first man for free", 280, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Agree to pay (4 cacao) and travel in a week", 205, Choice::Type::LOSE_MONEY, 4));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story162 : public Story::Base
 {
 public:
@@ -668,6 +710,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
         Controls = StandardControls();
     }
 
@@ -729,6 +772,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
         Controls = StandardControls();
 
         Take = {{Item::Type::GREEN_MIRROR, Item::Type::MAGIC_POTION, Item::Type::JADE_SWORD}};
@@ -766,7 +810,6 @@ public:
         Text = "As you leave the market, a tall fellow emerges from the portico bordering on the temple plaza and stands surveying the marketplace. He is carrying pots that mark him as a fisherman, presumably from one of the coastal towns to the north. \"Huh!\" he mutters, half to himself. \"Is there no demand for good fish these days?\"\n\n\"Probably not when it is several days old,\" you remark, grimacing at the smell wafting from his goods.\n\nHe fixes you with a stare of outrage. \"Then buy one of my pots and take up fishing yourself!\" he cries, thrusting a lobster pot towards you. \"There! Destroy my livelihood, if you wish! I will sell you this pot for only two cacao.\"\n\nAs you turn to go, he adds: \"I would give anything for a taste of decent bread. I have been on the road for two days with nothing but my own fish to sustain me -- and, as you so tersely put it, they are no longer of the best quality.\"";
         Image = "images/filler1.png";
 
-        Choices.clear();
         Choices.clear();
         Choices.push_back(Choice::Base("Trade a parcel of MAIZE CAKES", 211, Choice::Type::ITEM, Item::Type::MAIZE_CAKES));
         Choices.push_back(Choice::Base("Go north", 120, Choice::Type::NORMAL));
@@ -959,6 +1002,7 @@ public:
         ID = 301;
 
         Choices.clear();
+
         Controls.clear();
     }
 
@@ -1064,6 +1108,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
         Controls = StandardControls();
     }
 
@@ -1167,9 +1212,11 @@ auto story103 = Story103();
 auto story116 = Story116();
 auto story117 = Story117();
 auto story120 = Story120();
+auto story127 = Story127();
 auto story138 = Story138();
 auto story139 = Story139();
 auto story142 = Story142();
+auto story158 = Story158();
 auto story162 = Story162();
 auto story163 = Story163();
 auto story165 = Story165();
@@ -1196,8 +1243,8 @@ void InitializeStories()
     Stories = {
         &prologue, &story001, &story002, &story024, &story025,
         &story047, &story048, &story070, &story071,
-        &story093, &story094, &story096, &story103, &story116, &story117, &story120,
-        &story138, &story139, &story142, &story162, &story163, &story165, &story185, &story188,
+        &story093, &story094, &story096, &story103, &story116, &story117, &story120, &story127,
+        &story138, &story139, &story142, &story158, &story162, &story163, &story165, &story185, &story188,
         &story186, &story208, &story231, &story234, &story254, &story257, &story277, &story301, &story323, &story346,
         &story350, &story368, &story389, &story408, &story424};
 }
