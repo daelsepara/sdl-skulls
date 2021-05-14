@@ -23,10 +23,12 @@
 // Forward declarations
 bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player);
+bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player);
 bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Control::Type mode);
 bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skill::Base> Skills);
 bool mainScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool mapScreen(SDL_Window *window, SDL_Renderer *renderer);
+bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
 bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int id);
 bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit);
 
