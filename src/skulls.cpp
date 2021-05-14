@@ -1443,6 +1443,9 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
         auto text_space = 8;
         auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
         auto messageh = 150;
+        auto boxh = 75;
+        auto infoh = 36;
+        auto box_space = 10;
 
         for (int i = 0; i < choices.size(); i++)
         {
@@ -1485,19 +1488,24 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 else
                 {
                     error = false;
-
-                    if (splash)
-                    {
-                        renderImage(renderer, splash, startx, starty);
-                    }
                 }
             }
-            else
+
+            if (!error)
             {
                 if (splash)
                 {
                     renderImage(renderer, splash, startx, starty);
                 }
+            }
+
+            if (!story->Image || (splash && splash->h < 2 * (boxh + infoh + box_space)))
+            {
+                putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+                putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+
+                putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+                putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
             }
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
@@ -1674,9 +1682,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
     TTF_Init();
 
-    auto font = TTF_OpenFont("fonts/default.ttf", 18);
+    auto font = TTF_OpenFont("fonts/default.ttf", font_size);
     auto text_space = 8;
     auto messageh = 150;
+
+    auto infoh = 36;
+    auto boxh = 75;
+    auto box_space = 10;
 
     while (!quit)
     {
@@ -1758,9 +1770,19 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                 }
 
+                if (!story->Image || (splash && splash->h < 2 * (boxh + infoh + box_space)))
+                {
+                    putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+                    putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+
+                    putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+                    putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+                }
+
+                fillRect(renderer, textwidth, text_bounds, textx, texty, intBE);
+
                 if (story->Text)
                 {
-                    fillRect(renderer, textwidth, text_bounds, textx, texty, intBE);
                     renderText(renderer, text, intBE, textx + space, texty + space, text_bounds - 2 * space, offset);
                 }
 
