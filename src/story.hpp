@@ -49,7 +49,7 @@ namespace Choice
 
         int Destination = -1;
 
-        Base(Choice::Type type, const char *text, int destination, Item::Type item, Skill::Type skill, int value)
+        Base(Choice::Type type, const char *text, int destination, Skill::Type skill, Item::Type item, int value)
         {
             Type = type;
             Text = text;
@@ -59,7 +59,7 @@ namespace Choice
             Value = value;
         }
 
-        Base(const char *text, int destination, Item::Type item, Skill::Type skill)
+        Base(const char *text, int destination, Skill::Type skill, Item::Type item)
         {
             Text = text;
             Destination = destination;
@@ -112,6 +112,15 @@ namespace Choice
             Text = text;
             Destination = destination;
             Type = type;
+            Items = items;
+        }
+
+        Base(const char *text, int destination, Choice::Type type, Skill::Type skill, std::vector<Item::Type> items)
+        {
+            Text = text;
+            Destination = destination;
+            Type = type;
+            Skill = skill;
             Items = items;
         }
     };
@@ -503,6 +512,23 @@ public:
     int Continue(Character::Base &player) { return 350; };
 };
 
+class Story103 : public Story::Base
+{
+public:
+    Story103()
+    {
+        ID = 103;
+        Text = "\"Wait!\"\n\nAll eyes turn in your direction. The high priest scowls, \"Who is this outsider who dares to interrupt the sacred rite?\"\n\n\"Release them,\" you say, ignoring him. \"I shall carry your petition into the underworld.\"\n\nThe priest strides over, pressing his face inches from yours with a look of black fury. \"You? Why should I let you undertake this journey?\"\n\n\"Because I was sent here by a god.\"\n\nHe has no answer to that. For a moment his mouth works silently, ready to frame a protest, but he has already seen the light of truth in your eyes. Stepping back, he gives a nod and the young couple are set free.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Jump into the sacred well", 327, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Cast a protective enchantment first (SPELLS)", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story116 : public Story::Base
 {
 public:
@@ -542,6 +568,33 @@ public:
     int Continue(Character::Base &player) { return 163; }
 };
 
+class Story120 : public Story::Base
+{
+public:
+    Story120()
+    {
+        ID = 120;
+        Text = "Following the crowds, you pass under an archway at the north edge of the city. People go milling past and you find yourself carried by the surge of bodies along a plaster-paved causeway that leads through light woodland. You are surprised to see no buildings on this side of the city. The crowds are all eagerly discussing some great spectacle that lies in store, and you catch snatches of conversation as you are borne along. \"Now the Rain God will no longer forsake us,\" says one man. A woman who is carrying two squalling brats shouts back over her shoulder: \"Just so long as the sacrifice pleases him! Don't forget that.\"\n\nThen the trees give way to an immense clearing. At first you cannot tell what lies ahead, but by pushing your way forward you reach the front of the crowd. Your breath escapes from your lungs in a gasp of awe. The clearing is formed by a gigantic hole in the ground. It looks as though the crust of the earth simply crumbled away to real an entrance into the underworld. The sinkhole is more than twenty metres deep and even a strong man could never hope to cast a spear right across to the far side. The sides of the pit are raw limestone clothed in a dry tangled mass of roots and creepers, dropping right down to the murky lake that occupies the bottom of this vast cavernous gulf.\n\n\"What is it?\" you ask a priest standing beside you.\n\nWhen he answers, you discover that your first wild impression was correct. \"This is the sacred well of Yashuna,\" he replies in a stately voice. \"It is the mouth of the underworld.\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEM(player, Item::Type::SERPENT_BRACELET))
+        {
+            return 257;
+        }
+        else
+        {
+            return 234;
+        }
+    }
+};
+
 class Story138 : public Story::Base
 {
 public:
@@ -577,6 +630,32 @@ public:
     }
 
     int Continue(Character::Base &player) { return 163; }
+};
+
+class Story142 : public Story::Base
+{
+public:
+    Story142()
+    {
+        ID = 142;
+
+        Text = "You are surprised to find the market almost deserted. Contrary to your assumption, most of the populace are not headed here, but are streaming to the causeway that leads north out of the city.\n\nThe stalls are set up under awnings whose cool shade is welcoming after the dusty heat of the road.\n\nYou stand back and examine the wares on offer. The traders are doing so little business that you should have the chance of some real bargains.\n\nYou make a show of strolling casually past a number of stalls, careful not to give any sign of interest in the items you want most. This will help you when the haggling starts.\n\nYou can check out what they have on sale.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = ShopControls();
+
+        Shop = {
+            {Item::Type::WATERSKIN, 1},
+            {Item::Type::ROPE, 2},
+            {Item::Type::TERRACOTTA_EFFIGY, 3},
+            {Item::Type::BLOWGUN, 3},
+            {Item::Type::INCENSE, 3}};
+    }
+
+    int Continue(Character::Base &player) { return 188; }
 };
 
 class Story162 : public Story::Base
@@ -618,6 +697,28 @@ public:
     }
 };
 
+class Story165 : public Story::Base
+{
+public:
+    Story165()
+    {
+        ID = 165;
+        Text = "The causeway soon peters out and you leave the fields and orchards far behind. Light woodland begins to be replaced by the luxuriant foliage of the thick forest. After a few days you find yourself walking through deep leaf-rooted glades. Rainfall is more plentiful here than in the arid northern peninsula that is your homeland, and you are startled by the resulting profusion of vegetation and wildlife. For several days you subsist well enough on a diet of wild plums, avocados and breadnuts, but increasingly you find the plants of the region to be unfamiliar and you are no longer certain what is safe to eat.\n\nArriving at a wooden house, you introduce yourself the family living there. The man is a hunter who tells you that he formerly farmed a small plot near Yashuna. \"But lately the rains have been unreliable,\" he adds. \"At last I decided to bring my family south where the land is more bountiful.\"\n\n\"Are there no dangers to living close to the forest?\" you ask, casting a wary eye at the forbidding gloom between the tall tree-trunks.\n\nHe nods and draws deeply on his pipe. \"Many! Apart from supernatural creatures such as the spiteful stabai and the strangler beast, there are also jungle people who will brook no outsiders in their territory. They claim to be the guardians of the World Tree, which supports the sky itself.\"\n\nThe hunter asks no payment for the food and hospitality he gives you but you feel obliged to offer him a cacao anyway. Then, bidding these kind people farewell, you set off west towards the great city of Nachan.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 209; }
+
+    void Event(Character::Base &player)
+    {
+        player.Money -= 1;
+    }
+};
+
 class Story185 : public Story::Base
 {
 public:
@@ -654,6 +755,29 @@ public:
     }
 
     int Continue(Character::Base &player) { return 350; };
+};
+
+class Story188 : public Story::Base
+{
+public:
+    Story188()
+    {
+        ID = 188;
+        Text = "As you leave the market, a tall fellow emerges from the portico bordering on the temple plaza and stands surveying the marketplace. He is carrying pots that mark him as a fisherman, presumably from one of the coastal towns to the north. \"Huh!\" he mutters, half to himself. \"Is there no demand for good fish these days?\"\n\n\"Probably not when it is several days old,\" you remark, grimacing at the smell wafting from his goods.\n\nHe fixes you with a stare of outrage. \"Then buy one of my pots and take up fishing yourself!\" he cries, thrusting a lobster pot towards you. \"There! Destroy my livelihood, if you wish! I will sell you this pot for only two cacao.\"\n\nAs you turn to go, he adds: \"I would give anything for a taste of decent bread. I have been on the road for two days with nothing but my own fish to sustain me -- and, as you so tersely put it, they are no longer of the best quality.\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.clear();
+        Choices.push_back(Choice::Base("Trade a parcel of MAIZE CAKES", 211, Choice::Type::ITEM, Item::Type::MAIZE_CAKES));
+        Choices.push_back(Choice::Base("Go north", 120, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Go south", 165, Choice::Type::NORMAL));
+
+        Controls = ShopControls();
+
+        Shop = {{Item::Type::LOBSTER_POT, 2}};
+    }
+
+    int Continue(Character::Base &player) { return 163; }
 };
 
 class Story208 : public Story::Base
@@ -745,6 +869,35 @@ public:
     }
 };
 
+class Story234 : public Story::Base
+{
+public:
+    Story234()
+    {
+        ID = 234;
+        Text = "A young man and woman are brought forward by the priests and led to a shrine at the western edge of the hole. A steep flight of steps descends from the shrine towards a platform covered with sacred glyphs. As golden pectorals are placed over the couple's shoulders, it becomes clear that they are going to be sacrificed. They have chosen to jump into the sinkhole, carrying the people's prayers to the Rain God who dwells under the world.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::CENOTE))
+        {
+            Character::REMOVE_CODEWORD(player, Codeword::Type::CENOTE);
+
+            return 103;
+        }
+        else
+        {
+            return 127;
+        }
+    }
+};
+
 class Story254 : public Story::Base
 {
 public:
@@ -758,6 +911,24 @@ public:
         Choices.push_back(Choice::Base("Make a DONATION (1 cacao)", 424, Choice::Type::LOSE_MONEY, 1));
         Choices.push_back(Choice::Base("Make a DONATION (2 cacao)", 2, Choice::Type::LOSE_MONEY, 2));
         Choices.push_back(Choice::Base("You are not prepared to make any donation and you need to hurry over to the market and spend your money on supplies instead", 93, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story257 : public Story::Base
+{
+public:
+    Story257()
+    {
+        ID = 257;
+        Text = "The priest sees your bracelet and turns to look at you with new interest. You do not entire like the expression of alert scrutiny on his face. He reminds you of an eagle studying a mouse. \"Ah, I see you are one of the chosen,\" he says, calling to a group of priestly warriors near by.\n\n\"The chosen what?\" you ask.\n\nHe gives you a puzzled look. \"Why, one of those chosen to carry our petition to the Rain God,\" he replies.\n\nThe guards close in at your shoulders. The priest gestures towards the sunken lake, and suddenly the truth dawns. They mean to cast you into the pit as a living sacrifice to the gods.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Resist the fate they have in store for you", 281, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Cast a protective enchantment (SPELLS)", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("Agree to being thrown into the pit", 327, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
@@ -838,6 +1009,24 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("Practice the ball contest with him", 368, Choice::Type::NORMAL));
         Choices.push_back(Choice::Base("Get on with preparations for your journey", 93, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story350 : public Story::Base
+{
+public:
+    Story350()
+    {
+        ID = 350;
+        Text = "You get your first glimpse of Yashuna on the afternoon of the following day. Like Koba, the tall temple pyramids of the city are visible for miles across the rolling countryside. As you approach the poorer dwellings at the outskirts of the city, you notice a large number of people milling towards the raised central complex which houses the temples and the palaces of the rich.\n\nIt seems to be market day.";
+        Image = "images/yashuna.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Pay a visit to the market", 142, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Head north out of the city", 120, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Take the southern road towards the forest", 165, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
@@ -974,21 +1163,29 @@ auto story071 = Story071();
 auto story093 = Story093();
 auto story094 = Story094();
 auto story096 = Story096();
+auto story103 = Story103();
 auto story116 = Story116();
 auto story117 = Story117();
+auto story120 = Story120();
 auto story138 = Story138();
 auto story139 = Story139();
+auto story142 = Story142();
 auto story162 = Story162();
 auto story163 = Story163();
+auto story165 = Story165();
 auto story185 = Story185();
 auto story186 = Story186();
+auto story188 = Story188();
 auto story208 = Story208();
 auto story231 = Story231();
+auto story234 = Story234();
 auto story254 = Story254();
+auto story257 = Story257();
 auto story277 = Story277();
 auto story301 = Story301();
 auto story323 = Story323();
 auto story346 = Story346();
+auto story350 = Story350();
 auto story368 = Story368();
 auto story389 = Story389();
 auto story408 = Story408();
@@ -999,10 +1196,10 @@ void InitializeStories()
     Stories = {
         &prologue, &story001, &story002, &story024, &story025,
         &story047, &story048, &story070, &story071,
-        &story093, &story094, &story096, &story116, &story117,
-        &story138, &story139, &story162, &story163, &story185,
-        &story186, &story208, &story231, &story254, &story277, &story301, &story323, &story346,
-        &story368, &story389, &story408, &story424};
+        &story093, &story094, &story096, &story103, &story116, &story117, &story120,
+        &story138, &story139, &story142, &story162, &story163, &story165, &story185, &story188,
+        &story186, &story208, &story231, &story234, &story254, &story257, &story277, &story301, &story323, &story346,
+        &story350, &story368, &story389, &story408, &story424};
 }
 
 #endif

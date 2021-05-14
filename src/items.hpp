@@ -27,8 +27,11 @@ namespace Item
         MAGIC_POTION,
         JADE_SWORD,
         OWL,
+        TERRACOTTA_EFFIGY,
+        INCENSE,
+        LOBSTER_POT,
         First = SWORD,
-        Last = OWL
+        Last = LOBSTER_POT
     };
 
     std::map<Item::Type, const char *> Descriptions = {
@@ -50,14 +53,19 @@ namespace Item
         {Item::Type::GREEN_MIRROR, "GREEN MIRROR"},
         {Item::Type::MAGIC_POTION, "MAGIC POTION"},
         {Item::Type::JADE_SWORD, "JADE SWORD"},
-        {Item::Type::OWL, "OWL"}};
+        {Item::Type::OWL, "OWL"},
+        {Item::Type::TERRACOTTA_EFFIGY, "TERRACOTTA EFFIGY"},
+        {Item::Type::INCENSE, "INCENSE"},
+        {Item::Type::LOBSTER_POT, "LOBSTER POT"}};
 
     std::vector<Item::Type> UniqueItems = {
         Item::Type::LETTER_OF_INTRODUCTION,
         Item::Type::SERPENT_BRACELET,
         Item::Type::GREEN_MIRROR,
         Item::Type::JADE_SWORD,
-        Item::Type::OWL};
+        Item::Type::OWL,
+        Item::Type::TERRACOTTA_EFFIGY,
+        Item::Type::LOBSTER_POT};
 
     bool IsUnique(Item::Type item)
     {

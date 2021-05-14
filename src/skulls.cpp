@@ -1733,6 +1733,32 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 error = true;
                             }
                         }
+                        else if (story->Choices[current].Type == Choice::Type::SKILL_ANY)
+                        {
+                            if (Character::VERIFY_SKILL_ANY(player, story->Choices[current].Skill, story->Choices[current].Items))
+                            {
+                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                quit = true;
+
+                                break;
+                            }
+                            else
+                            {
+                                if (Character::HAS_SKILL(player, story->Choices[current].Skill))
+                                {
+                                    message = "You do not have any of the required item to use with this skill!";
+                                }
+                                else
+                                {
+                                    message = "You do not possess the required skill!";
+                                }
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
                         else if (story->Choices[current].Type == Choice::Type::SKILL)
                         {
                             if (Character::VERIFY_SKILL(player, story->Choices[current].Skill))

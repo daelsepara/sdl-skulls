@@ -257,6 +257,19 @@ namespace Character
         }
     }
 
+    void REMOVE_CODEWORD(Character::Base &player, Codeword::Type codeword)
+    {
+        if (VERIFY_CODEWORD(player, codeword))
+        {
+            auto result = FIND_CODEWORD(player, codeword);
+
+            if (result >= 0)
+            {
+                player.Codewords.erase(player.Codewords.begin() + result);
+            }
+        }
+    }
+
     void GET_UNIQUE_ITEMS(Character::Base &player, std::vector<Item::Type> items)
     {
         for (auto i = 0; i < items.size(); i++)
