@@ -42,6 +42,16 @@ namespace Character
             Items = items;
             Money = money;
         }
+
+        Base(const char *name, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Type> items, std::vector<Codeword::Type> codewords, int money)
+        {
+            Name = name;
+            Description = description;
+            Skills = skills;
+            Codewords = codewords;
+            Items = items;
+            Money = money;
+        }
     };
 
     auto WARRIOR = Base("The Warrior", "A proud noble of the Maya people, and strong in the arts of war, you tolerate no insolence from any man.", {Skill::AGILITY, Skill::ETIQUETTE, Skill::SWORDPLAY, Skill::UNARMED_COMBAT}, {Item::Type::SWORD}, 10);
@@ -108,7 +118,6 @@ namespace Character
 
         return found;
     }
-
 
     // Checks if player has the skill and the required item
     bool VERIFY_SKILL(Character::Base &player, Skill::Type skill)

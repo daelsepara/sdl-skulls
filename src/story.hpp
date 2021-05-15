@@ -390,7 +390,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 332, Skill::Type::SEAFARING));
-        Choices.push_back(Choice::Base("Pay him", 355, Choice::Type::LOSE_MONEY, 2));
+        Choices.push_back(Choice::Base("Pay him (2 cacao)", 355, Choice::Type::LOSE_MONEY, 2));
         Choices.push_back(Choice::Base("Make your way north on foot", 264));
 
         Controls = StandardControls();
@@ -541,6 +541,52 @@ public:
             Choices[0].Skill = Skill::Type::NONE;
         }
     }
+};
+
+class Story077 : public Story::Base
+{
+public:
+    Story077()
+    {
+        ID = 77;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Background(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK) && !Character::VERIFY_SKILL(player, Skill::Type::ETIQUETTE))
+        {
+            return 215;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::ETIQUETTE))
+        {
+            Text = "You are naturally recognized and welcomed as a noble of Koba.";
+        }
+        else
+        {
+            Text = "You were not granted an audience with the king.";
+
+            Choices.push_back(Choice::Base("Present the king with a lavish gift", 238));
+            Choices.push_back(Choice::Base("Give up any hope of being granted an audience", 262));
+        }
+    }
+
+    int Continue(Character::Base &player) { return 192; }
 };
 
 class Story093 : public Story::Base
@@ -743,6 +789,23 @@ public:
     }
 };
 
+class Story123 : public Story::Base
+{
+public:
+    Story123()
+    {
+        ID = 123;
+        Text = "\"Do you know the myths of the twins called Forethought and Afterthought?\" she asks. You shake your head. \"Well, it is very popular in these parts. This picture deals with the part of the story when the twins have crossed the desert and are about to pass into the Deathlands. First they must greet each of the four sentinels correctly: Lord Skull, Lord Blood -- \"\n\n\"Milady,\" calls out one of the artisans, interrupting her. \"We've run out of the green dye. How about using blue for these feathers in the bloke's hat?\"\n\n\"No, no! That won't do!\" she cries. Turning to you, she mumbles, \"Please excuse me...\" and hurries off to remonstrate with the artisans.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Seek an audience with the King", 77));
+        Choices.push_back(Choice::Base("Pay for lodging in the city if you have nay money", 101, Choice::Type::MONEY, 1));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story127 : public Story::Base
 {
 public:
@@ -823,6 +886,23 @@ public:
     }
 
     int Continue(Character::Base &player) { return 188; }
+};
+
+class Story146 : public Story::Base
+{
+public:
+    Story146()
+    {
+        ID = 146;
+        Text = "\"As you can see, the two figures in this part of the frieze are inverted,\" says the priestess. \"This is to indicate they are in the underworld.\"\n\n\"But specifically who are they?\" you enquire. \"One seems to be a nobleman -- the other his slave, perhaps?\"\n\nShe nods. \"They are shown approaching the path into the afterlife. As the old adage goes, a rich man can only reach the afterlife if taken there by a poor man. That is why many nobles arrange to have their favourite servant buried with them in their tomb. But the picture in this case also has a symbolic meaning: the 'rich' man is the sun, escorted through the underworld each night by the planet Venus.\"\n\nHer answers are very enlightening. If only you had had such lucid instruction from the priests in Koba you would have a better understanding of the ancient myths. Before you can ask her anything else, however, she is called away to inspect some details of the mural. You are left to ponder your next move.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go to the royal palace and ask to see the King", 77));
+        Choices.push_back(Choice::Base("Spend some money on arranging a place to stay", 101, Choice::Type::MONEY, 1));
+
+        Controls = StandardControls();
+    }
 };
 
 class Story158 : public Story::Base
@@ -919,6 +999,28 @@ public:
     void Event(Character::Base &player)
     {
         player.Money -= 1;
+    }
+};
+
+class Story169 : public Story::Base
+{
+public:
+    Story169()
+    {
+        ID = 169;
+        Text = "\"As you can see, the two figures in this part of the frieze are inverted,\" says the priestess. \"This is to indicate they are in the underworld.\"\n\n\"But specifically who are they?\" you enquire. \"One seems to be a nobleman -- the other his slave, perhaps?\"\n\nShe nods. \"They are shown approaching the path into the afterlife. As the old adage goes, a rich man can only reach the afterlife if taken there by a poor man. That is why many nobles arrange to have their favourite servant buried with them in their tomb. But the picture in this case also has a symbolic meaning: the 'rich' man is the sun, escorted through the underworld each night by the planet Venus.\"\n\nHer answers are very enlightening. If only you had had such lucid instruction from the priests in Koba you would have a better understanding of the ancient myths. Before you can ask her anything else, however, she is called away to inspect some details of the mural. You are left to ponder your next move.\n\nYou gained the codeword PSYCHODUCT.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go to the royal palace and ask to see the King", 77));
+        Choices.push_back(Choice::Base("Spend some money on arranging a place to stay", 101, Choice::Type::MONEY, 1));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::PSYCHODUCT});
     }
 };
 
@@ -1718,8 +1820,6 @@ public:
 
         Controls = StandardControls();
     }
-
-    int Continue(Character::Base &player) { return 93; };
 };
 
 class Story332 : public Story::Base
@@ -1872,8 +1972,6 @@ public:
 
         Controls = StandardControls();
     }
-
-    int Continue(Character::Base &player) { return 93; };
 };
 
 class Story424 : public Story::Base
@@ -1909,8 +2007,6 @@ public:
 
         Controls = StandardControls();
     }
-
-    int Continue(Character::Base &player) { return 93; };
 };
 
 class NotImplemented : public Story::Base
@@ -1963,6 +2059,7 @@ auto story051 = Story051();
 auto story054 = Story054();
 auto story070 = Story070();
 auto story071 = Story071();
+auto story077 = Story077();
 auto story093 = Story093();
 auto story094 = Story094();
 auto story096 = Story096();
@@ -1971,15 +2068,18 @@ auto story103 = Story103();
 auto story116 = Story116();
 auto story117 = Story117();
 auto story120 = Story120();
+auto story123 = Story123();
 auto story127 = Story127();
 auto story138 = Story138();
 auto story139 = Story139();
 auto story142 = Story142();
+auto story146 = Story146();
 auto story158 = Story158();
 auto story160 = Story160();
 auto story162 = Story162();
 auto story163 = Story163();
 auto story165 = Story165();
+auto story169 = Story169();
 auto story185 = Story185();
 auto story186 = Story186();
 auto story188 = Story188();
@@ -2024,13 +2124,14 @@ void InitializeStories()
 {
     Stories = {
         &prologue, &story001, &story002, &story008, &story024, &story025, &story030, &story047, &story048,
-        &story051, &story054, &story070, &story071, &story093, &story094, &story096, &story101, &story103,
-        &story116, &story117, &story120, &story127, &story138, &story139, &story142, &story158, &story160,
-        &story162, &story163, &story165, &story185, &story188, &story186, &story205, &story208, &story209,
-        &story211, &story218, &story228, &story231, &story232, &story234, &story235, &story254, &story257,
-        &story264, &story275, &story277, &story278, &story280, &story281, &story298, &story301, &story302,
-        &story321, &story323, &story324, &story327, &story331, &story332, &story346, &story350, &story355,
-        &story368, &story389, &story408, &story416, &story424, &story426};
+        &story051, &story054, &story070, &story071, &story077, &story093, &story094, &story096, &story101,
+        &story103, &story116, &story117, &story120, &story123, &story127, &story138, &story139, &story142,
+        &story146, &story158, &story160, &story162, &story163, &story165, &story169, &story185, &story188,
+        &story186, &story205, &story208, &story209, &story211, &story218, &story228, &story231, &story232,
+        &story234, &story235, &story254, &story257, &story264, &story275, &story277, &story278, &story280,
+        &story281, &story298, &story301, &story302, &story321, &story323, &story324, &story327, &story331,
+        &story332, &story346, &story350, &story355, &story368, &story389, &story408, &story416, &story424,
+        &story426};
 }
 
 #endif
