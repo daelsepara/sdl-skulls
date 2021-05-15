@@ -26,6 +26,8 @@ namespace Character
 
         int DONATION = 0;
 
+        bool BLESSING_WAR_GOD = false;
+
         std::vector<Skill::Base> Skills = std::vector<Skill::Base>();
         std::vector<Item::Type> Items = std::vector<Item::Type>();
         std::vector<Codeword::Type> Codewords = std::vector<Codeword::Type>();
@@ -247,17 +249,20 @@ namespace Character
     {
         auto found = 0;
 
-        if (player.Skills.size() > 0 && skill != Skill::Type::NONE)
+        if (player.Skills.size() > 0 && skill != Skill::Type::NONE && items.size() > 0)
         {
             for (auto i = 0; i < player.Skills.size(); i++)
             {
                 if (player.Skills[i].Type == skill)
                 {
-                    auto result = FIND_ITEM(player, items[i]);
-
-                    if (result >= 0)
+                    for (auto j = 0; j < items.size(); j++)
                     {
-                        found++;
+                        auto result = FIND_ITEM(player, items[j]);
+
+                        if (result >= 0)
+                        {
+                            found++;
+                        }
                     }
                 }
             }
