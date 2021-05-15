@@ -1525,6 +1525,25 @@ public:
     }
 };
 
+class Story274 : public Story::Base
+{
+public:
+    Story274()
+    {
+        ID = 274;
+
+        Text = "The water between the two ships seethes, the a vast fanged maw bursts to the surface and long tentacles slash towards the sky. The pirates stare in terror, then scramble over one another in their mad haste to change course. You watch with a smile as they recede into the distance.\n\nThe trader is crouching in the bottom of the hull.\n\n\"A seas monster,\" he whimpers. \"It's come to kill us and seize all my goods!\"\n\nThe two boys are leaping up and down with whoops of joy, pulling faces at the fleeing pirates. One of them turns to his father. \"Oh, Dad,\" he says. \"It was just an illusion!\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 343; }
+};
+
 class Story275 : public Story::Base
 {
 public:
@@ -1622,6 +1641,25 @@ public:
     {
         Character::GAIN_LIFE(player, -3);
     }
+};
+
+class Story297 : public Story::Base
+{
+public:
+    Story297()
+    {
+        ID = 297;
+
+        Text = "Your first dart hits a pirate right between his white-rimmed eyes and he slumps over the side with a groan. The others react to this with screeches of rage, paddling furiously to catch up with your own vessel. By the time the gap has been closed to ten paces, you have slain two more of them with your blowgun and they are beginning to have second thoughts. When they see you slide another dart into the blowgun, they throw up their hands in a gesture of surrender and go veering off towards the horizon -- no doubt in search of easier pickings.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 343; }
 };
 
 class Story298 : public Story::Base
@@ -2208,11 +2246,13 @@ auto story235 = Story235();
 auto story254 = Story254();
 auto story257 = Story257();
 auto story264 = Story264();
+auto story274 = Story274();
 auto story275 = Story275();
 auto story277 = Story277();
 auto story278 = Story278();
 auto story280 = Story280();
 auto story281 = Story281();
+auto story297 = Story297();
 auto story298 = Story298();
 auto story301 = Story301();
 auto story302 = Story302();
@@ -2244,10 +2284,10 @@ void InitializeStories()
         &story103, &story116, &story117, &story120, &story123, &story127, &story138, &story139, &story142,
         &story146, &story158, &story160, &story162, &story163, &story165, &story169, &story182, &story185,
         &story188, &story186, &story205, &story208, &story209, &story211, &story218, &story228, &story231,
-        &story232, &story234, &story235, &story254, &story257, &story264, &story275, &story277, &story278,
-        &story280, &story281, &story298, &story301, &story302, &story321, &story323, &story324, &story327,
-        &story331, &story332, &story346, &story350, &story355, &story366, &story368, &story370, &story389,
-        &story391, &story406, &story408, &story416, &story424, &story426};
+        &story232, &story234, &story235, &story254, &story257, &story264, &story274, &story275, &story277,
+        &story278, &story280, &story281, &story297, &story298, &story301, &story302, &story321, &story323,
+        &story324, &story327, &story331, &story332, &story346, &story350, &story355, &story366, &story368,
+        &story370, &story389, &story391, &story406, &story408, &story416, &story424, &story426};
 }
 
 #endif
