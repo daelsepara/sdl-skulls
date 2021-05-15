@@ -32,8 +32,10 @@ namespace Item
         LOBSTER_POT,
         SHAWL,
         PARCEL_OF_SALT,
+        SALTED_MEAT,
+        HAUNCH_OF_VENISON,
         First = SWORD,
-        Last = PARCEL_OF_SALT
+        Last = HAUNCH_OF_VENISON
     };
 
     std::map<Item::Type, const char *> Descriptions = {
@@ -60,7 +62,9 @@ namespace Item
         {Item::Type::INCENSE, "INCENSE"},
         {Item::Type::LOBSTER_POT, "LOBSTER POT"},
         {Item::Type::SHAWL, "SHAWL"},
-        {Item::Type::PARCEL_OF_SALT, "PARCEL OF SALT"}};
+        {Item::Type::PARCEL_OF_SALT, "PARCEL OF SALT"},
+        {Item::Type::SALTED_MEAT, "SALTED MEAT"},
+        {Item::Type::HAUNCH_OF_VENISON, "HAUNCH OF VENISON"}};
 
     std::vector<Item::Type> UniqueItems = {
         Item::Type::LETTER_OF_INTRODUCTION,

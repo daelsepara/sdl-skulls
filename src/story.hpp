@@ -28,9 +28,9 @@ namespace Choice
         SKILL_ALL,
         FIRE_WEAPON,
         LOSE_ITEM,
-        LOSE_LIFE,
         LOSE_MONEY,
-        DONATE
+        DONATE,
+        EAT
     };
 
     class Base
@@ -139,6 +139,15 @@ namespace Choice
             Type = type;
             Skill = skill;
             Items = items;
+        }
+
+        Base(const char *text, int destination, Choice::Type type, std::vector<Item::Type> items, int value)
+        {
+            Text = text;
+            Destination = destination;
+            Type = type;
+            Items = items;
+            Value = value;
         }
     };
 } // namespace Choice
@@ -948,8 +957,6 @@ public:
 
         Shop = {{Item::Type::LOBSTER_POT, 2}};
     }
-
-    int Continue(Character::Base &player) { return 163; }
 };
 
 class Story205 : public Story::Base
@@ -1116,6 +1123,25 @@ public:
     int Continue(Character::Base &player) { return 389; }
 };
 
+class Story228 : public Story::Base
+{
+public:
+    Story228()
+    {
+        ID = 228;
+
+        Text = "Following the sweep of the coastline, you press on into the north-west. You subsist on fruit and fish for a week or so until finally you arrive at the great port of Tahil. The streets are crowded with refugees, all pouring towards the quayside in the hope of finding passage on a ship going east.\n\nYou make your way through the press of frightened people and past the great temples and townhouses which now lie deserted. The causeway to the west is empty apart from a few forlorn stragglers and those who have fallen crippled by the wayside.\n\n\"Turn back!\" cautions a starving beggar as he passes you on the causeway. \"Monsters are coming out of the western desert to slay us all!\"\n\n\"No,\" you reply without looking back, \"I'm going to slay them.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 85; };
+};
+
 class Story231 : public Story::Base
 {
 public:
@@ -1279,6 +1305,25 @@ public:
     }
 };
 
+class Story275 : public Story::Base
+{
+public:
+    Story275()
+    {
+        ID = 275;
+        Text = "Apart from a few glowering looks, you are all but ignored by the people of Ashaka. Striding boldly up to a warrior in scarlet war paint, you ask directions to the market. He gives you a look like a bird studying a worm.\n\n\"Market?\" he sneers. \"There is no time for trade these days. We're preparing for war.\"\n\n\"War?\" you say naively. \"With whom?\"\n\n\"With everyone! Now the Great City's gone, all the upstart cities will start vying for dominance in the region.\"\n\n\"How sad and senseless,\" you sigh.\n\nHe spits into the dust. \"Don't be daft. Think about it. Now there'll have to be a new Great City. That's going to be us.\"\n\nShaking your head, you make your way through the streets until you find a furtive stallholder who is prepared to sell you a strip of salted meat for 1 cacao.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Head directly towards Shakalla", 298));
+        Choices.push_back(Choice::Base("Detour to the coast and make your way via Tahil", 228));
+
+        Controls = ShopControls();
+
+        Shop = {{Item::Type::SALTED_MEAT, 1}};
+    }
+};
+
 class Story277 : public Story::Base
 {
 public:
@@ -1336,6 +1381,51 @@ public:
     }
 };
 
+class Story298 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story298()
+    {
+        ID = 298;
+
+        Text = NULL;
+
+        Choices.clear();
+
+        Bye = "Days turn to weeks. At last you catch sight of the town of Shakalla in the distance. Beyond it lies the great stony rim of the desert, crouching like a baleful predator at the edge of the world.";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        PreText = "All along your route you find deserted cottages where people have abandoned their homes and farms for safer regions. You pass refugees on the mountain roads. Some tell you they are fleeing from brigands. Others fear the devils and werewolves that they believe will be unleashed from the western desert now the Great City has fallen.\n\nFood is hard to come by in the arid sierra.\n\nTravelling off the main paths to avoid the groups of marauding brigands, you are forced back on your own skills to find sustenance.\n";
+
+        if (Character::VERIFY_ANY_SKILL(player, {Skill::Type::TARGETING, Skill::Type::WILDERNESS_LORE}))
+        {
+            PreText += "\nYou were able to hunt for food.\n";
+
+            Choices.push_back(Choice::Base("Continue", 321));
+        }
+        else if (Character::COUNT_ITEMS(player, {Item::Type::MAIZE_CAKES, Item::Type::PAPAYA, Item::Type::OWL, Item::Type::HAUNCH_OF_VENISON, Item::Type::SALTED_MEAT}))
+        {
+            PreText += "\nHaving no skills to hunt for food, you are forced to eat from your provisions.\n";
+
+            Choices.push_back(Choice::Base("Eat from your provisions", 321, Choice::Type::EAT, {Item::Type::MAIZE_CAKES, Item::Type::PAPAYA, Item::Type::OWL, Item::Type::HAUNCH_OF_VENISON, Item::Type::SALTED_MEAT}, 2));
+        }
+        else
+        {
+            Choices.push_back(Choice::Base("Continue (LOSE 2 Life Points)", 321, Choice::Type::LIFE, -2));
+        }
+
+        Text = PreText.c_str();
+    }
+};
+
 class Story301 : public Story::Base
 {
 public:
@@ -1376,6 +1466,28 @@ public:
         Choices.push_back(Choice::Base("Keep the SHAWL", 369, Item::Type::SHAWL));
 
         Controls = StandardControls();
+    }
+};
+
+class Story321 : public Story::Base
+{
+public:
+    Story321()
+    {
+        ID = 321;
+        Text = "Shakalla is a walled town whose hard sun-baked streets are the colour of hot ash. At this time of day, the place is deserted. Those who have not fled in fear have retreated to the cool interiors of their houses, seeking refuge from the midday sun. You see a few faces peering from the narrow doorways as you go past. A dog lies stretched in the shade of a shop's awning, panting with the heat.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Enter the shop", 344));
+        Choices.push_back(Choice::Base("Carry on to the west gate of the town", 325));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Story::BLESSING_WAR_GOD = true;
     }
 };
 
@@ -1453,6 +1565,23 @@ public:
     int Continue(Character::Base &player) { return 93; };
 };
 
+class Story332 : public Story::Base
+{
+public:
+    Story332()
+    {
+        ID = 332;
+        Text = "\"I notice you suffer from a bad back,\" you say to the fenman. \"May I ask why you don't rig a sail on your boat to save yourself the effort of rowing?\"\n\n\"Do you know nothing about boats?\" he grumbles as he picks up another heavy pot. \"A vessel made of reeds is to flimsy to support the weight of a mast.\"\n\n\"Use a double mast, so that the sail straddles the boat,\" you suggest. \"This would distribute the load more evenly. Also, why not treat the reeds with oil, which would make the hull more watertight?\"\n\n\"With the price of oil today?\" he cries incredulously. \"Reeds cost next to nothing.\"\n\n\"Ah, but think of the time it takes you to make a new boat for each river trip. A hull treated with oil would soon repay the initial cost.\"\n\nHe stops what he is doing and looks at you with new interest. \"Anything else?\" he asks.\n\n\"Yes. I see you are loading empty pots aboard your boat, presumably for sale downriver. Mead is plentiful in Nachan but not in the fens, so why not fill the pots with mead? It would take up no more space, but your profits would be enlarged by at least one fifth.\"\n\n\"A fine idea,\" he admits, \"but the pots are heavy enough for my poor back already.\"\n\n\"Exactly why you need a passenger who's willing to chip in a help,\" you answer in a trice. Convinced you are worth having along, he agrees to take you downriver for free..";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 355; };
+};
+
 class Story346 : public Story::Base
 {
 public:
@@ -1483,6 +1612,23 @@ public:
         Choices.push_back(Choice::Base("Pay a visit to the market", 142));
         Choices.push_back(Choice::Base("Head north out of the city", 120));
         Choices.push_back(Choice::Base("Take the southern road towards the forest", 165));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story355 : public Story::Base
+{
+public:
+    Story355()
+    {
+        ID = 355;
+        Text = "You spend a couple of pleasant days on the river, with nothing to do but watch the green banks slide past while you trail your fingers in the water and swap stories with the fenman. Like most people who travel widely, he has a fund of folktales with which to regale you.\n\n\"I have enjoyed having you along,\" he says as he ties up his boat at a village, \"but now we have arrived at my home. The coast is only a few days' walk -- just follow the road which leads along the riverbank, and may the God of the Pole Star guide you safely on your quest.\"\n\n\"Thank you,\" you reply, \"and may the God of the River see that you find good fortune in your business.\"\n\nYou have gone only a short distance when he calls out after you. \"Incidentally I should warn you that the fens are infested with nightcrawlers. I take it you know how to deal with such creatures?\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Assure him that you are wise to such magical menaces (FOLKLORE)", 264, Skill::Type::FOLKLORE));
+        Choices.push_back(Choice::Base("Perhaps you had better ask him to explain further", 172));
 
         Controls = StandardControls();
     }
@@ -1538,7 +1684,7 @@ public:
     Story408()
     {
         ID = 408;
-        Text = "The high priest winds a white cloth across your eyes and leads you through to the inner shrine. A deep chill abides here; the thick stone blocks of the Death God's temple walls are never warmed by the sun. The sweet tarry smell of incense hangs in the air. You feel a hand on your shoulder, guiding you to kneel.\n\nA long period of utter silence ensues. You did not hear the high priest withdraw from the chamber, but you gradually become sure that he has left you here alone. You dare not remove the blindfold; to gaze directly on the holy of holies would drive you instantly insane.\n\nA whispering slithers slowly out of the silence. At first you take it for a trick of your unsettle imagination, but by straining your ears you begin to make out words. \"The way to the west lies through the underworld,\" the whispering tells you. \"Go to the city of Yashuna. North of the city lies a sacred well which is the entrance to the underworld. Take this path, which is dangerous but swift, and you will emerge at the western rim of the world. From there it is but a short journey back through the desert to your goal.\"\n\nThe whispers fade, drowned out by the thudding of your heart. Frozen with terror at the words of the god, yo crouch motionless on the cold flagstones. The cloying scent of incense grows almost unbearable.\n\nSuddenly a hand touches your shoulder. After the initial jolt of alarm, you allow yourself to be led out onto the portico of the temple, where the blindfold is removed. You blink in the dazzling sunlight. You feel as weak as a baby and the smell of incense clings to your clothes. After the cool of the shrine, the heat of the afternoon sun makes you feel slightly sick.\n\nThe podgy priest is looking up into your eyes. \"You head the voice of the god,\" he says simply.\n\nYou gained the codeword CENOTE.";
+        Text = "The high priest winds a white cloth across your eyes and leads you through to the inner shrine. A deep chill abides here; the thick stone blocks of the Death God's temple walls are never warmed by the sun. The sweet tarry smell of incense hangs in the air. You feel a hand on your shoulder, guiding you to kneel.\n\nA long period of utter silence ensues. You did not hear the high priest withdraw from the chamber, but you gradually become sure that he has left you here alone. You dare not remove the blindfold; to gaze directly on the holy of holies would drive you instantly insane.\n\nA whispering slithers slowly out of the silence. At first you take it for a trick of your unsettle imagination, but by straining your ears you begin to make out words. \"The way to the west lies through the underworld,\" the whispering tells you. \"Go to the city of Yashuna. North of the city lies a sacred well which is the entrance to the underworld. Take this path, which is dangerous but swift, and you will emerge at the western rim of the world. From there it is but a short journey back through the desert to your goal.\"\n\nThe whispers fade, drowned out by the thudding of your heart. Frozen with terror at the words of the god, you crouch motionless on the cold flagstones. The cloying scent of incense grows almost unbearable.\n\nSuddenly a hand touches your shoulder. After the initial jolt of alarm, you allow yourself to be led out onto the portico of the temple, where the blindfold is removed. You blink in the dazzling sunlight. You feel as weak as a baby and the smell of incense clings to your clothes. After the cool of the shrine, the heat of the afternoon sun makes you feel slightly sick.\n\nThe podgy priest is looking up into your eyes. \"You head the voice of the god,\" he says simply.\n\nYou gained the codeword CENOTE.";
         Image = "images/filler1.png";
 
         Choices.clear();
@@ -1683,22 +1829,28 @@ auto story205 = Story205();
 auto story208 = Story208();
 auto story209 = Story209();
 auto story211 = Story211();
+auto story228 = Story228();
 auto story231 = Story231();
 auto story232 = Story232();
 auto story234 = Story234();
 auto story254 = Story254();
 auto story257 = Story257();
 auto story264 = Story264();
+auto story275 = Story275();
 auto story277 = Story277();
 auto story278 = Story278();
 auto story280 = Story280();
+auto story298 = Story298();
 auto story301 = Story301();
 auto story302 = Story302();
+auto story321 = Story321();
 auto story323 = Story323();
 auto story324 = Story324();
 auto story331 = Story331();
+auto story332 = Story332();
 auto story346 = Story346();
 auto story350 = Story350();
+auto story355 = Story355();
 auto story368 = Story368();
 auto story389 = Story389();
 auto story408 = Story408();
@@ -1709,12 +1861,14 @@ auto story426 = Story426();
 void InitializeStories()
 {
     Stories = {
-        &prologue, &story001, &story002, &story008, &story024, &story025, &story030, &story047, &story048, &story054, &story070,
-        &story071, &story093, &story094, &story096, &story101, &story103, &story116, &story117, &story120, &story127, &story138,
-        &story139, &story142, &story158, &story160, &story162, &story163, &story165, &story185, &story188, &story186, &story205,
-        &story208, &story209, &story211, &story231, &story232, &story234, &story254, &story257, &story264, &story277, &story278,
-        &story280, &story301, &story302, &story323, &story324, &story331, &story346, &story350, &story368, &story389, &story408,
-        &story416, &story424, &story426};
+        &prologue, &story001, &story002, &story008, &story024, &story025, &story030, &story047, &story048,
+        &story054, &story070, &story071, &story093, &story094, &story096, &story101, &story103, &story116,
+        &story117, &story120, &story127, &story138, &story139, &story142, &story158, &story160, &story162,
+        &story163, &story165, &story185, &story188, &story186, &story205, &story208, &story209, &story211,
+        &story228, &story231, &story232, &story234, &story254, &story257, &story264, &story275, &story277,
+        &story278, &story280, &story298, &story301, &story302, &story321, &story323, &story324, &story331,
+        &story332, &story346, &story350, &story355, &story368, &story389, &story408, &story416, &story424,
+        &story426};
 }
 
 #endif

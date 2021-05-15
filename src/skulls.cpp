@@ -1201,6 +1201,178 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
     return done;
 }
 
+int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit)
+{
+    auto consumed = 0;
+    auto done = false;
+
+    if (player.Items.size() > 0)
+    {
+        const char *message = NULL;
+
+        auto error = false;
+
+        Uint32 start_ticks = 0;
+        Uint32 duration = 3000;
+
+        auto text_space = 8;
+
+        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+
+        auto filtered_items = std::vector<Item::Type>();
+
+        for (auto i = 0; i < player.Items.size(); i++)
+        {
+            if (Item::VERIFY(items, player.Items[i]))
+            {
+                filtered_items.push_back(player.Items[i]);
+            }
+        }
+
+        auto controls = createItemControls(filtered_items);
+
+        auto idx = filtered_items.size();
+
+        controls.erase(controls.begin() + idx);
+
+        controls.push_back(Button(idx, "images/yes.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::TAKE));
+        controls.push_back(Button(idx + 1, "images/back-button.png", idx, idx + 1, idx - 1, idx + 1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", 16);
+
+        auto selected = false;
+        auto current = -1;
+        auto quit = false;
+        auto scrollUp = false;
+        auto scrollDown = false;
+        auto hold = false;
+
+        auto infoh = 36;
+        auto boxh = 75;
+
+        auto selection = std::vector<int>();
+
+        while (!done)
+        {
+            SDL_SetWindowTitle(window, "Necklace of Skulls");
+
+            fillWindow(renderer, intWH);
+
+            if (error)
+            {
+                if ((SDL_GetTicks() - start_ticks) < duration)
+                {
+                    putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, boxh * 2, startx, starty);
+                }
+                else
+                {
+                    error = false;
+                }
+            }
+
+            if (!error)
+            {
+                std::string eat_message = "Select " + std::string((limit > 1) ? "provisions" : "provision") + " to EAT." + (limit > 1 ? (" You can EAT up to " + std::to_string(limit) + " provisions.") : "");
+
+                putText(renderer, eat_message.c_str(), font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
+            }
+
+            std::string eat = "";
+
+            if (selection.size() > 0)
+            {
+                for (auto i = 0; i < selection.size(); i++)
+                {
+                    if (i > 0)
+                    {
+                        eat += ", ";
+                    }
+
+                    eat += std::string(Item::Descriptions[filtered_items[selection[i]]]);
+                }
+            }
+
+            putText(renderer, "SELECTED", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, eat.size() > 0 ? eat.c_str() : "(None)", font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+
+            fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
+
+            renderButtons(renderer, controls, current, intGR, text_space, text_space / 2);
+
+            for (auto i = 0; i < filtered_items.size(); i++)
+            {
+                if (std::find(selection.begin(), selection.end(), i) != selection.end())
+                {
+                    drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intDB);
+                }
+            }
+
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected)
+            {
+                if (controls[current].Type == Control::Type::ACTION && !hold)
+                {
+                    if (current >= 0 && current < filtered_items.size())
+                    {
+                        if (std::find(selection.begin(), selection.end(), current) != selection.end())
+                        {
+                            selection.erase(std::find(selection.begin(), selection.end(), current));
+                        }
+                        else
+                        {
+                            if (selection.size() < limit)
+                            {
+                                selection.push_back(current);
+                            }
+                        }
+                    }
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::TAKE && !hold)
+                {
+                    for (auto i = 0; i < selection.size(); i++)
+                    {
+                        Character::LOSE_ITEM(player, {filtered_items[selection[i]]});
+                    }
+
+                    consumed = selection.size();
+
+                    current = -1;
+
+                    selected = false;
+
+                    done = true;
+
+                    break;
+                }
+                else if (controls[current].Type == Control::Type::BACK && !hold)
+                {
+                    done = false;
+
+                    break;
+                }
+            }
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+        }
+
+        TTF_Quit();
+    }
+
+    return consumed;
+}
+
 bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player)
 {
     auto done = false;
@@ -1929,6 +2101,29 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 error = true;
                             }
                         }
+                        else if (story->Choices[current].Type == Choice::Type::EAT)
+                        {
+                            auto threshold = story->Choices[current].Value;
+                            
+                            auto consumed = eatScreen(window, renderer, player, story->Choices[current].Items, threshold);
+
+                            Character::GAIN_LIFE(player, consumed - threshold);
+
+                            if (player.Life > 0)
+                            {
+                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                quit = true;
+                            }
+                            else
+                            {
+                                message = "You died of hunger! This adventure is now over.";
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
                         else if (story->Choices[current].Type == Choice::Type::SKILL_ANY)
                         {
                             if (Character::VERIFY_SKILL_ANY(player, story->Choices[current].Skill, story->Choices[current].Items))
@@ -2465,6 +2660,8 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
                     current = -1;
 
                     selected = false;
+
+                    storyID = 0;
 
                     break;
 

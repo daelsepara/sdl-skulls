@@ -94,6 +94,22 @@ namespace Character
         return found;
     }
 
+    int COUNT_ITEMS(Character::Base &player, std::vector<Item::Type> items)
+    {
+        auto found = 0;
+
+        for (auto i = 0; i < items.size(); i++)
+        {
+            if (FIND_ITEM(player, items[i]) >= 0)
+            {
+                found++;
+            }
+        }
+
+        return found;
+    }
+
+
     // Checks if player has the skill and the required item
     bool VERIFY_SKILL(Character::Base &player, Skill::Type skill)
     {
@@ -120,6 +136,44 @@ namespace Character
         }
 
         return found;
+    }
+
+    bool VERIFY_ANY_SKILL(Character::Base &player, std::vector<Skill::Type> skills)
+    {
+        auto found = false;
+
+        if (player.Skills.size() > 0 && skills.size() > 0)
+        {
+            for (auto i = 0; i < skills.size(); i++)
+            {
+                if (Character::VERIFY_SKILL(player, skills[i]))
+                {
+                    found = true;
+
+                    break;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    bool VERIFY_ALL_SKILL(Character::Base &player, std::vector<Skill::Type> skills)
+    {
+        auto found = 0;
+
+        if (player.Skills.size() > 0 && skills.size() > 0)
+        {
+            for (auto i = 0; i < skills.size(); i++)
+            {
+                if (Character::VERIFY_SKILL(player, skills[i]))
+                {
+                    found++;
+                }
+            }
+        }
+
+        return found == skills.size();
     }
 
     bool HAS_SKILL(Character::Base &player, Skill::Type skill)
