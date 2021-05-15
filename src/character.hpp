@@ -9,16 +9,20 @@
 
 namespace Character
 {
-    const int ITEM_LIMIT = 8;
-
     class Base
     {
     public:
         const char *Name = NULL;
+
         const char *Description = NULL;
 
         int Life = 10;
+
         int Money = 10;
+
+        int ITEM_LIMIT = 8;
+
+        int MAX_LIFE_LIMIT = 10;
 
         std::vector<Skill::Base> Skills = std::vector<Skill::Base>();
         std::vector<Item::Type> Items = std::vector<Item::Type>();
@@ -136,6 +140,44 @@ namespace Character
         return found;
     }
 
+    bool HAS_ANY_SKILLS(Character::Base &player, std::vector<Skill::Type> skills)
+    {
+        auto found = false;
+
+        if (player.Skills.size() > 0 && skills.size() > 0)
+        {
+            for (auto i = 0; i < skills.size(); i++)
+            {
+                if (HAS_SKILL(player, skills[i]))
+                {
+                    found = true;
+
+                    break;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    bool HAS_ALL_SKILLS(Character::Base &player, std::vector<Skill::Type> skills)
+    {
+        int found = 0;
+
+        if (player.Skills.size() > 0 && skills.size() > 0)
+        {
+            for (auto i = 0; i < skills.size(); i++)
+            {
+                if (HAS_SKILL(player, skills[i]))
+                {
+                    found++;
+                }
+            }
+        }
+
+        return found == skills.size();
+    }
+
     int FIND_SKILL_ITEMS(Character::Base &player, Skill::Type skill, std::vector<Item::Type> items)
     {
         auto found = 0;
@@ -238,7 +280,7 @@ namespace Character
 
     bool VERIFY_POSSESSIONS(Character::Base &player)
     {
-        return player.Items.size() <= Character::ITEM_LIMIT;
+        return player.Items.size() <= player.ITEM_LIMIT;
     }
 
     void GET_ITEMS(Character::Base &player, std::vector<Item::Type> items)
@@ -294,6 +336,20 @@ namespace Character
                     player.Items.erase(player.Items.begin() + result);
                 }
             }
+        }
+    }
+
+    void GAIN_LIFE(Character::Base &player, int life)
+    {
+        player.Life += life;
+
+        if (player.Life < 0)
+        {
+            player.Life = 0;
+        }
+        else if (player.Life > player.MAX_LIFE_LIMIT)
+        {
+            player.Life = player.MAX_LIFE_LIMIT;
         }
     }
 

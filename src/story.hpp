@@ -284,6 +284,24 @@ public:
     int Continue(Character::Base &player) { return 93; }
 };
 
+class Story008 : public Story::Base
+{
+public:
+    Story008()
+    {
+        ID = 8;
+        Text = "As you go west, the land rises and becomes drier. You leave behind the lush forest, trekking first through windswept moorland and then dusty gulches lined with sparse bracken.\n\nAshaka is a hilltop citadel with palaces set on high terraces cut into the mountainside. It stares down across the scattered farming communities it rules, like an eagle glowering atop a cactus. As you start up the red-paved road that wends up to the citadel, you pass a small man who is bent and toothless with age. \"Going up to Ashaka, are you?\" he cackles. \"They'll be pleased!\"\n\n\"Why is that?\" you ask.\n\nHe puts a finger to one nostril and snorts a gobbet of mucus onto the ground. \"They're after sacrifices,\" he says. \"Priests reckon the gods are annoyed. Must be bloody furious, if you ask me!\"\n\n\"Eh?\" You are puzzled.\n\nHe fixes you with a canny stare. \"The Great City -- it's been sacked by dog-men from the western desert. It's going to take heap of sacrifices to get the gods to rebuild it, hah!\"\n\nWhat he says is inconvenient if true, since you were relying on getting provisions in Ashaka.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go up anyway", 275, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Decide against visiting Ashaka by continuing to travel overland", 298, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("You can detour to the sea and travel up the coast to Tahil", 228, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story024 : public Story::Base
 {
 public:
@@ -314,6 +332,24 @@ public:
         Choices.push_back(Choice::Base(Skill::WILDERNESS_LORE.Name, 48, Skill::Type::WILDERNESS_LORE));
         Choices.push_back(Choice::Base("Jerk your hand away quickly", 71, Choice::Type::NORMAL));
         Choices.push_back(Choice::Base("Slowly reach around with your other hand to seize the tarantula from behind", 94, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story030 : public Story::Base
+{
+public:
+    Story030()
+    {
+        ID = 30;
+        Text = "Nachan is the busy hub of trade up and down the river, so there are hundreds of boats bobbing up and down at the jetty waiting to unload their wares. You wend your way between bales of grain, fruit, feathers, jade and animal pelts. Most of the trader's vessels are dug-out canoes, but you see one crescent-shaped boat constructed of interwoven reeds. You guess that the owner is not from the wooded country upriver, but must be a native of the fens which lie between here and the coast. Seeing you approach, he straightens up from the task of loading clay pots aboard the boat and winces as he rubs his aching back.\n\n\"Good morning,\" you say to him. \"If you're going downriver, I wonder if you have room for a passenger?\"\n\nHe looks you up and down. \"If you have two cacao to spare.\"\n\n\"Two cacao!\" you cry in outrage. \"That is an exorbitant sum. I will offer--\"\n\nThe fenman holds up his hand to interrupt you. \"Haggling is pointless,\" he says. \"You would take up as much space as two large pitchers, and the profit I make on each pitcher is one cacao. Consequently you must pay a fee of two cacao to compensate me for my loss of earnings if I take you aboard.\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 332, Skill::Type::SEAFARING));
+        Choices.push_back(Choice::Base("Pay him", 355, Choice::Type::LOSE_MONEY, 2));
+        Choices.push_back(Choice::Base("Make your way north on foot", 264, Choice::Type::NORMAL));
 
         Controls = StandardControls();
     }
@@ -471,7 +507,7 @@ public:
     {
         PreText = "The spider's bristly limbs send a shiver through you as they slowly probe your outstretched hand. It takes every shred of nerve to remain motionless while you carefully reach around behind it with your other hand. Its multiple eyes gleam horribly, full of the ruthless intensity of the predator. It looks like a demon carved from polished mahogany, more nightmarish than any image on the walls of the Temple of Death.\n\nAs you take hold of it, it starts to twitch its legs furiously. With a sob of revulsion, you hurl it away. It falls with an audible thud somewhere off among the trees, but then a stab of pain convulses your hand. Did it bite you after all? You have to prise your fingers apart, but instead of a bite you find dozens of tiny pinpricks all over your palm. The tarantula's bristles were razor-sharp, and seem to have injected a stinging chemical into your skin.\n\nYou LOSE 1 Life Point.\n";
 
-        player.Life -= 1;
+        Character::GAIN_LIFE(player, -1);
 
         if (player.Life > 0)
         {
@@ -700,6 +736,24 @@ public:
     }
 };
 
+class Story160 : public Story::Base
+{
+public:
+    Story160()
+    {
+        ID = 160;
+        Text = "You emerge at last from the forest beside a village where you get directions to the city of Nachan. You pass west along a wooded ridge overlooking flat plains that stretch northwards towards the sea. The journey takes you a day and a night, and you have to sleep under the stars. Arising early, you yawn and stretch your cramped limbs. The countryside is swathed in fog which lies in hollows like an ocean of whiteness. You stroll onwards until the path emerges from a copse of trees and you stand overlooking a marvellous sight. You arrived at Nachan just a the moment of sunrise. The palaces and temples rise from the spectral fog: man-made hilltops thrusting through cloud. Beyond them lie the suburbs of the city, where lights twinkle like fading stars under the blanket of mist.\n\nThe warmth of day burns away the fog as you make your descent from the ridge. Now you can see the scintillant colours on the walls of the ceremonial buildings -- a vivid interplay of hues which is very unlike the austere white and red of Koba's palaces.\n\nBy the time you reach the level of the streets, the mist has retreated to just a few strands hanging around the upper steps of the pyramids and veiling the tree-covered hills that form a backdrop to the city. Already there are people hurrying to and fro. Some are carrying garlands of flowers while others in fanciful costumes are carpeting the roads with fresh west leaves. \"Is there a festival?\" you ask a passer-by.\n\n\"Indeed there is,\" he replies. \"Tonight is the anniversary of the old king's death.\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Break your journey here", 426, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Head on overland towards Ashaka", 8, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Follow the river to the coast", 30, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story162 : public Story::Base
 {
 public:
@@ -823,6 +877,65 @@ public:
     int Continue(Character::Base &player) { return 163; }
 };
 
+class Story205 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story205()
+    {
+        Text = NULL;
+
+        ID = 205;
+
+        Image = "images/filler1.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You have a week to while away before you set sail.\n";
+
+        auto FISHED = false;
+
+        if (Character::HAS_ANY_SKILLS(player, {Skill::Type::WILDERNESS_LORE, Skill::Type::SEAFARING}))
+        {
+            FISHED = true;
+        }
+        else if (Character::VERIFY_ITEM(player, Item::Type::LOBSTER_POT))
+        {
+            FISHED = true;
+
+            Character::LOSE_ITEM(player, {Item::Type::LOBSTER_POT});
+        }
+
+        if (FISHED)
+        {
+            PreText += "\nYou fish for food in this time.";
+
+            if (player.Life < player.MAX_LIFE_LIMIT)
+            {
+                player.Life = player.MAX_LIFE_LIMIT;
+
+                PreText += " You regain Life Points lost previously.";
+            }
+
+            PreText += "\n";
+        }
+        else
+        {
+            PreText += "You are reduced to begging for scraps and collecting snails along the shore. This soon results in mild food poisoning. You LOSE 1 Life Point.\n";
+
+            Character::GAIN_LIFE(player, -1);
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 182; };
+};
+
 class Story208 : public Story::Base
 {
 public:
@@ -890,6 +1003,23 @@ public:
     int Continue(Character::Base &player) { return 93; };
 };
 
+class Story209 : public Story::Base
+{
+public:
+    Story209()
+    {
+        ID = 209;
+        Text = "A sense of awe comes over you while walking through the green gloom that lies between the soaring tree-trunks of the forest. Dragonflies flash with the colours of copper, obsidian and gemstones as they dart in and out of the scattered beams of sunlight. Monkeys chitter unseen high above your head, crashing the thick foliage aside as they tumble from branch to branch. A dust-like swirling in the shadows is in fact the flight of countless tiny gnats. There is a hot perfumed dampness here: the rich odour of the forest floor rising to mingle with the scent that trickles down from brightly hued orchids. You pass huge fanciful growths of fungi which look like unearthly stones dropped by the gods.\n\nA sparkle of bright light catches your eye. Standing some distance off, framed in the eternal twilight of the jungle like a jewel displayed on dark cloth, is a bewitching figure. She turns her face towards you and you give a gasp of surprise. Her features -- her whole body -- are suffused with a dazzling golden radiance that seems to shine from her very skin. With a musical laugh, she swirls her shawl up around her shoulders and starts to dance between the trees.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Pursue her", 232, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Leave her alone", 160, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story231 : public Story::Base
 {
 public:
@@ -909,6 +1039,43 @@ public:
     void Event(Character::Base &player)
     {
         Story::DONATION = 0;
+    }
+};
+
+class Story232 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story232()
+    {
+        ID = 232;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Continue the chase", 278, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Give up and retrace your steps to find your original route", 160, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "\"Wait!\" You take a step towards the mysterious girl. She barely glances back, but hurls a peal of laughter over her shoulder and skips away through a sparse bank of ferns. Quickening your pace, you plunge through the undergrowth after her. Her own gait is as light as a dancer's, but even though you break into a run you find yourself unable to catch her.\n\nStumbling into a thickset of thorns, you give a gasp of pain and annoyance as the sharp spines rip your clothing and your flesh.\n\nYou LOSE 1 Life Point.\n";
+
+        Character::GAIN_LIFE(player, -1);
+
+        if (player.Life > 0)
+        {
+            PreText += "\nWhen you manage to struggle free, the girl is still lingering a little way ahead, hovering luminously in the emerald twilight. Now she turns her shining face and gives you a bolder smile, but along with curiosity you feel a stirring of superstitious dread. This chase is leading you far off your route and into the darker depths of the forest. The image of the shimmering jewel-like figure outlined against the shadows between the trees awakens a disquieting comparison. She reminds you of the bright pattern of a spider hanging in its web.";
+
+            Text = PreText.c_str();
+        }
+        else
+        {
+            Text = PreText.c_str();
+        }
     }
 };
 
@@ -994,6 +1161,24 @@ public:
     }
 };
 
+class Story280 : public Story::Base
+{
+public:
+    Story280()
+    {
+        ID = 280;
+        Text = "You set out in the early morning. A cool wind whips spindrift in your face and fills the taut white wing of the sail. The trader calls to his two young sons, who scramble along the vessel like monkeys making adjustments to the course. Soon the prow is chopping the sea aside as you steer out of sight of land with the sun at your backs.\n\n\"Shouldn't we keep the coast in sight?\" you ask.\n\n\"Not a bit of it!\" bellows the trader over the crash of the surf. \"The sun is enough to guide our way, for any seafarer with a pinch of salt in his blood.\"\n\n\"Father...\" says one of the sons, tugging the hem of his kilt.\n\n\"Not now, lad,\" mutters his father, scanning the western horizon as he moves the tiller.\n\n\"But, Father...\" insists the other boy.\n\nYou turn to see what they are looking at. A longship filled with fierce warriors is bearing down at you out of the north-east. As they get nearer, you see their black tunics and the turquoise beads that blaze at their wrists and throats. White face-paint gives them the appearance of hungry ghosts, and the raised spears make their intentions clear. Pirates!";
+        Image = "images/pirates.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 274, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base(Skill::TARGETING.Name, 297, Skill::Type::TARGETING));
+        Choices.push_back(Choice::Base("Otherwise", 320, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story301 : public Story::Base
 {
 public:
@@ -1038,6 +1223,37 @@ public:
     void Event(Character::Base &player)
     {
         Story::BLESSING_WAR_GOD = true;
+    }
+};
+
+class Story324 : public Story::Base
+{
+public:
+    Story324()
+    {
+        ID = 324;
+        Text = "You gaze around. All directions present you with the same vista: trees stand like stone sentinels draped in moss-coloured gloom. Great nets of creepers are strung between their heavy boughs. There are not even any sounds of wildlife to disturb the hoary solitude of the ancient woods. You are thoroughly lost.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Continue", 118, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        if (player.Life < player.MAX_LIFE_LIMIT)
+        {
+            if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+            {
+                Choices[0].Destination = 72;
+            }
+            else
+            {
+                Choices[0].Destination = 95;
+            }
+        }
     }
 };
 
@@ -1199,8 +1415,10 @@ void *findStory(int id)
 auto prologue = Prologue();
 auto story001 = Story001();
 auto story002 = Story002();
+auto story008 = Story008();
 auto story024 = Story024();
 auto story025 = Story025();
+auto story030 = Story030();
 auto story047 = Story047();
 auto story048 = Story048();
 auto story070 = Story070();
@@ -1217,20 +1435,26 @@ auto story138 = Story138();
 auto story139 = Story139();
 auto story142 = Story142();
 auto story158 = Story158();
+auto story160 = Story160();
 auto story162 = Story162();
 auto story163 = Story163();
 auto story165 = Story165();
 auto story185 = Story185();
 auto story186 = Story186();
 auto story188 = Story188();
+auto story205 = Story205();
 auto story208 = Story208();
+auto story209 = Story209();
 auto story231 = Story231();
+auto story232 = Story232();
 auto story234 = Story234();
 auto story254 = Story254();
 auto story257 = Story257();
 auto story277 = Story277();
+auto story280 = Story280();
 auto story301 = Story301();
 auto story323 = Story323();
+auto story324 = Story324();
 auto story346 = Story346();
 auto story350 = Story350();
 auto story368 = Story368();
@@ -1241,12 +1465,17 @@ auto story424 = Story424();
 void InitializeStories()
 {
     Stories = {
-        &prologue, &story001, &story002, &story024, &story025,
-        &story047, &story048, &story070, &story071,
-        &story093, &story094, &story096, &story103, &story116, &story117, &story120, &story127,
-        &story138, &story139, &story142, &story158, &story162, &story163, &story165, &story185, &story188,
-        &story186, &story208, &story231, &story234, &story254, &story257, &story277, &story301, &story323, &story346,
-        &story350, &story368, &story389, &story408, &story424};
+        &prologue, &story001, &story002, &story008, &story024,
+        &story025, &story030, &story047, &story048, &story070,
+        &story071, &story093, &story094, &story096,
+        &story103, &story116, &story117, &story120,
+        &story127, &story138, &story139, &story142,
+        &story158, &story160, &story162, &story163, &story165,
+        &story185, &story188, &story186, &story205,
+        &story208, &story209, &story231, &story232, &story234, &story254,
+        &story257, &story277, &story280, &story301, &story323, &story324,
+        &story346, &story350, &story368, &story389,
+        &story408, &story424};
 }
 
 #endif
