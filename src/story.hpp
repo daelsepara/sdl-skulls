@@ -329,7 +329,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("Go up anyway", 275));
         Choices.push_back(Choice::Base("Decide against visiting Ashaka by continuing to travel overland", 298));
-        Choices.push_back(Choice::Base("You can detour to the sea and travel up the coast to Tahil", 228));
+        Choices.push_back(Choice::Base("Detour to the sea and travel up the coast to Tahil", 228));
 
         Controls = StandardControls();
     }
@@ -1240,6 +1240,45 @@ public:
     }
 };
 
+class Story264 : public Story::Base
+{
+public:
+    Story264()
+    {
+        ID = 264;
+        Text = "You fall in with others who are travelling in a group for safety. Since the collapse of the great city there has been a wave of refugees from the north-west, many of them impoverished and desperate. It is no longer wise to travel the back roads unaccompanied.\n\nSome of your companions make their farewells as they arrive at their homes, others join the group. You might be walking with up to a dozen other people at any one time, while on other stretches of the riverside path you travel alone. At such times you are keen for company, and when you see a peasant woman walking ahead you quicken your pace to catch up.\n\nYou soon begin to regret joining her, because there is something strange about her manner that gives you a feeling of disquiet despite the bright sunny morning. She peers constantly ahead of her with a dreamy expression, stumbling along as though half asleep. For the sake of conversation, you remark on the large clay pitcher she carries balanced upside-down on her shoulder. \"Isn't it easier to carry those on your head? That's what most peasants do.\"\n\nYour question takes a while to sink in. When her answer comes it is a distracted murmur: \"Only if it's full... This isn't full...\"\n\nYou walk on for several minutes before saying, \"Why don't you switch it to your other shoulder? You'd find it less of a strain that way, I'm sure.\"\n\n\"It's fine like this...\" She suddenly stops and turns to you with a drowsy smile. \"I think I'll rest in the shade of this tree. You'll wake until I wake up, won't you? It's too hot to walk in the middle of the day anyhow...\"\n\nBefore you can reply, she hunkers down by the side of the road -- still with the pitcher balanced carefully on her shoulder -- and her head slumps forward in sleep.";
+        Image = "images/filler1.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        if (!Character::VERIFY_SKILL(player, Skill::Type::FOLKLORE) && !Character::VERIFY_CODEWORD(player, Codeword::Type::CALABASH))
+        {
+            Choices.push_back(Choice::Base("Stay here as the woman asked you to", 100));
+            Choices.push_back(Choice::Base("Sneak a look under a pitcher", 333));
+            Choices.push_back(Choice::Base("Leave before she wakes up", 356));
+        }
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_SKILL(player, Skill::Type::FOLKLORE))
+        {
+            return 287;
+        }
+        else if (Character::VERIFY_CODEWORD(player, Codeword::Type::CALABASH))
+        {
+            return 310;
+        }
+
+        return -1;
+    }
+};
+
 class Story277 : public Story::Base
 {
 public:
@@ -1319,6 +1358,24 @@ public:
         {
             return 346;
         }
+    }
+};
+
+class Story302 : public Story::Base
+{
+public:
+    Story302()
+    {
+        ID = 302;
+        Text = "The effort of trying to regurgitate the firefly leaves your eyes watering, but to no avail. Before you can blink away the tears, you realize someone is trying to pull the shawl out of your grip. You have the impression of someone very tall and unbelievably thin, like a human stick insect. The face is as pale as sap, and the naked skin exudes a sweet smell like tree bark and honey.\n\nYou wipe your eyes and look again. At first you think the figure is gone, but then there is a flicker of movement at the edge of your vision. Whirling, you catch a brief glimpse of two or three thin creatures. They dart away like pale green fishes to hang just behind your line of sight. By standing still you get an uncertain and unfocused view of them out of the corner of your eye. It dawns on you that there are many of them clustered noiselessly around the clearing, transient as sunbeams. They are the stabai -- the creatures of the wooded dells, who ply their magic to the discomfort of lone travellers like yourself.\n\n\"You have our shawl,\" buzzes a soft forlorn voice in your ear. \"Won't you return it?\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::FOLKLORE.Name, 255, Skill::Type::FOLKLORE));
+        Choices.push_back(Choice::Base("Return the SHAWL", 347, Item::Type::SHAWL));
+        Choices.push_back(Choice::Base("Keep the SHAWL", 369, Item::Type::SHAWL));
+
+        Controls = StandardControls();
     }
 };
 
@@ -1631,10 +1688,12 @@ auto story232 = Story232();
 auto story234 = Story234();
 auto story254 = Story254();
 auto story257 = Story257();
+auto story264 = Story264();
 auto story277 = Story277();
 auto story278 = Story278();
 auto story280 = Story280();
 auto story301 = Story301();
+auto story302 = Story302();
 auto story323 = Story323();
 auto story324 = Story324();
 auto story331 = Story331();
@@ -1650,17 +1709,12 @@ auto story426 = Story426();
 void InitializeStories()
 {
     Stories = {
-        &prologue, &story001, &story002, &story008, &story024,
-        &story025, &story030, &story047, &story048, &story054, &story070,
-        &story071, &story093, &story094, &story096, &story101,
-        &story103, &story116, &story117, &story120,
-        &story127, &story138, &story139, &story142,
-        &story158, &story160, &story162, &story163, &story165,
-        &story185, &story188, &story186, &story205,
-        &story208, &story209, &story211, &story231, &story232, &story234, &story254,
-        &story257, &story277, &story278, &story280, &story301, &story323, &story324,
-        &story331, &story346, &story350, &story368, &story389,
-        &story408, &story416, &story424, &story426};
+        &prologue, &story001, &story002, &story008, &story024, &story025, &story030, &story047, &story048, &story054, &story070,
+        &story071, &story093, &story094, &story096, &story101, &story103, &story116, &story117, &story120, &story127, &story138,
+        &story139, &story142, &story158, &story160, &story162, &story163, &story165, &story185, &story188, &story186, &story205,
+        &story208, &story209, &story211, &story231, &story232, &story234, &story254, &story257, &story264, &story277, &story278,
+        &story280, &story301, &story302, &story323, &story324, &story331, &story346, &story350, &story368, &story389, &story408,
+        &story416, &story424, &story426};
 }
 
 #endif
