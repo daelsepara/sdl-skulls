@@ -33,6 +33,9 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pl
 bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit);
 bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Item::Type mine, Item::Type theirs);
 
+int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit);
+int giveScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, Character::Base &player, std::vector<std::pair<Item::Type, int>> gifts, int default_destination);
+
 SDL_Surface *createImage(const char *image)
 {
     // Load splash image
@@ -1043,6 +1046,168 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
     }
 
     return false;
+}
+
+int giveScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, Character::Base &player, std::vector<std::pair<Item::Type, int>> gifts, int default_destination)
+{
+    int storyID = default_destination;
+
+    if (player.Items.size() > 0)
+    {
+        const char *message = NULL;
+
+        auto error = false;
+
+        Uint32 start_ticks = 0;
+        Uint32 duration = 3000;
+
+        auto done = false;
+
+        auto text_space = 8;
+
+        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+
+        auto controls = createItemControls(player.Items);
+
+        auto idx = player.Items.size();
+
+        controls.erase(controls.begin() + idx);
+        controls.push_back(Button(idx, "images/yes.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::GIVE));
+        controls.push_back(Button(idx + 1, "images/back-button.png", idx, idx + 1, idx - 1, idx + 1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", 16);
+
+        auto selected = false;
+        auto current = -1;
+        auto quit = false;
+        auto scrollUp = false;
+        auto scrollDown = false;
+        auto hold = false;
+
+        auto infoh = 36;
+        auto boxh = 75;
+
+        auto selected_item = -1;
+
+        while (!done)
+        {
+            SDL_SetWindowTitle(window, "Necklace of Skulls: Possessions");
+
+            fillWindow(renderer, intWH);
+
+            if (error)
+            {
+                if ((SDL_GetTicks() - start_ticks) < duration)
+                {
+                    putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, boxh * 2, startx, starty);
+                }
+                else
+                {
+                    error = false;
+                }
+            }
+
+            if (!error)
+            {
+                putText(renderer, "Select an item to GIVE", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
+            }
+
+            putText(renderer, "Selected", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+
+            if (selected_item >= 0 && selected_item < player.Items.size())
+            {
+                putText(renderer, (std::string(Item::Descriptions[player.Items[selected_item]])).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+            }
+            else
+            {
+                fillRect(renderer, splashw, boxh, startx, starty + text_bounds - boxh, intBE);
+            }
+
+            fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
+
+            renderButtons(renderer, controls, current, intGR, text_space, text_space / 2);
+
+            for (auto i = 0; i < player.Items.size(); i++)
+            {
+                if (selected_item == i)
+                {
+                    drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intDB);
+                }
+            }
+
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected)
+            {
+                if (controls[current].Type == Control::Type::ACTION && !hold)
+                {
+                    if (current >= 0 && current < player.Items.size())
+                    {
+                        if (selected_item == current)
+                        {
+                            selected_item = -1;
+                        }
+                        else
+                        {
+                            selected_item = current;
+                        }
+                    }
+                }
+                else if (controls[current].Type == Control::Type::GIVE && !hold)
+                {
+                    if (selected_item >= 0 && selected_item < player.Items.size())
+                    {
+                        auto item = player.Items[selected_item];
+
+                        Character::LOSE_ITEM(player, {item});
+
+                        for (auto i = 0; i < gifts.size(); i++)
+                        {
+                            if (gifts[i].first == item)
+                            {
+                                storyID = gifts[i].second;
+
+                                break;
+                            }
+                        }
+
+                        done = true;
+
+                        break;
+                    }
+                    else
+                    {
+                        start_ticks = SDL_GetTicks();
+
+                        message = "You have not selected anything!";
+
+                        error = true;
+                    }
+                }
+                else if (controls[current].Type == Control::Type::BACK && !hold)
+                {
+                    storyID = story->ID;
+
+                    done = true;
+
+                    break;
+                }
+            }
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+        }
+
+        TTF_Quit();
+    }
+
+    return storyID;
 }
 
 bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit)
@@ -2104,7 +2269,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                         else if (story->Choices[current].Type == Choice::Type::EAT)
                         {
                             auto threshold = story->Choices[current].Value;
-                            
+
                             auto consumed = eatScreen(window, renderer, player, story->Choices[current].Items, threshold);
 
                             Character::GAIN_LIFE(player, consumed - threshold);
@@ -2198,6 +2363,27 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             else
                             {
                                 message = "You do not have any money!";
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
+                        if (story->Choices[current].Type == Choice::Type::GIFT)
+                        {
+                            if (player.Items.size() > 0)
+                            {
+                                auto nextID = giveScreen(window, renderer, story, player, story->Choices[current].Gifts, story->Choices[current].Destination);
+
+                                next = (Story::Base *)findStory(nextID);
+
+                                quit = true;
+
+                                break;
+                            }
+                            else
+                            {
+                                message = "You do not have any items to give!";
 
                                 start_ticks = SDL_GetTicks();
 

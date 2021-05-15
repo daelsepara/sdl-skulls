@@ -30,7 +30,8 @@ namespace Choice
         LOSE_ITEM,
         LOSE_MONEY,
         DONATE,
-        EAT
+        EAT,
+        GIFT
     };
 
     class Base
@@ -43,6 +44,7 @@ namespace Choice
         Skill::Type Skill = Skill::Type::NONE;
 
         std::vector<Item::Type> Items = std::vector<Item::Type>();
+        std::vector<std::pair<Item::Type, int>> Gifts = std::vector<std::pair<Item::Type, int>>();
 
         Item::Type Item = Item::Type::NONE;
 
@@ -148,6 +150,14 @@ namespace Choice
             Type = type;
             Items = items;
             Value = value;
+        }
+
+        Base(const char *text, int destination, std::vector<std::pair<Item::Type, int>> gifts)
+        {
+            Text = text;
+            Destination = destination;
+            Type = Choice::Type::GIFT;
+            Gifts = gifts;
         }
     };
 } // namespace Choice
@@ -351,6 +361,25 @@ public:
     }
 };
 
+class Story021 : public Story::Base
+{
+public:
+    Story021()
+    {
+        ID = 21;
+
+        Text = "You soon discover that it is possible to dig a tunnel throughout the sand underneath the barrier of flame. It is the work of just a few minutes to return Jade Thunder's wand to him.\n\n\"I wonder why I never thought of that,\" he muses.\"When you have matchless magical power, why bother with ingenuity?\" you suggest.\n\nHe sucks his teeth and gives you a narrow look. \"Oh yes.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 91; }
+};
+
 class Story024 : public Story::Base
 {
 public:
@@ -408,6 +437,30 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story045 : public Story::Base
+{
+public:
+    Story045()
+    {
+        ID = 45;
+
+        Text = "The golden manikin draws life from the warmth of your hand. Leaping down to the ground, he leaps through the flame barrier and emerge unscathed bearing the wand. You take the wand and give it to the Jade Thunder, who is delighted.\n\nWhen you go to pick up the MAN OF GOLD, you discover he has tunnelled down into the sand. \"I know the legend of that manikin,\" says Jade Thunder. \"It could only be used once.\"\n\n\"Evidently,\" you reply, staring at the mound of sand where the MAN OF GOLD dug down out of sight.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEM(player, {Item::Type::MAN_OF_GOLD});
+    }
+
+    int Continue(Character::Base &player) { return 91; }
 };
 
 class Story047 : public Story::Base
@@ -507,6 +560,52 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story068 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story068()
+    {
+        ID = 68;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You dive through the magical flames. A cry of agony escapes your lips as you are terribly burned.";
+
+        auto DAMAGE = -7;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::CHARMS))
+        {
+            PreText += "[CHARMS] ";
+
+            DAMAGE = -3;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nLuckily, you survived. The flame barrier dies down now that you have broken the spell. As you are still recovering from the wave of pain, Jade Thunder steps forward and eagerly takes the wand from your hand.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 91; }
 };
 
 class Story070 : public Story::Base
@@ -614,6 +713,48 @@ public:
     int Continue(Character::Base &player) { return 192; }
 };
 
+class Story078 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story078()
+    {
+        ID = 78;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The courtier returns some time later and tells you that the King is pleased with your gift. A group of royal servants is assigned to take you to the house of a minor nobleman, Lord Fire Serpent. He proves to be a bearded old warrior with a scar across his lip that gives him a rather ferocious appearance. But he greets you cordially when the servants explain that you are a favourite of the King, who commands that you be shown every hospitality.\n\nClapping his hands, Fire Serpent summons his wife, who brings you a jug of spiced cocoa, then gestures for you to sit beside him. \"Tomorrow is the festival commemorating the old King's departure to the next life,\" he says. \"Is that why you have made the journey from Koba?\"\n\nSipping your cocoa, you explain that you are on a quest which will take you much further west than this. Fire Serpent nods interestedly and has food brought.\n\nYou RECOVER 1 Life Point.";
+
+        Character::GAIN_LIFE(player, 1);
+
+        Choices.clear();
+
+        if (!Character::VERIFY_CODEWORD(player, Codeword::Type::PSYCHODUCT))
+        {
+            PreText += "\n\nYou spend a restful night at Fire Serpent's home. The next day, you decide to...";
+
+            Choices.push_back(Choice::Base("Head north", 30));
+            Choices.push_back(Choice::Base("West", 8));
+            Choices.push_back(Choice::Base("Stay for the festivities", 416));
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        return 331;
+    }
+};
+
 class Story085 : public Story::Base
 {
 public:
@@ -634,8 +775,6 @@ public:
 
     void Event(Character::Base &player)
     {
-        Choices.clear();
-
         PreText = "Food will be hard to come by in the arid sierra, so you make sure to pluck fruits from the abandoned orchards lining the first few kilometres of the causeway. The causeway dwindles to a stony road, then a dirt track, and finally you are trudging through open country.\n\nYour fruit soon gives out but in the baking summer heat it is lack of water, not food, that is your main concern.";
 
         if (!Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE) && !Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
@@ -1077,6 +1216,25 @@ public:
     }
 };
 
+class Story159 : public Story::Base
+{
+public:
+    Story159()
+    {
+        ID = 159;
+
+        Text = "When can you reply with a well-mannered but firm objection, the lord immediately recognizes you as a fellow noble and apologizes. \"I took you for a common trader,\" he says, bowing contritely. \"I am very story.\"\n\n\"These are difficult times,\" you say. \"Are all these people refugees from the Great City?\"\n\nHe glances along the quay. \"Either from there or the outlying farmlands. The attack on the city has sent a shockwave across the civilized world. From this day, certain fundamentals we have always taken for granted are suddenly thrown into question.\"\n\n\"Such as where to get a servant capable of mixing a decent cup of spiced cocoa,\" you put in.\n\nHe laughs. \"Exactly. Well, I'd better find another ship for my family to travel in.\"\n\nYou wave your hand expansively. \"Not at all! I shan't be needing this one again, since I'm travelling on inland. I think perhaps if you gave my, er, servants here a few cacao for their trouble they could take you back to Balak.\"\n\nYour travelling companions smile and nod their thanks to you when the lord's back is turned. Without another word, you take up your pack and set out towards Shakalla.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 85; }
+};
+
 class Story160 : public Story::Base
 {
 public:
@@ -1189,6 +1347,30 @@ public:
     }
 };
 
+class Story172 : public Story::Base
+{
+public:
+    Story172()
+    {
+        ID = 172;
+
+        Text = "\"Nightcrawlers are disembodied heads that live in calabash trees and descend to glide through the air in the dead of night,\" the fenman tells you. \"They find their way into houses through the roof, and can sometimes be heard crunching the charcoal beside the hearth. I myself once woke after a night of disturbing dreams to find my stock of firewood had mysteriously vanished.\"\n\n\"These nightcrawlers are mischievous creatures, then,\" you reply.\n\nHe gives a snort of grim laughter. \"I prefer to think of them as steeped in evil, in view of the fact that they also smother babies.\"\n\n\"I shall be sure to keep a weather eye out for flying head,\" you assure him.\n\n\"Oh, they are more cunning than that! A nightcrawler will sometimes latch onto a human neck, sinking tendrils into the host in the manner of a strangler fig taking root in another tree. In that guise, they may use trickery and guile to entice you off the road into the swamps.\"\n\n\"Presumably the presence of two heads on a body is a sure giveaway, though?\" you say.\n\nHe shrugs as though this had never occurred to him. \"Salt is the only remedy,\" he maintains. \"Nightcrawlers are repelled by salt. Farewell to you, then.\" He strolls off towards his house and you are left to mull over his advise as you continue your journey on foot.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::CALABASH});
+    }
+
+    int Continue(Character::Base &player) { return 264; }
+};
+
 class Story182 : public Story::Base
 {
 public:
@@ -1206,6 +1388,25 @@ public:
     }
 
     int Continue(Character::Base &player) { return 406; }
+};
+
+class Story183 : public Story::Base
+{
+public:
+    Story183()
+    {
+        ID = 183;
+
+        Text = "\"Well, what are you waiting for?\" snaps the lord. \"I told you to get out of the ship as my family and I will now be needing it. If you expect payment --\"\n\nYou leap out onto the quay, \"Payment? For this wretched craft?\" you cry in an incredulous tone. \"Why, it has nearly cost me my life three times since I left home!\"\n\n\"It looks sturdy enough,\" he says dubiously.\n\n\"Cursed is what it is! Cursed by a woodland imp who dwelt in the tree from which the vessel was built. And cursed am I for being foolish enough to set sail in such a vessel, for I lost my aunt and most of my belongings when it last capsized under me!\"\n\nThe Lord looks at the vessel, then at the swelling crowd of refugees. Superstitious fear is struggling with necessity in his mind. \"I'll take the risk,\" he decides.\n\n\"You're a brave man and no mistake!\" you say with an admiring sigh. \"Still, I can't let you take the ship for nothing.\"\n\n\"I'm not paying you,\" he says witheringly.\n\n\"Of course not, sir. I'll pay you, for taking it off my hands.\" You reach for your money-pouch. \"I think -- well twenty cacao would be fair, considering the trouble it's given me...\"\n\nThat convinces him. He backs away, dragging his family with him. \"Keep your money! We'll find another ship.\"\n\nBidding your travelling companions farewell, you set out towards Shakalla.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 85; }
 };
 
 class Story185 : public Story::Base
@@ -1272,6 +1473,30 @@ public:
     }
 };
 
+class Story192 : public Story::Base
+{
+public:
+    Story192()
+    {
+        ID = 192;
+
+        Text = "Your are invited to join King Cloud Jaguar and the nobles of his court in the steam-bath adjoining the palace. This is a domed room which is entered through an aperture so low that each bather has to crawl through on hands and knees.\n\nInside are rows of stone benches, and the middle of the floor is taken up by a pit filled with pebbles which have been warmed earlier in a fire until they are red-hot. Servants brings pitchers of scented water which sizzles on contact with the hot pebbles, releasing clouds of steam that make the sweat pour from your skin. At first you can hardly stand to draw a breath, but gradually you get used to the sweltering heat and start to enjoy the cleansing feeling. An old nobleman nudges you and hands you some herbs. \"Rub these on your body,\" he grunts. \"Most invigorating!\"\n\nYou regain vitality (2 Life Points) owing to the restorative effect of the herbs and the steam-bath. You also get the chance to ask about the next day's festivities, and you are told that this is the anniversary of the old king's death. When Cloud Jaguar learns of your quest, he is very impressed by your bravery. \"The pillaging of the Great City will have dire consequences,\" he says. \"I have heard tales of demons and werewolves ransacking the temples. Perhaps you can find out the truth on the matter.\"\n\nYou bow respectfully. \"I will try, your Majesty.\"\n\n\"You will spend the night in the shrine atop my father's pyramid,\" he continues. \"A tube connects the shrine to the tomb chamber. If it is the will of the gods, my father's spirit may appear to you and offer guidance.\"\n\nYou cannot refuse without giving offence. Whatever you think of meeting the late king's ghost, you must do as Cloud Jaguar has commanded. You spend the rest of the day in a mood of excitement tinged with dread, and at nightfall you are taken up to the top of the pyramid and left alone to await the ghost's appearance.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, 2);
+    }
+
+    int Continue(Character::Base &player) { return 415; }
+};
+
 class Story205 : public Story::Base
 {
 public:
@@ -1325,6 +1550,39 @@ public:
     }
 
     int Continue(Character::Base &player) { return 182; };
+};
+
+class Story206 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story206()
+    {
+        ID = 206;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Your sword lashes out, clattering loudly against the lord's. The crowd stares in excitement and horror as the two of you circle warily. You see the lord's wife draw her children protectively against her skirts. You lunge in close. Your opponent's sword comes up in a desperate parry that breaks splinters off its obsidian edge. He grunts as a red weal appears across his arm, but he responds with a clubbing upswing of the sword hilt that leaves you stunned.\n\nThe fight goes on, carrying you to and fro across quay. At last you score a mighty blow that slashes his hand knocking his sword into the water. He gives a snarl which is as much annoyance as pain, then pulls his family off into the crowd.\n\nYou are bleeding from several deep cuts.\n\nYou LOST 2 Life Points.";
+
+        Character::GAIN_LIFE(player, -2);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou manage to bind your wounds with strips of cloth. Then, bidding your grateful travelling companions goodbye, you set out towards Shakalla.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 85; }
 };
 
 class Story208 : public Story::Base
@@ -1624,6 +1882,25 @@ public:
     int Continue(Character::Base &player) { return 119; }
 };
 
+class Story238 : public Story::Base
+{
+public:
+    Story238()
+    {
+        ID = 238;
+
+        Text = "You join the queue of people waiting outside the palace in the hope of being granted an audience. When it comes to your turn, a snooty courtier soon makes it plain that you will have to bribe him if you want your gift taken to the King.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Bribe him (3 cacao)", 285, Choice::Type::LOSE_MONEY, 3));
+        Choices.push_back(Choice::Base("An audience with the King is not worth it", 262));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story254 : public Story::Base
 {
 public:
@@ -1678,6 +1955,27 @@ public:
         Choices.push_back(Choice::Base("Resist the fate they have in store for you", 281));
         Choices.push_back(Choice::Base("Cast a protective enchantment (SPELLS)", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base("Agree to being thrown into the pit", 327));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story262 : public Story::Base
+{
+public:
+    Story262()
+    {
+        ID = 262;
+
+        Text = "You decide on another course of action.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Try one of your devious schemes", 308, Skill::Type::CUNNING));
+        Choices.push_back(Choice::Base("Pay for lodging if you have some money", 101, Choice::Type::MONEY, 1));
+        Choices.push_back(Choice::Base("Continue on westwards", 8));
+        Choices.push_back(Choice::Base("Follow the river northwards", 30));
 
         Controls = StandardControls();
     }
@@ -1849,6 +2147,31 @@ public:
     void Event(Character::Base &player)
     {
         Character::GAIN_LIFE(player, -3);
+    }
+};
+
+class Story285 : public Story::Base
+{
+public:
+    Story285()
+    {
+        ID = 285;
+
+        Text = "You must select an item from your possessions";
+
+        Image = "images/filler1.png";
+
+        std::vector<std::pair<Item::Type, int>> gifts = {
+            {Item::Type::MAN_OF_GOLD, 192},
+            {Item::Type::JADE_SWORD, 192},
+            {Item::Type::GOLD_DIADEM, 192},
+            {Item::Type::OWL, 55}};
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Choose", 78, gifts));
+        Choices.push_back(Choice::Base("Try something else", 262));
+
+        Controls = StandardControls();
     }
 };
 
@@ -2397,6 +2720,25 @@ public:
     }
 };
 
+class Story354 : public Story::Base
+{
+public:
+    Story354()
+    {
+        ID = 354;
+
+        Text = "The wall around the royal precinct is constructed of closely fitted blocks of smooth limestone. The builders even bowed it out slightly to make it more difficult to climb. You loiter casually at a corner until there is no one in sight, then brace yourself around the bend in the wall and pull yourself up.\n\nThe top of the wall tapers to a wedge which is rimmed with spikes of sharp obsidian, provoking a grin of admiration from you for the ingenuity of the royal architects. But none of these measures is enough to deter you. Swinging into a cartwheel, you vault over the top of the wall without touching the razor-edge of obsidian, dropping lightly to your feet on the other side.\n\nA glance towards the gate confirms that the guards heard nothing: they are still gazing stolidly into the street outside. You slink away in the twilight and climb the steps of the pyramid.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 415; }
+};
+
 class Story355 : public Story::Base
 {
 public:
@@ -2492,12 +2834,12 @@ public:
         Controls = StandardControls();
     }
 
-    int Continue(Character::Base &player) { return 389; }
-
     void Event(Character::Base &player)
     {
         Character::GET_CODEWORDS(player, {Codeword::Type::POKTAPOK});
     }
+
+    int Continue(Character::Base &player) { return 389; }
 };
 
 class Story369 : public Story::Base
@@ -2545,6 +2887,25 @@ public:
     }
 };
 
+class Story374 : public Story::Base
+{
+public:
+    Story374()
+    {
+        ID = 374;
+
+        Text = "Not far away, down a backstreet close to the palace wall, you find a house with a plump young pig tethered outside. Listening at the window, you hear the occupants of the house rowdily enjoying a few cups of mead. You tiptoe back to the pig and, stifling its squeals, tuck it under your arms before returning to the palace gate. There, crouched out of sight around the corner of a building, you release the pig and give it a shove which carries it towards the guards.\n\nThe pig takes a few steps, gives a baffled grunt upon confronting the guards, then bolts past them. \"Grab it, lads!\" cries the guard in high spirits. \"What fine succulent feast it'll make tomorrow, eh?\"\n\nTwo or three of the guards go chasing off after the pig, and the others look on laughing at their comrades' antics. You sneak past while their backs are turned and make your way over to the pyramid of the dead king.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 415; }
+};
+
 class Story378 : public Story::Base
 {
 public:
@@ -2567,6 +2928,42 @@ public:
     }
 
     int Continue(Character::Base &player) { return 398; }
+};
+
+class Story387 : public Story::Base
+{
+public:
+    Story387()
+    {
+        ID = 387;
+
+        Image = "images/filler1.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::SEAFARING))
+        {
+            Text = "You repair the boat and set sail.";
+
+            Character::REMOVE_CODEWORD(player, Codeword::Type::EB);
+        }
+        else
+        {
+            Text = "You are stranded unless you risk helping Jade Thunder.";
+
+            Choices.push_back(Choice::Base("Use a wand (SPELLS)", 435, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+            Choices.push_back(Choice::Base(Skill::CUNNING.Name, 21, Skill::Type::CUNNING));
+            Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::MAN_OF_GOLD], 45, Item::Type::MAN_OF_GOLD));
+            Choices.push_back(Choice::Base("Otherwise", 68));
+        }
+    }
+
+    int Continue(Character::Base &player) { return 300; }
 };
 
 class Story389 : public Story::Base
@@ -2610,6 +3007,25 @@ public:
     }
 
     int Continue(Character::Base &player) { return 205; }
+};
+
+class Story396 : public Story::Base
+{
+public:
+    Story396()
+    {
+        ID = 396;
+
+        Text = "You crouch behind some sacks of grain and wait an hour or so until the streets are completely deserted. A few lights show from the palace windows. Beside the gate, a brazier flares in the night breeze. Other than that it is completely dark. When the moon shows as a misty patch of silver beyond the wooded hills to the east, you put your plan into action.\n\n\"Brr, it's cold suddenly,\" remarks one of the guards at the gate.\n\nOne of his companions nods. \"Did you hear something just then?\" He casts a nervous glance over his shoulder. The pyramid-tomb of the dead king looms darkly against the pale halo of moonlight.\n\n\"Now you come to mention it...\" says another, also looking back. Suddenly he gasps, eyes popping out of his head. \"By all the gods!\"\n\nA parade of ghosts descends the steps of the pyramid. Their dead faces are formed on mist and moonbeams, and they move without sound across the courtyard. The guards are brave enough to face any foe of flesh and blood, but the sight of this host of spectres sends icy terror through their veins. Dropping their weapons, they run off into the night.\n\nYou watch them go, then step out from your hiding-place. As you cancel your illusion spell, the 'ghosts' dissolve into the darkness. You hurry across to the pyramid before the guards recover enough nerve to come slinking back.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 415; }
 };
 
 class Story398 : public Story::Base
@@ -2772,6 +3188,56 @@ public:
     }
 };
 
+class Story435 : public Story::Base
+{
+public:
+    Story435()
+    {
+        ID = 435;
+
+        Text = "You cast a negation spell, causing the flames to peter out. Jade Thunder scrabbles forward across the sand and snatches up his wand with a great shout of joy. \"At last!\" he cries. \"Now let me show you what can be achieved by a Grand Adept of our most potent art.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 91; }
+};
+
+class Story437 : public Story::Base
+{
+public:
+    Story437()
+    {
+        ID = 437;
+
+        Text = "You set sail and continue your voyage west.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Background(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::EB))
+        {
+            return 387;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    int Continue(Character::Base &player) { return 300; }
+};
+
 class NotImplemented : public Story::Base
 {
 public:
@@ -2814,16 +3280,20 @@ auto prologue = Prologue();
 auto story001 = Story001();
 auto story002 = Story002();
 auto story008 = Story008();
+auto story021 = Story021();
 auto story024 = Story024();
 auto story025 = Story025();
 auto story030 = Story030();
+auto story045 = Story045();
 auto story047 = Story047();
 auto story048 = Story048();
 auto story051 = Story051();
 auto story054 = Story054();
+auto story068 = Story068();
 auto story070 = Story070();
 auto story071 = Story071();
 auto story077 = Story077();
+auto story078 = Story078();
 auto story085 = Story085();
 auto story093 = Story093();
 auto story094 = Story094();
@@ -2843,16 +3313,21 @@ auto story142 = Story142();
 auto story146 = Story146();
 auto story149 = Story149();
 auto story158 = Story158();
+auto story159 = Story159();
 auto story160 = Story160();
 auto story162 = Story162();
 auto story163 = Story163();
 auto story165 = Story165();
 auto story169 = Story169();
+auto story172 = Story172();
 auto story182 = Story182();
+auto story183 = Story183();
 auto story185 = Story185();
 auto story186 = Story186();
 auto story188 = Story188();
+auto story192 = Story192();
 auto story205 = Story205();
+auto story206 = Story206();
 auto story208 = Story208();
 auto story209 = Story209();
 auto story211 = Story211();
@@ -2862,9 +3337,11 @@ auto story231 = Story231();
 auto story232 = Story232();
 auto story234 = Story234();
 auto story235 = Story235();
+auto story238 = Story238();
 auto story254 = Story254();
 auto story255 = Story255();
 auto story257 = Story257();
+auto story262 = Story262();
 auto story264 = Story264();
 auto story274 = Story274();
 auto story275 = Story275();
@@ -2872,6 +3349,7 @@ auto story277 = Story277();
 auto story278 = Story278();
 auto story280 = Story280();
 auto story281 = Story281();
+auto story285 = Story285();
 auto story297 = Story297();
 auto story298 = Story298();
 auto story300 = Story300();
@@ -2893,6 +3371,7 @@ auto story344 = Story344();
 auto story347 = Story347();
 auto story346 = Story346();
 auto story350 = Story350();
+auto story354 = Story354();
 auto story355 = Story355();
 auto story356 = Story356();
 auto story357 = Story357();
@@ -2900,9 +3379,12 @@ auto story366 = Story366();
 auto story368 = Story368();
 auto story369 = Story369();
 auto story370 = Story370();
+auto story374 = Story374();
 auto story378 = Story378();
+auto story387 = Story387();
 auto story389 = Story389();
 auto story391 = Story391();
+auto story396 = Story396();
 auto story398 = Story398();
 auto story406 = Story406();
 auto story408 = Story408();
@@ -2910,25 +3392,29 @@ auto story416 = Story416();
 auto story417 = Story417();
 auto story424 = Story424();
 auto story426 = Story426();
+auto story435 = Story435();
+auto story437 = Story437();
 
 void InitializeStories()
 {
     Stories = {
-        &prologue, &story001, &story002, &story008, &story024, &story025, &story030,
-        &story047, &story048, &story051, &story054, &story070, &story071, &story077,
-        &story085, &story093, &story094, &story096, &story100, &story101, &story103,
-        &story116, &story117, &story120, &story123, &story126, &story127, &story138,
-        &story139, &story142, &story146, &story149, &story158, &story160, &story162,
-        &story163, &story165, &story169, &story182, &story185, &story188, &story186,
-        &story205, &story208, &story209, &story211, &story218, &story228, &story231,
-        &story232, &story234, &story235, &story254, &story255, &story257, &story264,
-        &story274, &story275, &story277, &story278, &story280, &story281, &story297,
-        &story298, &story300, &story301, &story302, &story311, &story320, &story321,
-        &story323, &story324, &story325, &story327, &story331, &story332, &story333,
-        &story334, &story343, &story344, &story346, &story347, &story350, &story355,
-        &story356, &story357, &story366, &story368, &story369, &story370, &story378,
-        &story389, &story391, &story398, &story406, &story408, &story416, &story417,
-        &story424, &story426};
+        &prologue, &story001, &story002, &story008, &story021, &story024, &story025,
+        &story030, &story045, &story047, &story048, &story051, &story054, &story068,
+        &story070, &story071, &story077, &story078, &story085, &story093, &story094,
+        &story096, &story100, &story101, &story103, &story116, &story117, &story120,
+        &story123, &story126, &story127, &story138, &story139, &story142, &story146,
+        &story149, &story158, &story159, &story160, &story162, &story163, &story165,
+        &story169, &story172, &story182, &story183, &story185, &story188, &story186,
+        &story192, &story205, &story206, &story208, &story209, &story211, &story218,
+        &story228, &story231, &story232, &story234, &story235, &story238, &story254,
+        &story255, &story257, &story262, &story264, &story274, &story275, &story277,
+        &story278, &story280, &story281, &story285, &story297, &story298, &story300,
+        &story301, &story302, &story311, &story320, &story321, &story323, &story324,
+        &story325, &story327, &story331, &story332, &story333, &story334, &story343,
+        &story344, &story346, &story347, &story350, &story354, &story355, &story356,
+        &story357, &story366, &story368, &story369, &story370, &story374, &story378,
+        &story387, &story389, &story391, &story398, &story406, &story408, &story416,
+        &story417, &story424, &story426, &story435, &story437};
 }
 
 #endif
