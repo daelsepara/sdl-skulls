@@ -1290,7 +1290,7 @@ bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
             {
                 if (controls[current].Type == Control::Type::ACTION && !hold)
                 {
-                    Story::DONATION = donation;
+                    player.DONATION = donation;
 
                     player.Money -= donation;
 
@@ -1820,6 +1820,25 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 error = true;
                             }
                         }
+                        else if (story->Choices[current].Type == Choice::Type::CODEWORD)
+                        {
+                            if (Character::VERIFY_CODEWORD(player, story->Choices[current].Codeword))
+                            {
+                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                quit = true;
+
+                                break;
+                            }
+                            else
+                            {
+                                message = "You do not have the required codeword!";
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
                         else if (story->Choices[current].Type == Choice::Type::GET_ITEM)
                         {
                             Character::GET_ITEMS(player, {story->Choices[current].Item});
@@ -1866,6 +1885,44 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             else
                             {
                                 message = "You do not have enough money!";
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
+                        else if (story->Choices[current].Type == Choice::Type::MONEY)
+                        {
+                            if (player.Money >= story->Choices[current].Value)
+                            {
+                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                quit = true;
+
+                                break;
+                            }
+                            else
+                            {
+                                message = "You do not have enough money!";
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
+                        else if (story->Choices[current].Type == Choice::Type::LIFE)
+                        {
+                            Character::GAIN_LIFE(player, story->Choices[current].Value);
+
+                            if (player.Life > 0)
+                            {
+                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                quit = true;
+                            }
+                            else
+                            {
+                                message = "That decision has cost you your life!";
 
                                 start_ticks = SDL_GetTicks();
 
@@ -1924,7 +1981,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 error = true;
                             }
                         }
-                        else if (story->Choices[current].Type == Choice::Type::GIVE_MONEY)
+                        else if (story->Choices[current].Type == Choice::Type::DONATE)
                         {
                             if (player.Money > 0)
                             {
@@ -2342,7 +2399,7 @@ bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pl
     return processStory(window, renderer, player, story);
 }
 
-bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
+bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
 {
     auto font_size = 20;
 
@@ -2357,8 +2414,6 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
     InitializeStories();
 
     Character::Base Player;
-
-    auto storyID = 0;
 
     // Render window
     if (window && renderer && splash && text)
@@ -2460,7 +2515,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer)
     return false;
 }
 
-int main(int argc, char **argsv)
+int main(int argc, char **argv)
 {
     SDL_Window *window = NULL;
     SDL_Renderer *renderer = NULL;
@@ -2473,9 +2528,16 @@ int main(int argc, char **argsv)
 
     auto quit = false;
 
+    auto storyID = 0;
+
+    if (argc > 1)
+    {
+        storyID = std::atoi(argv[1]);
+    }
+
     if (window)
     {
-        quit = mainScreen(window, renderer);
+        quit = mainScreen(window, renderer, storyID);
 
         // Destroy window and renderer
         SDL_DestroyRenderer(renderer);

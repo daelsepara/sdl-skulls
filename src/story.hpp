@@ -30,7 +30,7 @@ namespace Choice
         LOSE_ITEM,
         LOSE_LIFE,
         LOSE_MONEY,
-        GIVE_MONEY
+        DONATE
     };
 
     class Base
@@ -46,6 +46,8 @@ namespace Choice
 
         Item::Type Item = Item::Type::NONE;
 
+        Codeword::Type Codeword = Codeword::Type::NONE;
+
         int Value = 0;
 
         int Destination = -1;
@@ -58,6 +60,12 @@ namespace Choice
             Item = item;
             Skill = skill;
             Value = value;
+        }
+
+        Base(const char *text, int destination)
+        {
+            Text = text;
+            Destination = destination;
         }
 
         Base(const char *text, int destination, Skill::Type skill, Item::Type item)
@@ -83,6 +91,14 @@ namespace Choice
             Destination = destination;
             Type = Choice::Type::SKILL;
             Skill = skill;
+        }
+
+        Base(const char *text, int destination, Codeword::Type codeword)
+        {
+            Text = text;
+            Destination = destination;
+            Type = Choice::Type::CODEWORD;
+            Codeword = codeword;
         }
 
         Base(const char *text, int destination, Choice::Type type, int value)
@@ -191,8 +207,6 @@ namespace Story
         }
     };
 
-    int DONATION = 0;
-
     int BLESSING_WAR_GOD = false;
 
 } // namespace Story
@@ -276,9 +290,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Reply that the life of your brother is more important than your duty to the clan", 24, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("...that on the contrary, clan honour demands that you go", 47, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Say nothing", 70, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Reply that the life of your brother is more important than your duty to the clan", 24));
+        Choices.push_back(Choice::Base("...that on the contrary, clan honour demands that you go", 47));
+        Choices.push_back(Choice::Base("Say nothing", 70));
 
         Controls = StandardControls();
     }
@@ -313,9 +327,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Go up anyway", 275, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Decide against visiting Ashaka by continuing to travel overland", 298, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("You can detour to the sea and travel up the coast to Tahil", 228, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Go up anyway", 275));
+        Choices.push_back(Choice::Base("Decide against visiting Ashaka by continuing to travel overland", 298));
+        Choices.push_back(Choice::Base("You can detour to the sea and travel up the coast to Tahil", 228));
 
         Controls = StandardControls();
     }
@@ -349,8 +363,8 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::WILDERNESS_LORE.Name, 48, Skill::Type::WILDERNESS_LORE));
-        Choices.push_back(Choice::Base("Jerk your hand away quickly", 71, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Slowly reach around with your other hand to seize the tarantula from behind", 94, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Jerk your hand away quickly", 71));
+        Choices.push_back(Choice::Base("Slowly reach around with your other hand to seize the tarantula from behind", 94));
 
         Controls = StandardControls();
     }
@@ -368,7 +382,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 332, Skill::Type::SEAFARING));
         Choices.push_back(Choice::Base("Pay him", 355, Choice::Type::LOSE_MONEY, 2));
-        Choices.push_back(Choice::Base("Make your way north on foot", 264, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Make your way north on foot", 264));
 
         Controls = StandardControls();
     }
@@ -384,9 +398,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Request a meeting with one of the high priests", 116, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Ask to see the ancestral treasures of the clan", 138, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("You think a companion would be useful", 162, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Request a meeting with one of the high priests", 116));
+        Choices.push_back(Choice::Base("Ask to see the ancestral treasures of the clan", 138));
+        Choices.push_back(Choice::Base("You think a companion would be useful", 162));
 
         Controls = StandardControls();
     }
@@ -402,8 +416,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Talk to him", 117, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Hurry off before he gets here", 163, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Talk to him", 117));
+        Choices.push_back(Choice::Base("Hurry off before he gets here", 163));
 
         Controls = StandardControls();
     }
@@ -422,6 +436,24 @@ public:
             Choices[0].Type = Choice::Type::NORMAL;
             Choices[0].Skill = Skill::Type::NONE;
         }
+    }
+};
+
+class Story054 : public Story::Base
+{
+public:
+    Story054()
+    {
+        ID = 54;
+        Text = "You pause to admire the details of the frieze. It is divided into two long panels. In the upper part, two jaunty heroes are shown striding towards a gate where four stern sentinels await them. The faces of the heroes are identical. The lower panel is separated from this by a cornice, and the figures there are shown upside-down as though walking across the bottom of the world. You crane your neck to make out a picture, which the artisans have only half finished colouring in. It depicts a rich man and his servant trudging towards a pair of arches. Their crouched stance and tightly drawn features suggest an air of nervousness which contrasts with the bold manner of the two heroes in the upper mural.\n\nThe priestess smiles at you. \"You're a connoisseur of temple art? We're having to hurry to get it finished before the festivities tomorrow, of course.\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Ask her what the scene with the hero-twins represents", 123));
+        Choices.push_back(Choice::Base("Ask about the noble and the servant", 146));
+        Choices.push_back(Choice::Base("You are more interested in finding out about the festival", 169));
+
+        Controls = StandardControls();
     }
 };
 
@@ -457,8 +489,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Talk to him", 117, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Hurry off before he gets here", 163, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Talk to him", 117));
+        Choices.push_back(Choice::Base("Hurry off before he gets here", 163));
 
         Controls = StandardControls();
     }
@@ -516,8 +548,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Talk to him", 117, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Hurry off before he gets here", 163, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Talk to him", 117));
+        Choices.push_back(Choice::Base("Hurry off before he gets here", 163));
 
         Controls = StandardControls();
     }
@@ -572,6 +604,30 @@ public:
     int Continue(Character::Base &player) { return 350; };
 };
 
+class Story101 : public Story::Base
+{
+public:
+    Story101()
+    {
+        ID = 101;
+        Text = "You find a merchant who has heard of your clan and offer him one cacao to give you lodging.\n\n\"Many people are pouring into the city from the surrounding countryside. They come to take part in the festival, and all will need a place to sleep off their excesses,\" he points out in a patient attempt to get you to offer more.\n\nYou are having none of it. \"They're just peasants,\" you counter. \"What little money they have will be spent on mead, and they'll happily sleep where they drop.\"\n\nAs an added incentive you take a cacao from your money-pouch and show it to him. This clinches the bargain, and you are given a meal and a bed in his house on the outskirts of the city.\n\nYou PAID 1 cacao for the lodging.\n\nYou can rest here for the night then decide what to do the next morning.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("CODEWORD: Psychoduct", 331, Codeword::Type::PSYCHODUCT));
+        Choices.push_back(Choice::Base("Head overland to Ashaka", 8, Choice::Type::LIFE, 1));
+        Choices.push_back(Choice::Base("Follow the river to the coast", 30, Choice::Type::LIFE, 1));
+        Choices.push_back(Choice::Base("Stay for the festival", 416, Choice::Type::LIFE, 1));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.Money -= 1;
+    }
+};
+
 class Story103 : public Story::Base
 {
 public:
@@ -582,7 +638,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Jump into the sacred well", 327, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Jump into the sacred well", 327));
         Choices.push_back(Choice::Base("Cast a protective enchantment first (SPELLS)", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
 
         Controls = StandardControls();
@@ -599,10 +655,10 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Visit the temple of the War God", 231, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Vist the temple of the Moon Goddess", 254, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Visit the temple of the Death God", 277, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("You do not think any of the priests will be of much help,and would ask the Matriarch to let you have some of the clan treasures", 138, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Visit the temple of the War God", 231));
+        Choices.push_back(Choice::Base("Vist the temple of the Moon Goddess", 254));
+        Choices.push_back(Choice::Base("Visit the temple of the Death God", 277));
+        Choices.push_back(Choice::Base("You do not think any of the priests will be of much help,and would ask the Matriarch to let you have some of the clan treasures", 138));
 
         Controls = StandardControls();
     }
@@ -668,7 +724,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("Use LETTER OF INTRODUCTION", 370, Item::Type::LETTER_OF_INTRODUCTION));
         Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 391, Skill::Type::SEAFARING));
-        Choices.push_back(Choice::Base("Otherwise", 158, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Otherwise", 158));
 
         Controls = ShopControls();
     }
@@ -685,7 +741,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Take the MAN OF GOLD", 93, Choice::Type::GET_ITEM, Item::Type::MAN_OF_GOLD));
-        Choices.push_back(Choice::Base("Choose from the rest of the treasures", 185, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Choose from the rest of the treasures", 185));
 
         Controls = StandardControls();
     }
@@ -748,7 +804,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Sail with the first man for free", 280, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Sail with the first man for free", 280));
         Choices.push_back(Choice::Base("Agree to pay (4 cacao) and travel in a week", 205, Choice::Type::LOSE_MONEY, 4));
 
         Controls = StandardControls();
@@ -765,9 +821,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Break your journey here", 426, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Head on overland towards Ashaka", 8, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Follow the river to the coast", 30, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Break your journey here", 426));
+        Choices.push_back(Choice::Base("Head on overland towards Ashaka", 8));
+        Choices.push_back(Choice::Base("Follow the river to the coast", 30));
 
         Controls = StandardControls();
     }
@@ -807,7 +863,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("Give some food from your own pack (MAIZE CAKES)", 186, Choice::Type::GIVE_ITEM, Item::Type::MAIZE_CAKES));
         Choices.push_back(Choice::Base("Give some food from your own pack (PAPAYA)", 186, Choice::Type::GIVE_ITEM, Item::Type::PAPAYA));
-        Choices.push_back(Choice::Base("Stand by and watch them pick the fruit", 96, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Stand by and watch them pick the fruit", 96));
 
         Controls = StandardControls();
     }
@@ -885,8 +941,8 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Trade a parcel of MAIZE CAKES", 211, Choice::Type::ITEM, Item::Type::MAIZE_CAKES));
-        Choices.push_back(Choice::Base("Go north", 120, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Go south", 165, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Go north", 120));
+        Choices.push_back(Choice::Base("Go south", 165));
 
         Controls = ShopControls();
 
@@ -1032,8 +1088,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Pursue her", 232, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Leave her alone", 160, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Pursue her", 232));
+        Choices.push_back(Choice::Base("Leave her alone", 160));
 
         Controls = StandardControls();
     }
@@ -1049,8 +1105,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Make your way north out of the city", 120, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Go south towards the forest", 165, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Make your way north out of the city", 120));
+        Choices.push_back(Choice::Base("Go south towards the forest", 165));
 
         Controls = TradeControls();
 
@@ -1070,15 +1126,15 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Make a Donation", 301, Choice::Type::GIVE_MONEY));
-        Choices.push_back(Choice::Base("Leave the Temple", 301, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Make a Donation", 301, Choice::Type::DONATE));
+        Choices.push_back(Choice::Base("Leave the Temple", 301));
 
         Controls = StandardControls();
     }
 
     void Event(Character::Base &player)
     {
-        Story::DONATION = 0;
+        player.DONATION = 0;
     }
 };
 
@@ -1094,8 +1150,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Continue the chase", 278, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Give up and retrace your steps to find your original route", 160, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Continue the chase", 278));
+        Choices.push_back(Choice::Base("Give up and retrace your steps to find your original route", 160));
 
         Controls = StandardControls();
     }
@@ -1160,7 +1216,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("Make a DONATION (1 cacao)", 424, Choice::Type::LOSE_MONEY, 1));
         Choices.push_back(Choice::Base("Make a DONATION (2 cacao)", 2, Choice::Type::LOSE_MONEY, 2));
-        Choices.push_back(Choice::Base("You are not prepared to make any donation and you need to hurry over to the market and spend your money on supplies instead", 93, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("You are not prepared to make any donation and you need to hurry over to the market and spend your money on supplies instead", 93));
 
         Controls = StandardControls();
     }
@@ -1176,9 +1232,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Resist the fate they have in store for you", 281, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Resist the fate they have in store for you", 281));
         Choices.push_back(Choice::Base("Cast a protective enchantment (SPELLS)", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
-        Choices.push_back(Choice::Base("Agree to being thrown into the pit", 327, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Agree to being thrown into the pit", 327));
 
         Controls = StandardControls();
     }
@@ -1195,7 +1251,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Make an OFFERING (5 cacao)", 408, Choice::Type::LOSE_MONEY, 5));
-        Choices.push_back(Choice::Base("You cannot spare the money and must bid the priest farewell and see about getting supplies for the trip", 93, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("You cannot spare the money and must bid the priest farewell and see about getting supplies for the trip", 93));
 
         Controls = StandardControls();
     }
@@ -1212,7 +1268,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Keep the SHAWL", 302, Choice::Type::GET_ITEM, Item::Type::SHAWL));
-        Choices.push_back(Choice::Base("Leave the SHAWL", 324, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Leave the SHAWL", 324));
 
         Controls = StandardControls();
     }
@@ -1235,7 +1291,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::SPELLS.Name, 274, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base(Skill::TARGETING.Name, 297, Skill::Type::TARGETING));
-        Choices.push_back(Choice::Base("Otherwise", 320, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Otherwise", 320));
 
         Controls = StandardControls();
     }
@@ -1255,7 +1311,7 @@ public:
 
     int Background(Character::Base &player)
     {
-        if (Story::DONATION > 4)
+        if (player.DONATION > 4)
         {
             return 323;
         }
@@ -1276,8 +1332,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Join him for a practice bout in the arena", 368, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("You had better get on with the rest of your preparations for the journey", 93, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Join him for a practice bout in the arena", 368));
+        Choices.push_back(Choice::Base("You had better get on with the rest of your preparations for the journey", 93));
 
         Controls = StandardControls();
     }
@@ -1298,7 +1354,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Continue", 118, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Continue", 118));
 
         Controls = StandardControls();
     }
@@ -1319,6 +1375,27 @@ public:
     }
 };
 
+class Story331 : public Story::Base
+{
+public:
+    Story331()
+    {
+        ID = 331;
+        Text = "You can go to speak with the dead king's spirit tonight or you can rest here decide what to do the next morning.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go and talk to the Dead King's Spirit tonight", 218));
+        Choices.push_back(Choice::Base("Go west towards Ashaka", 8, Choice::Type::LIFE, 1));
+        Choices.push_back(Choice::Base("Go north to the coast", 30, Choice::Type::LIFE, 1));
+        Choices.push_back(Choice::Base("Stay in Nachan for the festival", 416, Choice::Type::LIFE, 1));
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 93; };
+};
+
 class Story346 : public Story::Base
 {
 public:
@@ -1329,8 +1406,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Practice the ball contest with him", 368, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Get on with preparations for your journey", 93, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Practice the ball contest with him", 368));
+        Choices.push_back(Choice::Base("Get on with preparations for your journey", 93));
 
         Controls = StandardControls();
     }
@@ -1346,9 +1423,9 @@ public:
         Image = "images/yashuna.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Pay a visit to the market", 142, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Head north out of the city", 120, Choice::Type::NORMAL));
-        Choices.push_back(Choice::Base("Take the southern road towards the forest", 165, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Pay a visit to the market", 142));
+        Choices.push_back(Choice::Base("Head north out of the city", 120));
+        Choices.push_back(Choice::Base("Take the southern road towards the forest", 165));
 
         Controls = StandardControls();
     }
@@ -1420,6 +1497,25 @@ public:
     }
 };
 
+class Story416 : public Story::Base
+{
+public:
+    Story416()
+    {
+        ID = 416;
+        Text = "The festivities include ritual dance-dramas in which the participants mask themselves as beasts, gods and heroes from folklore. Accompanied by flutes and the throbbing beat of immense wooden drums, they swirl across the plaza in front of the temples, enacting the deeds of such mythic figures as the hero-twins Forethought and Afterthought.\n\nAt one point the twins take part in a ball contest and Afterthought succeeds in hurling the ball through the stone hoop on the side of the court. This provokes shouts of praise from spectators at the back of the crowd, but you are close to the front and can see that the apparently difficult shot was made with the help of string tied to the ball.\n\n\"Huh!\" snorts a woman standing next to you. \"He'd never have made the shot otherwise. I've never seen it done for real in all the contests I've watched.\"\n\nThe woman's son tugs at her skirt. He wants to know why the act of scoring in the ball contest has given him victory over his foes, the Lords of Death. \"That's because it's more than a game,\" you hear her saying. \"It's also a sacred ritual. You'll understand when you're older.\"\n\nThe afternoon wears on with much feasting and jollity. By evening you are happy to lie down in the plaza and drift off to sleep as the sultry night unfolds its canopy of stars. Tomorrow you must decide.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Continue overland to Ashaka", 8));
+        Choices.push_back(Choice::Base("Go downriver to the coast", 30));
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 93; };
+};
+
 class Story424 : public Story::Base
 {
 public:
@@ -1430,6 +1526,26 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 93; };
+};
+
+class Story426 : public Story::Base
+{
+public:
+    Story426()
+    {
+        ID = 426;
+        Text = "Not far off, a young priestess is overseeing the work of a group of artisans. Out of curiosity you stroll over and see that they are decorating a temple wall with an overlay of stucco. Apprentices trowel the plaster into place and then senior artisans work with the speed and assurance of past masters, sculpting images of heroes, princes and gods as the priestess directs. Then, while the stucco is still damp, a second team steps in with pots of dye and applies bright colours. You can only marvel at the skill of the men's work.\n\nThe figures depicted in the frieze looks so startlingly vivid that you could almost imagine them coming to life and stepping out of the stucco.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go over and talk to the priestess", 54));
+        Choices.push_back(Choice::Base("Find a place to stay", 101, Choice::Type::MONEY, 1));
+        Choices.push_back(Choice::Base("Seek an audience with the King of Nachan", 77));
 
         Controls = StandardControls();
     }
@@ -1483,11 +1599,13 @@ auto story025 = Story025();
 auto story030 = Story030();
 auto story047 = Story047();
 auto story048 = Story048();
+auto story054 = Story054();
 auto story070 = Story070();
 auto story071 = Story071();
 auto story093 = Story093();
 auto story094 = Story094();
 auto story096 = Story096();
+auto story101 = Story101();
 auto story103 = Story103();
 auto story116 = Story116();
 auto story117 = Story117();
@@ -1519,27 +1637,30 @@ auto story280 = Story280();
 auto story301 = Story301();
 auto story323 = Story323();
 auto story324 = Story324();
+auto story331 = Story331();
 auto story346 = Story346();
 auto story350 = Story350();
 auto story368 = Story368();
 auto story389 = Story389();
 auto story408 = Story408();
+auto story416 = Story416();
 auto story424 = Story424();
+auto story426 = Story426();
 
 void InitializeStories()
 {
     Stories = {
         &prologue, &story001, &story002, &story008, &story024,
-        &story025, &story030, &story047, &story048, &story070,
-        &story071, &story093, &story094, &story096,
+        &story025, &story030, &story047, &story048, &story054, &story070,
+        &story071, &story093, &story094, &story096, &story101,
         &story103, &story116, &story117, &story120,
         &story127, &story138, &story139, &story142,
         &story158, &story160, &story162, &story163, &story165,
         &story185, &story188, &story186, &story205,
         &story208, &story209, &story211, &story231, &story232, &story234, &story254,
         &story257, &story277, &story278, &story280, &story301, &story323, &story324,
-        &story346, &story350, &story368, &story389,
-        &story408, &story424};
+        &story331, &story346, &story350, &story368, &story389,
+        &story408, &story416, &story424, &story426};
 }
 
 #endif

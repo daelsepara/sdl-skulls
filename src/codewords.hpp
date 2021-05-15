@@ -7,6 +7,7 @@ namespace Codeword
 {
     enum class Type
     {
+        NONE = -1,
         ANGEL,
         BLESSING,
         CALABASH,

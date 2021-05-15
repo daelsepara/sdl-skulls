@@ -24,6 +24,8 @@ namespace Character
 
         int MAX_LIFE_LIMIT = 10;
 
+        int DONATION = 0;
+
         std::vector<Skill::Base> Skills = std::vector<Skill::Base>();
         std::vector<Item::Type> Items = std::vector<Item::Type>();
         std::vector<Codeword::Type> Codewords = std::vector<Codeword::Type>();
