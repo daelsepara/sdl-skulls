@@ -448,6 +448,28 @@ public:
     }
 };
 
+class Story051 : public Story::Base
+{
+public:
+    Story051()
+    {
+        ID = 51;
+        Text = "\"Struggling is futile!\" snaps the high priest as his guards rush at you. \"Submit to the will of the gods and at least you will be granted a noble death.\"\n\nYou give a groan of pain as one of the guards slams the butt of his spear across your shoulders. Another kicks you in the stomach as you slump forward.\n\nYou LOSE 2 Life Points.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, -2);
+    }
+
+    int Continue(Character::Base &player) { return 327; }
+};
+
 class Story054 : public Story::Base
 {
 public:
@@ -565,7 +587,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        PreText = "The spider's bristly limbs send a shiver through you as they slowly probe your outstretched hand. It takes every shred of nerve to remain motionless while you carefully reach around behind it with your other hand. Its multiple eyes gleam horribly, full of the ruthless intensity of the predator. It looks like a demon carved from polished mahogany, more nightmarish than any image on the walls of the Temple of Death.\n\nAs you take hold of it, it starts to twitch its legs furiously. With a sob of revulsion, you hurl it away. It falls with an audible thud somewhere off among the trees, but then a stab of pain convulses your hand. Did it bite you after all? You have to prise your fingers apart, but instead of a bite you find dozens of tiny pinpricks all over your palm. The tarantula's bristles were razor-sharp, and seem to have injected a stinging chemical into your skin.\n\nYou LOSE 1 Life Point.\n";
+        PreText = "The spider's bristly limbs send a shiver through you as they slowly probe your outstretched hand. It takes every shred of nerve to remain motionless while you carefully reach around behind it with your other hand. Its multiple eyes gleam horribly, full of the ruthless intensity of the predator. It looks like a demon carved from polished mahogany, more nightmarish than any image on the walls of the Temple of Death.\n\nAs you take hold of it, it starts to twitch its legs furiously. With a sob of revulsion, you hurl it away. It falls with an audible thud somewhere off among the trees, but then a stab of pain convulses your hand. Did it bite you after all? You have to prise your fingers apart, but instead of a bite you find dozens of tiny pinpricks all over your palm. The tarantula's bristles were razor-sharp, and seem to have injected a stinging chemical into your skin.\n\nYou LOSE 1 Life Point.";
 
         Character::GAIN_LIFE(player, -1);
 
@@ -584,7 +606,7 @@ public:
                 Choices[0].Skill = Skill::Type::NONE;
             }
 
-            PreText += "\n\"Hey, you there! What are you doing?\"\n\nYou look up to see an old peasant hurrying through the dusty orchard towards the causeway.";
+            PreText += "\n\n\"Hey, you there! What are you doing?\"\n\nYou look up to see an old peasant hurrying through the dusty orchard towards the causeway.";
 
             Text = PreText.c_str();
         }
@@ -977,7 +999,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        PreText = "You have a week to while away before you set sail.\n";
+        PreText = "You have a week to while away before you set sail.";
 
         auto FISHED = false;
 
@@ -994,7 +1016,7 @@ public:
 
         if (FISHED)
         {
-            PreText += "\nYou fish for food in this time.";
+            PreText += "\n\nYou fish for food in this time.";
 
             if (player.Life < player.MAX_LIFE_LIMIT)
             {
@@ -1002,12 +1024,10 @@ public:
 
                 PreText += " You regain Life Points lost previously.";
             }
-
-            PreText += "\n";
         }
         else
         {
-            PreText += "\nYou are reduced to begging for scraps and collecting snails along the shore. This soon results in mild food poisoning. You LOSE 1 Life Point.\n";
+            PreText += "\n\nYou are reduced to begging for scraps and collecting snails along the shore. This soon results in mild food poisoning. You LOSE 1 Life Point.";
 
             Character::GAIN_LIFE(player, -1);
         }
@@ -1041,7 +1061,7 @@ public:
         if (Character::VERIFY_ITEM(player, Item::Type::MAGIC_POTION))
         {
             PreText += std::string(Item::Descriptions[Item::Type::MAGIC_POTION]);
-            PreText += "\n\nIt can be used once during your adventure. It will restore 5 lost Life Points, up to the limit of your initial Life Points score.\n";
+            PreText += "\n\nIt can be used once during your adventure. It will restore 5 lost Life Points, up to the limit of your initial Life Points score.";
 
             selected++;
         }
@@ -1050,11 +1070,11 @@ public:
         {
             if (selected > 0)
             {
-                PreText += "\n";
+                PreText += "\n\n";
             }
 
             PreText += std::string(Item::Descriptions[Item::Type::GREEN_MIRROR]);
-            PreText += "\n\nIt can be used once -- and only once -- at any point in your adventure before deciding which you will choose.\n";
+            PreText += "\n\nIt can be used once -- and only once -- at any point in your adventure before deciding which you will choose.";
 
             selected++;
         }
@@ -1063,11 +1083,11 @@ public:
         {
             if (selected > 0)
             {
-                PreText += "\n";
+                PreText += "\n\n";
             }
 
             PreText += std::string(Item::Descriptions[Item::Type::JADE_SWORD]);
-            PreText += "\n\nIt counts as both a sword and a wand for the purposes of skill-use.\n";
+            PreText += "\n\nIt counts as both a sword and a wand for the purposes of skill-use.";
 
             selected++;
         }
@@ -1121,6 +1141,48 @@ public:
     }
 
     int Continue(Character::Base &player) { return 389; }
+};
+
+class Story218 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story218()
+    {
+        ID = 218;
+
+        Image = "images/filler1.png";
+
+        Text = NULL;
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "As evening drapes the city in long blue shadows, you take a stroll to the perimeter of the royal compound. A high white wall encloses the palace and the tomb-pyramids of the King's ancestors. At the gateway you see a group of burly warriors armed with jag-edged swords. Their lacquered shields and resplendent feather cloaks mark them out as elite soldiers of the royal guard -- too dangerous to risk a skirmish with, no matter what your skill at arms.";
+
+        Choices.clear();
+
+        if (Character::HAS_ANY_SKILLS(player, {Skill::Type::AGILITY, Skill::Type::ROGUERY, Skill::Type::SPELLS}))
+        {
+            Choices.push_back(Choice::Base(Skill::AGILITY.Name, 354, Skill::Type::AGILITY));
+            Choices.push_back(Choice::Base(Skill::ROGUERY.Name, 374, Skill::Type::ROGUERY));
+            Choices.push_back(Choice::Base(Skill::SPELLS.Name, 396, Choice::Type::SKILL_ANY, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        }
+        else
+        {
+            PreText += "\n\nYou will have to give up on your plan and decide what to do the next morning.";
+            Choices.push_back(Choice::Base("Go west", 8, Choice::Type::LIFE, 1));
+            Choices.push_back(Choice::Base("Go north", 30, Choice::Type::LIFE, 1));
+            Choices.push_back(Choice::Base("Stay here for the festival", 416, Choice::Type::LIFE, 1));
+        }
+
+        Text = PreText.c_str();
+    }
 };
 
 class Story228 : public Story::Base
@@ -1184,13 +1246,13 @@ public:
 
     void Event(Character::Base &player)
     {
-        PreText = "\"Wait!\" You take a step towards the mysterious girl. She barely glances back, but hurls a peal of laughter over her shoulder and skips away through a sparse bank of ferns. Quickening your pace, you plunge through the undergrowth after her. Her own gait is as light as a dancer's, but even though you break into a run you find yourself unable to catch her.\n\nStumbling into a thickset of thorns, you give a gasp of pain and annoyance as the sharp spines rip your clothing and your flesh.\n\nYou LOSE 1 Life Point.\n";
+        PreText = "\"Wait!\" You take a step towards the mysterious girl. She barely glances back, but hurls a peal of laughter over her shoulder and skips away through a sparse bank of ferns. Quickening your pace, you plunge through the undergrowth after her. Her own gait is as light as a dancer's, but even though you break into a run you find yourself unable to catch her.\n\nStumbling into a thickset of thorns, you give a gasp of pain and annoyance as the sharp spines rip your clothing and your flesh.\n\nYou LOSE 1 Life Point.";
 
         Character::GAIN_LIFE(player, -1);
 
         if (player.Life > 0)
         {
-            PreText += "\nWhen you manage to struggle free, the girl is still lingering a little way ahead, hovering luminously in the emerald twilight. Now she turns her shining face and gives you a bolder smile, but along with curiosity you feel a stirring of superstitious dread. This chase is leading you far off your route and into the darker depths of the forest. The image of the shimmering jewel-like figure outlined against the shadows between the trees awakens a disquieting comparison. She reminds you of the bright pattern of a spider hanging in its web.";
+            PreText += "\n\nWhen you manage to struggle free, the girl is still lingering a little way ahead, hovering luminously in the emerald twilight. Now she turns her shining face and gives you a bolder smile, but along with curiosity you feel a stirring of superstitious dread. This chase is leading you far off your route and into the darker depths of the forest. The image of the shimmering jewel-like figure outlined against the shadows between the trees awakens a disquieting comparison. She reminds you of the bright pattern of a spider hanging in its web.";
 
             Text = PreText.c_str();
         }
@@ -1228,6 +1290,41 @@ public:
             return 127;
         }
     }
+};
+
+class Story235 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story235()
+    {
+        ID = 235;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "";
+
+        if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
+        {
+            PreText = "You slip a JADE BEAD under your tongue as you were told to do.\n\n";
+        }
+
+        PreText += "You steel your nerves and leap from the lip of the sinkhole.\n\nThe water rushes up to meet you, enfolding you in a silent icy embrace. Shock drives the air out of your lungs and you flail wildly. Instantly disoriented, you have no idea which way to swim to reach the surface. Bloody darkness thunders through your brain. You feel yourself drifting, and you know that by now you should have had a glimpse of the sunlit surface of the water. You are not in the bottom of the well anymore. You have plunged into the fabled river that leads between the world of the living and the dead.";
+
+        Text = PreText.c_str();
+
+        Character::GAIN_LIFE(player, -3);
+    }
+
+    int Continue(Character::Base &player) { return 119; }
 };
 
 class Story254 : public Story::Base
@@ -1381,6 +1478,29 @@ public:
     }
 };
 
+class Story281 : public Story::Base
+{
+public:
+    Story281()
+    {
+        ID = 281;
+        Text = "You are surrounded by guards and any attempt to fight must be hampered by the throng of people crowding around the pit. As you lash out, the obsidian teeth of a guard's sword bit deeply into the flesh of your side.\n\n\"Be careful!\" commands the high priest. \"The Rain God will be angered if we damage his sacrifice!\"\n\nShoving one of the guards aside, you manage to struggle to the brink of the pit. The high priest steps back nervously as he sees the look of desperation in your eyes, raising his ritual knife to defend himself. The guards have regrouped and are spreading out to capture you.\n\nYou LOSE 3 Life Points.\n\nYou are losing blood from the wound you have taken.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Surrender", 327));
+        Choices.push_back(Choice::Base("Fight on", 51));
+        Choices.push_back(Choice::Base("Leap into the sacred well", 235));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, -3);
+    }
+};
+
 class Story298 : public Story::Base
 {
 public:
@@ -1403,17 +1523,17 @@ public:
     {
         Choices.clear();
 
-        PreText = "All along your route you find deserted cottages where people have abandoned their homes and farms for safer regions. You pass refugees on the mountain roads. Some tell you they are fleeing from brigands. Others fear the devils and werewolves that they believe will be unleashed from the western desert now the Great City has fallen.\n\nFood is hard to come by in the arid sierra.\n\nTravelling off the main paths to avoid the groups of marauding brigands, you are forced back on your own skills to find sustenance.\n";
+        PreText = "All along your route you find deserted cottages where people have abandoned their homes and farms for safer regions. You pass refugees on the mountain roads. Some tell you they are fleeing from brigands. Others fear the devils and werewolves that they believe will be unleashed from the western desert now the Great City has fallen.\n\nFood is hard to come by in the arid sierra.\n\nTravelling off the main paths to avoid the groups of marauding brigands, you are forced back on your own skills to find sustenance.";
 
         if (Character::VERIFY_ANY_SKILL(player, {Skill::Type::TARGETING, Skill::Type::WILDERNESS_LORE}))
         {
-            PreText += "\nYou were able to hunt for food.\n";
+            PreText += "\n\nYou were able to hunt for food.";
 
             Choices.push_back(Choice::Base("Continue", 321));
         }
         else if (Character::COUNT_ITEMS(player, {Item::Type::MAIZE_CAKES, Item::Type::PAPAYA, Item::Type::OWL, Item::Type::HAUNCH_OF_VENISON, Item::Type::SALTED_MEAT}))
         {
-            PreText += "\nHaving no skills to hunt for food, you are forced to eat from your provisions.\n";
+            PreText += "\n\nHaving no skills to hunt for food, you are forced to eat from your provisions.";
 
             Choices.push_back(Choice::Base("Eat from your provisions", 321, Choice::Type::EAT, {Item::Type::MAIZE_CAKES, Item::Type::PAPAYA, Item::Type::OWL, Item::Type::HAUNCH_OF_VENISON, Item::Type::SALTED_MEAT}, 2));
         }
@@ -1544,13 +1664,50 @@ public:
     }
 };
 
+class Story327 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story327()
+    {
+        ID = 327;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 411, Choice::Type::SKILL_ANY, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base(Skill::CHARMS.Name, 189, Skill::Type::CHARMS));
+        Choices.push_back(Choice::Base(Skill::CUNNING.Name, 371, Skill::Type::CUNNING));
+        Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 392, Skill::Type::SEAFARING));
+        Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::BLOWGUN], 5, Item::Type::BLOWGUN));
+        Choices.push_back(Choice::Base("Otherwise", 28));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You are led to a shrine at the western edge of the hole. From here, a steep flight of steps descends towards a platform covered with the hieratic glyphs of the afterlife. You will soon walk down those steps and, after reaching the platform, plunge far down into the dark waters below.\n\nA vest of golden plaques is fastened across your chest and the high priest places a tall helmet of gold and copper on your head. The burden of so much metal makes you stoop. These artifacts are beyond price since gold is not found in this part of the world. It is a lavish offering to the Rain God, but it also serves a secondary purpose: the great weight ensures you will be carried deep under the water.\n\nSeveral junior priests come forward with dishes of blue dye, which they use to paint spirals across your face and limbs. \"Thus you are consecrated to the Rain God,\" they explain. \"Go now into the other world, and carry our plea for rain to refresh the arid fields!\"";
+
+        if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
+        {
+            PreText += "\n\nYou remember to slip the jade bead under your tongue as advised.";
+        }
+
+        PreText += "\n\nThen you descend to the platform overlooking the well and prepare yourself for the most uncanny voyage anyone could ever attempt: a leap into the underworld.";
+
+        Text = PreText.c_str();
+    }
+};
+
 class Story331 : public Story::Base
 {
 public:
     Story331()
     {
         ID = 331;
-        Text = "You can go to speak with the dead king's spirit tonight or you can rest here decide what to do the next morning.";
+        Text = "You can go to speak with the dead king's spirit tonight or you can rest here and decide what to do the next morning.";
         Image = "images/filler1.png";
 
         Choices.clear();
@@ -1802,6 +1959,7 @@ auto story025 = Story025();
 auto story030 = Story030();
 auto story047 = Story047();
 auto story048 = Story048();
+auto story051 = Story051();
 auto story054 = Story054();
 auto story070 = Story070();
 auto story071 = Story071();
@@ -1829,10 +1987,12 @@ auto story205 = Story205();
 auto story208 = Story208();
 auto story209 = Story209();
 auto story211 = Story211();
+auto story218 = Story218();
 auto story228 = Story228();
 auto story231 = Story231();
 auto story232 = Story232();
 auto story234 = Story234();
+auto story235 = Story235();
 auto story254 = Story254();
 auto story257 = Story257();
 auto story264 = Story264();
@@ -1840,12 +2000,14 @@ auto story275 = Story275();
 auto story277 = Story277();
 auto story278 = Story278();
 auto story280 = Story280();
+auto story281 = Story281();
 auto story298 = Story298();
 auto story301 = Story301();
 auto story302 = Story302();
 auto story321 = Story321();
 auto story323 = Story323();
 auto story324 = Story324();
+auto story327 = Story327();
 auto story331 = Story331();
 auto story332 = Story332();
 auto story346 = Story346();
@@ -1862,13 +2024,13 @@ void InitializeStories()
 {
     Stories = {
         &prologue, &story001, &story002, &story008, &story024, &story025, &story030, &story047, &story048,
-        &story054, &story070, &story071, &story093, &story094, &story096, &story101, &story103, &story116,
-        &story117, &story120, &story127, &story138, &story139, &story142, &story158, &story160, &story162,
-        &story163, &story165, &story185, &story188, &story186, &story205, &story208, &story209, &story211,
-        &story228, &story231, &story232, &story234, &story254, &story257, &story264, &story275, &story277,
-        &story278, &story280, &story298, &story301, &story302, &story321, &story323, &story324, &story331,
-        &story332, &story346, &story350, &story355, &story368, &story389, &story408, &story416, &story424,
-        &story426};
+        &story051, &story054, &story070, &story071, &story093, &story094, &story096, &story101, &story103,
+        &story116, &story117, &story120, &story127, &story138, &story139, &story142, &story158, &story160,
+        &story162, &story163, &story165, &story185, &story188, &story186, &story205, &story208, &story209,
+        &story211, &story218, &story228, &story231, &story232, &story234, &story235, &story254, &story257,
+        &story264, &story275, &story277, &story278, &story280, &story281, &story298, &story301, &story302,
+        &story321, &story323, &story324, &story327, &story331, &story332, &story346, &story350, &story355,
+        &story368, &story389, &story408, &story416, &story424, &story426};
 }
 
 #endif
