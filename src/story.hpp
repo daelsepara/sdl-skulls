@@ -711,7 +711,9 @@ public:
     Story103()
     {
         ID = 103;
+
         Text = "\"Wait!\"\n\nAll eyes turn in your direction. The high priest scowls, \"Who is this outsider who dares to interrupt the sacred rite?\"\n\n\"Release them,\" you say, ignoring him. \"I shall carry your petition into the underworld.\"\n\nThe priest strides over, pressing his face inches from yours with a look of black fury. \"You? Why should I let you undertake this journey?\"\n\n\"Because I was sent here by a god.\"\n\nHe has no answer to that. For a moment his mouth works silently, ready to frame a protest, but he has already seen the light of truth in your eyes. Stepping back, he gives a nod and the young couple are set free.";
+
         Image = "images/filler1.png";
 
         Choices.clear();
@@ -1022,6 +1024,25 @@ public:
     {
         Character::GET_CODEWORDS(player, {Codeword::Type::PSYCHODUCT});
     }
+};
+
+class Story182 : public Story::Base
+{
+public:
+    Story182()
+    {
+        ID = 182;
+
+        Text = "It is early in the morning when you make ready to sail. The sky is a shimmering pane of jade on which the last stars sparkle like dewdrops that are swiftly burnt away when the trembling red disc of the sun lurches up from the east.\n\nAlong with the half dozen other crewmen, you push the ship out through the cool grey waves and then jump aboard. Paddles are used to move out from the shores until the sail catches the breeze. Its triangular shape puts you in mind of an elegant bird unfolding its to soar.\n\nThe day passes pleasantly as you sail on keeping the shore in sight, but towards evening a cloud looms on the horizon. It indicates a storm blowing from out at sea. \"We must put out from the coastline,\" says one of the crew as you feel the wind rising. \"Otherwise we run the risk of being blown onto the reefs.\"\n\nAs the storm rolls over you, it turns the twilight to night and blots out any sign of the shore. Rain sweeps into your face, stinging your eyes with its force. The sailors cling to the mast and mutter prayers to the gods through chattering teeth. Their prayers go unheeded: the sea lifts your vessel like a toy and flings it far out into the unknown ocean.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 406; }
 };
 
 class Story185 : public Story::Base
@@ -1891,6 +1912,28 @@ public:
     }
 };
 
+class Story366 : public Story::Base
+{
+public:
+    Story366()
+    {
+        ID = 366;
+
+        Text = "Cowering under the trees at the back of the beach you find a very old man. His clothing is ragged, but the few scraps of adornment that he retains indicate a person of wealth and prestige. This impression is confirmed when he opens his mouth, saying, \"If you have come to kill me, I pray that you do so quickly, at least.\"\n\n\"We haven't come to kill you,\" you reply, extending your hand in friendship.\n\nHe returns a hopeful smile. \"I am Jade Thunder, once a great wizard. A contest with my arch-rival brought me to this desolate spot, and here we fought our last battle. I slew him, but with his dying breath he sealed my wand within a barrier of fire and now I cannot use my magic to return home.\"\n\nYou go with him to a spot further up the beach. Great magic has obviously been at work here, impossibly warping the trees and leaving the coconuts with silent staring faces. The sand underfoot has a dozen colours. In the centre of the clearing, a circle of crackling green flame surrounds a wand.\n\nYou try helping Jade recover his wand.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::CUNNING.Name, 21, Skill::Type::CUNNING));
+        Choices.push_back(Choice::Base("Cast spells with your own wand (SPELLS)", 435, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::MAN_OF_GOLD], 45, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Walk boldly into the flames", 68));
+        Choices.push_back(Choice::Base("Decide against helping him", 437));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story368 : public Story::Base
 {
 public:
@@ -1913,6 +1956,32 @@ public:
     }
 };
 
+class Story370 : public Story::Base
+{
+public:
+    Story370()
+    {
+        ID = 370;
+
+        Text = "Midnight Bloom proves to be a briskly efficient young woman with a vivacious smile. A jade necklace inlaid with flecks of gold sets off her deep coppery tan to good effect. She reads the letter given to you by the Matriarch and nods, saying, \"Many traders are reluctant to go as far as Tahil now, because the collapse of the Great City has left bands of brigands roaming unchecked in the region. But luckily I shall be sailing there in a week's time, to tie up some loose ends in the clan's business.\"\n\nYou spend a restful week in Balak at the house of your relatives here. Your Life Points are fully restored. At last Midnight Bloom comes to tell you that preparations are complete. Tomorrow you set sail for Tahil.\n\nYou gained the codeword SAKBE.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 182; }
+
+    void Event(Character::Base &player)
+    {
+        player.Life = player.MAX_LIFE_LIMIT;
+
+        Character::GET_CODEWORDS(player, {Codeword::Type::SAKBE});
+    }
+};
+
 class Story389 : public Story::Base
 {
 public:
@@ -1932,6 +2001,48 @@ public:
     void Event(Character::Base &player)
     {
         Character::GET_ITEMS(player, {Item::Type::JADE_BEAD, Item::Type::MAIZE_CAKES});
+    }
+};
+
+class Story391 : public Story::Base
+{
+public:
+    Story391()
+    {
+        ID = 391;
+
+        Text = "You strike up a conversation with a trader whose boat looks impressively large and seaworthy. He is putting together a cargo of richly dyed cotton and woven feather head-dresses which he hopes to sell in Tahil.\n\n\"Brigands and pirates abound since the fall of the Great City,\" he says. \"These are exciting times we live in. Many prefer to cower in safety close to home, but for a bold man there are fine profits to be made.\"\n\nA few judicious remarks about the weather and the tides convince him that you would be a worthwhile person to have along on the voyage. He tells you to return in a week, when it will be time to set out.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 205; }
+};
+
+class Story406 : public Story::Base
+{
+public:
+    Story406()
+    {
+        ID = 406;
+
+        Text = "The storm blows itself out towards dawn, leaving you all shaking with exhaustion. You look around. Unbroken sea surrounds you. The only clue to your course is the sun boiling its way through a bank of low cloud across the horizon, but the sight of circling gulls tells you that land is near. You know that it cannot be the mainland. As a green swathe of foliage appears in the distance, you realize you have found the fabled Isle of the Iguana.\n\nGetting closer, you find a coast of high cliffs which the sea has pounded into fanciful shapes. You sail under an arch of white rock and around a headland that reminds you of a serpent's mouth, arriving at last at a stretch of pebble-strewn beach.\n\n\"The ship was badly damaged in the storm,\" says one of the sailors, pointing to the water collecting in the bottom of the hull. \"We must put in here for repairs.\"\n\nYou gained the codeword EB.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 366; }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::EB});
     }
 };
 
@@ -2080,6 +2191,7 @@ auto story162 = Story162();
 auto story163 = Story163();
 auto story165 = Story165();
 auto story169 = Story169();
+auto story182 = Story182();
 auto story185 = Story185();
 auto story186 = Story186();
 auto story188 = Story188();
@@ -2113,8 +2225,12 @@ auto story332 = Story332();
 auto story346 = Story346();
 auto story350 = Story350();
 auto story355 = Story355();
+auto story366 = Story366();
 auto story368 = Story368();
+auto story370 = Story370();
 auto story389 = Story389();
+auto story391 = Story391();
+auto story406 = Story406();
 auto story408 = Story408();
 auto story416 = Story416();
 auto story424 = Story424();
@@ -2126,12 +2242,12 @@ void InitializeStories()
         &prologue, &story001, &story002, &story008, &story024, &story025, &story030, &story047, &story048,
         &story051, &story054, &story070, &story071, &story077, &story093, &story094, &story096, &story101,
         &story103, &story116, &story117, &story120, &story123, &story127, &story138, &story139, &story142,
-        &story146, &story158, &story160, &story162, &story163, &story165, &story169, &story185, &story188,
-        &story186, &story205, &story208, &story209, &story211, &story218, &story228, &story231, &story232,
-        &story234, &story235, &story254, &story257, &story264, &story275, &story277, &story278, &story280,
-        &story281, &story298, &story301, &story302, &story321, &story323, &story324, &story327, &story331,
-        &story332, &story346, &story350, &story355, &story368, &story389, &story408, &story416, &story424,
-        &story426};
+        &story146, &story158, &story160, &story162, &story163, &story165, &story169, &story182, &story185,
+        &story188, &story186, &story205, &story208, &story209, &story211, &story218, &story228, &story231,
+        &story232, &story234, &story235, &story254, &story257, &story264, &story275, &story277, &story278,
+        &story280, &story281, &story298, &story301, &story302, &story321, &story323, &story324, &story327,
+        &story331, &story332, &story346, &story350, &story355, &story366, &story368, &story370, &story389,
+        &story391, &story406, &story408, &story416, &story424, &story426};
 }
 
 #endif
