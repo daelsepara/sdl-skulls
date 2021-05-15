@@ -43,6 +43,7 @@ namespace Choice
         Skill::Type Skill = Skill::Type::NONE;
 
         std::vector<Item::Type> Items = std::vector<Item::Type>();
+
         Item::Type Item = Item::Type::NONE;
 
         int Value = 0;
@@ -150,6 +151,7 @@ namespace Story
         std::vector<Button> Controls = std::vector<Button>();
         std::vector<Choice::Base> Choices = std::vector<Choice::Base>();
         std::vector<std::pair<Item::Type, int>> Shop = std::vector<std::pair<Item::Type, int>>();
+        std::pair<Item::Type, Item::Type> Trade;
 
         // Player selects items to take up to a certain limit
         std::vector<Item::Type> Take = std::vector<Item::Type>();
@@ -222,6 +224,23 @@ std::vector<Button> ShopControls()
     controls.push_back(Button(4, "images/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
     controls.push_back(Button(5, "images/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
     controls.push_back(Button(6, "images/shop.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::SHOP));
+    controls.push_back(Button(7, "images/next.png", 6, 8, 1, 7, startx + 5 * gridsize, buttony, Control::Type::NEXT));
+    controls.push_back(Button(8, "images/exit.png", 7, 8, 1, 8, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+    return controls;
+}
+
+std::vector<Button> TradeControls()
+{
+    auto controls = std::vector<Button>();
+
+    controls.push_back(Button(0, "images/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+    controls.push_back(Button(1, "images/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+    controls.push_back(Button(2, "images/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
+    controls.push_back(Button(3, "images/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
+    controls.push_back(Button(4, "images/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+    controls.push_back(Button(5, "images/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
+    controls.push_back(Button(6, "images/shop.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::TRADE));
     controls.push_back(Button(7, "images/next.png", 6, 8, 1, 7, startx + 5 * gridsize, buttony, Control::Type::NEXT));
     controls.push_back(Button(8, "images/exit.png", 7, 8, 1, 8, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
@@ -925,7 +944,7 @@ public:
         }
         else
         {
-            PreText += "You are reduced to begging for scraps and collecting snails along the shore. This soon results in mild food poisoning. You LOSE 1 Life Point.\n";
+            PreText += "\nYou are reduced to begging for scraps and collecting snails along the shore. This soon results in mild food poisoning. You LOSE 1 Life Point.\n";
 
             Character::GAIN_LIFE(player, -1);
         }
@@ -1018,6 +1037,27 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story211 : public Story::Base
+{
+public:
+    Story211()
+    {
+        ID = 211;
+        Text = "You offer to sell him your maize cakes, but he protests that his wife would not be happy if he returned home with no money to show for his journey. \"On the other hand, I could give you this parcel of salt,\" he suggests, taking a bundle of oiled cloth from his backpack. \"It is worth nothing to me on the way back to Balak, but you may be able to get a good price for it.\"";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Make your way north out of the city", 120, Choice::Type::NORMAL));
+        Choices.push_back(Choice::Base("Go south towards the forest", 165, Choice::Type::NORMAL));
+
+        Controls = TradeControls();
+
+        Trade = std::make_pair(Item::Type::MAIZE_CAKES, Item::Type::PARCEL_OF_SALT);
+    }
+
+    int Continue(Character::Base &player) { return 389; }
 };
 
 class Story231 : public Story::Base
@@ -1158,6 +1198,28 @@ public:
         Choices.push_back(Choice::Base("You cannot spare the money and must bid the priest farewell and see about getting supplies for the trip", 93, Choice::Type::NORMAL));
 
         Controls = StandardControls();
+    }
+};
+
+class Story278 : public Story::Base
+{
+public:
+    Story278()
+    {
+        ID = 278;
+        Text = "On and on through the forest, the glowing figure leads you a madcap chase until your heart is pounding and your breath comes in raw sobs. Creepers hang across your path, but you dash them aside and race on. Sweat plasters your clothes to your skin. You catch your foot on a root and stumble, only to leap up again and stagger after your elusive quarry.\n\nAt last you emerge into a clearing beside a stream where you give a breathless cry of triumph. The girl has stopped at the bank of the stream. She stands with her back to you, shawl drawn around her golden body, her head bowed as if in passive acceptance that she can go no further.\n\nA final burst of effort carries you across the clearing, even though your legs feel like clay. The girl turns and favours you with a sweet smile. Then she breaks apart into hundreds of motes of dazzling light. Gasping for breath, you accidentally inhale one of the motes of light and feel an insectoid buzzing as you swallow it. A firefly. The 'girl' you were chasing was just a swarm of fireflies!\n\nSpluttering violently in a vain attempt to cough up the firefly you've just breathed in, you flail about and by blind luck your fingers close on the shawl. You feel someone is trying to tug it out of your hand, but the convulsive coughing makes you cling on tight.\n\nYou gained the codeword IGNIS.";
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Keep the SHAWL", 302, Choice::Type::GET_ITEM, Item::Type::SHAWL));
+        Choices.push_back(Choice::Base("Leave the SHAWL", 324, Choice::Type::NORMAL));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::IGNIS});
     }
 };
 
@@ -1445,12 +1507,14 @@ auto story188 = Story188();
 auto story205 = Story205();
 auto story208 = Story208();
 auto story209 = Story209();
+auto story211 = Story211();
 auto story231 = Story231();
 auto story232 = Story232();
 auto story234 = Story234();
 auto story254 = Story254();
 auto story257 = Story257();
 auto story277 = Story277();
+auto story278 = Story278();
 auto story280 = Story280();
 auto story301 = Story301();
 auto story323 = Story323();
@@ -1472,8 +1536,8 @@ void InitializeStories()
         &story127, &story138, &story139, &story142,
         &story158, &story160, &story162, &story163, &story165,
         &story185, &story188, &story186, &story205,
-        &story208, &story209, &story231, &story232, &story234, &story254,
-        &story257, &story277, &story280, &story301, &story323, &story324,
+        &story208, &story209, &story211, &story231, &story232, &story234, &story254,
+        &story257, &story277, &story278, &story280, &story301, &story323, &story324,
         &story346, &story350, &story368, &story389,
         &story408, &story424};
 }

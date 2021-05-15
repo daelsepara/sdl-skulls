@@ -31,7 +31,8 @@ namespace Control
         TAKE,
         QUIT,
         PLUS,
-        MINUS
+        MINUS,
+        TRADE
     };
 
     class Base

@@ -31,6 +31,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
 bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int id);
 bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit);
+bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Item::Type mine, Item::Type theirs);
 
 SDL_Surface *createImage(const char *image)
 {
@@ -1345,6 +1346,123 @@ bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
     return done;
 }
 
+bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Item::Type mine, Item::Type theirs)
+{
+    auto done = false;
+
+    if (Character::VERIFY_ITEM(player, mine))
+    {
+        const char *message = NULL;
+
+        auto error = false;
+
+        Uint32 start_ticks = 0;
+        Uint32 duration = 3000;
+
+        auto text_space = 8;
+
+        auto box_space = 10;
+
+        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+
+        auto controls = std::vector<Button>();
+
+        auto idx = 0;
+
+        controls.push_back(Button(idx, "images/yes.png", idx, idx + 1, idx, idx, startx, buttony, Control::Type::ACTION));
+        controls.push_back(Button(idx + 1, "images/back-button.png", idx, idx + 1, idx, idx + 1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+
+        auto selected = false;
+        auto current = -1;
+        auto quit = false;
+        auto scrollUp = false;
+        auto scrollDown = false;
+        auto hold = false;
+
+        auto infoh = 36;
+        auto boxh = 75;
+
+        auto donation = 1;
+
+        while (!done)
+        {
+            SDL_SetWindowTitle(window, "Make a Donation");
+
+            fillWindow(renderer, intWH);
+
+            if (error)
+            {
+                if ((SDL_GetTicks() - start_ticks) < duration)
+                {
+                    putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, boxh * 2, startx, starty);
+                }
+                else
+                {
+                    error = false;
+                }
+            }
+
+            if (!error)
+            {
+                putText(renderer, "TRADE", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
+            }
+
+            putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+
+            putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+            putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+
+            fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
+
+            std::string trade_text = "Trade " + std::string(Item::Descriptions[mine]) + " for " + std::string(Item::Descriptions[theirs]) + "?";
+            putText(renderer, trade_text.c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, textwidth, boxh, textx + text_space, texty + text_space);
+
+            renderButtons(renderer, controls, current, intGR, text_space, text_space / 2);
+
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected)
+            {
+                if (controls[current].Type == Control::Type::ACTION && !hold)
+                {
+                    Character::LOSE_ITEM(player, {mine});
+                    Character::GET_ITEMS(player, {theirs});
+
+                    done = true;
+
+                    current = -1;
+
+                    selected = false;
+
+                    break;
+                }
+                else if (controls[current].Type == Control::Type::BACK && !hold)
+                {
+                    done = false;
+
+                    break;
+                }
+            }
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+        }
+
+        TTF_Quit();
+    }
+
+    return done;
+}
+
 bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     if (story->Shop.size() > 0)
@@ -2090,6 +2208,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     else if (story->Controls[current].Type == Control::Type::SHOP && !hold)
                     {
                         shopScreen(window, renderer, player, story);
+
+                        current = -1;
+
+                        selected = false;
+                    }
+                    else if (story->Controls[current].Type == Control::Type::TRADE && !hold)
+                    {
+                        tradeScreen(window, renderer, player, story->Trade.first, story->Trade.second);
 
                         current = -1;
 
