@@ -33,6 +33,10 @@ namespace Character
         std::vector<Skill::Base> Skills = std::vector<Skill::Base>();
         std::vector<Item::Type> Items = std::vector<Item::Type>();
         std::vector<Codeword::Type> Codewords = std::vector<Codeword::Type>();
+        
+        std::vector<Item::Type> LostItems = std::vector<Item::Type>();
+        
+        int LostMoney = 0;
 
         Base()
         {
@@ -490,6 +494,15 @@ namespace Character
         {
             player.Money = 0;
         }
+    }
+
+    void LOSE_ALL(Character::Base &player)
+    {
+        player.LostItems = player.Items;
+        player.LostMoney = player.LostMoney;
+
+        player.Items.clear();
+        player.Money = 0;
     }
 
 } // namespace Character

@@ -30,6 +30,7 @@ namespace Choice
         FIRE_WEAPON,
         LOSE_ITEM,
         LOSE_MONEY,
+        LOSE_ALL,
         DONATE,
         EAT,
         EAT_HEAL,
@@ -360,6 +361,30 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story004 : public Story::Base
+{
+public:
+    Story004()
+    {
+        ID = 4;
+
+        Text = "You are not sure which nuts and berries are safe to eat, but extreme hunger forces you to make do. You wash the berries down with water from a brook. The meal is meagre and unsatisfying, but at least it eases the pangs in your stomach. Even so, you realize that you cannot survive for long if you don't find your way back to civilization.\n\nYou LOSE 1 Life Point.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, -1);
+    }
+
+    int Continue(Character::Base &player) { return 279; }
 };
 
 class Story005 : public Story::Base
@@ -907,6 +932,25 @@ public:
     }
 };
 
+class Story072 : public Story::Base
+{
+public:
+    Story072()
+    {
+        ID = 72;
+
+        Text = "A wave of dizziness warns you that your wound is becoming infected. You stop to gather puffballs. Their spores act as an antidote to fever. Finding a wild bees' nest, you mix the spores with honey to take away the dry noxious taste and gulp the mixture down. It is unpleasant, but it seems to do the trick.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 118; }
+};
+
 class Story077 : public Story::Base
 {
 public:
@@ -1199,6 +1243,26 @@ public:
         {
             Text = PreText.c_str();
         }
+    }
+};
+
+class Story095 : public Story::Base
+{
+public:
+    Story095()
+    {
+        ID = 95;
+
+        Text = "You trudge wearily on, but your wounds soon become infected and within a few hours you are too weak to continue. Slumping down against the trunk of a tree, you lapse into a fever while ants crawl uncaringly across your outstretched legs. Cold sweat pours off you as your limbs begin to shake, and gradually you slip into unconsciousness.\n\nTortured by the pain of fever, your mind retreats into delirium. You see your brother in the clutches of a grotesque phantom with fleshless features. Fire licks up across a sky drenched in blood, but there is no heat. The scene becomes smeared with lurid greens and violets from which skulls peer with eager watchfulness. Then, emerging from the image like a reflection in a stagnant pool, you see a colossal serpent with four leering faces...\n\nYou awaken to find yourself lying on a bed of wadded leaves. There is a smell of wood smoke and roasting meat in the air. Groaning at the ache deep in your bones, you sit up and take stock of your surroundings. You are in a hut with open walls, on the edge of a clearing. Outside you see a woodland pool surrounded by crude plots of tomato, manioc, peppers and sweet potatoes.\n\n\"So you recovered. We expected you to die.\"\n\nThe accent is lilting and unfamiliar. Craning your neck, you see a group of men in plain white robes clustered around a fire. They have your possessions spread out among them. Then you see what is roasting on the fire, and the sight makes you gasp in horror. It is a tiny baby, hideously charred as the flames lick around its thin body!";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Leap up at once and rush off into the woods abandoning your belongings", 50, Choice::Type::LOSE_ALL));
+        Choices.push_back(Choice::Base("Attack these cannibals at once", 73));
+        Choices.push_back(Choice::Base("Wait to see what they have to say", 27));
+
+        Controls = StandardControls();
     }
 };
 
@@ -2213,6 +2277,32 @@ public:
     int Continue(Character::Base &player) { return 350; };
 };
 
+class Story187 : public Story::Base
+{
+public:
+    Story187()
+    {
+        ID = 187;
+
+        Text = "Your dart brings down a small brocket of deer. It is scarcely bigger than a dog, but enough to assuage your hunger and leave you with a good haunch of venison to consume later.\n\nYou GAIN 1 Life Point.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_ITEMS(player, {Item::Type::HAUNCH_OF_VENISON});
+
+        Character::GAIN_LIFE(player, 1);
+    }
+
+    int Continue(Character::Base &player) { return 279; }
+};
+
 class Story188 : public Story::Base
 {
 public:
@@ -2518,6 +2608,32 @@ public:
     }
 };
 
+class Story210 : public Story::Base
+{
+public:
+    Story210()
+    {
+        ID = 210;
+
+        Text = "You rig a spear trap by using creepers to lash a splintered branch to a tethered sapling. Before long a deer springs the trap and is impaled by the branch. You rush forward to administer a merciful death, then set to preparing the meat. There is enough to provide you with a good meal and leave a launch of venison over.\n\nYou GAIN 1 Life Point.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_ITEMS(player, {Item::Type::HAUNCH_OF_VENISON});
+
+        Character::GAIN_LIFE(player, 1);
+    }
+
+    int Continue(Character::Base &player) { return 279; }
+};
+
 class Story211 : public Story::Base
 {
 public:
@@ -2736,6 +2852,25 @@ public:
     }
 };
 
+class Story233 : public Story::Base
+{
+public:
+    Story233()
+    {
+        ID = 233;
+
+        Text = "Crouching hidden behind a bank of ferns, you wait patiently until a rabbit comes hopping past. It squats with ears pricked up and nose twitching, barely arm's length from your hiding place. You lob a stone over to the far side of the clearing, and the sudden noise startles the rabbit so that it rushes straight into your clutches. A quick twist ends its struggles, and soon you are roasting your catch over a fire. As you chew at the rangey meat, you reflect on how your artful ways are not only of use in the city.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 279; }
+};
+
 class Story234 : public Story::Base
 {
 public:
@@ -2918,6 +3053,35 @@ public:
     }
 
     int Continue(Character::Base &player) { return 369; }
+};
+
+class Story256 : public Story::Base
+{
+public:
+    Story256()
+    {
+        ID = 256;
+
+        Text = "The rumbling in your belly grows more insistent. You must find something to eat or you risk starving here in the forest's depths.";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        if (Character::COUNT_ITEMS(player, {Item::Type::MAIZE_CAKES, Item::Type::PAPAYA, Item::Type::OWL, Item::Type::HAUNCH_OF_VENISON, Item::Type::SALTED_MEAT}))
+        {
+            Choices.push_back(Choice::Base("Eat from your provisions", 279, Choice::Type::EAT_HEAL, {Item::Type::MAIZE_CAKES, Item::Type::PAPAYA, Item::Type::OWL, Item::Type::HAUNCH_OF_VENISON, Item::Type::SALTED_MEAT}, 1));
+        }
+        else
+        {
+            Choices.push_back(Choice::Base("You have nothing to eat", 4));
+        }
+    }
 };
 
 class Story257 : public Story::Base
@@ -3177,6 +3341,26 @@ public:
     void Event(Character::Base &player)
     {
         Character::GET_CODEWORDS(player, {Codeword::Type::IGNIS});
+    }
+};
+
+class Story279 : public Story::Base
+{
+public:
+    Story279()
+    {
+        ID = 279;
+
+        Text = "You must have wandered far to the south of your original route. But which way is north? The leaf canopy virtually covers the sky, giving you few clues about which way you should go.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::WILDERNESS_LORE.Name, 441, Skill::Type::WILDERNESS_LORE));
+        Choices.push_back(Choice::Base(Skill::CHARMS.Name, 75, Skill::Type::CHARMS));
+        Choices.push_back(Choice::Base("Otherwise", 326));
+
+        Controls = StandardControls();
     }
 };
 
@@ -4053,7 +4237,6 @@ public:
     int Continue(Character::Base &player) { return 97; }
 };
 
-
 class Story374 : public Story::Base
 {
 public:
@@ -4610,6 +4793,7 @@ auto prologue = Prologue();
 auto story001 = Story001();
 auto story002 = Story002();
 auto story003 = Story003();
+auto story004 = Story004();
 auto story005 = Story005();
 auto story008 = Story008();
 auto story009 = Story009();
@@ -4632,6 +4816,7 @@ auto story067 = Story067();
 auto story068 = Story068();
 auto story070 = Story070();
 auto story071 = Story071();
+auto story072 = Story072();
 auto story077 = Story077();
 auto story078 = Story078();
 auto story080 = Story080();
@@ -4640,6 +4825,7 @@ auto story090 = Story090();
 auto story091 = Story091();
 auto story093 = Story093();
 auto story094 = Story094();
+auto story095 = Story095();
 auto story096 = Story096();
 auto story100 = Story100();
 auto story101 = Story101();
@@ -4680,6 +4866,7 @@ auto story182 = Story182();
 auto story183 = Story183();
 auto story185 = Story185();
 auto story186 = Story186();
+auto story187 = Story187();
 auto story188 = Story188();
 auto story189 = Story189();
 auto story192 = Story192();
@@ -4689,6 +4876,7 @@ auto story205 = Story205();
 auto story206 = Story206();
 auto story208 = Story208();
 auto story209 = Story209();
+auto story210 = Story210();
 auto story211 = Story211();
 auto story212 = Story212();
 auto story215 = Story215();
@@ -4697,6 +4885,7 @@ auto story218 = Story218();
 auto story228 = Story228();
 auto story231 = Story231();
 auto story232 = Story232();
+auto story233 = Story233();
 auto story234 = Story234();
 auto story235 = Story235();
 auto story238 = Story238();
@@ -4704,6 +4893,7 @@ auto story242 = Story242();
 auto story251 = Story251();
 auto story254 = Story254();
 auto story255 = Story255();
+auto story256 = Story256();
 auto story257 = Story257();
 auto story260 = Story260();
 auto story262 = Story262();
@@ -4714,6 +4904,7 @@ auto story274 = Story274();
 auto story275 = Story275();
 auto story277 = Story277();
 auto story278 = Story278();
+auto story279 = Story279();
 auto story280 = Story280();
 auto story281 = Story281();
 auto story285 = Story285();
@@ -4775,17 +4966,17 @@ auto story437 = Story437();
 void InitializeStories()
 {
     Stories = {
-        &prologue, &story001, &story002, &story003, &story005, &story008, &story009, &story010, &story021, &story023,
+        &prologue, &story001, &story002, &story003, &story004, &story005, &story008, &story009, &story010, &story021, &story023,
         &story024, &story025, &story026, &story028, &story030, &story044, &story045, &story047, &story048, &story049,
-        &story051, &story054, &story067, &story068, &story070, &story071, &story077, &story078, &story080, &story085,
-        &story090, &story091, &story093, &story094, &story096, &story100, &story101, &story103, &story104, &story113,
+        &story051, &story054, &story067, &story068, &story070, &story071, &story072, &story077, &story078, &story080, &story085,
+        &story090, &story091, &story093, &story094, &story095, &story096, &story100, &story101, &story103, &story104, &story113,
         &story114, &story116, &story117, &story119, &story120, &story123, &story126, &story127, &story135, &story136,
         &story138, &story139, &story141, &story142, &story143, &story146, &story147, &story149, &story158, &story159,
         &story160, &story162, &story163, &story164, &story165, &story166, &story168, &story169, &story170, &story172,
-        &story182, &story183, &story185, &story188, &story189, &story186, &story192, &story193, &story195, &story205,
-        &story206, &story208, &story209, &story211, &story212, &story215, &story216, &story218, &story228, &story231,
-        &story232, &story234, &story235, &story238, &story242, &story251, &story254, &story255, &story257, &story260,
-        &story262, &story263, &story264, &story265, &story274, &story275, &story277, &story278, &story280, &story281,
+        &story182, &story183, &story185, &story188, &story189, &story186, &story187, &story192, &story193, &story195, &story205,
+        &story206, &story208, &story209, &story210, &story211, &story212, &story215, &story216, &story218, &story228, &story231,
+        &story232, &story233, &story234, &story235, &story238, &story242, &story251, &story254, &story255, &story256, &story257, &story260,
+        &story262, &story263, &story264, &story265, &story274, &story275, &story277, &story278, &story279, &story280, &story281,
         &story285, &story288, &story297, &story298, &story300, &story301, &story302, &story304, &story311, &story320,
         &story321, &story323, &story324, &story325, &story327, &story331, &story332, &story333, &story334, &story335,
         &story343, &story344, &story346, &story347, &story350, &story354, &story355, &story356, &story357, &story366,

@@ -2235,6 +2235,16 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 error = true;
                             }
                         }
+                        else if (story->Choices[current].Type == Choice::Type::LOSE_ALL)
+                        {
+                            Character::LOSE_ALL(player);
+
+                            next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                            quit = true;
+
+                            break;
+                        }
                         else if (story->Choices[current].Type == Choice::Type::LOSE_MONEY)
                         {
                             if (player.Money >= story->Choices[current].Value)
@@ -2309,6 +2319,8 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                     next = (Story::Base *)findStory(story->Choices[current].Destination);
 
                                     quit = true;
+
+                                    break;
                                 }
                                 else
                                 {
@@ -2318,6 +2330,31 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                                     error = true;
                                 }
+                            }
+                            else
+                            {
+                                message = "There is nothing in possessions that you can eat.";
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
+                        else if (story->Choices[current].Type == Choice::Type::EAT_HEAL)
+                        {
+                            auto threshold = story->Choices[current].Value;
+
+                            auto consumed = eatScreen(window, renderer, player, story->Choices[current].Items, threshold);
+
+                            if (consumed >= 0)
+                            {
+                                Character::GAIN_LIFE(player, threshold);
+
+                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                quit = true;
+
+                                break;
                             }
                             else
                             {
