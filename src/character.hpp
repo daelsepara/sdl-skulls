@@ -26,7 +26,9 @@ namespace Character
 
         int DONATION = 0;
 
-        bool BLESSING_WAR_GOD = false;
+        bool IsBlessed = false;
+
+        bool IsImmortal = false;
 
         std::vector<Skill::Base> Skills = std::vector<Skill::Base>();
         std::vector<Item::Type> Items = std::vector<Item::Type>();
@@ -84,6 +86,24 @@ namespace Character
         }
 
         return found;
+    }
+
+    bool VERIFY_ITEMS(Character::Base &player, std::vector<Item::Type> items)
+    {
+        auto found = 0;
+
+        if (items.size() > 0)
+        {
+            for (auto i = 0; i < items.size(); i++)
+            {
+                if (VERIFY_ITEM(player, items[i]))
+                {
+                    found++;
+                }
+            }
+        }
+
+        return found == items.size();
     }
 
     int FIND_ITEM(Character::Base &player, Item::Type item)
@@ -447,7 +467,10 @@ namespace Character
 
     void GAIN_LIFE(Character::Base &player, int life)
     {
-        player.Life += life;
+        if ((life < 0 && !player.IsImmortal) || life > 0)
+        {
+            player.Life += life;
+        }
 
         if (player.Life < 0)
         {
@@ -456,6 +479,16 @@ namespace Character
         else if (player.Life > player.MAX_LIFE_LIMIT)
         {
             player.Life = player.MAX_LIFE_LIMIT;
+        }
+    }
+
+    void GAIN_MONEY(Character::Base &player, int money)
+    {
+        player.Money += money;
+
+        if (player.Money < 0)
+        {
+            player.Money = 0;
         }
     }
 

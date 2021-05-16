@@ -2157,6 +2157,25 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 error = true;
                             }
                         }
+                        else if (story->Choices[current].Type == Choice::Type::ALL_ITEMS)
+                        {
+                            if (Character::VERIFY_ITEMS(player, story->Choices[current].Items))
+                            {
+                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                quit = true;
+
+                                break;
+                            }
+                            else
+                            {
+                                message = "You do not have all the required items!";
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
+                        }
                         else if (story->Choices[current].Type == Choice::Type::CODEWORD)
                         {
                             if (Character::VERIFY_CODEWORD(player, story->Choices[current].Codeword))

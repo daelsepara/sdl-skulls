@@ -22,6 +22,7 @@ namespace Choice
         MONEY,
         LIFE,
         ANY_ITEM,
+        ALL_ITEMS,
         ANY_SKILL,
         SKILL_ITEM,
         SKILL_ANY,
@@ -360,6 +361,25 @@ public:
     }
 };
 
+class Story005 : public Story::Base
+{
+public:
+    Story005()
+    {
+        ID = 5;
+
+        Text = "You steel your nerves and leap over the edge. The water rushes up to meet you, enfolding you in a silent icy embrace. The shock of impact drives the air out of your lungs and you start to fail wildly as you go under. The weight of your gold regalia drags you down, and as you fumble with the straps it becomes obvious that you will run out of air long before you can get free.\n\nThen you remember your BLOWGUN. Thrusting up through the water with it, you pierce the glimmering pane of light that marks the surface and blow into the other end until you have forced water out and can draw down a mouthful of fresh air. Using the BLOWGUN as a breathing tube buys you the time you need to struggle out of the encumbering regalia and swim up to safety.\n\nThe moment your head breaks the surface you know you are no longer at the bottom of the sacred well. Instead of the open sky overhead, there is just the roof of a large cavern. Grey light trickles from an unseen source.\n\nA familiar sound echoes off the surrounding rocks. You turn to see a canoe being slowly paddled towards you. But the two oarsmen are like no others on earth...";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 97; }
+};
+
 class Story008 : public Story::Base
 {
 public:
@@ -402,7 +422,7 @@ public:
 
         if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
         {
-            PreText += "\n\nYou lodged the jade bead under your tongue as the spirit advised you.";
+            PreText += "\n\nYou lodged the JADE BEAD under your tongue as the spirit advised you.";
         }
 
         PreText += "\n\nYou gained the codeword PAKAL.";
@@ -461,6 +481,26 @@ public:
     }
 
     int Continue(Character::Base &player) { return 91; }
+};
+
+class Story023 : public Story::Base
+{
+public:
+    Story023()
+    {
+        ID = 23;
+
+        Text = "\"Why were you counting the stars anyway?\" you ask him.\n\nBrows like stone lintels tilt in a weighty frown. \"I can't remember,\" he admits at last.\n\n\"But it must have been important?\"\n\n\"I suppose so...\" he murmurs distractedly, still puzzling over the problem.\n\n\"So I ought to get a reward?\"\n\nHis lips tighten like cooling lava. \"Ah, I see. You want payment for your service. Well, I suppose so. What will you take: health, wealth or sound advice?\"\n\nYou ponder the choice for a few moments, prompting him to a grunt of irritation: \"Decide quickly, since I now have another problem to occupy my time!\"";
+
+        Image = "images/giant.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Health", 44));
+        Choices.push_back(Choice::Base("Wealth", 67));
+        Choices.push_back(Choice::Base("Advice", 90));
+
+        Controls = StandardControls();
+    }
 };
 
 class Story024 : public Story::Base
@@ -526,6 +566,30 @@ public:
     int Continue(Character::Base &player) { return 390; }
 };
 
+class Story028 : public Story::Base
+{
+public:
+    Story028()
+    {
+        ID = 28;
+
+        Text = "The sun casts its dusty gold light across the treetops to the west, awakening glints in your ceremonial regalia. Summoning up all your courage, you take the final step that carries you off the brink into oblivion. The water rushes up to meet you -- an icy slap, followed by darkness and a roaring silence. You are enfolded in a watery womb, numbly struggling out of the metal accoutrements that are carrying you down into the furthest depths of the well.\n\nBloody darkness thunders through your brain. There is no sign of the sunlit surface of the water overhead. You feel as though you are trapped on the border between sleeping and waking, and in the instant of departing consciousness you know you are not in the bottom of the well any more. You have plunged into the fabled river that leads out of the world of the living. You are on your way to the Deathlands.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, -3);
+    }
+
+    int Continue(Character::Base &player) { return 119; };
+};
+
 class Story030 : public Story::Base
 {
 public:
@@ -544,6 +608,30 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story044 : public Story::Base
+{
+public:
+    Story044()
+    {
+        ID = 44;
+
+        Text = "The giant adopts a look of furious concentration. He puffs out the huge boulders of his cheeks and screws his eyes tight. A rumbling groan escapes from the deep well of his throat, followed by a spluttering and a single cough like a lava plug being blown out of the ground.\n\nHe opens his mouth and there on his tongue lies a stone jar. \"What's that?\" you ask.\n\n\"Ake it and thee,\" he replies.\n\n\"I beg your pardon?\" you say, lifting the jar to examine it.\n\n'I said, \"Take it and see,\"' he repeats impatiently. When he sees you grimace at the smell of the jar's contents, he adds: \"It's a healing drink. A magical recipe thousands of years old.\"\n\n\"I think it's gone off!\"\n\n\"No, it's supposed to smell like that,\" he says.\n\nThe potion can be drunk once at any time to restore 5 lost Life Points.";
+
+        Image = "images/giant.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_ITEMS(player, {Item::Type::MAGIC_DRINK});
+    }
+
+    int Continue(Character::Base &player) { return 135; }
 };
 
 class Story045 : public Story::Base
@@ -687,6 +775,30 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story067 : public Story::Base
+{
+public:
+    Story067()
+    {
+        ID = 67;
+
+        Text = "The giant blinks. Each time he does, there is a whooshing sound in thin air and a cacao drops from nowhere into your hand. He continues doing this until you have another twenty cacao.\n\n\"A good trick,\" you say, smiling and nodding in the hope that this will encourage him to continue.\n\nHe sighs wearily. \"Once my magic was much grater than that. I fear I have squandered eternity.\"\n\n\"By making a tally of all the stars?\" you say as you slip the cacao into your money-pouch. \"What could be more worthwhile!\"\n\nA streak of light flickers across the heavens. \"what was that?\" says the giant grimly.\n\n\"A falling star,\" you reply. \"Better reduce the total by one. Well, I'll be saying goodbye.\"\n\nYou GAIN 20 cacao.";
+
+        Image = "images/giant.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_MONEY(player, 20);
+    }
+
+    int Continue(Character::Base &player) { return 135; }
 };
 
 class Story068 : public Story::Base
@@ -933,7 +1045,7 @@ public:
     {
         ID = 85;
 
-        Text = NULL;
+        Image = "images/filler1.png";
 
         Choices.clear();
 
@@ -957,6 +1069,25 @@ public:
     }
 
     int Continue(Character::Base &player) { return 321; };
+};
+
+class Story090 : public Story::Base
+{
+public:
+    Story090()
+    {
+        ID = 90;
+
+        Text = "\"Buy a waterskin,\" the giant tells you.\n\n\"Others have suggested the same thing.\"\n\n\"Buy two, then. And a knife or sword. There is a four-headed serpent in the desert, and its one weak spot is at the branching of its four necks. You'll need to get close to land a killing blow, and my advice is to pretend to retreat at first. Dodge back a couple of times and the serpent will rush at you headlong -- er, heads-long. Then you can slay it.\"\n\n\"What about just avoiding it?\"\n\n\"Then you wouldn't get a drop of its blood -- a substance like sap, which hardens into rubber.\"\n\n\"And what's the good of that?\"\n\n\"The rubber ball will help you in the Necklace of Skull's contest. The ball contest is an ancient ritual which he uses to humiliate and weaken his foes, but by scoring a daring victory you can exploit the contest's magic for yourself.\"\n\n\"How do I kill Necklace of Skulls?\"\n\nHe snorts contemptuously. \"You mortals are so predictable. There are greater victories than revenge. Do you know the ultimate triumph?\"\n\nYou can think of several replies, but you doubt if any of them are what he is driving at. \"No.\"\n\n\"The ultimate triumph is to be greater than your enemy,\" he says. \"There, that is my best advice.\"";
+
+        Image = "images/giant.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 135; }
 };
 
 class Story091 : public Story::Base
@@ -1183,6 +1314,49 @@ public:
     }
 };
 
+class Story113 : public Story::Base
+{
+public:
+    Story113()
+    {
+        ID = 113;
+
+        Text = "\"You have done me a service, and yet you ask no favour in return,\" rumbles the giant. \"Hence I shall bestow my gift: immortality.\"\n\nYou wait but nothing happens. You don't feel any different. You raise your hands; you still look the same. \"Is that it?\"\n\n\"Yes. Now your natural lifespan is infinite.\"\n\n\"My natural lifespan?\" you say. A point like this is worth getting exactly right.\n\n\"You will never die a natural death,\" the giant clarifies.\n\nYou don't know what to say. \"Er... well, thank you.\" Uppermost in your thoughts is that adventurers rarely die natural deaths in any case.\n\n\"Also, you cannot suffer gradual injury,\" adds the giant. \"A single fatal accident can kill you outright, but that is all.\"\n\nThat sounds better. As the giant said, the only thing that can now kill you is an overwhelming catastrophe like falling into a volcano.\n\nYou have become immortal. You cannot lose Life Points.";
+
+        Image = "images/giant.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.IsImmortal = true;
+    }
+
+    int Continue(Character::Base &player) { return 135; }
+};
+
+class Story114 : public Story::Base
+{
+public:
+    Story114()
+    {
+        ID = 114;
+
+        Text = "Midnight Bloom agrees to a detour since it will give her the chance to buy some of the fine pottery that is brought from Nachan through the fens. Putting into a lagoon where there is a small fishing village, she tells you to be quick about checking the wizard's story. \"I would like to resume our journey to Tahil at first light,\" she says.\n\nIt is already late afternoon. The sun is trawling in the red net.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 260; }
+};
+
 class Story116 : public Story::Base
 {
 public:
@@ -1227,6 +1401,25 @@ public:
     int Continue(Character::Base &player) { return 163; }
 };
 
+class Story119 : public Story::Base
+{
+public:
+    Story119()
+    {
+        ID = 119;
+
+        Text = "Thoughts gradually come trickling back -- and, along with them, a dull sense of pain. You realize you are alive. A cold wet rock presses against your back. Above you is not the open sky but a grey-lit cavern roof.\n\nYou slowly raise your head. Your ordeal has left you as weak as a newborn child, and each movement feels as though the entire weight of the earth were pressing down on your limbs. You see that the slab of smooth rock on which you are lying is surrounded by an underground lake. Blood flows freely from a deep gash in your thigh, streaming into the black water like sunset swallowed up by the night.\n\nA great reptilian head floats alongside the rock. You have the impression of an immense body of glistening green coils. Eyes which are aglow with the lore of centuries stare back at yours. The serpent's tongue flickers out on the water, tasting the blood that swirls there.\n\nYou slump back wearily. You are lying in the underworld and a water serpent is feasting on your lifeblood.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Struggle to your feet and chase the serpent off", 166));
+        Choices.push_back(Choice::Base("Lie still and do nothing", 143));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story120 : public Story::Base
 {
 public:
@@ -1236,7 +1429,7 @@ public:
 
         Text = "Following the crowds, you pass under an archway at the north edge of the city. People go milling past and you find yourself carried by the surge of bodies along a plaster-paved causeway that leads through light woodland. You are surprised to see no buildings on this side of the city. The crowds are all eagerly discussing some great spectacle that lies in store, and you catch snatches of conversation as you are borne along. \"Now the Rain God will no longer forsake us,\" says one man. A woman who is carrying two squalling brats shouts back over her shoulder: \"Just so long as the sacrifice pleases him! Don't forget that.\"\n\nThen the trees give way to an immense clearing. At first you cannot tell what lies ahead, but by pushing your way forward you reach the front of the crowd. Your breath escapes from your lungs in a gasp of awe. The clearing is formed by a gigantic hole in the ground. It looks as though the crust of the earth simply crumbled away to real an entrance into the underworld. The sinkhole is more than twenty metres deep and even a strong man could never hope to cast a spear right across to the far side. The sides of the pit are raw limestone clothed in a dry tangled mass of roots and creepers, dropping right down to the murky lake that occupies the bottom of this vast cavernous gulf.\n\n\"What is it?\" you ask a priest standing beside you.\n\nWhen he answers, you discover that your first wild impression was correct. \"This is the sacred well of Yashuna,\" he replies in a stately voice. \"It is the mouth of the underworld.\"";
 
-        Image = "images/filler1.png";
+        Image = "images/cenote.png";
 
         Choices.clear();
 
@@ -1313,6 +1506,36 @@ public:
 
         Controls = ShopControls();
     }
+};
+
+class Story135 : public Story::Base
+{
+public:
+    Story135()
+    {
+        ID = 135;
+
+        Text = "The giant gives a hiccup and something white rolls out of his mouth onto the sand.\n\n\"What's that?\" you ask him.\n\n\"Your BROTHER's SKULL,\" he replies. \"Don't thank me. Its proper place in the scheme of things is here with you. I'm just the instrument of destiny in this case.\"\n\nTucking your BROTHER's SKULL into your haversack, you set off along the beach. You have not gone more than a hundred paces when you hear a loud grunt followed by a damp sucking noise. You turn to see the giant hauling himself out of the ground. Throwing off the mass of sand and shingle that has accumulated around his body over aeons, he stands on the shore. He is big enough to climb the highest pyramid with two bounds.\n\nYou watch as the water closes over the black dome of his head, you turn away with a feeling of awe.";
+
+        Image = "images/giant.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        if (!Character::VERIFY_CODEWORD(player, Codeword::Type::SAKBE))
+        {
+            Choices.push_back(Choice::Base("Head on to Tahil by land", 228));
+            Choices.push_back(Choice::Base("Head on to Tahil by sea", 251));
+        }
+    }
+
+    int Continue(Character::Base &player) { return 300; }
 };
 
 class Story136 : public Story::Base
@@ -1419,6 +1642,30 @@ public:
     }
 
     int Continue(Character::Base &player) { return 188; }
+};
+
+class Story143 : public Story::Base
+{
+public:
+    Story143()
+    {
+        ID = 143;
+
+        Text = "As more of your blood flows away, your growing sense of weakness begins to border on hallucination. A strange warmth spreads through you, as though the rock on which you are lying were not a cold stone in the waters of the underworld, but bathed in the rays of an unseen sun. The rhythmic slap of the serpent's tongue as it licks the blood-rimmed water lulls you into a dreamy state. Your head bobs up again, but this time without apparent effort. Staring at the serpent, you begin to imagine that you can see a tall figure standing with his feet on its coils. He looks like a king in his resplendent panoply of blue jade, copper and long turquoise quetzal feathers. You can only half make him out like an image seen in a cloudy mirror, but you see enough to tell that he is not a human being. He can only be the Rain God himself.\n\nYou LOSE 1 Life Point.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Speak to the Rain God", 212));
+        Choices.push_back(Choice::Base("Rise up and fight", 166));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, -1);
+    }
 };
 
 class Story146 : public Story::Base
@@ -1531,7 +1778,7 @@ public:
 
         Text = "You emerge at last from the forest beside a village where you get directions to the city of Nachan. You pass west along a wooded ridge overlooking flat plains that stretch northwards towards the sea. The journey takes you a day and a night, and you have to sleep under the stars. Arising early, you yawn and stretch your cramped limbs. The countryside is swathed in fog which lies in hollows like an ocean of whiteness. You stroll onwards until the path emerges from a copse of trees and you stand overlooking a marvellous sight. You arrived at Nachan just a the moment of sunrise. The palaces and temples rise from the spectral fog: man-made hilltops thrusting through cloud. Beyond them lie the suburbs of the city, where lights twinkle like fading stars under the blanket of mist.\n\nThe warmth of day burns away the fog as you make your descent from the ridge. Now you can see the scintillant colours on the walls of the ceremonial buildings -- a vivid interplay of hues which is very unlike the austere white and red of Koba's palaces.\n\nBy the time you reach the level of the streets, the mist has retreated to just a few strands hanging around the upper steps of the pyramids and veiling the tree-covered hills that form a backdrop to the city. Already there are people hurrying to and fro. Some are carrying garlands of flowers while others in fanciful costumes are carpeting the roads with fresh west leaves. \"Is there a festival?\" you ask a passer-by.\n\n\"Indeed there is,\" he replies. \"Tonight is the anniversary of the old king's death.\"";
 
-        Image = "images/filler1.png";
+        Image = "images/street-scene.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Break your journey here", 426));
@@ -1689,6 +1936,109 @@ public:
     int Continue(Character::Base &player) { return 209; }
 };
 
+class Story166 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story166()
+    {
+        ID = 166;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You realize that the sense of lassitude that afflicts you is a trance brought on by magic. The spell is broken as you rise to your feet and lash out at the serpent. It rears up from the water with an angry hiss. Its body is as thick as a tree and it has fangs like scythes of sharpened glass.\n\nThe battle is brief and bloody.";
+
+        auto DAMAGE = -4;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            DAMAGE = -2;
+
+            PreText += "[SWORDPLAY] ";
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE = -3;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou manage to drive the serpent off at last. You watch it swim away, sliding its glistening coils beneath the black water.\n\nThe soft sound of oars echoes across the cavern. You turn to see a canoe approaching out of the gloom, paddled by two of the strangest creatures you have ever seen.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 97; }
+};
+
+class Story168 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story168()
+    {
+        ID = 166;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "A rustling in the undergrowth warns you too late that what you took to be another gnarled tree root was in fact a long brown snake. It slithers away through the carpet of dead leaves after sinking its fangs into your ankle. You clutch your head as a wave of sudden weakness rolls over you. The snake was poisonous.\n\nTaking advantage of the distraction to snatch back their shawl, the stabai go loping away into the forest. Their half-audible whoops of jubilation recede until they are just like the whisper of the breeze through the leaves.\n\nYou drop to your knees as the poison burns its way through your veins.";
+
+        auto DAMAGE = -4;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+        {
+            DAMAGE = -2;
+
+            PreText += "[WILDERNESS LORE] ";
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+            {
+                PreText += "\n\n[WILDERNESS LORE] You bandage the wound and apply herbal remedies.";
+            }
+
+            Character::LOSE_ITEM(player, {Item::Type::SHAWL});
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 324; }
+};
+
 class Story169 : public Story::Base
 {
 public:
@@ -1806,7 +2156,7 @@ public:
     {
         ID = 185;
 
-        Text = "\"I cannot take this,\" you decide, replacing the golden statuette in the chest. \"It is too precious; the clan might one day need to use it.\"\n\n\"Well said!\" declares the Matriarch, her eyes almost vanishing in her plump face as she beams with satisfaction at your answer. \"The treasures that remain are less potent in their magic, but may also prove useful.\"\n\nThere are three other items. The first is a small mirror of dark green glass with a powerful spell inscribed around the rim. \"It can be used to see into the future,\" the Matriarch tells you. \"As for this next item --\" she holds up a sealed jar \"-- it contains a magic drink concocted by your great-grandfather which is capable of healing grievous wounds.\"\n\n\"And what of this?\" you ask, taking out a sword of sharpened green jade adorned with tiny glyphs.\n\n\"That also belonged to your great-grandfather. It served him both as a weapon of war and as a tool of his sorcery.\"";
+        Text = "\"I cannot take this,\" you decide, replacing the golden statuette in the chest. \"It is too precious; the clan might one day need to use it.\"\n\n\"Well said!\" declares the Matriarch, her eyes almost vanishing in her plump face as she beams with satisfaction at your answer. \"The treasures that remain are less potent in their magic, but may also prove useful.\"\n\nThere are three other items. The first is a small mirror of dark green glass with a powerful spell inscribed around the rim. \"It can be used to see into the future,\" the Matriarch tells you. \"As for this next item --\" she holds up a sealed jar \"-- it contains a MAGIC DRINK concocted by your great-grandfather which is capable of healing grievous wounds.\"\n\n\"And what of this?\" you ask, taking out a sword of sharpened green jade adorned with tiny glyphs.\n\n\"That also belonged to your great-grandfather. It served him both as a weapon of war and as a tool of his sorcery.\"";
 
         Image = "images/filler1.png";
 
@@ -1814,7 +2164,7 @@ public:
 
         Controls = StandardControls();
 
-        Take = {{Item::Type::GREEN_MIRROR, Item::Type::MAGIC_POTION, Item::Type::JADE_SWORD}};
+        Take = {{Item::Type::GREEN_MIRROR, Item::Type::MAGIC_DRINK, Item::Type::JADE_SWORD}};
 
         TakeLimit = 2;
     }
@@ -1861,6 +2211,25 @@ public:
 
         Shop = {{Item::Type::LOBSTER_POT, 2}};
     }
+};
+
+class Story189 : public Story::Base
+{
+public:
+    Story189()
+    {
+        ID = 189;
+
+        Text = "The sun dips across the treetops to the west, sending the hazy light of late afternoon slanting down into the well. You do not need the high priest's signal to know the moment has arrived. Steeling your nerves, you step out from the platform into empty space. The creeper-clad walls of the sinkhole go rushing by as you fall, then the water suddenly seizes you in a silent icy embrace. The impact drives the air out of your lungs and you flail wildly, carried inexorably down by the weight of your gold regalia. It would spell your death, but good luck is with you as always. One of the straps was not fastened securely, and you are able to shrug out of the encumbering regalia and strike up towards the surface.\n\nIt takes longer than you would have expected. Your lungs are bursting when you finally struggle up out of the water and gulp fresh air. You are on a rocky outcrop in the middle of a subterranean lake. There is no sign of the open sky. A wan grey light hovers in the air, no brighter than dusk.\n\nA familiar noise echoes across the cavern. It is the splash of oars. You turn to see a canoe approaching, paddle by two bizarre nonhuman creatures.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 97; }
 };
 
 class Story192 : public Story::Base
@@ -2061,9 +2430,9 @@ public:
 
         PreText = "";
 
-        if (Character::VERIFY_ITEM(player, Item::Type::MAGIC_POTION))
+        if (Character::VERIFY_ITEM(player, Item::Type::MAGIC_DRINK))
         {
-            PreText += Item::Descriptions[Item::Type::MAGIC_POTION];
+            PreText += Item::Descriptions[Item::Type::MAGIC_DRINK];
             PreText += "\n\nIt can be used once during your adventure. It will restore 5 lost Life Points, up to the limit of your initial Life Points score.";
 
             selected++;
@@ -2148,6 +2517,25 @@ public:
     }
 
     int Continue(Character::Base &player) { return 389; }
+};
+
+class Story212 : public Story::Base
+{
+public:
+    Story212()
+    {
+        ID = 212;
+
+        Text = "You open your mouth to speak and jade the bead rolls out. It falls, bounces off the rock and disappears into the water with a tiny splash.\n\nIn the same moment, the tenebrous image of the Rain God leaps into sharp focus. You see him as clearly now as if all the sun's light were focused just where he is standing. Everything else goes plunging into darkness. Your vision is filled with the blazing presence of the divinity.\n\nHis face is far from human; you can see that now. He opens his hand in the traditional beneficent gesture of royalty throughout the ages, inviting you to speak.\n\n\"O supreme lord...\"\n\nYou falter. How can you address a god?\n\nThen you hear his voice inside your head, telling you that he knows why you have been sent. He accepts the sacrifice. Your life will buy the heavy rains needed to irrigate the crops.\n\nYou try to open your mouth to tell him more -- about your quest to find your brother, about the thirst for truth and for vengeance on the sorcerer in the western desert. But you are too drowsy. The dazzling radiance of the Rain God's aura is veiled by a wave of darkness. You relax, strangely content.\n\nIn the gloom of the underworld, a monstrous serpent contentedly laps up the last of your blood and dives beneath the water.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+
+        Type = Story::Type::BAD;
+    }
 };
 
 class Story215 : public Story::Base
@@ -2450,6 +2838,27 @@ public:
     int Continue(Character::Base &player) { return 265; }
 };
 
+class Story251 : public Story::Base
+{
+public:
+    Story251()
+    {
+        ID = 251;
+
+        Text = "You find a trader who will shortly be sailing up the coast to Tahil.\n\nHe offers a free passage if you will help defend the boat against pirates. If not, he will charge you 6 cacao passage.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Travel with him and help with the defence (SWORD and BLOWGUN)", 300, Choice::Type::ALL_ITEMS, {Item::Type::SWORD, Item::Type::BLOWGUN}));
+        Choices.push_back(Choice::Base("... or a with JADE SWORD and BLOWGUN", 300, Choice::Type::ALL_ITEMS, {Item::Type::JADE_SWORD, Item::Type::BLOWGUN}));
+        Choices.push_back(Choice::Base("Pay for your passage (6 cacao)", 300, Choice::Type::LOSE_MONEY, 6));
+        Choices.push_back(Choice::Base("Travel overland instead", 228));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story254 : public Story::Base
 {
 public:
@@ -2506,6 +2915,33 @@ public:
         Choices.push_back(Choice::Base("Agree to being thrown into the pit", 327));
 
         Controls = StandardControls();
+    }
+};
+
+class Story260 : public Story::Base
+{
+public:
+    Story260()
+    {
+        ID = 260;
+
+        Text = "You walk along the shore as dusk gathers and the stars slowly emerge against the curtain of night. Ahead of you, nestling at the base of the cliffs, you see a massive round head that seems to be carved out of smooth black stone. It is taller than a man. As you get closer, it becomes possible to make out the features: a strong face with wide aristocratic nose, thick lips compressed in stern deliberation, heavy brows above eyes which stare impassively out to sea.\n\nThen you realize you can hear muttering. A low quiet sound at the very limit of audibility. It sounds like someone counting: \"Seventeen million and sixty-two, seventeen million and sixty-three...\"\n\nYou step up to the head and say, \"Excuse me.\"\n\nThe huge eyes roll in their sockets with a stony scraping. You find yourself fixed with a disconcerting stare. The eyes hold that blank expression which lies on the far side of outrage and disbelief.\n\nAfter a moment, the head's gaze turns back to the starry sky. \"One,\" you hear it say distinctly. \"Two. Three...\"\n\nYou give a polite cough. \"There are one hundred thousand million and seven of them,\" you venture.\n\nThe huge eyes swivel back to study you again, this time filled with a look of cautious hope. \"You're sure? I thought mortal eyes could only see a few thousand stars.\"\n\n\"They can, but I was told the number by a magician.\"\n\nHe gives a gravelly sigh. \"I have been counting the stars since before the coming of man -- but they kept moving, and often the daytime made me lose count. See, I've been here so long I've been buried up to my neck.\"\n\nYou look at the sand and gravel, trying to imagine the huge body buried beneath it.";
+
+        Image = "images/giant.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Ask the giant for a favour", 23));
+        Choices.push_back(Choice::Base("It is time to get on with planning your journey to Tahil", 113));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::OLMEK))
+        {
+            Character::REMOVE_CODEWORD(player, Codeword::Type::OLMEK);
+        }
     }
 };
 
@@ -2941,6 +3377,39 @@ public:
     }
 };
 
+class Story304 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story304()
+    {
+        ID = 304;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "From what your friend the old soothsayer told you, it is unwise to speak once you enter the underworld. You had better cast your spells now, while you still can.\n\n\"Allow me a moment to compose myself,\" you say to the high priest.\n\n\"It is irregular...\"\n\n\"I am about to meet a god,\" you point out.\n\nStepping away a few paces, you murmur the words of an incantation which renders your body as buoyant as wood. You gaze down into the depths of the well. At least now you can be sure of not drowning -- but if this is truly the entrance to the underworld, there will be other dangers which you cannot yet even guess at.\n\nYou turn to the assembled crowd and announce, \"I am ready.\"\n\nYou are led to a shrine at the western edge of the hole. From here, a steep flight of steps descends towards a platform covered with the hieratic glyphs of the afterlife. A vest of golden plaques is fastened across your chest and the high priest places a tall helmet of gold and copper on your head. The burden of so much metal makes you stoop. These artifacts are beyond price, since gold is not found in this part of the world. It is a lavish offering to the Rain God, but it also serves a secondary purpose: the great weight ensures you will be carried deep under the water.\n\nSeveral junior priests come forward with dishes of blue dye, which they use to paint spirals across your face and limbs. \"Thus you are consecrated to the Rain God,\" they explain. \"Go now into the other world, and carry our plea for rain to refresh the arid fields.\"";
+
+        if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
+        {
+            PreText += "\n\nYou lodged the JADE BEAD under your tongue as the spirit advised you.";
+        }
+
+        PreText += "\n\nThen you descend to the platform overlooking the well and prepare yourself for the most uncanny voyage anyone could every attempt: a leap into the underworld.";
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 411; }
+};
+
 class Story311 : public Story::Base
 {
 public:
@@ -3067,7 +3536,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        player.BLESSING_WAR_GOD = true;
+        player.IsBlessed = true;
     }
 };
 
@@ -3117,7 +3586,7 @@ public:
 
         Text = "A low tunnel in the wall around the town forms the west gate. Crouching as you make your way along the tunnel, you notice rough scrawlings in the stone. One shows a man with the tail and claws of a scorpion: another is a four-headed dragon.\n\nTwo guards armed with spear stand at the far end of the tunnel, staring nervously out across the desert. As they hear you come up, they glance at you and one says, \"Here's a traveller who isn't afraid to take the Gate of Exiles!\"\n\nBeyond, in the bright sunshine, lies the desert you must cross. The bleak stony landscape of crags and dusty gullies stretches off into a haze of heat along the horizon. A path leads from the gate, but it peters out beside a large boulder ten paces away.";
 
-        Image = "images/filler1.png";
+        Image = "images/gate-of-exiles.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Question the guards about the markings on the tunnel walls", 367));
@@ -3156,7 +3625,7 @@ public:
 
         if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
         {
-            PreText += "\n\nYou remember to slip the jade bead under your tongue as advised.";
+            PreText += "\n\nYou remember to slip the JADE BEAD under your tongue as advised.";
         }
 
         PreText += "\n\nThen you descend to the platform overlooking the well and prepare yourself for the most uncanny voyage anyone could ever attempt: a leap into the underworld.";
@@ -3255,7 +3724,7 @@ public:
     {
         ID = 335;
 
-        Text = "\"You seek to enter the underworld,\" says the spirit. \"The way will not be easy. But I perceive your cause to be honourable, so I shall aid you.\"\n\nYou do not dare to answer. He goes on: \"You must place a jade bead under your tongue and keep it there until you reach the four paths, not speaking whatever the temptation. Once you are at the four paths, you may remove the bead from your mouth but you should retain it until you see a kapok tree. Before any of this you must cross Death Canyon, however. If you have no other option, seek the dragon Kawak who lies across the canyon with one of his two heads on either side. Others have passed through his jaws and emerged at the far end, and if you are dauntless you may be able to do this too.\"\n\nThere is deep silence after he finishes speaking. You wait with lowered gaze. It is not seemly to look upon even a living king unless invited to. Suddenly there is a flash and an immediate peal of thunder, followed by a deluge of heavy tropical rain.\n\nYou look up. King Sky Shield and the phantom snake have vanished, but the shrine is not as it was before. Now a pit has opened in the floor, revealing stairs down into the pyramid. It is your route to the underworld.";
+        Text = "\"You seek to enter the underworld,\" says the spirit. \"The way will not be easy. But I perceive your cause to be honourable, so I shall aid you.\"\n\nYou do not dare to answer. He goes on: \"You must place a JADE BEAD under your tongue and keep it there until you reach the four paths, not speaking whatever the temptation. Once you are at the four paths, you may remove the bead from your mouth but you should retain it until you see a kapok tree. Before any of this you must cross Death Canyon, however. If you have no other option, seek the dragon Kawak who lies across the canyon with one of his two heads on either side. Others have passed through his jaws and emerged at the far end, and if you are dauntless you may be able to do this too.\"\n\nThere is deep silence after he finishes speaking. You wait with lowered gaze. It is not seemly to look upon even a living king unless invited to. Suddenly there is a flash and an immediate peal of thunder, followed by a deluge of heavy tropical rain.\n\nYou look up. King Sky Shield and the phantom snake have vanished, but the shrine is not as it was before. Now a pit has opened in the floor, revealing stairs down into the pyramid. It is your route to the underworld.";
 
         Image = "images/filler1.png";
 
@@ -3543,6 +4012,26 @@ public:
     }
 };
 
+class Story371 : public Story::Base
+{
+public:
+    Story371()
+    {
+        ID = 371;
+
+        Text = "There is a gasp form the crowd as they watch you jump over the edge. You know you must act quickly. Pulling off the helmet as you tumble down, you hug it against you an instant before the lake surface comes rushing up, driving the air out of your lungs with its chilling embrace. You are surrounded by silence and watery gloom. The weight of gold drags you down, but you have managed to trap a pocket of air inside the helmet and you use this to breathe while unfastening the straps of the regalia. All the air is used up by the time you struggle free, and a red haze swims in front of your vision as you kick up towards the surface.\n\nYou reach fresh air to discover you are no longer at the bottom of the well. Instead of open sky, a cavern roof stretches overhead. A ghostly grey light emanates out of nowhere. Trudging up onto a a rocky ledge, you hear the sound of oars. A canoe is approaching. As it takes shape out of the shadows, you get a good look at the two occupants. They are like nothing you have ever seen outside your night-mares. Now you know you truly have plunged into the fabled river that leads between the world of the living and the world of the dead.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 97; }
+};
+
+
 class Story374 : public Story::Base
 {
 public:
@@ -3683,6 +4172,25 @@ public:
     }
 
     int Continue(Character::Base &player) { return 205; }
+};
+
+class Story392 : public Story::Base
+{
+public:
+    Story392()
+    {
+        ID = 392;
+
+        Text = "You know that your first priority must be to get out of the encumbering golden regalia as soon as you hit the water, otherwise it will drag you down to your doom. Your fingers have already found the straps as you dive off the platform. You hear a moan of awe from the onlookers which is soon snatched away by the rush of wind as you fall. Then you hit the water, and suddenly you are sinking through silent darkness.\n\nAnother person might panic, losing precious seconds, but you have been in this kind of scrape before. You made sure to take a good breath of air before going under, and you make use of that now to sustain you while you struggle free of the regalia. Discarding it, you watch it go drifting down until the yellow glints of metal are lost in the murk. It is a priceless treasure, but the loss of it gladdens your heart as you strike up through the cold green water.\n\nYour head breaks the surface and you suck gratefully at the stale air of an underground cavern. There is no flicker of daylight. The sinkhole has vanished, and the only light is now an eldritch grey glow seeping from an unknown source. You guess that you have been carried to the outer fringes of the underworld. Stumbling up onto a pebble-strewn shore, you gaze out into the gloom and see a canoe coming towards you. Your guess is confirmed when you see the oarsmen. They are like no creatures of the mortal realm.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 97; }
 };
 
 class Story396 : public Story::Base
@@ -4080,20 +4588,25 @@ auto prologue = Prologue();
 auto story001 = Story001();
 auto story002 = Story002();
 auto story003 = Story003();
+auto story005 = Story005();
 auto story008 = Story008();
 auto story009 = Story009();
 auto story010 = Story010();
 auto story021 = Story021();
+auto story023 = Story023();
 auto story024 = Story024();
 auto story025 = Story025();
 auto story026 = Story026();
+auto story028 = Story028();
 auto story030 = Story030();
+auto story044 = Story044();
 auto story045 = Story045();
 auto story047 = Story047();
 auto story048 = Story048();
 auto story049 = Story049();
 auto story051 = Story051();
 auto story054 = Story054();
+auto story067 = Story067();
 auto story068 = Story068();
 auto story070 = Story070();
 auto story071 = Story071();
@@ -4101,6 +4614,7 @@ auto story077 = Story077();
 auto story078 = Story078();
 auto story080 = Story080();
 auto story085 = Story085();
+auto story090 = Story090();
 auto story091 = Story091();
 auto story093 = Story093();
 auto story094 = Story094();
@@ -4109,17 +4623,22 @@ auto story100 = Story100();
 auto story101 = Story101();
 auto story103 = Story103();
 auto story104 = Story104();
+auto story113 = Story113();
+auto story114 = Story114();
 auto story116 = Story116();
 auto story117 = Story117();
+auto story119 = Story119();
 auto story120 = Story120();
 auto story123 = Story123();
 auto story126 = Story126();
 auto story127 = Story127();
+auto story135 = Story135();
 auto story136 = Story136();
 auto story138 = Story138();
 auto story139 = Story139();
 auto story141 = Story141();
 auto story142 = Story142();
+auto story143 = Story143();
 auto story146 = Story146();
 auto story147 = Story147();
 auto story149 = Story149();
@@ -4130,6 +4649,8 @@ auto story162 = Story162();
 auto story163 = Story163();
 auto story164 = Story164();
 auto story165 = Story165();
+auto story166 = Story166();
+auto story168 = Story168();
 auto story169 = Story169();
 auto story170 = Story170();
 auto story172 = Story172();
@@ -4138,6 +4659,7 @@ auto story183 = Story183();
 auto story185 = Story185();
 auto story186 = Story186();
 auto story188 = Story188();
+auto story189 = Story189();
 auto story192 = Story192();
 auto story193 = Story193();
 auto story195 = Story195();
@@ -4146,6 +4668,7 @@ auto story206 = Story206();
 auto story208 = Story208();
 auto story209 = Story209();
 auto story211 = Story211();
+auto story212 = Story212();
 auto story215 = Story215();
 auto story216 = Story216();
 auto story218 = Story218();
@@ -4156,9 +4679,11 @@ auto story234 = Story234();
 auto story235 = Story235();
 auto story238 = Story238();
 auto story242 = Story242();
+auto story251 = Story251();
 auto story254 = Story254();
 auto story255 = Story255();
 auto story257 = Story257();
+auto story260 = Story260();
 auto story262 = Story262();
 auto story263 = Story263();
 auto story264 = Story264();
@@ -4176,6 +4701,7 @@ auto story298 = Story298();
 auto story300 = Story300();
 auto story301 = Story301();
 auto story302 = Story302();
+auto story304 = Story304();
 auto story311 = Story311();
 auto story320 = Story320();
 auto story321 = Story321();
@@ -4201,12 +4727,14 @@ auto story366 = Story366();
 auto story368 = Story368();
 auto story369 = Story369();
 auto story370 = Story370();
+auto story371 = Story371();
 auto story374 = Story374();
 auto story378 = Story378();
 auto story387 = Story387();
 auto story389 = Story389();
 auto story390 = Story390();
 auto story391 = Story391();
+auto story392 = Story392();
 auto story396 = Story396();
 auto story398 = Story398();
 auto story400 = Story400();
@@ -4225,19 +4753,21 @@ auto story437 = Story437();
 void InitializeStories()
 {
     Stories = {
-        &prologue, &story001, &story002, &story003, &story008, &story009, &story010, &story021, &story024, &story025,
-        &story026, &story030, &story045, &story047, &story048, &story049, &story051, &story054, &story068, &story070,
-        &story071, &story077, &story078, &story080, &story085, &story091, &story093, &story094, &story096, &story100,
-        &story101, &story103, &story104, &story116, &story117, &story120, &story123, &story126, &story127, &story136,
-        &story138, &story139, &story141, &story142, &story146, &story147, &story149, &story158, &story159, &story160,
-        &story162, &story163, &story164, &story165, &story169, &story170, &story172, &story182, &story183, &story185,
-        &story188, &story186, &story192, &story193, &story195, &story205, &story206, &story208, &story209, &story211,
-        &story215, &story216, &story218, &story228, &story231, &story232, &story234, &story235, &story238, &story242,
-        &story254, &story255, &story257, &story262, &story263, &story264, &story265, &story274, &story275, &story277,
-        &story278, &story280, &story281, &story285, &story288, &story297, &story298, &story300, &story301, &story302,
-        &story311, &story320, &story321, &story323, &story324, &story325, &story327, &story331, &story332, &story333,
-        &story334, &story335, &story343, &story344, &story346, &story347, &story350, &story354, &story355, &story356,
-        &story357, &story366, &story368, &story369, &story370, &story374, &story378, &story387, &story389, &story391,
+        &prologue, &story001, &story002, &story003, &story005, &story008, &story009, &story010, &story021, &story023,
+        &story024, &story025, &story026, &story028, &story030, &story044, &story045, &story047, &story048, &story049,
+        &story051, &story054, &story067, &story068, &story070, &story071, &story077, &story078, &story080, &story085,
+        &story090, &story091, &story093, &story094, &story096, &story100, &story101, &story103, &story104, &story113,
+        &story114, &story116, &story117, &story119, &story120, &story123, &story126, &story127, &story135, &story136,
+        &story138, &story139, &story141, &story142, &story143, &story146, &story147, &story149, &story158, &story159,
+        &story160, &story162, &story163, &story164, &story165, &story166, &story168, &story169, &story170, &story172,
+        &story182, &story183, &story185, &story188, &story189, &story186, &story192, &story193, &story195, &story205,
+        &story206, &story208, &story209, &story211, &story212, &story215, &story216, &story218, &story228, &story231,
+        &story232, &story234, &story235, &story238, &story242, &story251, &story254, &story255, &story257, &story260,
+        &story262, &story263, &story264, &story265, &story274, &story275, &story277, &story278, &story280, &story281,
+        &story285, &story288, &story297, &story298, &story300, &story301, &story302, &story304, &story311, &story320,
+        &story321, &story323, &story324, &story325, &story327, &story331, &story332, &story333, &story334, &story335,
+        &story343, &story344, &story346, &story347, &story350, &story354, &story355, &story356, &story357, &story366,
+        &story368, &story369, &story370, &story371, &story374, &story378, &story387, &story389, &story391, &story392,
         &story398, &story400, &story406, &story408, &story409, &story415, &story416, &story417, &story424, &story425,
         &story426, &story435, &story437};
 }
