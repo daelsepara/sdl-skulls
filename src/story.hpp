@@ -5497,7 +5497,7 @@ void InitializeStories()
         &story366, &story367, &story368, &story369,
         &story370, &story371, &story374, &story378,
         &story387, &story388, &story389,
-        &story391, &story392, &story398,
+        &story390, &story391, &story392, &story398,
         &story400, &story406, &story407, &story408, &story409,
         &story411, &story415, &story416, &story417,
         &story424, &story425, &story426, &story435, &story437};
