@@ -2049,6 +2049,26 @@ public:
     }
 };
 
+class Story152 : public Story::Base
+{
+public:
+    Story152()
+    {
+        ID = 152;
+
+        Text = "The palace of Necklace of Skulls cannot be far from here, since it is reputed to lie at the western rim of the world. With a wry glance at the shimmering sun, you set out across the dunes.\n\nThankfully, the sun sets at last and the cool of evening comes on the breeze. By this time you are weary with heat and thirst, but you know you must press on to cover as much ground as possible. The stars emerge like a thousand gleaming pebbles seen in a stream. Moonlight soaks the sand in hues of charcoal and silver.\n\nYou reach the crest of a dune to find a dramatic scene unfolding before your eyes. Only thirty paces away, a warrior in jaguar-hide cloak stands confronting a giant serpent with four heads. The warrior's servant holds up a burning torch to give more light as his master moves forward. The torchlight looks like fresh blood along the monster's gruesome fang-rimmed jaws.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Rush in to attack the monster", 175));
+        Choices.push_back(Choice::Base("Sneak off while the warrior is fighting it", 365));
+        Choices.push_back(Choice::Base("Stand by and watch what happens", 198));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story158 : public Story::Base
 {
 public:
@@ -2496,6 +2516,53 @@ public:
     int Continue(Character::Base &player) { return 85; }
 };
 
+class Story184 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story184()
+    {
+        ID = 184;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Thirst and weariness continue to sap your strength. Your small remaining supply of water is soon used up.";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+        {
+            PreText += "\n\n[WILDERNESS LORE] You manage to ration your supplies more effectively.";
+        }
+        else
+        {
+            PreText += "\n\nYou LOST 2 Life Points.";
+
+            Character::GAIN_LIFE(player, -2);
+        }
+
+        if (player.Life > 0)
+        {
+            if (Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
+            {
+                Character::LOSE_ITEMS(player, {Item::Type::WATERSKIN});
+
+                PreText += "\n\nYour WATERSKIN is now used up.";
+            }
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 152; }
+};
+
 class Story185 : public Story::Base
 {
 public:
@@ -2781,6 +2848,28 @@ public:
     }
 
     int Continue(Character::Base &player) { return 85; }
+};
+
+class Story207 : public Story::Base
+{
+public:
+    Story207()
+    {
+        ID = 207;
+
+        Text = "Your head is pounding and it feels as though a rough rope has been used to scour your throat. You recognize the symptoms of dehydration. Without water, you will die.\n\nYou find three plants that might yield the moisture you need. The first is a large barrel-shaped cactus with a milky sap. The second is a clump of rough spiky leaves with a single long stalk growing up from the centre. The last is another cactus, paler in colour than the first, comprising many flattened bulbous segments with squashy fruits.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::WILDERNESS_LORE.Name, 230, Skill::Type::WILDERNESS_LORE));
+        Choices.push_back(Choice::Base("Get moisture from the barrel cactus", 253));
+        Choices.push_back(Choice::Base("... from the spiky-leafed plant", 276));
+        Choices.push_back(Choice::Base("... from the bulbous cactus", 299));
+        Choices.push_back(Choice::Base("None of these plants will help you", 322));
+
+        Controls = StandardControls();
+    }
 };
 
 class Story208 : public Story::Base
@@ -5243,6 +5332,7 @@ auto story143 = Story143();
 auto story146 = Story146();
 auto story147 = Story147();
 auto story149 = Story149();
+auto story152 = Story152();
 auto story158 = Story158();
 auto story159 = Story159();
 auto story160 = Story160();
@@ -5258,6 +5348,7 @@ auto story170 = Story170();
 auto story172 = Story172();
 auto story182 = Story182();
 auto story183 = Story183();
+auto story184 = Story184();
 auto story185 = Story185();
 auto story186 = Story186();
 auto story187 = Story187();
@@ -5268,6 +5359,7 @@ auto story193 = Story193();
 auto story195 = Story195();
 auto story205 = Story205();
 auto story206 = Story206();
+auto story207 = Story207();
 auto story208 = Story208();
 auto story209 = Story209();
 auto story210 = Story210();
@@ -5381,12 +5473,12 @@ void InitializeStories()
         &story120, &story123, &story126, &story127,
         &story135, &story136, &story137, &story138, &story139,
         &story141, &story142, &story143, &story146, &story147, &story149,
-        &story158, &story159,
+        &story152, &story158, &story159,
         &story160, &story161, &story162, &story163, &story164, &story165, &story166, &story168, &story169,
         &story170, &story172,
-        &story182, &story183, &story185, &story188, &story189, &story186, &story187,
+        &story182, &story183, &story184, &story185, &story188, &story189, &story186, &story187,
         &story192, &story193, &story195,
-        &story205, &story206, &story208, &story209,
+        &story205, &story206, &story207, &story208, &story209,
         &story210, &story211, &story212, &story215, &story216, &story218,
         &story228, &story231,
         &story232, &story233, &story234, &story235, &story238,
