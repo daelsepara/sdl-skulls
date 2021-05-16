@@ -950,6 +950,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
         auto infoh = 36;
         auto boxh = 75;
+        auto box_space = 10;
 
         while (!done)
         {
@@ -987,6 +988,9 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
             putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
             putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+
+            putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+            putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
@@ -2643,7 +2647,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
                     putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
 
-                    putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+                    putText(renderer, "Life", font, text_space, clrWH, (story->Type == Story::Type::NORMAL && player.Life > 0) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
                     putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
                 }
 
