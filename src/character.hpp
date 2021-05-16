@@ -437,7 +437,7 @@ namespace Character
         }
     }
 
-    void LOSE_ITEM(Character::Base &player, std::vector<Item::Type> items)
+    void LOSE_ITEMS(Character::Base &player, std::vector<Item::Type> items)
     {
         if (player.Items.size() > 0 && items.size() > 0)
         {

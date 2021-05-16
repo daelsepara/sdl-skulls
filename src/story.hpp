@@ -172,7 +172,7 @@ namespace Story
         NORMAL = 0,
         UNCERTAIN,
         GOOD,
-        BAD
+        DOOM
     };
 
     class Base
@@ -509,6 +509,43 @@ public:
     int Continue(Character::Base &player) { return 91; }
 };
 
+class Story022 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story022()
+    {
+        ID = 22;
+
+        Image = "images/filler1.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Blistering waves of heat rise form the rocks. Dazzled and soaked in sweat, you stumble on under the harsh sun. The ground is cracked and dry. Pinnacles of wind-blasted rock poke up like gnarled fingers into the sky. High above, the vultures circle in a long lazy sweep. They are content to wait until you are too weak to go on. Days and nights become a blur of torment.";
+
+        Choices.clear();
+
+        if (Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
+        {
+            Character::GAIN_LIFE(player, -2);
+
+            Character::LOSE_ITEMS(player, {Item::Type::WATERSKIN});
+
+            PreText += "\n\nYou LOST 2 Life Points. Your waterskin has been emptied.";
+
+            Choices.push_back(Choice::Base("Continue", 69));
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 322; }
+};
+
 class Story023 : public Story::Base
 {
 public:
@@ -678,10 +715,71 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::LOSE_ITEM(player, {Item::Type::MAN_OF_GOLD});
+        Character::LOSE_ITEMS(player, {Item::Type::MAN_OF_GOLD});
     }
 
     int Continue(Character::Base &player) { return 91; }
+};
+
+class Story046 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story046()
+    {
+        ID = 46;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You have never seen so many stars as fill the desert sky after sunset. The night is full of soft sinister rustlings: snakes gliding across the sand, insects and scorpions scuttling unseen in the darkness. It is as eerie as venturing into the underworld. When the moon rises, it outlines the wind-blasted crags in a ghostly silver glow that makes them look like towering clouds.\n\nBy day you shelter under overhanging rocks -- after first being sure to check that no venomous creatures have used the same patch of shade as a lair. Each evening, as the sun sinks in the west and the terrible heat of the day gives way to the cool of night, you take up your pack and journey on.";
+
+        auto DAMAGE = -3;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
+        {
+            PreText += "[WATERSKIN] ";
+
+            DAMAGE = -1;
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+        {
+            PreText += "[WILDERNESS LORE] ";
+
+            DAMAGE += 1;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            if (Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
+            {
+                PreText += "\n\nYour WATERSKIN has been emptied.";
+
+                Character::LOSE_ITEMS(player, {Item::Type::WATERSKIN});
+            }
+            else if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+            {
+                PreText += "\n\nYour knowledge of WILDERNESS LORE made you tougher than most people.";
+            }
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 69; }
 };
 
 class Story047 : public Story::Base
@@ -871,6 +969,27 @@ public:
     }
 
     int Continue(Character::Base &player) { return 91; }
+};
+
+class Story069 : public Story::Base
+{
+public:
+    Story069()
+    {
+        ID = 69;
+
+        Text = "Cliffs rise in front of you, and you make your way along them until you find a long shoulder of rock by which you are able to scale to the top.\n\nYou have gone only a little further when you hear a distant keening noise. It sounds like the wind, but you do not feel even a breath of air in the sultry stillness. Then you notice half a dozen long plumes of dust moving along the ground in your direction. Above each dust-plume is a dark twisting funnel of air. Whirlwinds -- and they are bearing straight down on you. Superstitious dread crawls up your spine. You recall tales of the demons of the desert, who rip men limb from limb with the fury of their whirlwinds.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::FOLKLORE.Name, 345, Skill::Type::FOLKLORE));
+        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 92, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("Stand ready to fight the demons off", 115));
+        Choices.push_back(Choice::Base("Run back towards the cliffs", 137));
+
+        Controls = StandardControls();
+    }
 };
 
 class Story070 : public Story::Base
@@ -1170,6 +1289,48 @@ public:
     }
 };
 
+class Story092 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story092()
+    {
+        ID = 92;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Do battle with the demons", 115));
+        Choices.push_back(Choice::Base("Run away from them", 137));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You send a surge of occult power to drive the whirlwinds back, but there are too many of them. Here they are in their element, drawing strength from the sand and the rocks and the dry desert air. They penetrate your barrier of spells and come roaring forward, ripping at your body with invisible hands.";
+
+        Type = Story::Type::DOOM;
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::CHARMS))
+        {
+            Character::GAIN_LIFE(player, -2);
+
+            if (player.Life > 0)
+            {
+                Type = Story::Type::NORMAL;
+            }
+        }
+        else
+        {
+            PreText += "\n\nYou were KILLED at once.";
+        }
+
+        Text = PreText.c_str();
+    }
+};
+
 class Story093 : public Story::Base
 {
 public:
@@ -1422,6 +1583,58 @@ public:
     int Continue(Character::Base &player) { return 260; }
 };
 
+class Story115 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story115()
+    {
+        ID = 115;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 92, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("Flee for your life", 137));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The whirlwinds strike you with frightening force. The air is sucked out of your lungs and your limbs are stretched until you fear they will be torn from their sockets. With a burst of desperate strength, you break free of the demon's clutches and go staggering back across the sand.";
+
+        auto DAMAGE = -3;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            DAMAGE = -1;
+
+            PreText += "[SWORDPLAY] ";
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE = -2;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou must try another tack.";
+        }
+
+        Text = PreText.c_str();
+    }
+};
+
 class Story116 : public Story::Base
 {
 public:
@@ -1643,6 +1856,25 @@ public:
     }
 };
 
+class Story137 : public Story::Base
+{
+public:
+    Story137()
+    {
+        ID = 137;
+
+        Text = "You race back towards the clifftops with the whirling demons hot on your heels. You can hear the screeching wind as they rush across the sand. And is it just your imagination, or can you also hear another sound behind the wind -- a sound like wild laughter?\n\nYou reach the cliff. The whirlwinds are right at your back. Trapped, you dive frantically to one side, landing heavily. You try to rise, but you are too exhausted to run any further.\n\nLuckily you do not have to. The demons are unable to stop themselves, and pitch straight over the side of the cliff. You distinctly hear their cries of outrage and shock as the swirling eddies of dust and wind tumble downwards.\n\nBreathing a sight of relief, you set off again into the west.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 161; }
+};
+
 class Story138 : public Story::Base
 {
 public:
@@ -1700,7 +1932,7 @@ public:
 
         Controls = StandardControls();
 
-        Type = Story::Type::BAD;
+        Type = Story::Type::DOOM;
     }
 };
 
@@ -1872,6 +2104,35 @@ public:
         Choices.push_back(Choice::Base("Follow the river to the coast", 30));
 
         Controls = StandardControls();
+    }
+};
+
+class Story161 : public Story::Base
+{
+public:
+    Story161()
+    {
+        ID = 161;
+
+        Text = "Days pass. You have lost track of how long you have been travelling across the desert. The intense sun leeches the ground of all moisture and turns the horizon to a blaze of dazzling whiteness. Dusk brings no respite, but only an icy wind that leaves you shuddering inside your thin clothes. Your tongue is as dry as burnt paper, and blisters make every every step a misery.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
+        {
+            return 184;
+        }
+        else
+        {
+            return 207;
+        }
     }
 };
 
@@ -2116,7 +2377,7 @@ public:
                 PreText += "\n\n[WILDERNESS LORE] You bandage the wound and apply herbal remedies.";
             }
 
-            Character::LOSE_ITEM(player, {Item::Type::SHAWL});
+            Character::LOSE_ITEMS(player, {Item::Type::SHAWL});
         }
 
         Text = PreText.c_str();
@@ -2167,7 +2428,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::LOSE_ITEM(player, {Item::Type::BLOWGUN});
+        Character::LOSE_ITEMS(player, {Item::Type::BLOWGUN});
     }
 
     int Continue(Character::Base &player) { return 263; }
@@ -2462,7 +2723,7 @@ public:
         {
             FISHED = true;
 
-            Character::LOSE_ITEM(player, {Item::Type::LOBSTER_POT});
+            Character::LOSE_ITEMS(player, {Item::Type::LOBSTER_POT});
         }
 
         if (FISHED)
@@ -2672,7 +2933,7 @@ public:
 
         Controls = StandardControls();
 
-        Type = Story::Type::BAD;
+        Type = Story::Type::DOOM;
     }
 };
 
@@ -2721,7 +2982,7 @@ public:
         {
             PreText += " You are left to morbidly consider your fate in the last minutes before your strength gives out.";
 
-            Type = Story::Type::BAD;
+            Type = Story::Type::DOOM;
         }
 
         Text = PreText.c_str();
@@ -3642,7 +3903,7 @@ public:
         {
             PreText += "\n\nYou have no defence against the creature's malign magic and you are doomed to become its next victim.";
 
-            Type = Story::Type::BAD;
+            Type = Story::Type::DOOM;
         }
 
         Text = PreText.c_str();
@@ -3719,6 +3980,25 @@ public:
         Choices.push_back(Choice::Base("Carry on to the west gate of the town", 325));
 
         Controls = StandardControls();
+    }
+};
+
+class Story322 : public Story::Base
+{
+public:
+    Story322()
+    {
+        ID = 322;
+
+        Text = "You become weaker and weaker. Finally you collapse and lie stretched out on the hard sun-blistered ground, too weak to rise. You feel like one who has been chosen for sacrifice to the gods, spread-eagled and helpless. Your eyes are stinging. You stare up at the sky, which first blackens until it is like ink, then explodes in a hazy burst of light. Now you are weightless, dropping down an endless tunnel that leads into the bowels of the earth...\n\nAnd so you die, far out in the cruel desert with only the vultures to witness your last agonized moments. Perhaps you will be reunited with your brother in the afterlife -- but only the gods can say.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+
+        Type = Story::Type::DOOM;
     }
 };
 
@@ -3919,7 +4199,7 @@ public:
 
         Controls = StandardControls();
 
-        Type = Story::Type::BAD;
+        Type = Story::Type::DOOM;
     }
 };
 
@@ -3988,6 +4268,25 @@ public:
     int Continue(Character::Base &player) { return 325; }
 };
 
+class Story345 : public Story::Base
+{
+public:
+    Story345()
+    {
+        ID = 345;
+
+        Text = "The invisible demons of the desert are known to harness whirlwinds, which they ride pell-mell across the sand. It is said that on nights of the full moon they can even be seen crouched atop their captive whirlwinds -- translucent unhuman figures with their faces raised shrieking to the sky.\n\nThe moon is not full tonight, and you are glad. You have no wish to see these monsters. Your only desire is to get rid of them, and to do that you must exploit their one weakness: once in full pursuit of a victim, they cannot veer quickly off a straight line.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 137; }
+};
+
 class Story346 : public Story::Base
 {
 public:
@@ -4025,7 +4324,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::LOSE_ITEM(player, {Item::Type::SHAWL});
+        Character::LOSE_ITEMS(player, {Item::Type::SHAWL});
     }
 
     int Continue(Character::Base &player) { return 324; }
@@ -4104,7 +4403,7 @@ public:
 
         Controls = StandardControls();
 
-        Type = Story::Type::BAD;
+        Type = Story::Type::DOOM;
     }
 };
 
@@ -4147,6 +4446,25 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story367 : public Story::Base
+{
+public:
+    Story367()
+    {
+        ID = 367;
+
+        Text = "\"In times gone by, heretics and madmen were cast out from the town by this gate,\" says one of the guards. \"As they went, some would scratch pictures of what they expected to find in the far west.\"\n\n\"That's why it's called the Gate of Exiles,\" says the other man. \"I reckon you must be one of the few people who've taken this route by choice.\"\n\n\"I didn't have a choice,\" you say.\n\nTaking up your pack, you walk out into the waiting desert.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 407; };
 };
 
 class Story368 : public Story::Base
@@ -4314,6 +4632,25 @@ public:
     }
 
     int Continue(Character::Base &player) { return 300; }
+};
+
+class Story388 : public Story::Base
+{
+public:
+    Story388()
+    {
+        ID = 388;
+
+        Text = "\"It is protection against the dust demons,\" explains one of the guards. \"They are invisible sprites who whip up whirlwinds and drive them like ravaging beasts onto those who travel in the desert.\"\n\nYou cast a brief glance at the boulder. \"Not much protection, surely? The demons could just steer their whirlwinds around it.\"\n\n\"No,\" says the other man in a tone that suggests they tell this legend to every wayfarer, \"because dust demons can only travel in long straight paths. They can't turn easily.\"\n\n\"Or so the priest Spitting Viper told us,\" chimes in the first man.\n\nBidding them farewell, you take up your pack and walk out into the waiting desert.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 407; };
 };
 
 class Story389 : public Story::Base
@@ -4517,6 +4854,37 @@ public:
     int Continue(Character::Base &player) { return 366; }
 };
 
+class Story407 : public Story::Base
+{
+public:
+    Story407()
+    {
+        ID = 407;
+
+        Text = "The sun looks like a funnel of flame in the shimmering oven of the sky. Through the soles of your sandals, the rock and sand feel as hot as cinders. The air seems thick with dust, but at nightfall the temperature plummets and you are chilled by a strong breeze.";
+
+        Image = "images/filler1.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        if (!Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+        {
+            Choices.push_back(Choice::Base("Travel by day", 22));
+            Choices.push_back(Choice::Base("Travel by night", 46));
+        }
+    }
+
+    int Continue(Character::Base &player)
+    {
+        return 434;
+    }
+};
+
 class Story408 : public Story::Base
 {
 public:
@@ -4567,6 +4935,25 @@ public:
     }
 
     int Continue(Character::Base &player) { return 26; }
+};
+
+class Story411 : public Story::Base
+{
+public:
+    Story411()
+    {
+        ID = 411;
+
+        Text = "The high priest watches the sun decline across the treetops to the west. \"The moment has arrived,\" he intones to the waiting crowd. \"This ambassador will bear our message to the Rain God.\"\n\nYou stare down. A gulf of dozen man-heights separates you from the grim watery gate of the afterlife. Even with your spell in force, you cannot suppress a qualm as you step out into space.\n\nThe gasp of the crowd is lost in the rush of wind as you go plummeting down. The white root-tangled walls of the sinkhole flicker past your vision. An instant later there is an icy impact and then darkness and eeriness surround you.\n\nIf not for your magic, the golden regalia you are wearing would bear you down to a watery grave. You struggle free of the fastenings and allow the vest of gold plaques to sink out of sight in the murk, but you keep the GOLDEN HELMET tucked under your arm as you go shooting up towards the surface.\n\nYou break the surface like a log bobbing up out of the depths. There is a weak glow here, but it is not daylight. You are no longer at the bottom of the sinkhole, but in a vast underground cavern. You stagger up onto a rocky shore before your spell can wear off.\n\nThe sound of oars reaches your ears. Approaching you across the lake comes a long canoe crewed by two weird figures that seem to have strayed out of a feverish dream.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Keep the GOLDEN HELMET", 97, Choice::Type::GET_ITEM, Item::Type::GOLDEN_HELMET));
+        Choices.push_back(Choice::Base("Leave it", 97));
+
+        Controls = ShopControls();
+    }
 };
 
 class Story415 : public Story::Base
@@ -4674,7 +5061,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::LOSE_ITEM(player, {Item::Type::SHAWL});
+        Character::LOSE_ITEMS(player, {Item::Type::SHAWL});
         Character::GET_ITEMS(player, {Item::Type::GOLD_DIADEM});
     }
 
@@ -4799,6 +5186,7 @@ auto story008 = Story008();
 auto story009 = Story009();
 auto story010 = Story010();
 auto story021 = Story021();
+auto story022 = Story022();
 auto story023 = Story023();
 auto story024 = Story024();
 auto story025 = Story025();
@@ -4807,6 +5195,7 @@ auto story028 = Story028();
 auto story030 = Story030();
 auto story044 = Story044();
 auto story045 = Story045();
+auto story046 = Story046();
 auto story047 = Story047();
 auto story048 = Story048();
 auto story049 = Story049();
@@ -4814,6 +5203,7 @@ auto story051 = Story051();
 auto story054 = Story054();
 auto story067 = Story067();
 auto story068 = Story068();
+auto story069 = Story069();
 auto story070 = Story070();
 auto story071 = Story071();
 auto story072 = Story072();
@@ -4823,6 +5213,7 @@ auto story080 = Story080();
 auto story085 = Story085();
 auto story090 = Story090();
 auto story091 = Story091();
+auto story092 = Story092();
 auto story093 = Story093();
 auto story094 = Story094();
 auto story095 = Story095();
@@ -4833,6 +5224,7 @@ auto story103 = Story103();
 auto story104 = Story104();
 auto story113 = Story113();
 auto story114 = Story114();
+auto story115 = Story115();
 auto story116 = Story116();
 auto story117 = Story117();
 auto story119 = Story119();
@@ -4842,6 +5234,7 @@ auto story126 = Story126();
 auto story127 = Story127();
 auto story135 = Story135();
 auto story136 = Story136();
+auto story137 = Story137();
 auto story138 = Story138();
 auto story139 = Story139();
 auto story141 = Story141();
@@ -4853,6 +5246,7 @@ auto story149 = Story149();
 auto story158 = Story158();
 auto story159 = Story159();
 auto story160 = Story160();
+auto story161 = Story161();
 auto story162 = Story162();
 auto story163 = Story163();
 auto story164 = Story164();
@@ -4918,6 +5312,7 @@ auto story304 = Story304();
 auto story311 = Story311();
 auto story320 = Story320();
 auto story321 = Story321();
+auto story322 = Story322();
 auto story323 = Story323();
 auto story324 = Story324();
 auto story325 = Story325();
@@ -4929,14 +5324,16 @@ auto story334 = Story334();
 auto story335 = Story335();
 auto story343 = Story343();
 auto story344 = Story344();
-auto story347 = Story347();
+auto story345 = Story345();
 auto story346 = Story346();
+auto story347 = Story347();
 auto story350 = Story350();
 auto story354 = Story354();
 auto story355 = Story355();
 auto story356 = Story356();
 auto story357 = Story357();
 auto story366 = Story366();
+auto story367 = Story367();
 auto story368 = Story368();
 auto story369 = Story369();
 auto story370 = Story370();
@@ -4944,6 +5341,7 @@ auto story371 = Story371();
 auto story374 = Story374();
 auto story378 = Story378();
 auto story387 = Story387();
+auto story388 = Story388();
 auto story389 = Story389();
 auto story390 = Story390();
 auto story391 = Story391();
@@ -4952,8 +5350,10 @@ auto story396 = Story396();
 auto story398 = Story398();
 auto story400 = Story400();
 auto story406 = Story406();
+auto story407 = Story407();
 auto story408 = Story408();
 auto story409 = Story409();
+auto story411 = Story411();
 auto story415 = Story415();
 auto story416 = Story416();
 auto story417 = Story417();
@@ -4966,23 +5366,49 @@ auto story437 = Story437();
 void InitializeStories()
 {
     Stories = {
-        &prologue, &story001, &story002, &story003, &story004, &story005, &story008, &story009, &story010, &story021, &story023,
-        &story024, &story025, &story026, &story028, &story030, &story044, &story045, &story047, &story048, &story049,
-        &story051, &story054, &story067, &story068, &story070, &story071, &story072, &story077, &story078, &story080, &story085,
-        &story090, &story091, &story093, &story094, &story095, &story096, &story100, &story101, &story103, &story104, &story113,
-        &story114, &story116, &story117, &story119, &story120, &story123, &story126, &story127, &story135, &story136,
-        &story138, &story139, &story141, &story142, &story143, &story146, &story147, &story149, &story158, &story159,
-        &story160, &story162, &story163, &story164, &story165, &story166, &story168, &story169, &story170, &story172,
-        &story182, &story183, &story185, &story188, &story189, &story186, &story187, &story192, &story193, &story195, &story205,
-        &story206, &story208, &story209, &story210, &story211, &story212, &story215, &story216, &story218, &story228, &story231,
-        &story232, &story233, &story234, &story235, &story238, &story242, &story251, &story254, &story255, &story256, &story257, &story260,
-        &story262, &story263, &story264, &story265, &story274, &story275, &story277, &story278, &story279, &story280, &story281,
-        &story285, &story288, &story297, &story298, &story300, &story301, &story302, &story304, &story311, &story320,
-        &story321, &story323, &story324, &story325, &story327, &story331, &story332, &story333, &story334, &story335,
-        &story343, &story344, &story346, &story347, &story350, &story354, &story355, &story356, &story357, &story366,
-        &story368, &story369, &story370, &story371, &story374, &story378, &story387, &story389, &story391, &story392,
-        &story398, &story400, &story406, &story408, &story409, &story415, &story416, &story417, &story424, &story425,
-        &story426, &story435, &story437};
+        &prologue, &story001, &story002, &story003, &story004, &story005, &story008, &story009,
+        &story010,
+        &story021, &story022, &story023, &story024, &story025, &story026, &story028,
+        &story030,
+        &story044, &story045, &story046, &story047, &story048, &story049,
+        &story051, &story054,
+        &story067, &story068, &story069,
+        &story070, &story071, &story072, &story077, &story078,
+        &story080, &story085,
+        &story090, &story091, &story092, &story093, &story094, &story095, &story096,
+        &story100, &story101, &story103, &story104, &story113,
+        &story114, &story115, &story116, &story117, &story119,
+        &story120, &story123, &story126, &story127,
+        &story135, &story136, &story137, &story138, &story139,
+        &story141, &story142, &story143, &story146, &story147, &story149,
+        &story158, &story159,
+        &story160, &story161, &story162, &story163, &story164, &story165, &story166, &story168, &story169,
+        &story170, &story172,
+        &story182, &story183, &story185, &story188, &story189, &story186, &story187,
+        &story192, &story193, &story195,
+        &story205, &story206, &story208, &story209,
+        &story210, &story211, &story212, &story215, &story216, &story218,
+        &story228, &story231,
+        &story232, &story233, &story234, &story235, &story238,
+        &story242,
+        &story251, &story254, &story255, &story256, &story257,
+        &story260, &story262, &story263, &story264, &story265,
+        &story274, &story275, &story277, &story278, &story279,
+        &story280, &story281, &story285, &story288,
+        &story297, &story298,
+        &story300, &story301, &story302, &story304,
+        &story311,
+        &story320, &story321, &story322, &story323, &story324, &story325, &story327,
+        &story331, &story332, &story333, &story334, &story335,
+        &story343, &story344, &story345, &story346, &story347,
+        &story350, &story354, &story355, &story356, &story357,
+        &story366, &story367, &story368, &story369,
+        &story370, &story371, &story374, &story378,
+        &story387, &story388, &story389,
+        &story391, &story392, &story398,
+        &story400, &story406, &story407, &story408, &story409,
+        &story411, &story415, &story416, &story417,
+        &story424, &story425, &story426, &story435, &story437};
 }
 
 #endif

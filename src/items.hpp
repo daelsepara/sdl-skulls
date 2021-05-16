@@ -38,6 +38,7 @@ namespace Item
         BLANKET,
         GOLD_DIADEM,
         BROTHERS_SKULL,
+        GOLDEN_HELMET,
         First = SWORD,
         Last = BROTHERS_SKULL
     };
@@ -72,7 +73,8 @@ namespace Item
         {Item::Type::FLINT_KNIFE, "FLINT KNIFE"},
         {Item::Type::BLANKET, "BLANKET"},
         {Item::Type::GOLD_DIADEM, "GOLD DIADEM"},
-        {Item::Type::BROTHERS_SKULL, "BROTHER's SKULL"}};
+        {Item::Type::BROTHERS_SKULL, "BROTHER's SKULL"},
+        {Item::Type::GOLDEN_HELMET, "GOLDEN HELMENT"}};
 
     std::vector<Item::Type> UniqueItems = {
         Item::Type::LETTER_OF_INTRODUCTION,
@@ -84,7 +86,8 @@ namespace Item
         Item::Type::LOBSTER_POT,
         Item::Type::SHAWL,
         Item::Type::GOLD_DIADEM,
-        Item::Type::BROTHERS_SKULL};
+        Item::Type::BROTHERS_SKULL,
+        Item::Type::GOLDEN_HELMET};
 
     bool IsUnique(Item::Type item)
     {

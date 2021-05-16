@@ -1016,7 +1016,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
                         if (mode == Control::Type::DROP)
                         {
-                            Character::LOSE_ITEM(player, {item});
+                            Character::LOSE_ITEMS(player, {item});
 
                             controls.clear();
 
@@ -1165,7 +1165,7 @@ int giveScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, C
                     {
                         auto item = player.Items[selected_item];
 
-                        Character::LOSE_ITEM(player, {item});
+                        Character::LOSE_ITEMS(player, {item});
 
                         for (auto i = 0; i < gifts.size(); i++)
                         {
@@ -1507,7 +1507,7 @@ int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &playe
                 {
                     for (auto i = 0; i < selection.size(); i++)
                     {
-                        Character::LOSE_ITEM(player, {filtered_items[selection[i]]});
+                        Character::LOSE_ITEMS(player, {filtered_items[selection[i]]});
                     }
 
                     consumed = selection.size();
@@ -1776,7 +1776,7 @@ bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pl
             {
                 if (controls[current].Type == Control::Type::ACTION && !hold)
                 {
-                    Character::LOSE_ITEM(player, {mine});
+                    Character::LOSE_ITEMS(player, {mine});
                     Character::GET_ITEMS(player, {theirs});
 
                     done = true;
@@ -2208,6 +2208,11 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                         {
                             Character::GET_ITEMS(player, {story->Choices[current].Item});
 
+                            while (!Character::VERIFY_POSSESSIONS(player))
+                            {
+                                inventoryScreen(window, renderer, player, Control::Type::DROP);
+                            }
+
                             next = (Story::Base *)findStory(story->Choices[current].Destination);
 
                             quit = true;
@@ -2218,7 +2223,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                         {
                             if (Character::VERIFY_ITEM(player, story->Choices[current].Item))
                             {
-                                Character::LOSE_ITEM(player, {story->Choices[current].Item});
+                                Character::LOSE_ITEMS(player, {story->Choices[current].Item});
 
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
@@ -2857,7 +2862,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                                 error = true;
                             }
                         }
-                        else if (story->Type == Story::Type::BAD)
+                        else if (story->Type == Story::Type::DOOM)
                         {
                             message = "This adventure is over.";
 
