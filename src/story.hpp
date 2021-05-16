@@ -415,6 +415,35 @@ public:
     int Continue(Character::Base &player) { return 80; }
 };
 
+class Story010 : public Story::Base
+{
+public:
+    Story010()
+    {
+        ID = 10;
+
+        Text = "He pretends to listen with interest to your confident reply, but then gives a great whoop of mocking laughter. You realize he lied -- he knows nothing that can help you in your quest.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
+        {
+            return 56;
+        }
+        else
+        {
+            return 60;
+        }
+    }
+};
+
 class Story021 : public Story::Base
 {
 public:
@@ -722,12 +751,12 @@ public:
         Controls = StandardControls();
     }
 
-    int Continue(Character::Base &player) { return 93; }
-
     void Event(Character::Base &player)
     {
         Character::GET_UNIQUE_ITEMS(player, {Item::Type::LETTER_OF_INTRODUCTION});
     }
+
+    int Continue(Character::Base &player) { return 93; }
 };
 
 class Story071 : public Story::Base
@@ -1134,6 +1163,26 @@ public:
     }
 };
 
+class Story104 : public Story::Base
+{
+public:
+    Story104()
+    {
+        ID = 104;
+
+        Text = "The woman whose body is host to the parasitical head remains in a deep sleep, but her limbs strike out like a living puppet's. The head gnashes its teeth, screeching horribly, as it guides its stolen body forward to attack you with jerking strides.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Rush in to attack", 195));
+        Choices.push_back(Choice::Base("Back away", 265));
+        Choices.push_back(Choice::Base("Stand your ground and dodge to one side at the last moment", 242));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story116 : public Story::Base
 {
 public:
@@ -1391,6 +1440,31 @@ public:
     }
 };
 
+class Story147 : public Story::Base
+{
+public:
+    Story147()
+    {
+        ID = 147;
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+
+    int Background(Character::Base &player)
+    {
+        if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            return 193;
+        }
+        else
+        {
+            return 216;
+        }
+    }
+};
+
 class Story149 : public Story::Base
 {
 public:
@@ -1639,6 +1713,30 @@ public:
     }
 };
 
+class Story170 : public Story::Base
+{
+public:
+    Story170()
+    {
+        ID = 170;
+
+        Text = "You place your BLOWGUN so that it forms a bridge to the first spire of rock. Quickly crossing, you move the BLOWGUN around to the next spire and proceed in steps right across the canyon.\n\nBy the time you are nearing the far side, you can hear alarming creaks each time you tread on the BLOWGUN. It was never intended to be used like this. Reaching the safety of firm ground at last, you pick up the BLOWGUN and inspect the damage. Your weight has bent it out of shape and split the wood, making it useless. Still, at least it got you across the dreaded Death Canyon. You glance back, shuddering now that you allow yourself to imagine the long drop down through those heavy volcanic clouds. Hopefully there should be no more obstacles as perilous as that.\n\nDiscarding the broken BLOWGUN, you continue on your journey.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEM(player, {Item::Type::BLOWGUN});
+    }
+
+    int Continue(Character::Base &player) { return 263; }
+};
+
 class Story172 : public Story::Base
 {
 public:
@@ -1787,6 +1885,72 @@ public:
     }
 
     int Continue(Character::Base &player) { return 415; }
+};
+
+class Story193 : public Story::Base
+{
+public:
+    Story193()
+    {
+        ID = 193;
+
+        Text = "With a long bound, you launch yourself from the edge of the canyon onto the first of the spires of rock. Only now do you discover that it is red hot, but you remain undaunted. Careless of the long drop that surrounds you on all sides, you fall into an easy leaping gait which carries you from one spire to the next without pause. You have reached the far side of the canyon even before the heat of the rock can start to scorch your shoes.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 263; }
+};
+
+class Story195 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story195()
+    {
+        ID = 195;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Despite your horror of the macabre creature, you force yourself to close with it in a desperate effort to the end the fight quickly. Its black maw drops open in a triumphant hiss as it lifts its host body's limbs to grapple with you. You are alarmed by the force in its blows: the poor woman it is attached to is being forced to do its bedding with a strength beyond human endurance.";
+
+        auto DAMAGE = -5;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            DAMAGE = -2;
+
+            PreText += "[SWORDPLAY] ";
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE = -3;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 288; }
 };
 
 class Story205 : public Story::Base
@@ -1984,6 +2148,60 @@ public:
     }
 
     int Continue(Character::Base &player) { return 389; }
+};
+
+class Story215 : public Story::Base
+{
+public:
+    Story215()
+    {
+        ID = 215;
+
+        Text = "The ritual ball contest is of great importance to the nobility, who often wage enormous sums on the outcome. The priests value it just as highly because of its religious significance. As an expert exponent of the contest, you are greeted like an esteemed guest. A courtier bows and users you through into the palace, to the envy of those those waiting in vain to present their petitions to the King.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 192; }
+};
+
+class Story216 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story216()
+    {
+        ID = 216;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Type = Story::Type::NORMAL;
+
+        PreText = "You spend a minute staring down into the rolling billows of gritty smoke. It ought to be a mercy that you cannot see the bottom of the canyon, but in fact the faint glare of those distant fires only evokes the worst fears of your imagination. You make several run-ups to the edge of the canyon, stopping short each time with a gasp of sudden panic. But at last, dredging up every drop of courage, you manage to force yourself to leap out towards the first spire of rock.\n\nYou misjudged your landing. For a long agonizing second you are left teetering on the brink. Then you slip, barely managing to catch hold of the spire in time to prevent yourself plunging down into the volcanic abyss. It is only when you wrap your limbs around the spire that you discover it is baking hot. You do not have the strength to pull yourself up, and the heat will soon force you to relinquish your grip.";
+
+        if (!Character::VERIFY_CODEWORD(player, Codeword::Type::ZOTZ))
+        {
+            PreText += " You are left to morbidly consider your fate in the last minutes before your strength gives out.";
+
+            Type = Story::Type::BAD;
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 239; }
 };
 
 class Story218 : public Story::Base
@@ -2193,6 +2411,45 @@ public:
     }
 };
 
+class Story242 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story242()
+    {
+        ID = 242;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You duck to one side as the monster comes rushing forward. It stumbles past, but throws out its arm and catches you a powerful blow. You wince as you hear one of your ribs crack, and the pain sends you staggering back out from under the trees into the hot afternoon sunshine.";
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            PreText += "[AGILITY] You turn away from the brunt of the blow.";
+        }
+        else
+        {
+            PreText += "You LOST 2 Life Points.";
+
+            Character::GAIN_LIFE(player, -2);
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 265; }
+};
+
 class Story254 : public Story::Base
 {
 public:
@@ -2273,6 +2530,27 @@ public:
     }
 };
 
+class Story263 : public Story::Base
+{
+public:
+    Story263()
+    {
+        ID = 263;
+
+        Text = "You trudge on through terrain consisting of bare bleached rocks swathed in stream rising from fissures in the ground. Wet gravel crunches underfoot. Sweat soaks your clothes, and the air is so hot that you can hardly breathe.\n\nYou see someone sprawled atop a boulder. He is a gangling figure with a weather beaten face and lazy heavy-lidded eyes. Your first impression is that he is asleep, but then he calls out in a sibilant voice, saying, \"You are Evening Star, are you not? I might know a secret or two that could help you find your brother, if you can give me an answer to this riddle. \"I'm a narrow fellow and I live in narrow spaces between the rocks. Born from a pebble, I'm as hard to catch as a flicker of lightning when my blood's up, but in the cool of night I'm as sedentary as a stalactite.\"\n\nWhat answer will you give?";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("'A lizard'", 376));
+        Choices.push_back(Choice::Base("'A dragonfly'", 397));
+        Choices.push_back(Choice::Base("'Water'", 10));
+        Choices.push_back(Choice::Base("None of these", 60));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story264 : public Story::Base
 {
 public:
@@ -2312,6 +2590,53 @@ public:
 
         return -1;
     }
+};
+
+class Story265 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story265()
+    {
+        ID = 265;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The monster rushes forward, realizing too late that it has been tricked. Once out of the shade of the tree where it was resting, it is dazzled by the bright sunlight and can only flail back blindly as you step in to finish it. Even so, its clumsy blows strike you with staggering force.";
+
+        auto DAMAGE = -4;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            DAMAGE = -1;
+
+            PreText += "[SWORDPLAY] ";
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE = -2;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 288; }
 };
 
 class Story274 : public Story::Base
@@ -2467,6 +2792,25 @@ public:
     }
 };
 
+class Story288 : public Story::Base
+{
+public:
+    Story288()
+    {
+        ID = 288;
+
+        Text = "You stand over the fallen body. The eyes in the creature's ghastly face fix you with a last glare of fury, then roll up in their sockets. There is a dying rattle from the inhuman throat as it detaches itself from its host and rolls away, rotting like an overripe fruit the moment it enters the sunlight. You cover your nose with a gasp of disgust as you catch a whiff of the moulder stench that drifts up from it.\n\nYou kneel beside the poor woman who was forced to act as host to the disembodied head. Her neck was broken in the struggle. There is nothing you can do except give her a decent burial before heading grimly onwards.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 417; }
+};
+
 class Story297 : public Story::Base
 {
 public:
@@ -2474,7 +2818,7 @@ public:
     {
         ID = 297;
 
-        Text = "Your first dart hits a pirate right between his white-rimmed eyes and he slumps over the side with a groan. The others react to this with screeches of rage, paddling furiously to catch up with your own vessel. By the time the gap has been closed to ten paces, you have slain two more of them with your blowgun and they are beginning to have second thoughts. When they see you slide another dart into the blowgun, they throw up their hands in a gesture of surrender and go veering off towards the horizon -- no doubt in search of easier pickings.";
+        Text = "Your first dart hits a pirate right between his white-rimmed eyes and he slumps over the side with a groan. The others react to this with screeches of rage, paddling furiously to catch up with your own vessel. By the time the gap has been closed to ten paces, you have slain two more of them with your BLOWGUN and they are beginning to have second thoughts. When they see you slide another dart into the BLOWGUN, they throw up their hands in a gesture of surrender and go veering off towards the horizon -- no doubt in search of easier pickings.";
 
         Image = "images/filler1.png";
 
@@ -3738,6 +4082,7 @@ auto story002 = Story002();
 auto story003 = Story003();
 auto story008 = Story008();
 auto story009 = Story009();
+auto story010 = Story010();
 auto story021 = Story021();
 auto story024 = Story024();
 auto story025 = Story025();
@@ -3763,6 +4108,7 @@ auto story096 = Story096();
 auto story100 = Story100();
 auto story101 = Story101();
 auto story103 = Story103();
+auto story104 = Story104();
 auto story116 = Story116();
 auto story117 = Story117();
 auto story120 = Story120();
@@ -3775,6 +4121,7 @@ auto story139 = Story139();
 auto story141 = Story141();
 auto story142 = Story142();
 auto story146 = Story146();
+auto story147 = Story147();
 auto story149 = Story149();
 auto story158 = Story158();
 auto story159 = Story159();
@@ -3784,6 +4131,7 @@ auto story163 = Story163();
 auto story164 = Story164();
 auto story165 = Story165();
 auto story169 = Story169();
+auto story170 = Story170();
 auto story172 = Story172();
 auto story182 = Story182();
 auto story183 = Story183();
@@ -3791,11 +4139,15 @@ auto story185 = Story185();
 auto story186 = Story186();
 auto story188 = Story188();
 auto story192 = Story192();
+auto story193 = Story193();
+auto story195 = Story195();
 auto story205 = Story205();
 auto story206 = Story206();
 auto story208 = Story208();
 auto story209 = Story209();
 auto story211 = Story211();
+auto story215 = Story215();
+auto story216 = Story216();
 auto story218 = Story218();
 auto story228 = Story228();
 auto story231 = Story231();
@@ -3803,11 +4155,14 @@ auto story232 = Story232();
 auto story234 = Story234();
 auto story235 = Story235();
 auto story238 = Story238();
+auto story242 = Story242();
 auto story254 = Story254();
 auto story255 = Story255();
 auto story257 = Story257();
 auto story262 = Story262();
+auto story263 = Story263();
 auto story264 = Story264();
+auto story265 = Story265();
 auto story274 = Story274();
 auto story275 = Story275();
 auto story277 = Story277();
@@ -3815,6 +4170,7 @@ auto story278 = Story278();
 auto story280 = Story280();
 auto story281 = Story281();
 auto story285 = Story285();
+auto story288 = Story288();
 auto story297 = Story297();
 auto story298 = Story298();
 auto story300 = Story300();
@@ -3869,33 +4225,21 @@ auto story437 = Story437();
 void InitializeStories()
 {
     Stories = {
-        &prologue, &story001, &story002, &story003, &story008,
-        &story009, &story021, &story024, &story025, &story026,
-        &story030, &story045, &story047, &story048, &story049,
-        &story051, &story054, &story068, &story070, &story071,
-        &story077, &story078, &story080, &story085, &story091,
-        &story093, &story094, &story096, &story100, &story101,
-        &story103, &story116, &story117, &story120, &story123,
-        &story126, &story127, &story136, &story138, &story139,
-        &story141, &story142, &story146, &story149, &story158,
-        &story159, &story160, &story162, &story163, &story164,
-        &story165, &story169, &story172, &story182, &story183,
-        &story185, &story188, &story186, &story192, &story205,
-        &story206, &story208, &story209, &story211, &story218,
-        &story228, &story231, &story232, &story234, &story235,
-        &story238, &story254, &story255, &story257, &story262,
-        &story264, &story274, &story275, &story277, &story278,
-        &story280, &story281, &story285, &story297, &story298,
-        &story300, &story301, &story302, &story311, &story320,
-        &story321, &story323, &story324, &story325, &story327,
-        &story331, &story332, &story333, &story334, &story335,
-        &story343, &story344, &story346, &story347, &story350,
-        &story354, &story355, &story356, &story357, &story366,
-        &story368, &story369, &story370, &story374, &story378,
-        &story387, &story389, &story391, &story398, &story400,
-        &story406, &story408, &story409, &story415, &story416,
-        &story417, &story424, &story425, &story426, &story435,
-        &story437};
+        &prologue, &story001, &story002, &story003, &story008, &story009, &story010, &story021, &story024, &story025,
+        &story026, &story030, &story045, &story047, &story048, &story049, &story051, &story054, &story068, &story070,
+        &story071, &story077, &story078, &story080, &story085, &story091, &story093, &story094, &story096, &story100,
+        &story101, &story103, &story104, &story116, &story117, &story120, &story123, &story126, &story127, &story136,
+        &story138, &story139, &story141, &story142, &story146, &story147, &story149, &story158, &story159, &story160,
+        &story162, &story163, &story164, &story165, &story169, &story170, &story172, &story182, &story183, &story185,
+        &story188, &story186, &story192, &story193, &story195, &story205, &story206, &story208, &story209, &story211,
+        &story215, &story216, &story218, &story228, &story231, &story232, &story234, &story235, &story238, &story242,
+        &story254, &story255, &story257, &story262, &story263, &story264, &story265, &story274, &story275, &story277,
+        &story278, &story280, &story281, &story285, &story288, &story297, &story298, &story300, &story301, &story302,
+        &story311, &story320, &story321, &story323, &story324, &story325, &story327, &story331, &story332, &story333,
+        &story334, &story335, &story343, &story344, &story346, &story347, &story350, &story354, &story355, &story356,
+        &story357, &story366, &story368, &story369, &story370, &story374, &story378, &story387, &story389, &story391,
+        &story398, &story400, &story406, &story408, &story409, &story415, &story416, &story417, &story424, &story425,
+        &story426, &story435, &story437};
 }
 
 #endif
