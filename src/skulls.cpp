@@ -1375,7 +1375,17 @@ int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &playe
     auto consumed = 0;
     auto done = false;
 
-    if (player.Items.size() > 0)
+    auto filtered_items = std::vector<Item::Type>();
+
+    for (auto i = 0; i < player.Items.size(); i++)
+    {
+        if (Item::VERIFY(items, player.Items[i]))
+        {
+            filtered_items.push_back(player.Items[i]);
+        }
+    }
+
+    if (player.Items.size() > 0 && filtered_items.size() > 0)
     {
         const char *message = NULL;
 
@@ -1387,16 +1397,6 @@ int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &playe
         auto text_space = 8;
 
         auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
-
-        auto filtered_items = std::vector<Item::Type>();
-
-        for (auto i = 0; i < player.Items.size(); i++)
-        {
-            if (Item::VERIFY(items, player.Items[i]))
-            {
-                filtered_items.push_back(player.Items[i]);
-            }
-        }
 
         auto controls = createItemControls(filtered_items);
 
@@ -1537,6 +1537,11 @@ int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &playe
         }
 
         TTF_Quit();
+    }
+
+    if (filtered_items.size() <= 0)
+    {
+        consumed = -1;
     }
 
     return consumed;
@@ -2295,17 +2300,28 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                             auto consumed = eatScreen(window, renderer, player, story->Choices[current].Items, threshold);
 
-                            Character::GAIN_LIFE(player, consumed - threshold);
-
-                            if (player.Life > 0)
+                            if (consumed >= 0)
                             {
-                                next = (Story::Base *)findStory(story->Choices[current].Destination);
+                                Character::GAIN_LIFE(player, consumed - threshold);
 
-                                quit = true;
+                                if (player.Life > 0)
+                                {
+                                    next = (Story::Base *)findStory(story->Choices[current].Destination);
+
+                                    quit = true;
+                                }
+                                else
+                                {
+                                    message = "You died of hunger! This adventure is now over.";
+
+                                    start_ticks = SDL_GetTicks();
+
+                                    error = true;
+                                }
                             }
                             else
                             {
-                                message = "You died of hunger! This adventure is now over.";
+                                message = "There is nothing in possessions that you can eat.";
 
                                 start_ticks = SDL_GetTicks();
 

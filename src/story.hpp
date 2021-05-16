@@ -32,6 +32,7 @@ namespace Choice
         LOSE_MONEY,
         DONATE,
         EAT,
+        EAT_HEAL,
         GIFT
     };
 
@@ -1399,6 +1400,27 @@ public:
     }
 
     int Continue(Character::Base &player) { return 163; }
+};
+
+class Story118 : public Story::Base
+{
+public:
+    Story118()
+    {
+        ID = 118;
+
+        Text = "Straying deeper in the forest, you surprise a deer which bolts off through the undergrowth. It reminds you how hungry you are now.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Hunt for food (TARGETING)", 187, Skill::Type::TARGETING));
+        Choices.push_back(Choice::Base("Set a trap (WILDERNESS LORE)", 210, Skill::Type::WILDERNESS_LORE));
+        Choices.push_back(Choice::Base("Sneak up on some game (ROGUERY)", 233, Skill::Type::ROGUERY));
+        Choices.push_back(Choice::Base("Search among your belongings for something to eat", 256));
+
+        Controls = StandardControls();
+    }
 };
 
 class Story119 : public Story::Base
