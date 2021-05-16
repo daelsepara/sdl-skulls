@@ -341,6 +341,25 @@ public:
     int Continue(Character::Base &player) { return 93; }
 };
 
+class Story003 : public Story::Base
+{
+public:
+    Story003()
+    {
+        ID = 3;
+
+        Text = "You are suddenly embroiled in a furious fight while clinging precariously ten metres off the ground. The tree shakes with the stirrings of the mighty beast as it twists its taloned hand to and fro, rumbling its rage in a voice like a hurricane.\n\nYou have barely seconds to decide your tactics.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Grab the arm and let it pull you inside the bole of the dead tree", 141));
+        Choices.push_back(Choice::Base("Chop at it as it flails blindly for you", 164));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story008 : public Story::Base
 {
 public:
@@ -359,6 +378,41 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story009 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story009()
+    {
+        ID = 9;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You descend into the pyramid. The staircase is narrow, steep and dank. Lighting-strokes cast a guttering white glare from above, plunging you into darkness as they pass. The thundercracks in the sky resound ominously through the heavy stone blocks of the pyramid. The steps are slippery with damp, forcing you to make the descent slowly. At last you reach the bottom and pass through a doorway draped with thick fleshy roots. A tunnel stretches ahead which you have to feel your way along. No light penetrates this far down. The smell in the air is of damp soil and limestone.\n\nThe walls vibrate as another thunderbolt shakes the earth. Suddenly you are knocked off your feet by a heavy weight of rubble dropping on you. You realize the tunnel has caved in. Claustrophobia seizes you. Struggling in panic, you claw at the rubble in a frantic attempt to dig yourself free.\n\nYour hands break through to the air and you push up, gasping for breath. You are no longer in the underground tunnel, though. You have emerged into an unearthly landscape. A barren plain stretches away in all directions under a sky of red-tinged darkness. In the distance you can see a haze of sulphurous clouds lit by fiery light: the lip of volcanic fissure. You head towards it.";
+
+        if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
+        {
+            PreText += "\n\nYou lodged the jade bead under your tongue as the spirit advised you.";
+        }
+
+        PreText += "\n\nYou gained the codeword PAKAL.";
+
+        Character::GET_CODEWORDS(player, {Codeword::Type::PAKAL});
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 80; }
 };
 
 class Story021 : public Story::Base
@@ -417,6 +471,30 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story026 : public Story::Base
+{
+public:
+    Story026()
+    {
+        ID = 26;
+
+        Text = "With infinite care you delve into the gloomy hole and deftly remove the gold diadem. Clinging to the side of the tree, you clean off the moss and muck and examine your prize. It is a circlet such as a king or high priest might wear upon his row, patterned with holy sigils and bearing the cruciform symbol of the World Tree in inlaid plaques of jade. Such an item could fetch you a fortune in any market in the world.\n\nClimbing back down to the ground, you sense the stabai hovering close beside you, bending heir elongated skulls closer as they admire your find. \"It is a great treasure, as we promised,\" says one with a trace of envy in her voice. \"Now return our shawl.\"\n\n\"When I'm safely out of these woods, then I'll consider it,\" you snap back. \"Not before.\"\n\nYou got the GOLD DIADEM.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_ITEMS(player, {Item::Type::GOLD_DIADEM});
+    }
+
+    int Continue(Character::Base &player) { return 390; }
 };
 
 class Story030 : public Story::Base
@@ -515,6 +593,26 @@ public:
             Choices[0].Type = Choice::Type::NORMAL;
             Choices[0].Skill = Skill::Type::NONE;
         }
+    }
+};
+
+class Story049 : public Story::Base
+{
+public:
+    Story049()
+    {
+        ID = 49;
+
+        Text = "You reach into the forbidding hole and snatch up the diadem. As you bring it out into the leaf-spattered sunlight however, a baleful roar issues from the interior of the dead tree. You are started by a scaly moss-covered arm that suddenly thrusts forth, groping for you as a voice thunders: \"Who has taken my trinket? A curse be upon that sly long-fingered thief!\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("You don't mind losing the SHAWL (CUNNING)", 425, Skill::Type::CUNNING, Item::Type::SHAWL));
+        Choices.push_back(Choice::Base("Release your grip and fall back off the tree", 400));
+        Choices.push_back(Choice::Base("Cling on and risk letting the monstrous arm seize you", 3));
+
+        Controls = StandardControls();
     }
 };
 
@@ -755,6 +853,48 @@ public:
     }
 };
 
+class Story080 : public Story::Base
+{
+public:
+    Story080()
+    {
+        ID = 80;
+
+        Text = "You arrive at the edge of a canyon. Choking yellow vapour rises from the depths, obscuring a sullen fiery light from far below. You can hear distant rumblings, leading you to imagine a river of lava burning beneath the sulphur clouds.\n\nThere are thin spires of rock poking up out of the vapour at regular intervals almost two metres apart, leading in a straight line to the far side of the canyon. By jumping form one to another it might be possible to get across, but they would make precarious stepping-stones: the top of each spire is a flattened area no bigger than the palm of your hand.";
+
+        Image = "images/filler1.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        if (!Character::VERIFY_SKILL(player, Skill::Type::FOLKLORE) && !Character::VERIFY_CODEWORD(player, Codeword::Type::PAKAL))
+        {
+            Choices.push_back(Choice::Base("Cross the canyon by leaping from one spire to the next", 147));
+            Choices.push_back(Choice::Base("Use a BLOWGUN to cross more safely", 170, Item::Type::BLOWGUN));
+        }
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_SKILL(player, Skill::Type::FOLKLORE))
+        {
+            return 286;
+        }
+        else if (Character::VERIFY_CODEWORD(player, Codeword::Type::PAKAL))
+        {
+            return 309;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+};
+
 class Story085 : public Story::Base
 {
 public:
@@ -788,6 +928,41 @@ public:
     }
 
     int Continue(Character::Base &player) { return 321; };
+};
+
+class Story091 : public Story::Base
+{
+public:
+    Story091()
+    {
+        ID = 91;
+
+        Text = "Jade Thunder goes down to the water's edge and sweeps his wand in a grand magical gesture. The water immediately in front of him becomes as smooth and flat as a sheet of glass. You blink in amazement as the effect stretches off into the distance, leaving a glassy causeway through the waves.\n\nYou test your weight on the causeway. It is solid. \"Neat trick,\" you say, impressed.\n\n\"I used to be quite famous in my heyday.\" Jade Thunder starts out along the causeway.\n\n\"Can't I join you?\" you call after him.\n\n\"Not on this path. But if you care to sail south to the mainland, look along the coast for a giant who's buried to his neck in the sand. He has been counting stars since the dawn of time. Tell him the true number, which is one hundred thousand million and seven, and he will grant you one wish.\"\n\nYou watch him walk of towards the horizon, then go to rejoin the others at the ship. You are amazed to discover that instead of the flimsy vessel in which you set sail, you now have a magnificent craft of green-lacquered kikche wood with magical sails that can never lose the wind. You climb aboard and put out to sea, but now you must decide.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go east to Tahil", 300));
+        Choices.push_back(Choice::Base("Go south as the wizard suggested", 136));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::SAKBE))
+        {
+            Choices[1].Destination = 114;
+            Choices[1].Type = Choice::Type::CODEWORD;
+            Choices[1].Codeword = Codeword::Type::SAKBE;
+        }
+        else
+        {
+            Choices[1].Destination = 136;
+            Choices[1].Type = Choice::Type::NORMAL;
+            Choices[1].Codeword = Codeword::Type::NONE;
+        }
+    }
 };
 
 class Story093 : public Story::Base
@@ -1091,6 +1266,25 @@ public:
     }
 };
 
+class Story136 : public Story::Base
+{
+public:
+    Story136()
+    {
+        ID = 136;
+
+        Text = "The trader is prepared to detour south just to drop you off, but then you will have to find your own way to Tahil. \"It wasn't in our original agreement,\" he reminds you. \"My business is in Tahil, not in the fens.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Agree to being set down on the mainland coast south of the Isle of the Iguana", 260));
+        Choices.push_back(Choice::Base("You would rather sail on to Tahil", 300));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story138 : public Story::Base
 {
 public:
@@ -1131,6 +1325,25 @@ public:
     }
 
     int Continue(Character::Base &player) { return 163; }
+};
+
+class Story141 : public Story::Base
+{
+public:
+    Story141()
+    {
+        ID = 141;
+
+        Text = "A grip of iron closes on your arm and you are dragged bodily into the black pit inside the tree. A musky stench makes you reel as you a are pinned against a wall of moss and decaying wood. The creature's body is covered with rough scales and it begins to strangle you with remorseless strength. You can do nothing to save yourself, and your last thought is of the gold diadem clutched in your hand. You batter it against the creature in a futile struggle, bending the soft metal with no care for its value now. You will be the richest corpse in the forest.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+
+        Type = Story::Type::BAD;
+    }
 };
 
 class Story142 : public Story::Base
@@ -1297,6 +1510,85 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story164 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story164()
+    {
+        ID = 164;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Its talons cut your flesh with the force of obsidian blades as you strike again and again, trying desperately to fend off the attack while climbing down out of the monster's reach. Its hideous roars would make the braves warriors go faint with terror.";
+
+        auto ARMED = false;
+
+        auto DAMAGE = -3;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            PreText += "[SWORDPLAY] ";
+
+            DAMAGE = -1;
+
+            ARMED = true;
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            ARMED = true;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            if (ARMED)
+            {
+                PreText += "\n\nYou are able to deflect the worst lunges.";
+            }
+
+            PreText += "\n\nYou reach the ground and run off into the undergrowth. The creature shrieks its rage to the forest depths, unleashing a curse which pursues you with inescapable magical force: \"Thief, you will never again pilfer so easily, for I curse you now with clumsiness. Your foot will grow clubbed like a gnarled knot of wood, and you will stumble and falter from this day until the time of your death.\"";
+
+            if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+            {
+                if (Character::VERIFY_SKILL(player, Skill::Type::CHARMS))
+                {
+                    PreText += "\n\nYou are able to counteract the curse with sorcery of your own.";
+                }
+                else
+                {
+                    Character::LOSE_SKILLS(player, {Skill::Type::AGILITY});
+
+                    PreText += "\n\nYour AGILITY skill is lost.";
+                }
+            }
+
+            PreText += "\n\nThe stabai have made themselves scarce, affrighted by the monster's anger. You are alone. Running until you have left the dead tree far behind, you lean breathlessly against a fallen log to examine the diadem. It is inlaid with a jade plaque in the cruciform shape of the sacred Tree of Life (GOLD DIADEM). You drop it into your pack ruefully, as it cost you dear.";
+
+            Character::GET_ITEMS(player, {Item::Type::GOLD_DIADEM});
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 324; }
 };
 
 class Story165 : public Story::Base
@@ -2612,6 +2904,26 @@ public:
     }
 };
 
+class Story335 : public Story::Base
+{
+public:
+    Story335()
+    {
+        ID = 335;
+
+        Text = "\"You seek to enter the underworld,\" says the spirit. \"The way will not be easy. But I perceive your cause to be honourable, so I shall aid you.\"\n\nYou do not dare to answer. He goes on: \"You must place a jade bead under your tongue and keep it there until you reach the four paths, not speaking whatever the temptation. Once you are at the four paths, you may remove the bead from your mouth but you should retain it until you see a kapok tree. Before any of this you must cross Death Canyon, however. If you have no other option, seek the dragon Kawak who lies across the canyon with one of his two heads on either side. Others have passed through his jaws and emerged at the far end, and if you are dauntless you may be able to do this too.\"\n\nThere is deep silence after he finishes speaking. You wait with lowered gaze. It is not seemly to look upon even a living king unless invited to. Suddenly there is a flash and an immediate peal of thunder, followed by a deluge of heavy tropical rain.\n\nYou look up. King Sky Shield and the phantom snake have vanished, but the shrine is not as it was before. Now a pit has opened in the floor, revealing stairs down into the pyramid. It is your route to the underworld.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Venture down the steps", 9));
+        Choices.push_back(Choice::Base("Leave the shrine and wait until morning to resume your journey overland to Ashaka", 8));
+        Choices.push_back(Choice::Base("Go downriver to the coast", 30));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story343 : public Story::Base
 {
 public:
@@ -2990,6 +3302,26 @@ public:
     int Continue(Character::Base &player) { return 25; }
 };
 
+class Story390 : public Story::Base
+{
+public:
+    Story390()
+    {
+        ID = 390;
+
+        Text = "The stabai flicker at the edges of your vision, thin elusive shards of paleness against the green-tinged shadows. They lead you on through silent glades surrounded by trees which stretch endlessly upwards as though supporting the sky. The moist heat of the jungle weighs upon you until you feel like a drowning man. Slogging on through the eerie silence, limbs aching with fatigue, you begin to suspect the stabai are not leading you to safety at all. What if their plan is to entice you deeper and deeper into the woods until you finally drop from hunger and exhaustion?";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Dismiss the stabai and try to find your own way back to the trail", 324));
+        Choices.push_back(Choice::Base("Return the SHAWL in the hope of gaining the stabai's goodwill", 347, Item::Type::SHAWL));
+        Choices.push_back(Choice::Base("Continue to let them guide you", 168));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story391 : public Story::Base
 {
 public:
@@ -3052,6 +3384,58 @@ public:
     int Continue(Character::Base &player) { return 417; }
 };
 
+class Story400 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story400()
+    {
+        ID = 400;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You lose your grip on the crumbling bark and go crashing down through the branches.";
+
+        auto DAMAGE = -5;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            PreText += "[AGILITY] You manage to break your fall by catching a stout strangler root.";
+
+            DAMAGE = -1;
+        }
+        else
+        {
+            PreText += "The ground comes up to hit you with a crushing force.";
+        }
+
+        PreText += "\n\nYou LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nStruggling to your feet, you limp away before the creature can descend from its arboreal lair to pursue you. The stabai have flitted away, terrified of the creature's wrath. When you are safely away from the tree, you clean the muck off the diadem and hold it up in a shaft of sunlight. It is a gold circlet of the sort that sometimes adorn the heads of great nobles. Sacred symbols are stamped into the metal and there is a jade inlay in the fourfold shape of the World Tree, the source of life itself in the mythology of your people (GOLD DIADEM).";
+
+            Character::GET_ITEMS(player, {Item::Type::GOLD_DIADEM});
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 324; }
+};
+
 class Story406 : public Story::Base
 {
 public:
@@ -3068,12 +3452,12 @@ public:
         Controls = StandardControls();
     }
 
-    int Continue(Character::Base &player) { return 366; }
-
     void Event(Character::Base &player)
     {
         Character::GET_CODEWORDS(player, {Codeword::Type::EB});
     }
+
+    int Continue(Character::Base &player) { return 366; }
 };
 
 class Story408 : public Story::Base
@@ -3098,6 +3482,53 @@ public:
     {
         Character::GET_CODEWORDS(player, {Codeword::Type::CENOTE});
     }
+};
+
+class Story409 : public Story::Base
+{
+public:
+    Story409()
+    {
+        ID = 409;
+
+        Text = "The stabai guide you through the forest to a tall tree which has had the vitality leeched out of it by a strangler fig. The roots of the strangler enclose the decomposing trunk like a crusty scab. A barely glimpsed arm directs your attention to a hole some way up the side of the tree. \"There,\" announces the fluting voice of the stabai. \"The treasure is inside the dying tree-trunk.\"\n\nThe strangler's roots make it an easy climb. The stabai effortlessly keep pace with you. From somewhere amid the branches you hear them urging you to return the SHAWL. \"Not yet,\" you reply. \"First I'll take a look at this treasure.\"\n\n\"But then you will return the SHAWL?\" they whine.\n\nYour foot slips but you steady yourself in the crook of a branch. It is a long way to the ground. No doubt the stabai are hoping you will break your neck, and their distractions are not helping. \"I'm making no promises,\" you tell them irritably.\n\nPulling yourself up level with the hold, you peer inside. It looks dank and rotten. There is a smell like mushrooms -- sickly sweet, a heady aroma. But as your eyes penetrate the darkness, you see that the stabai did not lie. Just within reach glitters a solid gold diadem.";
+
+        Image = "images/filler3.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        if (!Character::VERIFY_SKILL(player, Skill::Type::ROGUERY))
+        {
+            Choices.push_back(Choice::Base("Reach in and take the diadem", 49));
+            Choices.push_back(Choice::Base("Climb back down and get the stabai to lead you out of the woods", 390));
+        }
+    }
+
+    int Continue(Character::Base &player) { return 26; }
+};
+
+class Story415 : public Story::Base
+{
+public:
+    Story415()
+    {
+        ID = 415;
+
+        Text = "The shrine at the top of the pyramid is a small dark chamber fronted by a portico supported by strong square pillars. You can see the mouth of the spirit tube, fashioned in the shape of a slim snake. You know that the hollow tube extends all the way down through the interior of the pyramid to the tomb chamber deep in its heart. It is an eerie feeling to think that when you speak into the tube your words echo down into the ear of the dead king.\n\nYou keep a lone vigil long into the night. As the moon reaches its zenith, there is a soft soughing of wind up the spirit tube. Suddenly you realize you are unable to move. You will not admit to fear, but you are struck with awe to see a long curl of glowing green mist ooze out of the mouth of the tube. It hangs there in the shadows of the shrine, slowly curling in the air, gradually coming into focus in the form of a translucent snake. As you watch, the snake opens its jaws and the head of a man pushes into view, extruding from inside the snake's body until he has entirely emerged except for his left leg, which remains within its throat. He is a glistening red colour, as though covered in fresh blood, and as nude as a newborn baby.\n\nYou bow your head humbly to the cold flagstones, knowing that this is the spirit of King Sky Shield.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 335; }
 };
 
 class Story416 : public Story::Base
@@ -3166,6 +3597,31 @@ public:
     }
 
     int Continue(Character::Base &player) { return 93; };
+};
+
+class Story425 : public Story::Base
+{
+public:
+    Story425()
+    {
+        ID = 425;
+
+        Text = "You hold out the SHAWL, allowing the scaly talons to catch hold of it. The arm withdraws into the hole and there is a pause while the unseen creature examines what it has got. \"This is a stabai SHAWL!\" cries a voice full of insensate rage. \"A curse be upon you, you crafty stabai! May fungus infect your limbs and sickness burrow into your bodies. You'll not escape lightly for this outrage.\"\n\nThe stabai utter moans of dismay and melt away into the distance, alarmed by the monster's threats. For your part, you descend swiftly and quietly to examine your prize. Cleaning away the coating of muck, you discover it to be a circlet such as a nobleman or high priest might wear upon his brow. It is patterned with sacred glyphs and bears the cruciform symbol of the World Tree in inlaid plaques of jade. It is literally worth a king's ransom (GOLD DIADEM).";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEM(player, {Item::Type::SHAWL});
+        Character::GET_ITEMS(player, {Item::Type::GOLD_DIADEM});
+    }
+
+    int Continue(Character::Base &player) { return 324; };
 };
 
 class Story426 : public Story::Base
@@ -3279,14 +3735,18 @@ void *findStory(int id)
 auto prologue = Prologue();
 auto story001 = Story001();
 auto story002 = Story002();
+auto story003 = Story003();
 auto story008 = Story008();
+auto story009 = Story009();
 auto story021 = Story021();
 auto story024 = Story024();
 auto story025 = Story025();
+auto story026 = Story026();
 auto story030 = Story030();
 auto story045 = Story045();
 auto story047 = Story047();
 auto story048 = Story048();
+auto story049 = Story049();
 auto story051 = Story051();
 auto story054 = Story054();
 auto story068 = Story068();
@@ -3294,7 +3754,9 @@ auto story070 = Story070();
 auto story071 = Story071();
 auto story077 = Story077();
 auto story078 = Story078();
+auto story080 = Story080();
 auto story085 = Story085();
+auto story091 = Story091();
 auto story093 = Story093();
 auto story094 = Story094();
 auto story096 = Story096();
@@ -3307,8 +3769,10 @@ auto story120 = Story120();
 auto story123 = Story123();
 auto story126 = Story126();
 auto story127 = Story127();
+auto story136 = Story136();
 auto story138 = Story138();
 auto story139 = Story139();
+auto story141 = Story141();
 auto story142 = Story142();
 auto story146 = Story146();
 auto story149 = Story149();
@@ -3317,6 +3781,7 @@ auto story159 = Story159();
 auto story160 = Story160();
 auto story162 = Story162();
 auto story163 = Story163();
+auto story164 = Story164();
 auto story165 = Story165();
 auto story169 = Story169();
 auto story172 = Story172();
@@ -3366,6 +3831,7 @@ auto story331 = Story331();
 auto story332 = Story332();
 auto story333 = Story333();
 auto story334 = Story334();
+auto story335 = Story335();
 auto story343 = Story343();
 auto story344 = Story344();
 auto story347 = Story347();
@@ -3383,14 +3849,19 @@ auto story374 = Story374();
 auto story378 = Story378();
 auto story387 = Story387();
 auto story389 = Story389();
+auto story390 = Story390();
 auto story391 = Story391();
 auto story396 = Story396();
 auto story398 = Story398();
+auto story400 = Story400();
 auto story406 = Story406();
 auto story408 = Story408();
+auto story409 = Story409();
+auto story415 = Story415();
 auto story416 = Story416();
 auto story417 = Story417();
 auto story424 = Story424();
+auto story425 = Story425();
 auto story426 = Story426();
 auto story435 = Story435();
 auto story437 = Story437();
@@ -3398,23 +3869,33 @@ auto story437 = Story437();
 void InitializeStories()
 {
     Stories = {
-        &prologue, &story001, &story002, &story008, &story021, &story024, &story025,
-        &story030, &story045, &story047, &story048, &story051, &story054, &story068,
-        &story070, &story071, &story077, &story078, &story085, &story093, &story094,
-        &story096, &story100, &story101, &story103, &story116, &story117, &story120,
-        &story123, &story126, &story127, &story138, &story139, &story142, &story146,
-        &story149, &story158, &story159, &story160, &story162, &story163, &story165,
-        &story169, &story172, &story182, &story183, &story185, &story188, &story186,
-        &story192, &story205, &story206, &story208, &story209, &story211, &story218,
-        &story228, &story231, &story232, &story234, &story235, &story238, &story254,
-        &story255, &story257, &story262, &story264, &story274, &story275, &story277,
-        &story278, &story280, &story281, &story285, &story297, &story298, &story300,
-        &story301, &story302, &story311, &story320, &story321, &story323, &story324,
-        &story325, &story327, &story331, &story332, &story333, &story334, &story343,
-        &story344, &story346, &story347, &story350, &story354, &story355, &story356,
-        &story357, &story366, &story368, &story369, &story370, &story374, &story378,
-        &story387, &story389, &story391, &story398, &story406, &story408, &story416,
-        &story417, &story424, &story426, &story435, &story437};
+        &prologue, &story001, &story002, &story003, &story008,
+        &story009, &story021, &story024, &story025, &story026,
+        &story030, &story045, &story047, &story048, &story049,
+        &story051, &story054, &story068, &story070, &story071,
+        &story077, &story078, &story080, &story085, &story091,
+        &story093, &story094, &story096, &story100, &story101,
+        &story103, &story116, &story117, &story120, &story123,
+        &story126, &story127, &story136, &story138, &story139,
+        &story141, &story142, &story146, &story149, &story158,
+        &story159, &story160, &story162, &story163, &story164,
+        &story165, &story169, &story172, &story182, &story183,
+        &story185, &story188, &story186, &story192, &story205,
+        &story206, &story208, &story209, &story211, &story218,
+        &story228, &story231, &story232, &story234, &story235,
+        &story238, &story254, &story255, &story257, &story262,
+        &story264, &story274, &story275, &story277, &story278,
+        &story280, &story281, &story285, &story297, &story298,
+        &story300, &story301, &story302, &story311, &story320,
+        &story321, &story323, &story324, &story325, &story327,
+        &story331, &story332, &story333, &story334, &story335,
+        &story343, &story344, &story346, &story347, &story350,
+        &story354, &story355, &story356, &story357, &story366,
+        &story368, &story369, &story370, &story374, &story378,
+        &story387, &story389, &story391, &story398, &story400,
+        &story406, &story408, &story409, &story415, &story416,
+        &story417, &story424, &story425, &story426, &story435,
+        &story437};
 }
 
 #endif

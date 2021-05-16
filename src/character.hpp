@@ -106,6 +106,26 @@ namespace Character
         return found;
     }
 
+    int FIND_SKILL(Character::Base &player, Skill::Type skill)
+    {
+        auto found = -1;
+
+        if (player.Skills.size() > 0)
+        {
+            for (auto i = 0; i < player.Skills.size(); i++)
+            {
+                if (player.Skills[i].Type == skill)
+                {
+                    found = i;
+
+                    break;
+                }
+            }
+        }
+
+        return found;
+    }
+
     int COUNT_ITEMS(Character::Base &player, std::vector<Item::Type> items)
     {
         auto found = 0;
@@ -404,6 +424,22 @@ namespace Character
                 if (result >= 0)
                 {
                     player.Items.erase(player.Items.begin() + result);
+                }
+            }
+        }
+    }
+
+    void LOSE_SKILLS(Character::Base &player, std::vector<Skill::Type> skills)
+    {
+        if (player.Skills.size() > 0 && skills.size() > 0)
+        {
+            for (auto i = 0; i < skills.size(); i++)
+            {
+                auto result = FIND_SKILL(player, skills[i]);
+
+                if (result >= 0)
+                {
+                    player.Skills.erase(player.Skills.begin() + result);
                 }
             }
         }
