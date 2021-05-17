@@ -500,17 +500,24 @@ void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font
     // Fill the surface with background color
     fillWindow(renderer, intWH);
 
-    putText(renderer, player.Name, font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty);
+    std::string name_string = player.Name;
+
+    if (player.IsImmortal)
+    {
+        name_string += " (Immortal)";
+    }
+
+    putText(renderer, name_string.c_str(), font, space, clrWH, intDB, TTF_STYLE_NORMAL, (player.IsImmortal ? headerw * 2 : headerw), headerh, startx, starty);
     putText(renderer, player.Description, font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
 
     putText(renderer, "Skills", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + headerh + marginh);
     putText(renderer, skills.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, boxh, startx, starty + profileh + 2 * headerh + marginh);
 
-    putText(renderer, "Money", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 2 * headerh + 2 * marginh + boxh);
-    putText(renderer, (std::to_string(player.Money) + " cacao").c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx, starty + profileh + 3 * headerh + 2 * marginh + boxh);
+    putText(renderer, "Life", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 2 * headerh + 2 * marginh + boxh);
+    putText(renderer, std::to_string(player.Life).c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx, starty + profileh + 3 * headerh + 2 * marginh + boxh);
 
-    putText(renderer, "Life", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx + boxw + marginw, starty + profileh + 2 * headerh + 2 * marginh + boxh);
-    putText(renderer, std::to_string(player.Life).c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx + boxw + marginw, starty + profileh + 3 * headerh + 2 * marginh + boxh);
+    putText(renderer, "Money", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx + boxw + marginw, starty + profileh + 2 * headerh + 2 * marginh + boxh);
+    putText(renderer, (std::to_string(player.Money) + " cacao").c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, boxw, boxh, startx + boxw + marginw, starty + profileh + 3 * headerh + 2 * marginh + boxh);
 
     putText(renderer, "Possessions", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + 3 * headerh + 3 * marginh + 2 * boxh);
     putText(renderer, player.Items.size() > 0 ? possessions.c_str() : "(None)", font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + profileh + 4 * headerh + 3 * marginh + 2 * boxh);
@@ -993,11 +1000,11 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                 }
             }
 
-            putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
-            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+            putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
 
-            putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
-            putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+            putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
@@ -1293,7 +1300,23 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
             if (!error)
             {
-                std::string take_message = "Select " + std::string((limit > 1) ? "items" : "an item") + " to TAKE." + (limit > 1 ? ("You can take up to " + std::to_string(limit) + " items.") : "");
+                std::string take_message = "";
+
+                if (items.size() > 1)
+                {
+                    if (limit > 1)
+                    {
+                        take_message = "You can TAKE up to " + std::to_string(limit) + " items.";
+                    }
+                    else
+                    {
+                        take_message = "Choose an item to KEEP.";
+                    }
+                }
+                else
+                {
+                    take_message = "KEEP this item?";
+                }
 
                 putText(renderer, take_message.c_str(), font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
             }
@@ -1313,7 +1336,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 }
             }
 
-            putText(renderer, "ITEMS", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, "SELECTED", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
             putText(renderer, selection.size() > 0 ? take.c_str() : "(None)", font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
@@ -1970,11 +1993,11 @@ bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pl
                 putText(renderer, "TRADE", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
             }
 
-            putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
-            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+            putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
 
-            putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
-            putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+            putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
@@ -2122,11 +2145,11 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 putText(renderer, "Select an item to buy", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
             }
 
-            putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
-            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+            putText(renderer, "Possessions", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, (std::to_string(player.Items.size()) + std::string(" item(s)")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
 
-            putText(renderer, "Possessions", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
-            putText(renderer, (std::to_string(player.Items.size()) + std::string(" item(s)")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+            putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+            putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
@@ -2325,11 +2348,14 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
             if (!story->Image || (splash && splash->h < 2 * (boxh + infoh + box_space)))
             {
-                putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
-                putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+                putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+                putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+            }
 
-                putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
-                putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+            if (!story->Image || (splash && splash->h < (boxh + infoh + box_space)))
+            {
+                putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+                putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
             }
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
@@ -2939,11 +2965,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                 if (!story->Image || (splash && splash->h < 2 * (boxh + infoh + box_space)))
                 {
-                    putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
-                    putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+                    putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+                    putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+                }
 
-                    putText(renderer, "Life", font, text_space, clrWH, (story->Type == Story::Type::NORMAL && player.Life > 0) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
-                    putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+                if (!story->Image || (splash && splash->h < (boxh + infoh + box_space)))
+                {
+                    putText(renderer, "Money", font, text_space, clrWH, (story->Type == Story::Type::NORMAL && player.Life > 0) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+                    putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
                 }
 
                 fillRect(renderer, textwidth, text_bounds, textx, texty, intBE);
@@ -3035,33 +3064,25 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                         {
                             if (player.Life > 0)
                             {
-                                if (story->Take.size() > 0)
+                                if (story->Take.size() > 0 && story->Limit > 0)
                                 {
-                                    auto done = takeScreen(window, renderer, player, story->Take, story->TakeLimit);
+                                    auto done = takeScreen(window, renderer, player, story->Take, story->Limit);
 
                                     if (!done)
                                     {
                                         continue;
                                     }
+                                    else
+                                    {
+                                        story->Limit = 0;
+                                    }
                                 }
 
-                                if (story->LoseLimit > 0 && story->ToLose.size() > story->LoseLimit)
+                                if (story->Limit > 0 && story->ToLose.size() > story->Limit)
                                 {
-                                    auto done = false;
-
-                                    while (story->ToLose.size() > story->LoseLimit)
+                                    while (story->ToLose.size() > story->Limit)
                                     {
-                                        done = inventoryScreen(window, renderer, player, story->ToLose, Control::Type::STEAL);
-
-                                        if (done)
-                                        {
-                                            break;
-                                        }
-                                    }
-
-                                    if (done)
-                                    {
-                                        continue;
+                                        inventoryScreen(window, renderer, player, story->ToLose, Control::Type::STEAL);
                                     }
                                 }
 

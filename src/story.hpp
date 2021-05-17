@@ -196,11 +196,11 @@ namespace Story
 
         // Player selects items to take up to a certain limit
         std::vector<Item::Type> Take = std::vector<Item::Type>();
-        int TakeLimit = 0;
 
         // Player selects items to lose
         std::vector<Item::Type> ToLose = std::vector<Item::Type>();
-        int LoseLimit = 0;
+
+        int Limit = 0;
 
         Story::Type Type = Story::Type::NORMAL;
 
@@ -526,7 +526,7 @@ public:
 
         Choices.clear();
 
-        Controls.clear();
+        Controls = StandardControls();
     }
 
     int Continue(Character::Base &player)
@@ -555,7 +555,7 @@ public:
 
         Choices.clear();
 
-        Controls.clear();
+        Controls = StandardControls();
     }
 
     int Continue(Character::Base &player) { return 398; }
@@ -574,7 +574,7 @@ public:
 
         Choices.clear();
 
-        Controls.clear();
+        Controls = StandardControls();
     }
 
     int Continue(Character::Base &player) { return 105; }
@@ -633,7 +633,7 @@ public:
 
         Choices.clear();
 
-        Controls.clear();
+        Controls = StandardControls();
     }
 };
 
@@ -650,7 +650,7 @@ public:
 
         Choices.clear();
 
-        Controls.clear();
+        Controls = StandardControls();
     }
 
     int Continue(Character::Base &player)
@@ -683,7 +683,7 @@ public:
 
         Choices.clear();
 
-        Controls.clear();
+        Controls = StandardControls();
     }
 
     int Continue(Character::Base &player) { return 431; }
@@ -2874,7 +2874,7 @@ public:
 
         ToLose.clear();
 
-        LoseLimit = 0;
+        Limit = 0;
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::MAGIC_AMULET}))
         {
@@ -2905,7 +2905,7 @@ public:
         {
             PreText += "\n\nThe monkeys managed to filch one of your items. Select an item to drop.";
 
-            LoseLimit = ToLose.size() - 1;
+            Limit = ToLose.size() - 1;
         }
         else if (ToLose.size() == 1)
         {
@@ -3105,7 +3105,7 @@ public:
 
         Choices.clear();
 
-        Controls.clear();
+        Controls = StandardControls();
     }
 
     int Continue(Character::Base &player)
@@ -3202,7 +3202,7 @@ public:
 
         Choices.clear();
 
-        Controls.clear();
+        Controls = StandardControls();
     }
 
     int Continue(Character::Base &player) { return 431; }
@@ -3539,7 +3539,7 @@ public:
 
     Story121()
     {
-        ID = 92;
+        ID = 121;
 
         Image = "images/filler1.png";
 
@@ -3575,7 +3575,7 @@ public:
 
         Text = "You lash out with lightning speed, pinning the snake's head against the cliff-face before it can dodge. It writhes, hissing angrily and slapping the stone with its muscular coils, but is powerless to break free. You apply increasing pressure to its neck until it goes limp and drops to fall with a heavy plop in the river below.\n\nYou peer into the tomb. The darkness seems to rustle with unseen threats, but you know that it is just a figment of your imagination. You have dealt with the tomb guardian. Now you are eager to see if there is any treasure to be had.";
 
-        Image = "images/filler1.png";
+        Image = "images/flying-snake.png";
 
         Choices.clear();
 
@@ -3983,6 +3983,34 @@ public:
     int Continue(Character::Base &player) { return 163; }
 };
 
+class Story140 : public Story::Base
+{
+public:
+    Story140()
+    {
+        ID = 140;
+
+        Text = "You steady yourself against the rough stone walls, only to recoil with a gasp of disgust. The brief contact has left an unpleasant coating of slime on your hands. You hurriedly wipe it away on your cloak. The stench grows stronger with each step you take until it is almost unbearable. You feel sick, but you manage to reach the chamber and stoop to inspect the item that caught your eye. It is a bowl of polished stone incised with the emblem of the Creator God, who gave life to all things. You need no special sense to recognize the aura of divine magic. This can only be the fabled CHALICE OF LIFE in which the gods brewed the primordial potion that birthed the ancestors of mankind.\n\nAs you rise to return to the boat, however, a trickle of viscous slime drips from the roof of the chamber across your face. Spluttering, you look up. A shiver of horror runs through you as you see the creatures whose lair this is.\n\nThere are about a dozen of them, clinging to the walls and ceiling of tunnel like bloated pods. They are about as big as large dogs, humanoid in the upper body but with the hindquarters of giant snails. Their flesh, where it is exposed from their shells, glistens with thick mucus. There features are horribly unformed, like babies torn prematurely from their mother's womb, and they utter soft bleating cries as they close inexorable to block your escape.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Use an item", 305));
+        Choices.push_back(Choice::Base("Fight your way to safety", 328));
+
+        Controls = StandardControls();
+
+        Take = {Item::Type::CHALICE_OF_LIFE};
+
+        Limit = 1;
+    }
+
+    void Event(Character::Base &player)
+    {
+        Limit = 1;
+    }
+};
+
 class Story141 : public Story::Base
 {
 public:
@@ -4052,6 +4080,45 @@ public:
     }
 };
 
+class Story144 : public Story::Base
+{
+public:
+    Story144()
+    {
+        ID = 144;
+
+        Text = "The forest is a bewildering maze with walls of tattered green moss and gloomy bark. Sensing eyes upon you, you spin around but there is no one there. Are you being followed, or is your mind playing tricks on you?";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Veer off to the right", 52));
+        Choices.push_back(Choice::Base("Go straight on from here", 121));
+        Choices.push_back(Choice::Base("Head left", 6));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story145 : public Story::Base
+{
+public:
+    Story145()
+    {
+        ID = 145;
+
+        Text = "The snake's head jabs forward and you feel its fangs sink into your flesh. A sensation like acid burning its way across your chest is immediately followed by a creeping numbness; panic is replaced by ghastly calm. You stare at the hooded monster coiled at your breast. It looks like a suckling demon in one of the mythological murals on temple walls. You watch the waves of muscular effort which pulse along its neck as it pumps the contents of its venom sac into your veins.\n\nYou slump to the ledge, unable to feel the cold stone against your flesh. A cloudy film moves in from the edges of your vision. The eyes of the serpent glimmer like the first stars of evening...\n\nDarkness falls.";
+
+        Image = "images/flying-snake.png";
+
+        Type = Story::Type::DOOM;
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+};
+
 class Story146 : public Story::Base
 {
 public:
@@ -4094,6 +4161,25 @@ public:
             return 216;
         }
     }
+};
+
+class Story148 : public Story::Base
+{
+public:
+    Story148()
+    {
+        ID = 148;
+
+        Text = "The monster rushes forward on its strong stumpy legs, saliva pouring from its snapping jaws. You flinch back, expecting to feel a stab of pain as it sinks its teeth into your flesh, but it abruptly stops short as thought it has run in an invisible wall. It is powerless to do more than growl and make futile threatening lunges in your direction, but you edge past cautiously all the same.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 20; }
 };
 
 class Story149 : public Story::Base
@@ -4428,7 +4514,7 @@ public:
 
     Story168()
     {
-        ID = 166;
+        ID = 168;
 
         Image = "images/filler1.png";
 
@@ -4646,7 +4732,12 @@ public:
 
         Take = {{Item::Type::GREEN_MIRROR, Item::Type::MAGIC_DRINK, Item::Type::JADE_SWORD}};
 
-        TakeLimit = 2;
+        Limit = 2;
+    }
+
+    void Event(Character::Base &player)
+    {
+        Limit = 2;
     }
 
     int Continue(Character::Base &player) { return 208; }
@@ -7511,11 +7602,15 @@ auto story136 = Story136();
 auto story137 = Story137();
 auto story138 = Story138();
 auto story139 = Story139();
+auto story140 = Story140();
 auto story141 = Story141();
 auto story142 = Story142();
 auto story143 = Story143();
+auto story144 = Story144();
+auto story145 = Story145();
 auto story146 = Story146();
 auto story147 = Story147();
+auto story148 = Story148();
 auto story149 = Story149();
 auto story152 = Story152();
 auto story158 = Story158();
@@ -7659,7 +7754,7 @@ void InitializeStories()
         &story110, &story111, &story112, &story113, &story114, &story115, &story116, &story117, &story118, &story119,
         &story120, &story121, &story122, &story123, &story124, &story125, &story126, &story127, &story128, &story129,
         &story130, &story131, &story132, &story133, &story134, &story135, &story136, &story137, &story138, &story139,
-        &story141, &story142, &story143, &story146, &story147, &story149,
+        &story140, &story141, &story142, &story143, &story144, &story145, &story146, &story147, &story148, &story149,
         &story152, &story158, &story159,
         &story160, &story161, &story162, &story163, &story164, &story165, &story166, &story168, &story169,
         &story170, &story172,
