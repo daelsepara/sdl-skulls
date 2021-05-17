@@ -761,7 +761,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::TARGETING.Name, 204, Skill::Type::TARGETING));
-        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 227, Choice::Type::SKILL_ANY, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 227, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base("MELEE: Charge straight at him", 250));
         Choices.push_back(Choice::Base("MELEE: Charge at him zigzagging as you run", 273));
 
@@ -1081,8 +1081,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        
-        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 439, Choice::Type::SKILL_ANY, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+
+        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 439, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base(Skill::CUNNING.Name, 428, Skill::Type::CUNNING));
         Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::CHILLI_PEPPERS], 125, Item::Type::CHILLI_PEPPERS));
 
@@ -3728,7 +3728,7 @@ public:
         {
             Choices.push_back(Choice::Base(Skill::AGILITY.Name, 354, Skill::Type::AGILITY));
             Choices.push_back(Choice::Base(Skill::ROGUERY.Name, 374, Skill::Type::ROGUERY));
-            Choices.push_back(Choice::Base(Skill::SPELLS.Name, 396, Choice::Type::SKILL_ANY, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+            Choices.push_back(Choice::Base(Skill::SPELLS.Name, 396, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
         }
         else
         {
@@ -4823,7 +4823,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 411, Choice::Type::SKILL_ANY, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 411, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base(Skill::CHARMS.Name, 189, Skill::Type::CHARMS));
         Choices.push_back(Choice::Base(Skill::CUNNING.Name, 371, Skill::Type::CUNNING));
         Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 392, Skill::Type::SEAFARING));
