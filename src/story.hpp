@@ -4738,7 +4738,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Travel with him and help with the defence (SWORD and BLOWGUN)", 300, Choice::Type::ALL_ITEMS, {Item::Type::SWORD, Item::Type::BLOWGUN}));
-        Choices.push_back(Choice::Base("... or a with JADE SWORD and BLOWGUN", 300, Choice::Type::ALL_ITEMS, {Item::Type::JADE_SWORD, Item::Type::BLOWGUN}));
+        Choices.push_back(Choice::Base("... or with a JADE SWORD and BLOWGUN", 300, Choice::Type::ALL_ITEMS, {Item::Type::JADE_SWORD, Item::Type::BLOWGUN}));
         Choices.push_back(Choice::Base("Pay for your passage (6 cacao)", 300, Choice::Type::LOSE_MONEY, 6));
         Choices.push_back(Choice::Base("Travel overland instead", 228));
 
