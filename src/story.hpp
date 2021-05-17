@@ -1367,6 +1367,8 @@ public:
                     player.Skills.push_back(player.LostSkills[i]);
                 }
             }
+
+            player.LostSkills.clear();
         }
 
         PreText += "\n\nA wail of petulant rage echoes down from the sorcerer's sanctum. \"Apparently he's not happy with the result of the contest,\" you say to Morning Star.";
@@ -1559,6 +1561,33 @@ public:
     }
 };
 
+class Story050 : public Story::Base
+{
+public:
+    Story050()
+    {
+        ID = 50;
+
+        Text = "You race off into the undergrowth. The mysterious cannibals make no attempt to stop you, nor do they come after you. They are content to keep your belongings and leave you to the mercy of the forest byways.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_POSSESSIONS(player);
+
+        player.Money += player.LostMoney;
+        player.LostMoney = 0;
+    }
+
+    int Continue(Character::Base &player) { return 118; }
+};
+
 class Story051 : public Story::Base
 {
 public:
@@ -1603,6 +1632,25 @@ public:
     }
 };
 
+class Story053 : public Story::Base
+{
+public:
+    Story053()
+    {
+        ID = 53;
+
+        Text = "A dry raised path stretches off across the dismal marshland. You set off to find where it leads, and have not been walking long when you come across a tiny wizened man with large round eyes and a very long nose. He is lying by the side of the path in a clump of reeds, gasping with exhaustion. When he catches sight of you he raises his head weakly and says in a high-pitched whine: \"I'm so thirsty. Please give me something to drink...\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go back to the river and fetch some water for him", 284));
+        Choices.push_back(Choice::Base("Ignore him and walk past", 307));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story054 : public Story::Base
 {
 public:
@@ -1621,6 +1669,119 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story055 : public Story::Base
+{
+public:
+    Story055()
+    {
+        ID = 55;
+
+        Text = "The King is put in a foul temper because of your paltry gift. A group of royal guards emerge from the palace brandishing hard wooden staves and demand to know if you are the one who has insulted the King by presenting him with a one-legged OWL.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::CUNNING.Name, 32, Skill::Type::CUNNING));
+        Choices.push_back(Choice::Base("Fight the guards", 102));
+        Choices.push_back(Choice::Base("Make no attempt to resist", 124));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story056 : public Story::Base
+{
+public:
+    Story056()
+    {
+        ID = 56;
+
+        Text = "When you answered the riddle, the bead slipped out from under your tongue and fell to the ground. You drop to your knees and start frantically fumbling around for it, then you catch sight of it rolling towards a fissure in the rock. You make a desperate lunge, but your fingers close on thin air. The jade bead rolls into the fissure and is lost to view.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
+        {
+            Character::LOSE_ITEMS(player, {Item::Type::JADE_BEAD});
+        }
+    }
+
+    int Continue(Character::Base &player) { return 60; }
+};
+
+class Story057 : public Story::Base
+{
+public:
+    Story057()
+    {
+        ID = 57;
+
+        Text = "Leaving while the creature is asleep would do no good. It would only come looking for you after dark. You must deal with it now.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::CUNNING.Name, 377, Skill::Type::CUNNING));
+        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 11, Choice::Type::SKILL_ANY, Skill::Type::CUNNING, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("Battle with the creature: attack it now while it is still attached to its host", 104));
+        Choices.push_back(Choice::Base("Wait until nightfall", 100));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story058 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story058()
+    {
+        ID = 58;
+
+        Text = "Perhaps you will find the answers to your questions in the shrine. You climb to the top of the steps, pausing for a moment at the threshold of the shrine. The entrance is a block of shadow, dingy with foreboding. But you have no choice. Bowing as every mortal must when in the presence of the gods, you go inside.\n\nIt is a shrine to God of the Pole Star, as you can tell immediately by the striped glyphs on the altar. He is the celestial guide whom all travellers pray to when they have lost their way. You doubt if anyone has ever needed his help as much as you do now.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Offer INCENSE", 82, Choice::Type::LOSE_ITEM, Item::Type::INCENSE));
+        Choices.push_back(Choice::Base("Offer your own life blood (LOSE 1 Life Point)", 82, Choice::Type::LIFE, -1));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story059 : public Story::Base
+{
+public:
+    Story059()
+    {
+        ID = 59;
+
+        Text = "The drink proves cool and invigorating. You RECOVER 2 Life Points.\n\nYour companion leads up to the kapok tree, where a group of nobles are resting under the canopy of foliage. They greet him cordially, but you are given a somewhat cooler reception until he explains how you helped him cross the river blood.\n\nIt is a relief to be out of the glaring light of the low underworld sun for a while. Out of the shade, you can see less fortunate souls moving to and fro with their hands pressed to their foreheads, squinting in the eternal sunshine. You settle down with your back to the tree and wait to hear what the nobles have to say.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, 2);
+    }
+
+    int Continue(Character::Base &player) { return 106; }
 };
 
 class Story067 : public Story::Base
@@ -6095,9 +6256,16 @@ auto story046 = Story046();
 auto story047 = Story047();
 auto story048 = Story048();
 auto story049 = Story049();
+auto story050 = Story050();
 auto story051 = Story051();
 auto story052 = Story052();
+auto story053 = Story053();
 auto story054 = Story054();
+auto story055 = Story055();
+auto story056 = Story056();
+auto story057 = Story057();
+auto story058 = Story058();
+auto story059 = Story059();
 auto story067 = Story067();
 auto story068 = Story068();
 auto story069 = Story069();
@@ -6274,7 +6442,7 @@ void InitializeStories()
         &story020, &story021, &story022, &story023, &story024, &story025, &story026, &story027, &story028, &story029,
         &story030, &story031, &story032, &story033, &story034, &story035, &story036, &story037, &story038, &story039,
         &story040, &story041, &story042, &story043, &story044, &story045, &story046, &story047, &story048, &story049,
-        &story051, &story052, &story054,
+        &story050, &story051, &story052, &story053, &story054, &story055, &story056, &story057, &story058, &story059,
         &story067, &story068, &story069,
         &story070, &story071, &story072, &story075, &story077, &story078,
         &story080, &story085,
