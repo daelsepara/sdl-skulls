@@ -1081,11 +1081,12 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-
-        Controls = StandardControls();
+        
         Choices.push_back(Choice::Base(Skill::SPELLS.Name, 439, Choice::Type::SKILL_ANY, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base(Skill::CUNNING.Name, 428, Skill::Type::CUNNING));
         Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::CHILLI_PEPPERS], 125, Item::Type::CHILLI_PEPPERS));
+
+        Controls = StandardControls();
     }
 
     void Event(Character::Base &player)
@@ -1095,8 +1096,6 @@ public:
         PreText = "You walk into the jaws of the dragon and descend the long tunnel of his throat until the only light is a dim flicker in the gloom far behind you. Hot gases bubble up out of the chambers of his stomach, forcing you to hold your hand over your face as you proceed.\n\nIt gets hotter. You cannot see much of your surroundings, but you reckon that you must now be passing through the dragons bowels. This is the part of his body that lies in the lava at the bottom of the canyon. Such intense temperatures obviously do not bother the dragon, but you are getting weaker by the minute. You stagger on, head swimming from the stinking gases and the burning heat.\n\nYou LOSE 3 Life Points.";
 
         Character::GAIN_LIFE(player, -3);
-
-        Choices.clear();
 
         if (player.Life > 0)
         {
