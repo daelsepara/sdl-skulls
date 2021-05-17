@@ -916,7 +916,7 @@ public:
     {
         ID = 26;
 
-        Text = "With infinite care you delve into the gloomy hole and deftly remove the gold diadem. Clinging to the side of the tree, you clean off the moss and muck and examine your prize. It is a circlet such as a king or high priest might wear upon his row, patterned with holy sigils and bearing the cruciform symbol of the World Tree in inlaid plaques of jade. Such an item could fetch you a fortune in any market in the world.\n\nClimbing back down to the ground, you sense the stabai hovering close beside you, bending heir elongated skulls closer as they admire your find. \"It is a great treasure, as we promised,\" says one with a trace of envy in her voice. \"Now return our shawl.\"\n\n\"When I'm safely out of these woods, then I'll consider it,\" you snap back. \"Not before.\"\n\nYou got the GOLD DIADEM.";
+        Text = "With infinite care you delve into the gloomy hole and deftly remove the GOLD DIADEM. Clinging to the side of the tree, you clean off the moss and muck and examine your prize. It is a circlet such as a king or high priest might wear upon his row, patterned with holy sigils and bearing the cruciform symbol of the World Tree in inlaid plaques of jade. Such an item could fetch you a fortune in any market in the world.\n\nClimbing back down to the ground, you sense the stabai hovering close beside you, bending heir elongated skulls closer as they admire your find. \"It is a great treasure, as we promised,\" says one with a trace of envy in her voice. \"Now return our shawl.\"\n\n\"When I'm safely out of these woods, then I'll consider it,\" you snap back. \"Not before.\"\n\nYou got the GOLD DIADEM.";
 
         Image = "images/filler5.png";
 
@@ -3532,6 +3532,59 @@ public:
     }
 };
 
+class Story121 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story121()
+    {
+        ID = 92;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go right", 75));
+        Choices.push_back(Choice::Base("Go left", 412));
+        Choices.push_back(Choice::Base("Go straight ahead", 129));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You stumble into a bush whose sharply hooked leaves give you some nasty scratches. In ordinary circumstances such wounds would only be a painful nuisance. Here in the feverish dankness of the jungle, they soon go septic and begin to weep.\n\nYou LOSE 1 Life Point.";
+
+        Character::GAIN_LIFE(player, -1);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou must decide what route to follow from here.";
+        }
+
+        Text = PreText.c_str();
+    }
+};
+
+class Story122 : public Story::Base
+{
+public:
+    Story122()
+    {
+        ID = 122;
+
+        Text = "You lash out with lightning speed, pinning the snake's head against the cliff-face before it can dodge. It writhes, hissing angrily and slapping the stone with its muscular coils, but is powerless to break free. You apply increasing pressure to its neck until it goes limp and drops to fall with a heavy plop in the river below.\n\nYou peer into the tomb. The darkness seems to rustle with unseen threats, but you know that it is just a figment of your imagination. You have dealt with the tomb guardian. Now you are eager to see if there is any treasure to be had.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 339; }
+};
+
 class Story123 : public Story::Base
 {
 public:
@@ -3549,6 +3602,54 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story124 : public Story::Base
+{
+public:
+    Story124()
+    {
+        ID = 124;
+
+        Text = "Luckily for you, the royal guards consider that a simple task like beating up offenders is beneath their dignity. They give you a few sharp blows to teach you a lesson, then shove you across the courtyard. \"Beat it!\" growls one, jabbing you in the kidneys with the end of his staff. \"I don't want to catch sight of you hanging around here again.\"\n\nYou LOSE 2 Life Points.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, -2);
+    }
+
+    int Continue(Character::Base &player) { return 262; }
+};
+
+class Story125 : public Story::Base
+{
+public:
+    Story125()
+    {
+        ID = 125;
+
+        Text = "Scattering the chillies onto the dragon's tongue has the desired effect. He opens his mouth and spits you out with a great bellow of pain and surprise. You scrabble off to a safe distance before turning to watch his anguished attempts to wipe his tongue clean against the clifftop.\n\nKawak's rear head has blunt face with upcurving tusks and pallid globular eyes. He glowers at you and speaks with difficulty because of his burning tongue, saying, \"If you attempt to return this way, I shall devour you.\"\n\nBearing this warning in mind, you hurry onwards.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::CHILLI_PEPPERS});
+    }
+
+    int Continue(Character::Base &player) { return 263; }
 };
 
 class Story126 : public Story::Base
@@ -3589,6 +3690,77 @@ public:
 
         Controls = ShopControls();
     }
+};
+
+class Story128 : public Story::Base
+{
+public:
+    Story128()
+    {
+        ID = 128;
+
+        Text = "You now realize that drinking from the well would have enabled you to see the occupants of the Deathlands as normal folk, but without that magic you must see them as they truly are in the eyes of the living: skeletal remains encrusted with teeming mould. Before you succumb to blind panic, you raise your wand and cast an enchantment of illusion over your own vision, allowing you to see them as they were in life. Now you can converse with them without a feeling of terror.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 106; }
+};
+
+class Story129 : public Story::Base
+{
+public:
+    Story129()
+    {
+        ID = 129;
+
+        Text = "He gives a wild shriek of rage and plunges both knives towards you. The attack comes with such speed that you have no time to react, and for a split-second it seems your time has come. But the sentinel stops his lunge with perfect precision so that the tips of the blades just prick your skin. You look down to see two bright drops of blood forming on your chest.\n\nYou PERMANENTLY LOSE 2 Life Points. This is no ordinary wound, however. No one can recover from an injury dealt by Lord Blood's knives.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.MAX_LIFE_LIMIT -= 2;
+
+        Character::GAIN_LIFE(player, -2);
+    }
+
+    int Continue(Character::Base &player) { return 84; }
+};
+
+class Story130 : public Story::Base
+{
+public:
+    Story130()
+    {
+        ID = 130;
+
+        Text = "The symbol on the diadem represents the World Tree, the source of all birth and regeneration. Whether its power is enough to restore the dead to life remains to be tested.\n\nYou carefully set the severed head upright on the sand and place the diadem over its brow. \"What do we do now?\" breathes the servant.\n\nYou admit you don't know. \"Just wait, I suppose.\"\n\nThe shadows flow like ink as the moon rises higher, laying a cool white patina over the desert that lends it a sense of strange enchantment. If you are ever to witness a miracle, tonight would be the time for it.\n\nThe moon reaches its zenith. Both you and the servant gaze up into the night sky, overawed by a shared sense of wonder at the countless stars. A moment later you share something else: a startled jump as a voice calls: \"By the gods! What am I doing buried up to my neck in the sand?\"\n\nAlthough you were waiting for such a miracle, it is no less amazing now that it has happened. You dig the sand out from around the warrior's head to find his body has been wholly restored by the magic of the diadem. \"A miracle!\" gasps the servant. \"Master, this kind of traveller brought you back from the dead.\"\n\n\"Nonsense,\" snaps the warrior, scuffing sand off his limbs, \"I must have been knocked out, that's all. Fancy burying me in the sand, you daft idiots!\"\n\nIt seems he intends to keep the GOLD DIADEM.\n\nYou gained the codeword ANGEL.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::ANGEL});
+
+        Character::LOSE_ITEMS(player, {Item::Type::GOLD_DIADEM});
+    }
+
+    int Continue(Character::Base &player) { return 15; }
 };
 
 class Story135 : public Story::Base
@@ -3710,7 +3882,7 @@ public:
     {
         ID = 141;
 
-        Text = "A grip of iron closes on your arm and you are dragged bodily into the black pit inside the tree. A musky stench makes you reel as you a are pinned against a wall of moss and decaying wood. The creature's body is covered with rough scales and it begins to strangle you with remorseless strength. You can do nothing to save yourself, and your last thought is of the gold diadem clutched in your hand. You batter it against the creature in a futile struggle, bending the soft metal with no care for its value now. You will be the richest corpse in the forest.";
+        Text = "A grip of iron closes on your arm and you are dragged bodily into the black pit inside the tree. A musky stench makes you reel as you a are pinned against a wall of moss and decaying wood. The creature's body is covered with rough scales and it begins to strangle you with remorseless strength. You can do nothing to save yourself, and your last thought is of the GOLD DIADEM clutched in your hand. You batter it against the creature in a futile struggle, bending the soft metal with no care for its value now. You will be the richest corpse in the forest.";
 
         Image = "images/filler1.png";
 
@@ -6812,7 +6984,7 @@ public:
     {
         ID = 409;
 
-        Text = "The stabai guide you through the forest to a tall tree which has had the vitality leeched out of it by a strangler fig. The roots of the strangler enclose the decomposing trunk like a crusty scab. A barely glimpsed arm directs your attention to a hole some way up the side of the tree. \"There,\" announces the fluting voice of the stabai. \"The treasure is inside the dying tree-trunk.\"\n\nThe strangler's roots make it an easy climb. The stabai effortlessly keep pace with you. From somewhere amid the branches you hear them urging you to return the SHAWL. \"Not yet,\" you reply. \"First I'll take a look at this treasure.\"\n\n\"But then you will return the SHAWL?\" they whine.\n\nYour foot slips but you steady yourself in the crook of a branch. It is a long way to the ground. No doubt the stabai are hoping you will break your neck, and their distractions are not helping. \"I'm making no promises,\" you tell them irritably.\n\nPulling yourself up level with the hold, you peer inside. It looks dank and rotten. There is a smell like mushrooms -- sickly sweet, a heady aroma. But as your eyes penetrate the darkness, you see that the stabai did not lie. Just within reach glitters a solid gold diadem.";
+        Text = "The stabai guide you through the forest to a tall tree which has had the vitality leeched out of it by a strangler fig. The roots of the strangler enclose the decomposing trunk like a crusty scab. A barely glimpsed arm directs your attention to a hole some way up the side of the tree. \"There,\" announces the fluting voice of the stabai. \"The treasure is inside the dying tree-trunk.\"\n\nThe strangler's roots make it an easy climb. The stabai effortlessly keep pace with you. From somewhere amid the branches you hear them urging you to return the SHAWL. \"Not yet,\" you reply. \"First I'll take a look at this treasure.\"\n\n\"But then you will return the SHAWL?\" they whine.\n\nYour foot slips but you steady yourself in the crook of a branch. It is a long way to the ground. No doubt the stabai are hoping you will break your neck, and their distractions are not helping. \"I'm making no promises,\" you tell them irritably.\n\nPulling yourself up level with the hold, you peer inside. It looks dank and rotten. There is a smell like mushrooms -- sickly sweet, a heady aroma. But as your eyes penetrate the darkness, you see that the stabai did not lie. Just within reach glitters a solid GOLD DIADEM.";
 
         Image = "images/filler3.png";
 
@@ -7212,9 +7384,16 @@ auto story117 = Story117();
 auto story118 = Story118();
 auto story119 = Story119();
 auto story120 = Story120();
+auto story121 = Story121();
+auto story122 = Story122();
 auto story123 = Story123();
+auto story124 = Story124();
+auto story125 = Story125();
 auto story126 = Story126();
 auto story127 = Story127();
+auto story128 = Story128();
+auto story129 = Story129();
+auto story130 = Story130();
 auto story135 = Story135();
 auto story136 = Story136();
 auto story137 = Story137();
@@ -7366,8 +7545,8 @@ void InitializeStories()
         &story090, &story091, &story092, &story093, &story094, &story095, &story096, &story097, &story098, &story099,
         &story100, &story101, &story102, &story103, &story104, &story105, &story106, &story107, &story108, &story109,
         &story110, &story111, &story112, &story113, &story114, &story115, &story116, &story117, &story118, &story119,
-        &story120, &story123, &story126, &story127,
-        &story135, &story136, &story137, &story138, &story139,
+        &story120, &story121, &story122, &story123, &story124, &story125, &story126, &story127, &story128, &story129,
+        &story130, &story135, &story136, &story137, &story138, &story139,
         &story141, &story142, &story143, &story146, &story147, &story149,
         &story152, &story158, &story159,
         &story160, &story161, &story162, &story163, &story164, &story165, &story166, &story168, &story169,
