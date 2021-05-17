@@ -2219,7 +2219,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                             break;
                         }
-                        else if (story->Choices[current].Type == Choice::Type::GIVE_ITEM)
+                        else if (story->Choices[current].Type == Choice::Type::GIVE_ITEM || story->Choices[current].Type == Choice::Type::LOSE_ITEM)
                         {
                             if (Character::VERIFY_ITEMS(player, {story->Choices[current].Item}))
                             {

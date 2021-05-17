@@ -1006,7 +1006,6 @@ public:
         Choices.push_back(Choice::Base("Head left from here", 144));
         Choices.push_back(Choice::Base("Go right", 75));
         Choices.push_back(Choice::Base("Go straight on", 98));
-        
 
         Controls = StandardControls();
     }
@@ -1030,6 +1029,229 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story031 : public Story::Base
+{
+public:
+    Story031()
+    {
+        ID = 31;
+
+        Text = "The folktales of heroes who have ventured into the underworld are as fresh in your mind now as when they were first told to you in infancy. You know that on no account must you part with the bead until you reach the crossroads where four coloured paths meet. The two demons are just tying to trick you. You make curt gestures of dismissal and turn away from them.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 53; }
+};
+
+class Story032 : public Story::Base
+{
+public:
+    Story032()
+    {
+        ID = 32;
+
+        Text = "You give them a puzzled look, your face the very picture of innocence as you reply: \"An OWL? Not at all -- my gift was a fine cloak of quetzal feathers with a jade clasp. I think that fellow over there presented the OWL...\"\n\nYou point to a fretful-looking gentleman who has been pacing along the colonnade for several minutes. You noticed him send in a gift earlier, but he failed to bribe the courtier sufficiently and does not realize he will be kept waiting as a result. He looks up with a bemused half-smile as the guards go striding over to him. The smile soon turns to a look of horror as they start to pummel him with their staves. Cowering under the hail of blows, he goes hobbling off through the crowd of onlookers. Meanwhile you take the opportunity to slink away before anyone finds out the truth.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 308; }
+};
+
+class Story033 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story033()
+    {
+        ID = 33;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 439, Choice::Type::SKILL_ANY, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base(Skill::CUNNING.Name, 428, Skill::Type::CUNNING));
+        Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::CHILLI_PEPPERS], 125, Item::Type::CHILLI_PEPPERS));
+    }
+
+    void Event(Character::Base &player)
+    {
+        Type = Story::Type::NORMAL;
+
+        PreText = "You walk into the jaws of the dragon and descend the long tunnel of his throat until the only light is a dim flicker in the gloom far behind you. Hot gases bubble up out of the chambers of his stomach, forcing you to hold your hand over your face as you proceed.\n\nIt gets hotter. You cannot see much of your surroundings, but you reckon that you must now be passing through the dragons bowels. This is the part of his body that lies in the lava at the bottom of the canyon. Such intense temperatures obviously do not bother the dragon, but you are getting weaker by the minute. You stagger on, head swimming from the stinking gases and the burning heat.\n\nYou LOSE 3 Life Points.";
+
+        Character::GAIN_LIFE(player, -3);
+
+        Choices.clear();
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou realize that at last the passage is beginning to slope upwards again. You are climbing out of the canyon, towards the dragon's other head. Sure enough, the awful heat gradually subsides. When you reach the top of your gruelling ascent, however, a further shock awaits you. The dragon's hind and jaws are closed. You are trapped in here.";
+
+            if (!Character::VERIFY_SKILL(player, Skill::Type::CUNNING) && !Character::VERIFY_SKILL_ANY(player, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}) && !Character::VERIFY_ITEMS(player, {Item::Type::CHILLI_PEPPERS}))
+            {
+                PreText += "\n\nYour days will end in the maw of the the dragon.";
+
+                Type = Story::Type::DOOM;
+            }
+        }
+
+        Text = PreText.c_str();
+    }
+};
+
+class Story034 : public Story::Base
+{
+public:
+    Story034()
+    {
+        ID = 34;
+
+        Text = "You moisten a little salt and rub it onto your neck as a precaution. You do not need much, so you can retain the rest of the parcel in case you need it later.\n\nYou gained the codeword SALVATION.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::SALVATION});
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::LOBSTER_POT}))
+        {
+            return 81;
+        }
+        else
+        {
+            return 57;
+        }
+    }
+};
+
+class Story035 : public Story::Base
+{
+public:
+    Story035()
+    {
+        ID = 35;
+
+        Text = "Your amulet is held around your neck by a thong, which snaps as you are getting off the raft. You give a yelp of alarm and try to grab the amulet before it falls into the water, but for once luck is not with you and it slips through your fingers. However, instead of sinking without trace the amulet comes to rest just under the surface. You stoop to retrieve it, and in doing so you notice something rather interesting; the stairway does not just lead up to the shrine atop the pyramid; it also leads down beneath the lake.\n\nIs that the route you should take? Or is there some secret you must discover inside the shrine first? As you resecure the amulet around your neck, you ponder your next action.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Ascend to the shrine", 58));
+        Choices.push_back(Choice::Base("Descend into the water", 105));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story036 : public Story::Base
+{
+public:
+    Story036()
+    {
+        ID = 36;
+
+        Text = "You trudge on until you come to a well. On a ridge ahead stands a kapok tree with its upper branches surrounded by the mass of water that hangs above the Deathlands. Squinting in the intense unremitting sunlight, you can make out some figures reclining in the shade of its foliage.";
+
+        Image = "images/filler1.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
+        {
+            Choices.push_back(Choice::Base("Discard the JADE BEAD", 179, Choice::Type::LOSE_ITEM, Item::Type::JADE_BEAD));
+        }
+
+        Choices.push_back(Choice::Base("Continue", 180));
+    }
+};
+
+class Story037 : public Story::Base
+{
+public:
+    Story037()
+    {
+        ID = 37;
+
+        Text = "You have passed two of the sentinels; there are two still to go. The next proves to be a lank bone-white demon with a sharply featured face that gives him an almost serpentine look. He holds a leaf-shaped knife of white onyx in each hand, tilting them like fans as he stoops to peer at you.\n\n\"Your name?\" The words ooze out of his mouth like venom.\n\n\"Evening Star,\" you reply.\n\nHe nods and an ugly lipless smile curls his long mouth, \"Good. Now address me with proper respect, Evening Star. Address me by name.\"\n\nWhat do you think his name is?";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Lord Blood", 84));
+        Choices.push_back(Choice::Base("Lord Skull", 129));
+        Choices.push_back(Choice::Base("Thunderbolt Laughter", 62));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story038 : public Story::Base
+{
+public:
+    Story038()
+    {
+        ID = 38;
+
+        Text = "The servant falls to his knees with his arms clasped around your legs. he is racked with grief for his dead master, and begs you to restore the man to life. He must think you are some kind of miracle-worker. Understandable, since he has just seen you slay a monster that seemed more than a match for any ten normal men.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("[SPELLS] Try to revivify the dead man, though it would probably use up all your magical power", 108, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("You can expend your magic using a GOLD DIADEM", 130, Item::Type::GOLD_DIADEM));
+        Choices.push_back(Choice::Base("... or a CHALIFE OF LIFE", 153, Item::Type::CHALICE_OF_LIFE));
+        Choices.push_back(Choice::Base("Otherwise", 176));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story039 : public Story::Base
+{
+public:
+    Story039()
+    {
+        ID = 39;
+
+        Text = "You place it across the pit and walk across. When you reach the other side and turn to retrieve your makeshift bridge, however, the chief courtier whisks it away and snaps it across his knee. \"That was cheating,\" he says ill-temperedly.||\"How was I to know? You didn't mention any rules.\"||His scowl melts into a sly smile. He is obviously a creature of volatile moods. \"That's the kind of game we play around here. You discover the rules when you break them.\"||He tosses the broken item aside and takes a great leap which carries him right across the pit. The other courtiers follow with equal agility.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 431; }
 };
 
 class Story044 : public Story::Base
@@ -3181,7 +3403,7 @@ public:
 
         auto FISHED = false;
 
-        if (Character::HAS_ANY_SKILLS(player, {Skill::Type::WILDERNESS_LORE, Skill::Type::SEAFARING}))
+        if (Character::VERIFY_ANY_SKILLS(player, {Skill::Type::WILDERNESS_LORE, Skill::Type::SEAFARING}))
         {
             FISHED = true;
         }
@@ -3503,7 +3725,7 @@ public:
 
         Choices.clear();
 
-        if (Character::HAS_ANY_SKILLS(player, {Skill::Type::AGILITY, Skill::Type::ROGUERY, Skill::Type::SPELLS}))
+        if (Character::VERIFY_ANY_SKILLS(player, {Skill::Type::AGILITY, Skill::Type::ROGUERY, Skill::Type::SPELLS}))
         {
             Choices.push_back(Choice::Base(Skill::AGILITY.Name, 354, Skill::Type::AGILITY));
             Choices.push_back(Choice::Base(Skill::ROGUERY.Name, 374, Skill::Type::ROGUERY));
@@ -4245,7 +4467,7 @@ public:
 
         PreText = "All along your route you find deserted cottages where people have abandoned their homes and farms for safer regions. You pass refugees on the mountain roads. Some tell you they are fleeing from brigands. Others fear the devils and werewolves that they believe will be unleashed from the western desert now the Great City has fallen.\n\nFood is hard to come by in the arid sierra.\n\nTravelling off the main paths to avoid the groups of marauding brigands, you are forced back on your own skills to find sustenance.";
 
-        if (Character::VERIFY_ANY_SKILL(player, {Skill::Type::TARGETING, Skill::Type::WILDERNESS_LORE}))
+        if (Character::VERIFY_ANY_SKILLS(player, {Skill::Type::TARGETING, Skill::Type::WILDERNESS_LORE}))
         {
             PreText += "\n\nYou were able to hunt for food.";
 
@@ -5733,6 +5955,15 @@ auto story027 = Story027();
 auto story028 = Story028();
 auto story029 = Story029();
 auto story030 = Story030();
+auto story031 = Story031();
+auto story032 = Story032();
+auto story033 = Story033();
+auto story034 = Story034();
+auto story035 = Story035();
+auto story036 = Story036();
+auto story037 = Story037();
+auto story038 = Story036();
+auto story039 = Story039();
 auto story044 = Story044();
 auto story045 = Story045();
 auto story046 = Story046();
@@ -5916,7 +6147,7 @@ void InitializeStories()
         &prologue, &story001, &story002, &story003, &story004, &story005, &story006, &story007, &story008, &story009,
         &story010, &story011, &story012, &story013, &story014, &story015, &story016, &story017, &story018, &story019,
         &story020, &story021, &story022, &story023, &story024, &story025, &story026, &story027, &story028, &story029,
-        &story030,
+        &story030, &story031, &story032, &story033, &story034, &story035, &story036, &story037, &story038, &story039,
         &story044, &story045, &story046, &story047, &story048, &story049,
         &story051, &story052, &story054,
         &story067, &story068, &story069,

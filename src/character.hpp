@@ -173,7 +173,7 @@ namespace Character
         return found;
     }
 
-    bool VERIFY_ANY_SKILL(Character::Base &player, std::vector<Skill::Type> skills)
+    bool VERIFY_ANY_SKILLS(Character::Base &player, std::vector<Skill::Type> skills)
     {
         auto found = false;
 
@@ -193,7 +193,7 @@ namespace Character
         return found;
     }
 
-    bool VERIFY_ALL_SKILL(Character::Base &player, std::vector<Skill::Type> skills)
+    bool VERIFY_ALL_SKILLS(Character::Base &player, std::vector<Skill::Type> skills)
     {
         auto found = 0;
 
@@ -229,44 +229,6 @@ namespace Character
         }
 
         return found;
-    }
-
-    bool HAS_ANY_SKILLS(Character::Base &player, std::vector<Skill::Type> skills)
-    {
-        auto found = false;
-
-        if (player.Skills.size() > 0 && skills.size() > 0)
-        {
-            for (auto i = 0; i < skills.size(); i++)
-            {
-                if (HAS_SKILL(player, skills[i]))
-                {
-                    found = true;
-
-                    break;
-                }
-            }
-        }
-
-        return found;
-    }
-
-    bool HAS_ALL_SKILLS(Character::Base &player, std::vector<Skill::Type> skills)
-    {
-        int found = 0;
-
-        if (player.Skills.size() > 0 && skills.size() > 0)
-        {
-            for (auto i = 0; i < skills.size(); i++)
-            {
-                if (HAS_SKILL(player, skills[i]))
-                {
-                    found++;
-                }
-            }
-        }
-
-        return found == skills.size();
     }
 
     int FIND_SKILL_ITEMS(Character::Base &player, Skill::Type skill, std::vector<Item::Type> items)
