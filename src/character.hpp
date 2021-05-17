@@ -72,44 +72,6 @@ namespace Character
 
     std::vector<Character::Base> Classes = {WARRIOR, HUNTER, MYSTIC, WAYFARER, MERCHANT, ACOLYTE, SORCERER};
 
-    bool VERIFY_ITEM(Character::Base &player, Item::Type item)
-    {
-        auto found = false;
-
-        if (player.Items.size() > 0)
-        {
-            for (auto i = 0; i < player.Items.size(); i++)
-            {
-                if (player.Items[i] == item)
-                {
-                    found = true;
-
-                    break;
-                }
-            }
-        }
-
-        return found;
-    }
-
-    bool VERIFY_ITEMS(Character::Base &player, std::vector<Item::Type> items)
-    {
-        auto found = 0;
-
-        if (items.size() > 0)
-        {
-            for (auto i = 0; i < items.size(); i++)
-            {
-                if (VERIFY_ITEM(player, items[i]))
-                {
-                    found++;
-                }
-            }
-        }
-
-        return found == items.size();
-    }
-
     int FIND_ITEM(Character::Base &player, Item::Type item)
     {
         auto found = -1;
@@ -150,6 +112,24 @@ namespace Character
         return found;
     }
 
+    bool VERIFY_ITEMS(Character::Base &player, std::vector<Item::Type> items)
+    {
+        auto found = 0;
+
+        if (items.size() > 0)
+        {
+            for (auto i = 0; i < items.size(); i++)
+            {
+                if (FIND_ITEM(player, items[i]) >= 0)
+                {
+                    found++;
+                }
+            }
+        }
+
+        return found == items.size();
+    }
+
     int COUNT_ITEMS(Character::Base &player, std::vector<Item::Type> items)
     {
         auto found = 0;
@@ -178,7 +158,7 @@ namespace Character
                 {
                     if (player.Skills[i].Requirement != Item::Type::NONE)
                     {
-                        found = VERIFY_ITEM(player, player.Skills[i].Requirement);
+                        found = VERIFY_ITEMS(player, {player.Skills[i].Requirement});
                     }
                     else
                     {
@@ -301,9 +281,7 @@ namespace Character
                 {
                     for (auto j = 0; j < items.size(); j++)
                     {
-                        auto result = FIND_ITEM(player, items[j]);
-
-                        if (result >= 0)
+                        if (FIND_ITEM(player, items[j]) >= 0)
                         {
                             found++;
                         }
@@ -430,7 +408,7 @@ namespace Character
     {
         for (auto i = 0; i < items.size(); i++)
         {
-            if (!VERIFY_ITEM(player, items[i]))
+            if (!VERIFY_ITEMS(player, {items[i]}))
             {
                 player.Items.push_back(items[i]);
             }

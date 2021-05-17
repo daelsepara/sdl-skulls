@@ -406,6 +406,53 @@ public:
     int Continue(Character::Base &player) { return 97; }
 };
 
+class Story006 : public Story::Base
+{
+public:
+    Story006()
+    {
+        ID = 6;
+
+        Text = "The forest, so lushly appealing when you first entered it, now seems a hellish green labyrinth. The tangled paths are indistinguishable. You might be going in circles.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go right", 75));
+        Choices.push_back(Choice::Base("Go left", 160));
+        Choices.push_back(Choice::Base("Go straight ahead", 98));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story007 : public Story::Base
+{
+public:
+    Story007()
+    {
+        ID = 7;
+
+        Text = "You hear a sound. It is quiet and unsettling. It sounded like a rattling intake of breath in a dry dead throat. You have the sudden impression that something has become aware of your presence here. Something is watching you.\n\nYou look back. The tunnel behind the boat is now filled with ochre mist that hangs in the air in long sparkling veils. As you watch, you see the cloud getting thicker as more mist seeps out of the edges of the rock tombs.\n\nThe demon in the back of the canoe also takes a glance back. He pauses stock-still for a moment, then explodes into frantic action. Paddling furiously, he yells to the other demon, \"They've woken up! Let's get out of here!\"\n\nToo late. The ochre cloud suddenly comes rushing forward as though blown by a blast of wind. The boat is completely enveloped. The demons are obviously expecting trouble and do not wait around. \"Abandon ship!\" you hear the one in the prow yelling, and then two heavy splashes can be heard as they jump overboard.\n\nPhantom figures loom out of the mist, pressing their skeletal faces close to yours and clutching at you with thin fingers of yellow bone. You are rigid with terror; you cannot even find the breath to scream. The mist sends a chill deep into you that no fire will ever be able to warm again.\n\nYour maximum Life Points is PERMANENTLY REDUCED by 2.\n\nThe mist retreats as rapidly as it appeared, drawing back in long wisps into the rock tombs like smoke being sucked back into a row of pipes. But the danger is not over. Without the two oarsmen, your canoe is being carried out of control by the river current.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 76, Skill::Type::SEAFARING));
+        Choices.push_back(Choice::Base("Use a ROPE", 99, Item::Type::ROPE));
+        Choices.push_back(Choice::Base("Otherwise", 214));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.MAX_LIFE_LIMIT -= 2;
+
+        Character::GAIN_LIFE(player, 0);
+    }
+};
+
 class Story008 : public Story::Base
 {
 public:
@@ -446,7 +493,7 @@ public:
     {
         PreText = "You descend into the pyramid. The staircase is narrow, steep and dank. Lighting-strokes cast a guttering white glare from above, plunging you into darkness as they pass. The thundercracks in the sky resound ominously through the heavy stone blocks of the pyramid. The steps are slippery with damp, forcing you to make the descent slowly. At last you reach the bottom and pass through a doorway draped with thick fleshy roots. A tunnel stretches ahead which you have to feel your way along. No light penetrates this far down. The smell in the air is of damp soil and limestone.\n\nThe walls vibrate as another thunderbolt shakes the earth. Suddenly you are knocked off your feet by a heavy weight of rubble dropping on you. You realize the tunnel has caved in. Claustrophobia seizes you. Struggling in panic, you claw at the rubble in a frantic attempt to dig yourself free.\n\nYour hands break through to the air and you push up, gasping for breath. You are no longer in the underground tunnel, though. You have emerged into an unearthly landscape. A barren plain stretches away in all directions under a sky of red-tinged darkness. In the distance you can see a haze of sulphurous clouds lit by fiery light: the lip of volcanic fissure. You head towards it.";
 
-        if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
         {
             PreText += "\n\nYou lodged the JADE BEAD under your tongue as the spirit advised you.";
         }
@@ -479,7 +526,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
         {
             return 56;
         }
@@ -487,6 +534,258 @@ public:
         {
             return 60;
         }
+    }
+};
+
+class Story011 : public Story::Base
+{
+public:
+    Story011()
+    {
+        ID = 11;
+
+        Text = "As the sun sets, the pitcher on the woman's shoulder tilts, falling to reveal that our guess was right -- there is a second head protruding from her neck!\n\nThe nightcrawler's eyes snap open and fix on you, and its mouth drops open in a gurgling snarl. Long strands of black hair shoot out from it like tentacles, some of them up to two metres long. These form into thin matted stalks resembling an insect's legs, which probe the ground, preparing to support the creature's weight- There is a grisly sucking sound as the nightcrawler pulls itself free of the sleeping woman's neck.\n\nIt comes scuttling forward eagerly on its limbs of twined hair and leaps up towards your neck, intending to make you its new host, but you are ready for it. It blunders straight into the net which your magic has woven out of moonbeams and river mist. It struggles and gnashes its long teeth, but it cannot break free of the net. Taking it to the river bank, you cast it into the water. \"And good riddance,\" you say as it sinks to a final resting place on the river bed.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+
+    int Continue(Character::Base &player) { return 398; }
+};
+
+class Story012 : public Story::Base
+{
+public:
+    Story012()
+    {
+        ID = 12;
+
+        Text = "Cleverness is not so much a question of intelligence. It has a lot to do with just having a smart attitude. Where others look for the obvious answer to any problem, you have a habit of being contrary -- of always trying the unexpected first. You find it usually works.\n\nLike now: the average person would climb to the top of the steps and probably have to tackle some devious puzzle or demonic monster in the shrine above. You check out the opposite approach, and discover that the steps not only lead up but also descend beneath the water. It's a near certainty that this is the route you must take.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+
+    int Continue(Character::Base &player) { return 105; }
+};
+
+class Story013 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story013()
+    {
+        ID = 13;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "A peasant shows up at last, emerging on the adjacent ledge beside the river. Time passes in a dream-like way here; you cannot tell if hours or days have gone by while you were waiting. You keenly feel the urgency of your quest.\n\nThe noble gets to his feet. \"Since I was here first, I shall travel on with this man,\" he says to you once he has explained the situation to the peasant. \"No doubt another poor man will arrive eventually. I'll throw back the poles once I'm across, so that you will be able to use them.\"\n\nDespite the fact that he was here first, you have to insist that you go across at once. He reacts with indignation, and a struggle ensues. A life of luxury has left him no match for you, with your ardency and youthful vigour. You subdue him and take the pole for yourself.";
+
+        if (!Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_BEAD}) && !Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            Character::GAIN_LIFE(player, -1);
+
+            PreText += "\n\nYou LOST 1 Life Point.";
+        }
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nHooking your pole with the peasant's, the two of you are able to cross the obsidian beams by setting your feet against the flat sloping sides of the beams and using your weight to counterbalance each other. When you reach the far side, you throw the poles back to the noble, but he is so enraged that he allows them to fall into the river. \"May all the gods curse you!\" he cries, shaking his fist. \"You are without honour!\"\n\nYou shrug and turn away. Though you regret what you had to do, it was necessary if you are to save your brother.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 36; }
+};
+
+class Story014 : public Story::Base
+{
+public:
+    Story014()
+    {
+        ID = 14;
+
+        Text = "You address the sentinel by what you think is his name, only to realize your mistake at once. He gives a high howl of immortal outrage and lashes out with his bone sceptre. It slices through the air like a falling star, giving you no chance to react. You hear yourself cry out in agony at the blow, but the curious thing is that you never discover where you have been hurt. By the time you look down, you are already dead.";
+
+        Image = "images/filler1.png";
+
+        Type = Story::Type::DOOM;
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+};
+
+class Story015 : public Story::Base
+{
+public:
+    Story015()
+    {
+        ID = 15;
+
+        Text = "The warrior stands looking at the hydra's body for a few moments in frank astonishment, then turns and nods to you. \"Well done,\" he says. \"Few men could have equalled that feat.\"\n\n\"My name is Evening Star,\" you tell him. \"I am from the city of Koba, and I have travelled the breadth of the world in search of my brother.\"\n\n\"I am Stooping Eagle, until recently a lord of the Great City. I had been on a voyage, and returned to discover my home had been ransacked by werewolves and night demons. All my people are either slain or fled, and the Great City is now a sad empty ruin. Thus I have come to wreak vengeance on the one responsible: a sorcerer known as Necklace of Skulls.\"\n\n\"Then we are partners in the same quest, for I too desire the sorcerer's death.\"\n\n\"I had heard he was already dead, but none the less active for that,\" says Stooping Eagle. He turns and surveys the moonlit dunes. \"But the desert is wide, and I have been searching for his palace since the morning star last rose.\"\n\nYou smile at the unconscious aptness of his remark. \"It is close,\" you assure him. \"I feel sure of it.\"\n\nYou walk through the night, sheltering by day in the shade of a crag before heading on a sunset. After several hours Stooping Eagle unstoppers his waterskin and rations out a few sips. It is barely enough to moisten his lips, but he looks like a man who is used to austerity.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::WATERSKIN}))
+        {
+            return 220;
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::ETIQUETTE))
+        {
+            return 223;
+        }
+        else
+        {
+            return 246;
+        }
+    }
+};
+
+class Story016 : public Story::Base
+{
+public:
+    Story016()
+    {
+        ID = 16;
+
+        Text = "You clear the pit with one athletic bound. Looking back at the watching courtiers, you see their expectant grins turn to hang-dog expressions of disappointment. Your cocksure mood is deflated a moment later, though, when they come bounding across the pit themselves. There is not a single one of them who is less agile than you.\n\nYou manage to muster a confident smile as you say, \"Well, I've passed your first test.\"\n\n\"That little thing?\2 says the chief courtier with a scornful glance at the pit of coals. \"That wasn't a test -- more a sort of joke to welcome you. The real tests are still to come.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story017 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story017()
+    {
+        ID = 17;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Your eyes can make out nothing in the inky darkness that engulfs you. As you squat down on the guano-crusted floor, there comes a flapping of leathery wings and the first of the bats comes swooping down towards you. You throw up your arm, fending it off with a sob of horror.\n\nAlthough you try to stay alert throughout the night, fatigue finally overcomes you and you sink into a fitful sleep.\n\nYou LOSE 1 Life Point.";
+
+        Character::GAIN_LIFE(player, -1);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou awaken hours later to discover that the bats have been gorging on your blood. You are covered with tiny sores where they have chewed into your veins. You huddle miserable against the wall to wait for dawn.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 41; }
+};
+
+class Story018 : public Story::Base
+{
+public:
+    Story018()
+    {
+        ID = 18;
+
+        Text = "You set the skull gently on the dusty ground and take a few paces back, raising your wand.\n\nNecklace of Skulls sees what you are planning and speaks in protest from the inner recesses of his shrine: \"You cannot resurrect him. You do not have that power.\"\n\n\"Raw determination is the basis of all magic,\" you counter. \"My love for my brother will bring him back.\"\n\nThis is the hardest spell you will ever cast. For almost an hour you continue the chant. The wolfish courtiers do not intervene, fearing your power. For his part, Necklace of Skulls is happy to indulge you. He wants to see you fail. You are determined to disappoint him.\n\nSearingly bright light envelops the skull like a phosphoric bubble from which long green sparks go crawling out along the ground. The wand grows hoot in your hand as it channels more magical force than it was ever intended to contain. At last you know you can do no more. Hoarsely uttering the last syllables of the spell, you slump to your knees.\n\nThere is a gasp from the watching courtiers, a howl of spite from the sorcerer. You look up. An hour of staring into the heart of the spell-glare has left a flickering after-image across your vision, but you are sure you can see something stirring. It looks like a man. He rises to his feet and steps towards you. You rub your eyes, then a familiar voice brings tears of joy to them. \"Evening Star,\" he says. Your brother is alive once more!\n\nYou have used up all your sorcery in working this miracle.\n\nYour SPELLS skill is lost.\n\nYou gained the codeword VENUS.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+        {
+            Character::REMOVE_CODEWORD(player, Codeword::Type::ANGEL);
+        }
+
+        Character::GET_CODEWORDS(player, {Codeword::Type::VENUS});
+
+        Character::LOSE_SKILLS(player, {Skill::Type::SPELLS});
+    }
+
+    int Continue(Character::Base &player) { return 42; }
+};
+
+class Story019 : public Story::Base
+{
+public:
+    Story019()
+    {
+        ID = 19;
+
+        Text = "You have time to take a single step towards the black pyramid, then a howl rings out from the shrine -- a howl of such gruesome fury that your sweat runs icy on your brow. The courtiers abandon any semblance of human form and, transforming into wild dogs, scatter with yelps of fear.\n\nThe shadow men dissolve as Necklace of Skulls draws all his power back into himself. There is a rumbling from deep within the pyramid. The roof of the shrine trembles, then splits apart as something rises up through it. The pillars topple; masonry blocks crack open. Necklace of Skulls stands revealed atop the pyramid.\n\nHe is twice the height of a man -- a parody of human form with dead grey features and grotesquely long limbs with too many joints. The eyes are deep sockets under a caul of shrivelled flesh. His robe is sewn from ragged strips of blood-drenched skin; you realize with a shudder they are the flayed skins of men. Around his neck hangs a long chain of gore-spattered skulls, each with living eyes filled with eternal torment.\n\nNecklace of Skulls stands in the rubble of his shrine like a loathsome insect just emerged from a chrysalis. He points a thin finger at you. \"Evening Star,\" he hisses. \"Now you will know the taste of death.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::TARGETING.Name, 204, Skill::Type::TARGETING));
+        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 227, Choice::Type::SKILL_ANY, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("MELEE: Charge straight at him", 250));
+        Choices.push_back(Choice::Base("MELEE: Charge at him zigzagging as you run", 273));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story020 : public Story::Base
+{
+public:
+    Story020()
+    {
+        ID = 20;
+
+        Text = "There is a raft moored beside the jetty. It starts to move of its own accord once you have climbed aboard and cast off. You are conveyed across the lake. You are shivering because of the deep chill in the air here. The waters stirs sluggishly in the raft's wake, as though on the point of freezing.\n\nGreen light seeps into the sky, which you now see resembles the roof of an unimaginably vast cavern. Perhaps you are gazing up the bedrock on which the living world rests. The notion sends a shudder through your whole body.\n\nYour journey seems to take hours. Other than the faint sloshing of water past the sides of the raft, there is dead silence. At last you catch sight of something ahead. It is a steep pyramid built in the middle of the lake, with steps leading right up from the water to a shrine at the top.\n\nThe raft drifts to a halt beside the steps. You are puzzled. Is this the journey's end? Here, surrounded by leagues of water in all directions?";
+
+        Image = "images/pyramid.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::CUNNING.Name, 12, Skill::Type::CUNNING));
+        Choices.push_back(Choice::Base(Skill::CHARMS.Name, 35, Skill::Type::CHARMS));
+        Choices.push_back(Choice::Base("Otherwise", 58));
+
+        Controls = StandardControls();
     }
 };
 
@@ -529,7 +828,7 @@ public:
 
         Choices.clear();
 
-        if (Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::WATERSKIN}))
         {
             Character::GAIN_LIFE(player, -2);
 
@@ -629,6 +928,45 @@ public:
     int Continue(Character::Base &player) { return 390; }
 };
 
+class Story027 : public Story::Base
+{
+public:
+    Story027()
+    {
+        ID = 27;
+
+        Text = "Seeing your look of horror, one of the men prods the fire with a stick and says, \"We're roasting a monkey. Looks pretty gruesome, doesn't it? Tastes delicious, though.\"\n\nFilled with relief to discover that they are not cannibals after all, you join the jungle people in their meal. You soon learn that you have them to thank for the herbs that cured your fever.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Bye = NULL;
+
+        if (!Character::VERIFY_ITEMS(player, {Item::Type::SHAWL}))
+        {
+            Bye = "When you are ready, you leave the jungle people and resume your journey.";
+        }
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::SHAWL}))
+        {
+            return 436;
+        }
+        else
+        {
+            return 118;
+        }
+    }
+};
+
 class Story028 : public Story::Base
 {
 public:
@@ -651,6 +989,27 @@ public:
     }
 
     int Continue(Character::Base &player) { return 119; };
+};
+
+class Story029 : public Story::Base
+{
+public:
+    Story029()
+    {
+        ID = 29;
+
+        Text = "You push through a bank of ferns and pause to get your breath back. You have been walking for hours in the sweltering heat. Moisture trickles down off the leaf canopy, but you cannot even tell if it is rain or just condensation. If only you could get a clear look at the sky, you might be able to tell which way to go.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Head left from here", 144));
+        Choices.push_back(Choice::Base("Go right", 75));
+        Choices.push_back(Choice::Base("Go straight on", 98));
+        
+
+        Controls = StandardControls();
+    }
 };
 
 class Story030 : public Story::Base
@@ -745,7 +1104,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::WATERSKIN}))
         {
             PreText += "[WATERSKIN] ";
 
@@ -764,7 +1123,7 @@ public:
 
         if (player.Life > 0)
         {
-            if (Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
+            if (Character::VERIFY_ITEMS(player, {Item::Type::WATERSKIN}))
             {
                 PreText += "\n\nYour WATERSKIN has been emptied.";
 
@@ -879,6 +1238,26 @@ public:
     }
 
     int Continue(Character::Base &player) { return 327; }
+};
+
+class Story052 : public Story::Base
+{
+public:
+    Story052()
+    {
+        ID = 52;
+
+        Text = "A sense of panic begins to well up, churning your thoughts into a confused mixture of fact and fancy. You begin to imagine that you have strayed into the underworld and that the mighty trees surrounding you are no more than the smallest subterranean roots of the fabled Ceiba tree that supports the heavens. You jump in alarm at every tiny sound of scurrying insects or fluttering wings. If you cannot find your way out of the forest soon, our only fate will be madness followed by a slow torturing death by starvation.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Bear off to the right", 76));
+        Choices.push_back(Choice::Base("Continue in the direction you have been walking up till now", 98));
+        Choices.push_back(Choice::Base("Go left", 144));
+
+        Controls = StandardControls();
+    }
 };
 
 class Story054 : public Story::Base
@@ -1070,6 +1449,26 @@ public:
     int Continue(Character::Base &player) { return 118; }
 };
 
+class Story075 : public Story::Base
+{
+public:
+    Story075()
+    {
+        ID = 75;
+
+        Text = "You reach a clearing where one of the huge primeval trees has toppled, leaving a temporary rent in the leaf canopy. The great trunk lies like a fallen titan across the leaf littler. Already flowers are blossoming in its bark, their tendrils sucking nutriment out of the decaying wood, and great flanges of fungus thrive in its dank crevices. Other trees will son grow their branches across to exploit the sunlight, but for the moment the sky is revealed in a patch of glorious blue that makes your heart soar. You watch the sun slowly decline from its zenith, slanting off across the treetops to your left. Is this information enough to let you find your way out of the forest?";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go straight ahead", 52));
+        Choices.push_back(Choice::Base("Go left from here", 412));
+        Choices.push_back(Choice::Base("Go right from here", 121));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story077 : public Story::Base
 {
 public:
@@ -1222,7 +1621,7 @@ public:
     {
         PreText = "Food will be hard to come by in the arid sierra, so you make sure to pluck fruits from the abandoned orchards lining the first few kilometres of the causeway. The causeway dwindles to a stony road, then a dirt track, and finally you are trudging through open country.\n\nYour fruit soon gives out but in the baking summer heat it is lack of water, not food, that is your main concern.";
 
-        if (!Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE) && !Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
+        if (!Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE) && !Character::VERIFY_ITEMS(player, {Item::Type::WATERSKIN}))
         {
             PreText += "\n\nYou LOSE 1 Life Point.";
 
@@ -1737,7 +2136,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_ITEM(player, Item::Type::SERPENT_BRACELET))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::SERPENT_BRACELET}))
         {
             return 257;
         }
@@ -1928,11 +2327,11 @@ public:
 
         Image = "images/filler1.png";
 
+        Type = Story::Type::DOOM;
+
         Choices.clear();
 
         Controls = StandardControls();
-
-        Type = Story::Type::DOOM;
     }
 };
 
@@ -2145,7 +2544,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::WATERSKIN}))
         {
             return 184;
         }
@@ -2549,7 +2948,7 @@ public:
 
         if (player.Life > 0)
         {
-            if (Character::VERIFY_ITEM(player, Item::Type::WATERSKIN))
+            if (Character::VERIFY_ITEMS(player, {Item::Type::WATERSKIN}))
             {
                 Character::LOSE_ITEMS(player, {Item::Type::WATERSKIN});
 
@@ -2786,7 +3185,7 @@ public:
         {
             FISHED = true;
         }
-        else if (Character::VERIFY_ITEM(player, Item::Type::LOBSTER_POT))
+        else if (Character::VERIFY_ITEMS(player, {Item::Type::LOBSTER_POT}))
         {
             FISHED = true;
 
@@ -2892,7 +3291,7 @@ public:
 
         PreText = "";
 
-        if (Character::VERIFY_ITEM(player, Item::Type::MAGIC_DRINK))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::MAGIC_DRINK}))
         {
             PreText += Item::Descriptions[Item::Type::MAGIC_DRINK];
             PreText += "\n\nIt can be used once during your adventure. It will restore 5 lost Life Points, up to the limit of your initial Life Points score.";
@@ -2900,7 +3299,7 @@ public:
             selected++;
         }
 
-        if (Character::VERIFY_ITEM(player, Item::Type::GREEN_MIRROR))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::GREEN_MIRROR}))
         {
             if (selected > 0)
             {
@@ -2913,7 +3312,7 @@ public:
             selected++;
         }
 
-        if (Character::VERIFY_ITEM(player, Item::Type::JADE_SWORD))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_SWORD}))
         {
             if (selected > 0)
             {
@@ -3018,11 +3417,11 @@ public:
 
         Image = "images/filler1.png";
 
+        Type = Story::Type::DOOM;
+
         Choices.clear();
 
         Controls = StandardControls();
-
-        Type = Story::Type::DOOM;
     }
 };
 
@@ -3272,7 +3671,7 @@ public:
     {
         PreText = "";
 
-        if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
         {
             PreText = "You slip a JADE BEAD under your tongue as you were told to do.\n\n";
         }
@@ -3953,7 +4352,7 @@ public:
     {
         PreText = "From what your friend the old soothsayer told you, it is unwise to speak once you enter the underworld. You had better cast your spells now, while you still can.\n\n\"Allow me a moment to compose myself,\" you say to the high priest.\n\n\"It is irregular...\"\n\n\"I am about to meet a god,\" you point out.\n\nStepping away a few paces, you murmur the words of an incantation which renders your body as buoyant as wood. You gaze down into the depths of the well. At least now you can be sure of not drowning -- but if this is truly the entrance to the underworld, there will be other dangers which you cannot yet even guess at.\n\nYou turn to the assembled crowd and announce, \"I am ready.\"\n\nYou are led to a shrine at the western edge of the hole. From here, a steep flight of steps descends towards a platform covered with the hieratic glyphs of the afterlife. A vest of golden plaques is fastened across your chest and the high priest places a tall helmet of gold and copper on your head. The burden of so much metal makes you stoop. These artifacts are beyond price, since gold is not found in this part of the world. It is a lavish offering to the Rain God, but it also serves a secondary purpose: the great weight ensures you will be carried deep under the water.\n\nSeveral junior priests come forward with dishes of blue dye, which they use to paint spirals across your face and limbs. \"Thus you are consecrated to the Rain God,\" they explain. \"Go now into the other world, and carry our plea for rain to refresh the arid fields.\"";
 
-        if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
         {
             PreText += "\n\nYou lodged the JADE BEAD under your tongue as the spirit advised you.";
         }
@@ -4083,11 +4482,11 @@ public:
 
         Image = "images/filler1.png";
 
+        Type = Story::Type::DOOM;
+
         Choices.clear();
 
         Controls = StandardControls();
-
-        Type = Story::Type::DOOM;
     }
 };
 
@@ -4172,6 +4571,25 @@ public:
     }
 };
 
+class Story326 : public Story::Base
+{
+public:
+    Story326()
+    {
+        ID = 326;
+
+        Text = "You follow a game trail that forks beside a high moss-caked boulder. Sunlight slants down through chinks in the foliage, teasing you with inadequate clues as to your bearing.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go left", 412));
+        Choices.push_back(Choice::Base("Take the right-hand fork", 348));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story327 : public Story::Base
 {
 public:
@@ -4198,7 +4616,7 @@ public:
     {
         PreText = "You are led to a shrine at the western edge of the hole. From here, a steep flight of steps descends towards a platform covered with the hieratic glyphs of the afterlife. You will soon walk down those steps and, after reaching the platform, plunge far down into the dark waters below.\n\nA vest of golden plaques is fastened across your chest and the high priest places a tall helmet of gold and copper on your head. The burden of so much metal makes you stoop. These artifacts are beyond price since gold is not found in this part of the world. It is a lavish offering to the Rain God, but it also serves a secondary purpose: the great weight ensures you will be carried deep under the water.\n\nSeveral junior priests come forward with dishes of blue dye, which they use to paint spirals across your face and limbs. \"Thus you are consecrated to the Rain God,\" they explain. \"Go now into the other world, and carry our plea for rain to refresh the arid fields!\"";
 
-        if (Character::VERIFY_ITEM(player, Item::Type::JADE_BEAD))
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
         {
             PreText += "\n\nYou remember to slip the JADE BEAD under your tongue as advised.";
         }
@@ -4284,11 +4702,11 @@ public:
 
         Image = "images/flying-head.png";
 
+        Type = Story::Type::DOOM;
+
         Choices.clear();
 
         Controls = StandardControls();
-
-        Type = Story::Type::DOOM;
     }
 };
 
@@ -4488,11 +4906,11 @@ public:
 
         Image = "images/filler1.png";
 
+        Type = Story::Type::DOOM;
+
         Choices.clear();
 
         Controls = StandardControls();
-
-        Type = Story::Type::DOOM;
     }
 };
 
@@ -5227,6 +5645,25 @@ public:
     int Continue(Character::Base &player) { return 300; }
 };
 
+class Story441 : public Story::Base
+{
+public:
+    Story441()
+    {
+        ID = 441;
+
+        Text = "You know that the terrain of the forest generally rises towards the south and west. On the basis of this, the direction of the woodland streams gives you at least a hint about which way to go to reach Nachan. You need to bear steadily left until you begin to see signs of human habitation.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 326; }
+};
+
 class NotImplemented : public Story::Base
 {
 public:
@@ -5271,16 +5708,30 @@ auto story002 = Story002();
 auto story003 = Story003();
 auto story004 = Story004();
 auto story005 = Story005();
+auto story006 = Story006();
+auto story007 = Story007();
 auto story008 = Story008();
 auto story009 = Story009();
 auto story010 = Story010();
+auto story011 = Story011();
+auto story012 = Story012();
+auto story013 = Story013();
+auto story014 = Story014();
+auto story015 = Story015();
+auto story016 = Story016();
+auto story017 = Story017();
+auto story018 = Story018();
+auto story019 = Story019();
+auto story020 = Story020();
 auto story021 = Story021();
 auto story022 = Story022();
 auto story023 = Story023();
 auto story024 = Story024();
 auto story025 = Story025();
 auto story026 = Story026();
+auto story027 = Story027();
 auto story028 = Story028();
+auto story029 = Story029();
 auto story030 = Story030();
 auto story044 = Story044();
 auto story045 = Story045();
@@ -5289,6 +5740,7 @@ auto story047 = Story047();
 auto story048 = Story048();
 auto story049 = Story049();
 auto story051 = Story051();
+auto story052 = Story052();
 auto story054 = Story054();
 auto story067 = Story067();
 auto story068 = Story068();
@@ -5296,6 +5748,7 @@ auto story069 = Story069();
 auto story070 = Story070();
 auto story071 = Story071();
 auto story072 = Story072();
+auto story075 = Story075();
 auto story077 = Story077();
 auto story078 = Story078();
 auto story080 = Story080();
@@ -5408,6 +5861,7 @@ auto story322 = Story322();
 auto story323 = Story323();
 auto story324 = Story324();
 auto story325 = Story325();
+auto story326 = Story326();
 auto story327 = Story327();
 auto story331 = Story331();
 auto story332 = Story332();
@@ -5454,18 +5908,19 @@ auto story425 = Story425();
 auto story426 = Story426();
 auto story435 = Story435();
 auto story437 = Story437();
+auto story441 = Story441();
 
 void InitializeStories()
 {
     Stories = {
-        &prologue, &story001, &story002, &story003, &story004, &story005, &story008, &story009,
-        &story010,
-        &story021, &story022, &story023, &story024, &story025, &story026, &story028,
+        &prologue, &story001, &story002, &story003, &story004, &story005, &story006, &story007, &story008, &story009,
+        &story010, &story011, &story012, &story013, &story014, &story015, &story016, &story017, &story018, &story019,
+        &story020, &story021, &story022, &story023, &story024, &story025, &story026, &story027, &story028, &story029,
         &story030,
         &story044, &story045, &story046, &story047, &story048, &story049,
-        &story051, &story054,
+        &story051, &story052, &story054,
         &story067, &story068, &story069,
-        &story070, &story071, &story072, &story077, &story078,
+        &story070, &story071, &story072, &story075, &story077, &story078,
         &story080, &story085,
         &story090, &story091, &story092, &story093, &story094, &story095, &story096,
         &story100, &story101, &story103, &story104, &story113,
@@ -5490,7 +5945,7 @@ void InitializeStories()
         &story297, &story298,
         &story300, &story301, &story302, &story304,
         &story311,
-        &story320, &story321, &story322, &story323, &story324, &story325, &story327,
+        &story320, &story321, &story322, &story323, &story324, &story325, &story326, &story327,
         &story331, &story332, &story333, &story334, &story335,
         &story343, &story344, &story345, &story346, &story347,
         &story350, &story354, &story355, &story356, &story357,
@@ -5500,7 +5955,9 @@ void InitializeStories()
         &story390, &story391, &story392, &story398,
         &story400, &story406, &story407, &story408, &story409,
         &story411, &story415, &story416, &story417,
-        &story424, &story425, &story426, &story435, &story437};
+        &story424, &story425, &story426,
+        &story435, &story437,
+        &story441};
 }
 
 #endif

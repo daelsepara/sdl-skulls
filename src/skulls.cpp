@@ -1696,7 +1696,7 @@ bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pl
 {
     auto done = false;
 
-    if (Character::VERIFY_ITEM(player, mine))
+    if (Character::VERIFY_ITEMS(player, {mine}))
     {
         const char *message = NULL;
 
@@ -1941,7 +1941,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
                         if (player.Money >= price)
                         {
-                            if (Item::IsUnique(item) && Character::VERIFY_ITEM(player, item))
+                            if (Item::IsUnique(item) && Character::VERIFY_ITEMS(player, {item}))
                             {
                                 message = std::string("You already have this item!");
 
@@ -2149,7 +2149,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                         }
                         else if (story->Choices[current].Type == Choice::Type::ITEM)
                         {
-                            if (Character::VERIFY_ITEM(player, story->Choices[current].Item))
+                            if (Character::VERIFY_ITEMS(player, {story->Choices[current].Item}))
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
@@ -2221,7 +2221,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                         }
                         else if (story->Choices[current].Type == Choice::Type::GIVE_ITEM)
                         {
-                            if (Character::VERIFY_ITEM(player, story->Choices[current].Item))
+                            if (Character::VERIFY_ITEMS(player, {story->Choices[current].Item}))
                             {
                                 Character::LOSE_ITEMS(player, {story->Choices[current].Item});
 
@@ -2450,7 +2450,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                         }
                         else if (story->Choices[current].Type == Choice::Type::SKILL_ITEM)
                         {
-                            if (Character::HAS_SKILL(player, story->Choices[current].Skill) && Character::VERIFY_ITEM(player, story->Choices[current].Item))
+                            if (Character::HAS_SKILL(player, story->Choices[current].Skill) && Character::VERIFY_ITEMS(player, {story->Choices[current].Item}))
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
