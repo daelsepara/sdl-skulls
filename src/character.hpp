@@ -34,7 +34,8 @@ namespace Character
 
         bool RitualBallStarted = false;
 
-        int Score = 0;
+        int Ticks = 0;
+        int Cross = 0;
 
         std::vector<Skill::Base> Skills = std::vector<Skill::Base>();
         std::vector<Item::Type> Items = std::vector<Item::Type>();
@@ -460,13 +461,13 @@ namespace Character
         LOSE_POSSESSIONS(player);
     }
 
-    void SCORE(Character::Base &player, int score)
+    void SCORE(Character::Base &player, int &scorer, int score)
     {
-        player.Score += score;
+        scorer += score;
 
-        if (player.Score < 0)
+        if (scorer < 0)
         {
-            player.Score = 0;
+            scorer = 0;
         }
     }
 

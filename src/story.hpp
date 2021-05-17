@@ -2600,12 +2600,12 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::SCORE(player, 2);
+        Character::SCORE(player, player.Ticks, 2);
     }
 
     int Continue(Character::Base &player)
     {
-        if (player.Score > 6)
+        if (player.Ticks > 6)
         {
             return 134;
         }
@@ -3252,6 +3252,76 @@ public:
     }
 
     int Continue(Character::Base &player) { return 132; }
+};
+
+class Story111 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story111()
+    {
+        ID = 111;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You slam into him. For a creature formed of living shadow, he feels very solid.\n\nYou LOSE 1 Life Point from the jarring impact.";
+
+        Character::GAIN_LIFE(player, -1);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\n";
+
+            if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+            {
+                PreText += "You get possession of the ball and send it bouncing against the end zone, scoring a point.";
+
+                Character::SCORE(player, player.Ticks, 1);
+            }
+            else
+            {
+                PreText += "Your opponent gets the ball and scores a point";
+
+                Character::SCORE(player, player.Cross, 1);
+            }
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 226; }
+};
+
+class Story112 : public Story::Base
+{
+public:
+    Story112()
+    {
+        ID = 112;
+
+        Text = "You slam the ball against the side wall then run backwards into the middle of the arena, keeping your eye on it as it bounces. A blow with your wrist sends it spinning up to strike the low-score zone, giving your team another point. It ricochets towards your opponents, who eagerly seize possession.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::SCORE(player, player.Ticks, 1);
+    }
+
+    int Continue(Character::Base &player) { return 181; }
 };
 
 class Story113 : public Story::Base
@@ -7132,11 +7202,14 @@ auto story107 = Story107();
 auto story108 = Story108();
 auto story109 = Story109();
 auto story110 = Story110();
+auto story111 = Story111();
+auto story112 = Story112();
 auto story113 = Story113();
 auto story114 = Story114();
 auto story115 = Story115();
 auto story116 = Story116();
 auto story117 = Story117();
+auto story118 = Story118();
 auto story119 = Story119();
 auto story120 = Story120();
 auto story123 = Story123();
@@ -7292,7 +7365,7 @@ void InitializeStories()
         &story080, &story081, &story082, &story083, &story084, &story085, &story086, &story087, &story088, &story089,
         &story090, &story091, &story092, &story093, &story094, &story095, &story096, &story097, &story098, &story099,
         &story100, &story101, &story102, &story103, &story104, &story105, &story106, &story107, &story108, &story109,
-        &story110, &story113, &story114, &story115, &story116, &story117, &story119,
+        &story110, &story111, &story112, &story113, &story114, &story115, &story116, &story117, &story118, &story119,
         &story120, &story123, &story126, &story127,
         &story135, &story136, &story137, &story138, &story139,
         &story141, &story142, &story143, &story146, &story147, &story149,
