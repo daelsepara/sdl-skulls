@@ -3205,6 +3205,8 @@ public:
 
     void Event(Character::Base &player)
     {
+        Character::GET_ITEMS(player, Item::Type::BROTHERS_SKULL);
+        
         Choices.clear();
 
         if (!Character::VERIFY_CODEWORD(player, Codeword::Type::SAKBE))
