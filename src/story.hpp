@@ -198,6 +198,10 @@ namespace Story
         std::vector<Item::Type> Take = std::vector<Item::Type>();
         int TakeLimit = 0;
 
+        // Player selects items to lose
+        std::vector<Item::Type> ToLose = std::vector<Item::Type>();
+        int LoseLimit = 0;
+
         Story::Type Type = Story::Type::NORMAL;
 
         // Handle background events
@@ -2824,6 +2828,45 @@ public:
     }
 
     int Continue(Character::Base &player) { return 350; };
+};
+
+class Story097 : public Story::Base
+{
+public:
+    Story097()
+    {
+        ID = 97;
+
+        Text = "The oarsmen are demons with squinting eyes and shrunken toothless gums. Stingray spines hang from their brows and upper lips where a mortal might have hair, and their flesh is a sickly blue-white colour. One wears a headdress in the shape of a shark's fin, the other has a jaguar-pelt skullcap. As the canoe draws nearer, you see they have no lower limbs: their torsos end in shapeless blobs.\n\n\"You wish to be conveyed to the Deathlands,\" says the shark paddler.\n\n\"We will take you there,\" add the jaguar paddler.\n\nLoathsome as these creatures are, you see no alternative. You climb into the boat and wait as they row through the wanly lit gloom of the cavern. Ahead lies a tunnel, but before you reach it the canoe glides to a halt beside a shelf of rock. You look up to see a narrow crevice in the wall of the cavern. It looks far from inviting, and you detect a gust of noxious air wafting out of the darkened interior.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Disembark and climb up to the crevice", 74));
+        Choices.push_back(Choice::Base("Wait for the strange demons to row on", 258));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story098 : public Story::Base
+{
+public:
+    Story098()
+    {
+        ID = 98;
+
+        Text = "A cacophony of chitterings and gleeful screeches makes you look up. From the foliage overhead, dozens of beady pairs of eyes stare back at you. You laugh as you see the tiny comical faces of a troop of monkeys, teeth bared like grimacing old men.\n\nSuddenly you feel small fingers probing at your clothes. A couple of monkeys have crept up on you while the others distracted your attention. One leaps onto your head and puts its hands over your eyes while the other rifles through your belongings. You give vent to a loud curse and lunge to grab the little thieves, but they are too quick for you. You can only stand and watch helplessly as they go swinging happily off the through the trees.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go straight on", 121));
+        Choices.push_back(Choice::Base("Bear left from here", 412));
+        Choices.push_back(Choice::Base("Bear right", 29));
+
+        Controls = StandardControls();
+    }
 };
 
 class Story100 : public Story::Base
