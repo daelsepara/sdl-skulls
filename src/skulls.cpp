@@ -424,15 +424,16 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
         const int map_buttonh = 48;
         const int map_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - map_buttonh);
 
-        std::vector<TextButton> controls = {TextButton(0, "Back", 0, 0, 0, 0, startx, map_buttony, map_buttonw, map_buttonh, Control::Type::BACK)};
+        std::vector<Button> controls = {Button(0, "images/back-button.png", 0, 0, 0, 0, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK)};
 
         while (!quit)
         {
             // Fill the surface with background color
-            fillWindow(renderer, intDB);
+            fillWindow(renderer, intWH);
 
             renderImage(renderer, splash, startx, starty);
-            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
+
+            renderButtons(renderer, controls, current, intGR, 8, 4);
 
             bool scrollUp = false;
             bool scrollDown = false;
