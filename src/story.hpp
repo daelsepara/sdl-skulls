@@ -3763,6 +3763,114 @@ public:
     int Continue(Character::Base &player) { return 15; }
 };
 
+class Story131 : public Story::Base
+{
+public:
+    Story131()
+    {
+        ID = 131;
+
+        Text = "You have held back from using the MAN OF GOLD until you really needed its power. Now the time has come. Holding the little manikin in your hand, you wait until you feel it beginning to stir and then place it on the floor of the passage.\n\nThe MAN OF GOLD strikes a haughty pose as he surveys the tangle of wooden beams. His elongated head and theatrically imperious stance remind you of the nobles of long ago whom you have seen depicted in ancient paintings. Striding forward, he takes hold of two of the beams and braces them against the side walls. His strength is incredible -- despite his tiny size, he is able to support the whole passage while you push the other beams out of the way and continue on to the far end. Once you are safe, he drops the beams he is holding and the roof caves in. Coughing at the clouds of rock dust, you peer through the rubble but can see no sign of the MAN OF GOLD.\n\nThe courtiers are already here waiting. \"You should have kept that manikin until you faced a real challenge,\" they mutter insidiously.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::MAN_OF_GOLD});
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story132 : public Story::Base
+{
+public:
+    Story132()
+    {
+        ID = 132;
+
+        Text = "The following evening you are shown into the House of Cold, where sparkling sheets of ice encase the walls and long icicles form pillars from floor to ceiling. Your breath curls like smoke in the freezing air as you stand shivering and watch the courtiers swing the heavy door shut.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Use a STONE and LUMP OF CHARCOAL", 155, Choice::Type::ALL_ITEMS, {Item::Type::STONE, Item::Type::LUMP_OF_CHARCOAL}));
+        Choices.push_back(Choice::Base("Use a FIREBRAND", 319, Item::Type::FIREBRAND));
+        Choices.push_back(Choice::Base("Otherwise", 178));
+
+        Controls = ShopControls();
+    }
+};
+
+class Story133 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story133()
+    {
+        ID = 133;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Run towards the enemy defensive player", 111));
+        Choices.push_back(Choice::Base("Stand where you are and hope your partner can get the ball to you", 179));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "He lunges into you as you try to get past. It is clearly a foul but from the way the courtiers are baying for blood you suspect the normal rules do not apply.";
+
+        if (!Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            Character::GAIN_LIFE(player, -1);
+
+            PreText += "\n\nYou LOSE 1 Life Point.";
+        }
+
+        if (player.Life > 0)
+        {
+            if (Character::VERIFY_CODEWORD(player, Codeword::Type::SHADE))
+            {
+                Choices[1].Destination = 203;
+            }
+            else
+            {
+                Choices[1].Destination = 179;
+            }
+        }
+
+        Text = PreText.c_str();
+    }
+};
+
+class Story134 : public Story::Base
+{
+public:
+    Story134()
+    {
+        ID = 134;
+
+        Text = "\"The game is over,\" you announce, \"and we are the victors.\"\n\nThe voice speaks from the shrine in a croak of malice: \"You resorted to cheating. The wage of dishonour is death.\"\n\nA flat metallic twang builds rapidly in the dry air. There is a sour taste on your tongue, and you can feel your hair standing on end. You glance at your partner just in time to see him explode in a blossom of silent white sparks, leaving nothing but a scorched black patch on the dusty ground.\n\nNecklace of Skulls has vaporized him -- snuffed out his life with a casual flicker of sorcery! You are horrified by the callous murder, but you cannot waste time brooding on it now. If you don't act quickly, you will be next.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 19; }
+};
+
 class Story135 : public Story::Base
 {
 public:
@@ -7394,6 +7502,10 @@ auto story127 = Story127();
 auto story128 = Story128();
 auto story129 = Story129();
 auto story130 = Story130();
+auto story131 = Story131();
+auto story132 = Story132();
+auto story133 = Story133();
+auto story134 = Story134();
 auto story135 = Story135();
 auto story136 = Story136();
 auto story137 = Story137();
@@ -7546,7 +7658,7 @@ void InitializeStories()
         &story100, &story101, &story102, &story103, &story104, &story105, &story106, &story107, &story108, &story109,
         &story110, &story111, &story112, &story113, &story114, &story115, &story116, &story117, &story118, &story119,
         &story120, &story121, &story122, &story123, &story124, &story125, &story126, &story127, &story128, &story129,
-        &story130, &story135, &story136, &story137, &story138, &story139,
+        &story130, &story131, &story132, &story133, &story134, &story135, &story136, &story137, &story138, &story139,
         &story141, &story142, &story143, &story146, &story147, &story149,
         &story152, &story158, &story159,
         &story160, &story161, &story162, &story163, &story164, &story165, &story166, &story168, &story169,
