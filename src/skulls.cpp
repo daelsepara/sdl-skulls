@@ -895,6 +895,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 std::vector<Button> createItemControls(std::vector<Item::Type> Items)
 {
     auto text_space = 8;
+    auto font_size = 16;
     auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
 
     auto controls = std::vector<Button>();
@@ -903,7 +904,7 @@ std::vector<Button> createItemControls(std::vector<Item::Type> Items)
 
     for (auto idx = 0; idx < Items.size(); idx++)
     {
-        auto text = createText(Item::Descriptions[Items[idx]], "fonts/default.ttf", 16, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
+        auto text = createText(Item::Descriptions[Items[idx]], "fonts/default.ttf", font_size, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
 
         auto y = texty + (idx > 0 ? controls[idx - 1].Y + controls[idx - 1].H : 2 * text_space);
 
@@ -941,7 +942,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 16);
+        auto font = TTF_OpenFont("fonts/default.ttf", 20);
 
         auto selected = false;
         auto current = -1;
@@ -1097,7 +1098,7 @@ int giveScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, C
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 16);
+        auto font = TTF_OpenFont("fonts/default.ttf", 20);
 
         auto selected = false;
         auto current = -1;
@@ -1258,7 +1259,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 16);
+        auto font = TTF_OpenFont("fonts/default.ttf", 20);
 
         auto selected = false;
         auto current = -1;
@@ -1397,7 +1398,7 @@ std::vector<Button> createSkillControls(std::vector<Skill::Base> Skills)
 
     for (auto idx = 0; idx < Skills.size(); idx++)
     {
-        auto text = createText(Skills[idx].Name, "fonts/default.ttf", 16, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
+        auto text = createText(Skills[idx].Name, "fonts/default.ttf", 20, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
 
         auto y = texty + (idx > 0 ? controls[idx - 1].Y + controls[idx - 1].H : 2 * text_space);
 
@@ -1436,7 +1437,7 @@ bool loseSkills(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 16);
+        auto font = TTF_OpenFont("fonts/default.ttf", 20);
 
         auto selected = false;
         auto current = -1;
@@ -1621,7 +1622,7 @@ int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &playe
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 16);
+        auto font = TTF_OpenFont("fonts/default.ttf", 20);
 
         auto selected = false;
         auto current = -1;
@@ -2066,7 +2067,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 16);
+        auto font = TTF_OpenFont("fonts/default.ttf", 20);
 
         auto selected = false;
         auto current = -1;
