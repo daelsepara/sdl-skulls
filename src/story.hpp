@@ -4201,6 +4201,76 @@ public:
     }
 };
 
+class Story150 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story150()
+    {
+        ID = 150;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Bitter life-sucking cold envelops you in the moment you enter the water. The shock almost stops your heart.";
+
+        auto DAMAGE = -2;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+        {
+            PreText += "[WILDERNESS LORE] ";
+
+            DAMAGE += 1;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+            {
+                PreText += "\n\nYour hardiness inures you to the extreme cold.";
+            }
+
+            PreText += "\n\nHalf in a swoon, you stumble weightlessly down the stairway towards a submarine glimmer of icy green light. If you stay in this water for much longer you know you are doomed.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 173; }
+};
+
+class Story151 : public Story::Base
+{
+public:
+    Story151()
+    {
+        ID = 151;
+
+        Text = "Seized by uncontrollable horror at the sight of your companion's ghastly transformation, you turn and run, not stopping until you are far from the kapok tree and its throng of gristly nobles.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 200; }
+};
+
 class Story152 : public Story::Base
 {
 public:
@@ -4219,6 +4289,157 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story153 : public Story::Base
+{
+public:
+    Story153()
+    {
+        ID = 153;
+
+        Text = "\"If this is indeed CHALICE OF LIFE,\" you tell the servant, it is the very bowl in which the Lord of all Gods gave birth to mankind.\"\n\nHe looks on, appropriately wide-eyed with awe, as you lift the dead man's head and place it within the chalice. The two of you retreat to a distance of at least thirty paces, as though tacitly sharing a fear that the spot where the chalice rests is about to be struck by a thunderbolt.\n\n In fact what happens is far stranger. As the moon nears its zenith, its rays seem to become a stream of heavy vapour pouring directly down into the chalice. Soon you cannot see the head at all because the interior of the chalice is brimming with thick white mist. This rises up into a swirling column about two metres high which just hangs there above the chalice, shining with a core of moonbeams.\n\nSuddenly a breeze arises briefly. This mist disperses at one, and as the last strands are blown away you behold the warrior standing in the chalice, his body once more made whole. He opens his eyes and watches you approach. \"What are you gawping at?\" he says.\n\nThe servant is so confused by feelings of joy, amazement and superstitious fear that he falls to the ground in a near faint. \"I've just restored you to life with that chalice,\" you tell the warrior.\n\n\"Nonsense!\" He looks down. \"What chalice?\"\n\nYou note with dismay that the chalice has indeed vanished. Obviously such power is not meant to stay in one mortal's hands for long. You just hope that you used it wisely.\n\nYou gained the codeword ANGEL.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::ANGEL});
+
+        Character::LOSE_ITEMS(player, {Item::Type::CHALICE_OF_LIFE});
+    }
+
+    int Continue(Character::Base &player) { return 15; }
+};
+
+class Story154 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story154()
+    {
+        ID = 154;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You remove a second beam without mishap -- and a third. Just as you are beginning to feel confident, a deep crack appears instantaneously across the roof of the passage. It is accompanied by a growl of breaking rock. Your body stiffens. You are on the point of jumping back, but it is too late. A cascade of rubble knocks you flat. You lie with your hands over your head as rocks batter you, bruising ad scraping your flesh. You wince as you feel a rib cracking.";
+
+        Character::GAIN_LIFE(player, -3);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou crawl on the end of the passage where the dog-like courtiers await you. \"I had a lucky escape,\" you say as you stagger to your feet.\n\nThe chief courtier sniggers. \"That was just a little practical joke of ours,\" he says. \"I thought you'd have no trouble! You'll have to buck your ideas up if you're going to survive the real tests.\"";
+        }
+        else
+        {
+            PreText += "You were buried underneath the rubble.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story155 : public Story::Base
+{
+public:
+    Story155()
+    {
+        ID = 155;
+
+        Text = "Unravelling a few fibres from your clothes, you use the stone to strike sparks off the walls until you have set the fibres alight. Then you carefully ignite a few splinters of charcoal and use this to get the rest of the lump burning.\n\nThe charcoal gives scant warmth, but it is better than nothing. Huddling beside your tiny fire, you spend a long miserable night waiting for the courtiers to let you out of the House of Cold.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::LUMP_OF_CHARCOAL});
+    }
+
+    int Continue(Character::Base &player) { return 202; }
+};
+
+class Story156 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story156()
+    {
+        ID = 156;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK))
+        {
+            PreText = "You manage to send the ball soaring to strike one of the zones marked out along the top of the wall. You score a point.";
+
+            Character::SCORE(player, player.Ticks, 1);
+        }
+        else
+        {
+            PreText += "You stumble and jar your elbow on the side pall, recoiling in agony while your opponent gains possession of the ball.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::SHADE))
+        {
+            return 203;
+        }
+        else
+        {
+            return 179;
+        }
+    }
+};
+
+class Story157 : public Story::Base
+{
+public:
+    Story157()
+    {
+        ID = 157;
+
+        Text = "You do not need to fight Necklace of Skulls. You have beaten him at every turn, and he knows it. \"Listen to me, wizard,\" you call up to him. \"You put dangers across my path, but I prevailed. Your courtiers tested me with their ordeals, but I survived. You conjured men of shadow to contend against me in the ball game, but I won. You slew my brother once, but here he stands beside me, alive again!\"\n\nThere is no reply. Only cold brooding silence emanates from the lightless depths of the shrine.\n\nYou raise your fist. \"Stay out of our way in the future, Necklace of Skulls,\" you warn him. \"Keep to your palace and don't trouble living men with your noxious ways. Otherwise, my brother and I will return and pull that shrine down on top of you.\"\n\nThere is a long pause like the sigh of breath in a dying man's throat. \"Very well,\" says the sorcerer's voice. \"I agree to those terms.\"\n\nThe silence from the shrine somehow deepens. You sense that Necklace of Skulls has withdrawn his presence deep into the underworld.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 442; }
 };
 
 class Story158 : public Story::Base
@@ -4505,6 +4726,37 @@ public:
     }
 
     int Continue(Character::Base &player) { return 97; }
+};
+
+class Story167 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story167()
+    {
+        ID = 167;
+
+        Text = "The two demons continue their senseless chortling as they paddle you away form the rock tombs. It is a if they share some private joke -- and you have the unpleasant feeling that the joke is at your expense.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
+        {
+            return 236;
+        }
+        else
+        {
+            return 7;
+        }
+    }
 };
 
 class Story168 : public Story::Base
@@ -7612,7 +7864,14 @@ auto story146 = Story146();
 auto story147 = Story147();
 auto story148 = Story148();
 auto story149 = Story149();
+auto story150 = Story150();
+auto story151 = Story151();
 auto story152 = Story152();
+auto story153 = Story153();
+auto story154 = Story154();
+auto story155 = Story155();
+auto story156 = Story156();
+auto story157 = Story157();
 auto story158 = Story158();
 auto story159 = Story159();
 auto story160 = Story160();
@@ -7622,6 +7881,7 @@ auto story163 = Story163();
 auto story164 = Story164();
 auto story165 = Story165();
 auto story166 = Story166();
+auto story167 = Story167();
 auto story168 = Story168();
 auto story169 = Story169();
 auto story170 = Story170();
@@ -7755,8 +8015,8 @@ void InitializeStories()
         &story120, &story121, &story122, &story123, &story124, &story125, &story126, &story127, &story128, &story129,
         &story130, &story131, &story132, &story133, &story134, &story135, &story136, &story137, &story138, &story139,
         &story140, &story141, &story142, &story143, &story144, &story145, &story146, &story147, &story148, &story149,
-        &story152, &story158, &story159,
-        &story160, &story161, &story162, &story163, &story164, &story165, &story166, &story168, &story169,
+        &story150, &story151, &story152, &story153, &story154, &story155, &story156, &story157, &story158, &story159,
+        &story160, &story161, &story162, &story163, &story164, &story165, &story166, &story167, &story168, &story169,
         &story170, &story172,
         &story182, &story183, &story184, &story185, &story188, &story189, &story186, &story187,
         &story192, &story193, &story195,
