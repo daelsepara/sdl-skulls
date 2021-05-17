@@ -729,7 +729,7 @@ public:
     {
         ID = 18;
 
-        Text = "You set the skull gently on the dusty ground and take a few paces back, raising your wand.\n\nNecklace of Skulls sees what you are planning and speaks in protest from the inner recesses of his shrine: \"You cannot resurrect him. You do not have that power.\"\n\n\"Raw determination is the basis of all magic,\" you counter. \"My love for my brother will bring him back.\"\n\nThis is the hardest spell you will ever cast. For almost an hour you continue the chant. The wolfish courtiers do not intervene, fearing your power. For his part, Necklace of Skulls is happy to indulge you. He wants to see you fail. You are determined to disappoint him.\n\nSearingly bright light envelops the skull like a phosphoric bubble from which long green sparks go crawling out along the ground. The wand grows hoot in your hand as it channels more magical force than it was ever intended to contain. At last you know you can do no more. Hoarsely uttering the last syllables of the spell, you slump to your knees.\n\nThere is a gasp from the watching courtiers, a howl of spite from the sorcerer. You look up. An hour of staring into the heart of the spell-glare has left a flickering after-image across your vision, but you are sure you can see something stirring. It looks like a man. He rises to his feet and steps towards you. You rub your eyes, then a familiar voice brings tears of joy to them. \"Evening Star,\" he says. Your brother is alive once more!\n\nYou have used up all your sorcery in working this miracle.\n\nYour SPELLS skill is lost.\n\nYou gained the codeword VENUS.";
+        Text = "You set the skull gently on the dusty ground and take a few paces back, raising your wand.\n\nNecklace of Skulls sees what you are planning and speaks in protest from the inner recesses of his shrine: \"You cannot resurrect him. You do not have that power.\"\n\n\"Raw determination is the basis of all magic,\" you counter. \"My love for my brother will bring him back.\"\n\nThis is the hardest spell you will ever cast. For almost an hour you continue the chant. The wolfish courtiers do not intervene, fearing your power. For his part, Necklace of Skulls is happy to indulge you. He wants to see you fail. You are determined to disappoint him.\n\nSearingly bright light envelops the skull like a phosphoric bubble from which long green sparks go crawling out along the ground. The wand grows hoot in your hand as it channels more magical force than it was ever intended to contain. At last you know you can do no more. Hoarsely uttering the last syllables of the spell, you slump to your knees.\n\nThere is a gasp from the watching courtiers, a howl of spite from the sorcerer. You look up. An hour of staring into the heart of the spell-glare has left a flickering after-image across your vision, but you are sure you can see something stirring. It looks like a man. He rises to his feet and steps towards you. You rub your eyes, then a familiar voice brings tears of joy to them. \"Evening Star,\" he says. Your brother is alive once more!\n\nYou have used up all your sorcery in working this miracle.\n\nYour [SPELLS] skill is lost.\n\nYou gained the codeword VENUS.";
 
         Image = "images/filler1.png";
 
@@ -1586,7 +1586,8 @@ public:
     {
         Character::LOSE_POSSESSIONS(player);
 
-        player.Money += player.LostMoney;
+        Character::GAIN_MONEY(player, player.LostMoney);
+
         player.LostMoney = 0;
     }
 
@@ -2996,8 +2997,60 @@ public:
 
     void Event(Character::Base &player)
     {
-        player.Money -= 1;
+        Character::GAIN_MONEY(player, -1);
     }
+};
+
+class Story102 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story102()
+    {
+        ID = 102;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You are too proud to submit to a beating. With a great shout of rage, you charge in among them and lay about you with powerful blows. The sudden attack takes them by surprise, allowing you to badly wound several before the sheer weight of numbers begins to tell against you. For all your courage and determination, at last you are overwhelmed and pushed to the ground. Once they have you down, the guards make sure to pay you back double for every blow you struck against them.";
+
+        auto DAMAGE = -3;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            DAMAGE = -6;
+
+            PreText += "[SWORDPLAY] ";
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE = -5;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nThe guards finally tire of pummelling you. One of them spits on your swollen bloodied face, then they stalk off into the palace.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 262; }
 };
 
 class Story103 : public Story::Base
@@ -3037,6 +3090,168 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story105 : public Story::Base
+{
+public:
+    Story105()
+    {
+        ID = 105;
+
+        Text = "The green-tinted stone of the staircase is almost invisible through the murky depths. You bite your lip as you consider the water of the lake. It looks almost resinous with cold. You cannot expect to survive long once you are submerged -- you would freeze to death even before you had time to run out of air.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::HAUNCH_OF_VENISON}))
+        {
+            return 440;
+        }
+        else
+        {
+            return 150;
+        }
+    }
+};
+
+class Story106 : public Story::Base
+{
+public:
+    Story106()
+    {
+        ID = 106;
+
+        Text = "The nobles are discussing their route into the underworld. You are given to understand that at death most souls are conducted west across the world, entering the afterlife by means of the gate at the edge of the desert. This requires them to pass four sentinels whose duty is to prevent the living from trespassing into their realm. You catch the name of the last four sentinels whom the nobles passed on their way here, a frightful demon called Grandfather of Darkness.\n\nOne of the nobles is staring at you, and as you turn a quizzical look towards him he remarks on your resemblance to his late lord, Morning Star.\n\nExcitement quickens your blood. \"Morning Star was my brother.\"\n\nHe tells you that he was in Morning Star's retinue when it reached the palace of the wizard. He reaches behind him and produces a skull which he puts into your hands, telling you that it is your BROTHER's SKULL. Because Morning Star's soul was trapped by the wizard, he has not been able to travel on to the afterlife. This is all that remains of him.\n\nYou are filled with grief, followed by a rush of vengeful rage. You vow you will slay the wizard and free your brother's soul. Thanking the nobles for their help, you set out once again.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_ITEMS(player, {Item::Type::BROTHERS_SKULL});
+    }
+
+    int Continue(Character::Base &player) { return 200; }
+};
+
+class Story107 : public Story::Base
+{
+public:
+    Story107()
+    {
+        ID = 107;
+
+        Text = "Then sentinel's eyes flash with fury as he hears your words. Letting his gory maw drop open, he erupts into a long loud howl of fury that is terrifying enough to kill a weak man on the spot. Even you are flung to a cowering heap on the ground, forced to tuck your head under your arms and lie whimpering until the dreadful howling ends.\n\nAt last there is silence. You uncurl yourself and glance up towards the sentinel. Having given awful voice to his displeasure, he now shows no more interest in you. He resumes his imperious posture, sitting erect on his throne and staring directly across the passage. You might as well be a beetle for all the notice he gives you.\n\nYou slink off down the passage. You are dazed, but at first you think you have got off lightly. Then you realize how badly the sentinel's shriek addled your wits. You will need every scrap of luck to win through with just a single skill.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Select which SKILLS to lose", 37, Choice::Type::LOSE_SKILLS, 1));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story108 : public Story::Base
+{
+public:
+    Story108()
+    {
+        ID = 108;
+
+        Text = "You get the servant to help you build a mound of sand roughly as long as a man's body. On top of this you sprinkle some of the dead warrior's blood, then you cover it with his jaguar-skin cloak and place his sword on top of this. At one end you carefully set his severed head. The dead eyes stare up at the stars.\n\n\"What are you going to do?\" says the servant in a frightened voice\n\n\"His spirit has but recently departed\" you reply as you take up your wand. \"I shall recall it and so rekindle the spark of life.\" So you begin what you know will be the hardest incantation of your life. For hours you continue the chant, never faltering, continually tracing occult designs in the sand around the head. The moon is dipping low across the dunes when you hoarsely utter the last syllables of the spell and slump to the ground in exhaustion.\n\nThere is a groan, but not from your lips. You look up to see the fallen warrior rising, the body beneath the cloak transformed from gore-soaked sand to living flesh and blood.\n\n\"Master,\" you hear the servant saying, \"this kind magician brought you back from the dead.\"\n\n\"Nonsense!\" scoffs the warrior. \"I must have been knocked out for a while, that's all.\"\n\nHe comes over and helps you to your feet. You have used up all your sorcery in a final miracle.\n\nYour [SPELLS] skill is lost.\n\nYou gained the codeword ANGEL.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::ANGEL});
+
+        Character::LOSE_SKILLS(player, {Skill::Type::SPELLS});
+    }
+
+    int Continue(Character::Base &player) { return 15; }
+};
+
+class Story109 : public Story::Base
+{
+public:
+    Story109()
+    {
+        ID = 109;
+
+        Text = "You use your illusion magic to conjure up a miniature duplicate of the tunnel. Each of the beams appears as a glowing bar tagged with a number. By touching a bar with your wand and uttering the right number, you can select and move it. This allows you to experiment without actually having to remove any of the real beams just yet. Your first few attempts all lead to the illusory tunnel collapsing, but eventually you find a combination of beams that can be removed safely.\n\nDispelling your illusion, you try removing the same arrangement of beams from the real passage. Cracks appear in the stonework and the walls sag slightly, but you are able to get through safely to the far end. The courtiers are waiting for you there.\n\n\"Magic, eh?\" says the chief courtier. \"Our master's good at magic. Better than you, perhaps.\"\n\n\"Perhaps.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story110 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story110()
+    {
+        ID = 110;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The knives drift in a circle around you as you move uneasily across the hall. Suddenly, one of them shoots forward and slices a gash in your arm. Recoiling in pain, you are jabbed by another. They are trying to herd you into a position where they can attack you from all directions, but you manage to duck under one as it flies in. Before they can regroup, you have run over to a corner and put back to the wall.\n\nThe ordeal continues through the night. You cannot afford to close your eyes for a moment, as the knives would then tear you to shreds. You dodge many attacks, but several cut you badly and soon your strength is ebbing along with your blood.";
+
+        auto DAMAGE = -2;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[AGILITY] ";
+
+            DAMAGE = -1;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nAt dawn, the knives suddenly fall lifeless to the floor and soon after the courtiers come to let you out.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 132; }
 };
 
 class Story113 : public Story::Base
@@ -3765,7 +3980,7 @@ public:
                 {
                     Character::LOSE_SKILLS(player, {Skill::Type::AGILITY});
 
-                    PreText += "\n\nYour AGILITY skill is lost.";
+                    PreText += "\n\nYour [AGILITY] skill is lost.";
                 }
             }
 
@@ -3798,7 +4013,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        player.Money -= 1;
+        Character::GAIN_MONEY(player, -1);
     }
 
     int Continue(Character::Base &player) { return 209; }
@@ -5333,6 +5548,8 @@ public:
         ID = 298;
 
         Text = NULL;
+
+        Image = "images/filler1.png";
 
         Choices.clear();
 
@@ -6906,8 +7123,15 @@ auto story098 = Story098();
 auto story099 = Story099();
 auto story100 = Story100();
 auto story101 = Story101();
+auto story102 = Story102();
 auto story103 = Story103();
 auto story104 = Story104();
+auto story105 = Story105();
+auto story106 = Story106();
+auto story107 = Story107();
+auto story108 = Story108();
+auto story109 = Story109();
+auto story110 = Story110();
 auto story113 = Story113();
 auto story114 = Story114();
 auto story115 = Story115();
@@ -7067,8 +7291,8 @@ void InitializeStories()
         &story070, &story071, &story072, &story073, &story074, &story075, &story076, &story077, &story078, &story079,
         &story080, &story081, &story082, &story083, &story084, &story085, &story086, &story087, &story088, &story089,
         &story090, &story091, &story092, &story093, &story094, &story095, &story096, &story097, &story098, &story099,
-        &story100, &story101, &story103, &story104, &story113,
-        &story114, &story115, &story116, &story117, &story119,
+        &story100, &story101, &story102, &story103, &story104, &story105, &story106, &story107, &story108, &story109,
+        &story110, &story113, &story114, &story115, &story116, &story117, &story119,
         &story120, &story123, &story126, &story127,
         &story135, &story136, &story137, &story138, &story139,
         &story141, &story142, &story143, &story146, &story147, &story149,
