@@ -41,8 +41,9 @@ namespace Item
         GOLDEN_HELMET,
         CHALICE_OF_LIFE,
         STONE,
+        PADDLE,
         First = SWORD,
-        Last = STONE
+        Last = PADDLE
     };
 
     std::map<Item::Type, const char *> Descriptions = {
@@ -78,7 +79,8 @@ namespace Item
         {Item::Type::BROTHERS_SKULL, "BROTHER's SKULL"},
         {Item::Type::GOLDEN_HELMET, "GOLDEN HELMENT"},
         {Item::Type::CHALICE_OF_LIFE, "CHALICE OF LIFE"},
-        {Item::Type::STONE, "STONE"}};
+        {Item::Type::STONE, "STONE"},
+        {Item::Type::PADDLE, "PADDLE"}};
 
     std::vector<Item::Type> UniqueItems = {
         Item::Type::LETTER_OF_INTRODUCTION,

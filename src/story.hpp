@@ -1554,7 +1554,7 @@ public:
         Image = "images/filler5.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("You don't mind losing the SHAWL (CUNNING)", 425, Skill::Type::CUNNING, Item::Type::SHAWL));
+        Choices.push_back(Choice::Base("[CUNNING] You don't mind losing the SHAWL", 425, Skill::Type::CUNNING, Item::Type::SHAWL));
         Choices.push_back(Choice::Base("Release your grip and fall back off the tree", 400));
         Choices.push_back(Choice::Base("Cling on and risk letting the monstrous arm seize you", 3));
 
@@ -2128,6 +2128,73 @@ public:
     int Continue(Character::Base &player) { return 118; }
 };
 
+class Story073 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story073()
+    {
+        ID = 73;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "With one bound you cross the veranda and snatch up your belongings. The cannibals are at first taken by surprise, but when you launch yourself at them with a bellow of righteous wrath they take up their weapons and stand ready to fight.";
+
+        auto DAMAGE = -6;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            DAMAGE = -2;
+
+            PreText += "[SWORDPLAY] ";
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE = -4;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 433; }
+};
+
+class Story074 : public Story::Base
+{
+public:
+    Story074()
+    {
+        ID = 74;
+
+        Text = "You glance back to reassure yourself that the demons are not going to abandon you here. \"We will wait,\" says one with a raw-gummed leer.\n\n\"Take your time,\" cackles the other, nodding in grisly encouragement.\n\nYou brace yourself on the edge of the crevice and peer within. As your eyes adjust to the darkness, you see a narrow tunnel leading to a chamber inside the rock. Something gleams dully in the grey light. The smell is of rotting things: dank leaf mould and stagnant slime.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Return to the canoe", 258));
+        Choices.push_back(Choice::Base("[ROGUERY] Sneak into the tunnel", 282, Skill::Type::ROGUERY));
+        Choices.push_back(Choice::Base("Enter into the tunnel", 140));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story075 : public Story::Base
 {
 public:
@@ -2143,6 +2210,25 @@ public:
         Choices.push_back(Choice::Base("Go straight ahead", 52));
         Choices.push_back(Choice::Base("Go left from here", 412));
         Choices.push_back(Choice::Base("Go right from here", 121));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story076 : public Story::Base
+{
+public:
+    Story076()
+    {
+        ID = 76;
+
+        Text = "Leaping to the back of the boat, you pick up the paddle and use it to steer over towards the cavern wall, where the current is not so fast-moving. After a short distance you find a side tunnel and see the gleam of daylight at the far end. Paddling along it, you emerge into the open under an overcast sky the colour of dead skin. The river has become no more than a muddy trickle winding through sickly grey marshland. A dreary landscape of sour white clay and colourless rushes stretches far off into the distance. There is a foul rancid odour in the air.\n\nYou put in at a rotting wooden jetty and tether the boat.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Keep the PADDLE", 53, Choice::Type::GET_ITEM, Item::Type::PADDLE));
+        Choices.push_back(Choice::Base("Leave it", 53));
 
         Controls = StandardControls();
     }
@@ -2234,6 +2320,30 @@ public:
     {
         return 331;
     }
+};
+
+class Story079 : public Story::Base
+{
+public:
+    Story079()
+    {
+        ID = 79;
+
+        Text = "Seeing that you have no intention of paying his fee, Kawak closes his jaws with a crocodilian snap that sends shockwaves rattling through the ground underfoot. He thinks he has thwarted you, but the MAN OF GOLD is more powerful than any dragon. You warm the manikin in your hands and set it down in from of Kawak's stubbornly sealed maw. Kawak squints at it warily along the length of his snout, then his glistening eyes widen in shocked recognition. The MAN OF GOLD does not even need to do anything. Kawak immediately opens his mouth, extending his ridged tongue like a carpet laid before an honoured guest. \"Enter then, mortal, if you must,\" he growls grudgingly.\n\nYou stoop to retrieve the MAN OF GOLD, but it suddenly darts away and leaps off into the abyss.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::MAN_OF_GOLD});
+    }
+
+    int Continue(Character::Base &player) { return 33; }
 };
 
 class Story080 : public Story::Base
@@ -2592,7 +2702,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Jump into the sacred well", 327));
-        Choices.push_back(Choice::Base("Cast a protective enchantment first (SPELLS)", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS] Cast a protective enchantment first", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
 
         Controls = StandardControls();
     }
@@ -2769,9 +2879,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Hunt for food (TARGETING)", 187, Skill::Type::TARGETING));
-        Choices.push_back(Choice::Base("Set a trap (WILDERNESS LORE)", 210, Skill::Type::WILDERNESS_LORE));
-        Choices.push_back(Choice::Base("Sneak up on some game (ROGUERY)", 233, Skill::Type::ROGUERY));
+        Choices.push_back(Choice::Base("[TARGETING] Hunt for food", 187, Skill::Type::TARGETING));
+        Choices.push_back(Choice::Base("[WILDERNESS LORE] Set a trap ", 210, Skill::Type::WILDERNESS_LORE));
+        Choices.push_back(Choice::Base("[ROGUERY] Sneak up on some game", 233, Skill::Type::ROGUERY));
         Choices.push_back(Choice::Base("Search among your belongings for something to eat", 256));
 
         Controls = StandardControls();
@@ -4525,7 +4635,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Resist the fate they have in store for you", 281));
-        Choices.push_back(Choice::Base("Cast a protective enchantment (SPELLS)", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS] Cast a protective enchantment", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base("Agree to being thrown into the pit", 327));
 
         Controls = StandardControls();
@@ -4957,7 +5067,7 @@ public:
         Image = "images/maya-noble.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Prevent his appropriation of the vessel (ETIQUETTE)", 159, Skill::Type::ETIQUETTE));
+        Choices.push_back(Choice::Base("[ETIQUETTE] Prevent his appropriation of the vessel", 159, Skill::Type::ETIQUETTE));
         Choices.push_back(Choice::Base(Skill::CUNNING.Name, 183, Skill::Type::CUNNING));
         Choices.push_back(Choice::Base(Skill::SWORDPLAY.Name, 206, Choice::Type::SKILL_ANY, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base("You are not bothered about him taking the vessel, you can just set out towards Shakalla", 85));
@@ -5567,7 +5677,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Assure him that you are wise to such magical menaces (FOLKLORE)", 264, Skill::Type::FOLKLORE));
+        Choices.push_back(Choice::Base("[FOLKLORE] Assure him that you are wise to such magical menaces", 264, Skill::Type::FOLKLORE));
         Choices.push_back(Choice::Base("Perhaps you had better ask him to explain further", 172));
 
         Controls = StandardControls();
@@ -5625,7 +5735,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::CUNNING.Name, 21, Skill::Type::CUNNING));
-        Choices.push_back(Choice::Base("Cast spells with your own wand (SPELLS)", 435, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS] Cast spells with your own wand", 435, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::MAN_OF_GOLD], 45, Item::Type::MAN_OF_GOLD));
         Choices.push_back(Choice::Base("Walk boldly into the flames", 68));
         Choices.push_back(Choice::Base("Decide against helping him", 437));
@@ -5810,7 +5920,7 @@ public:
         {
             Text = "You are stranded unless you risk helping Jade Thunder.";
 
-            Choices.push_back(Choice::Base("Use a wand (SPELLS)", 435, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+            Choices.push_back(Choice::Base("[SPELLS] Use a wand", 435, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
             Choices.push_back(Choice::Base(Skill::CUNNING.Name, 21, Skill::Type::CUNNING));
             Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::MAN_OF_GOLD], 45, Item::Type::MAN_OF_GOLD));
             Choices.push_back(Choice::Base("Otherwise", 68));
@@ -6454,9 +6564,13 @@ auto story069 = Story069();
 auto story070 = Story070();
 auto story071 = Story071();
 auto story072 = Story072();
+auto story073 = Story073();
+auto story074 = Story074();
 auto story075 = Story075();
+auto story076 = Story076();
 auto story077 = Story077();
 auto story078 = Story078();
+auto story079 = Story079();
 auto story080 = Story080();
 auto story085 = Story085();
 auto story090 = Story090();
