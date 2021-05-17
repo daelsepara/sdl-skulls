@@ -2388,6 +2388,97 @@ public:
     }
 };
 
+class Story081 : public Story::Base
+{
+public:
+    Story081()
+    {
+        ID = 81;
+
+        Text = "You settle down and wait for night to fall. As the sun dips across the network of canals and trees to the west, the pitcher on the woman's shoulder starts to stir as if of its own accord. It falls away to reveal what you expected: a second head protruding from her neck. The eyes snap open and fix on you, and the head's mouth drops open in a long hissing snarl. Long strands of black hair extend rapidly from it like tentacles -- some of them up to two metres long. These form into thin matted stalks like insectoid legs which probe the ground, preparing to support the creature's weight. There is a grisly sucking sound as the head pulls itself free of the sleeping woman's neck.\n\nIt comes scuttling forward eagerly on its limbs of twined hair and leaps up onto your neck, intending to make you its new host, but you are ready for it. The coating of salt cause it to recoil and it drops to the ground, momentarily helpless. You seize your chance to stuff it into the LOBSTER POT, which you weight with stones before throwing it into the water. \"And good riddance,\" you say as it sinks to a final resting-place on the river bed.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::LOBSTER_POT});
+    }
+
+    int Continue(Character::Base &player) { return 398; }
+};
+
+class Story082 : public Story::Base
+{
+public:
+    Story082()
+    {
+        ID = 82;
+
+        Text = "The god accepts your sacrifice and reveals the true path to you. You hear no words. Suddenly the knowledge is in your mind, where before there was confusion. You know that you must descend the steps back down to the lake -- and then keep going. The route to the Deathlands lies under the water.\n\nBacking out of the shrine, you respectfully retreat one step at a time until you reach the water's edge. Now that you look closely, you can see that the stairway does indeed continue down into the icy green murk.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 105; }
+};
+
+class Story083 : public Story::Base
+{
+public:
+    Story083()
+    {
+        ID = 83;
+
+        Text = "Your companion leads you past miserable souls who are doomed to mill about for ever in the blazing sunshine, eyes downcast and hands pressed to their foreheads. As you approach the kapok tree, you see that the figures sitting under it are living skeletons. Their bones are green with algae and moss, and creepers and insects twine through their open joints. One raises a grinning face made even more grotesque by a brilliantly patterned butterfly sitting above his eyeless sockets. It is strange juxtaposition of the imagery of life and death.\n\nYour companion tells you that the denizens of the Deathlands are nobles like himself who, because of their status, are privileged to rest in the shade of the tree. Now you see that he too is changing. The appearance of flesh and sinew is dropping away to reveal another of the emerald skeletons with its covering of foliage and wildlife.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}))
+        {
+            return 128;
+        }
+        else
+        {
+            return 151;
+        }
+    }
+};
+
+class Story084 : public Story::Base
+{
+public:
+    Story084()
+    {
+        ID = 84;
+
+        Text = "You reach the last of the sentinels -- a giant hunched figure with eyes like fiery mirrors. He crooks one of his taloned fingers and beckons you closer. \"Tell me,\" he says in a rasping whisper, \"by what name am I called?\"\n\nThis is your last test. Get past this demon unscathed and you can escape into the fresh air of the living world.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Address him as Lord Skull", 336));
+        Choices.push_back(Choice::Base("Call him Thunderbolt Laughter", 349));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story085 : public Story::Base
 {
 public:
@@ -2421,6 +2512,107 @@ public:
     }
 
     int Continue(Character::Base &player) { return 321; };
+};
+
+class Story086 : public Story::Base
+{
+public:
+    Story086()
+    {
+        ID = 86;
+
+        Text = "The arrangement of beams reminds you of a trap you were once asked to devise to foil tomb robbers. It is all down to a question of basic stress and strain: identifying which beams are taking the weight of the wall, and which you can safely remove without disturbing anything.\n\nIt takes you the better part of an hour, but at last you clear enough space to pick your way through the far end of the passage. You find the courtiers already waiting for you there, crouching around the sides of the wide sunlit courtyard. The chief courtier leaps to his feet as he sees you.\n\n\"What kept you?\" he said. \"If you found that little puzzle of ours difficult, you're going to have real trouble with tests to come.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story087 : public Story::Base
+{
+public:
+    Story087()
+    {
+        ID = 87;
+
+        Text = "You wedge yourself into a corner of the hall and watch the hovering knives with a wary eye. As they come sweeping through the air towards you, you thrust out the stone. Sparks fly as the first of the knives strikes it, chipping its edge of volcanic glass.\n\nThe knives go darting away like startled birds, retreating to float around uncertainly in the centre of the hall. After a while they seem to recover themselves and again start to approach. Again you strike out with the stone, blunting one of the knives and sending them veering away -- but this time the attack took a chip out of the stone.\n\nThis continues throughout the night. You get no sleep, but at least you have kept the enchanted knives from your own flesh. Your stone shrinks to the size of a pebble, and finally a concerted attack by the knives shatters it entirely. You are waiting nervously for the knives' next assault when they suddenly drop lifeless to the floor with the coming of the dawn.\n\nThe courtiers cannot disguise their ill temper when they open the door to find you unscathed. \"You're a cool customer,\" snaps one, \"so you're probably looking forward to the House of Cold tonight.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::STONE});
+    }
+
+    int Continue(Character::Base &player) { return 132; }
+};
+
+class Story088 : public Story::Base
+{
+public:
+    Story088()
+    {
+        ID = 88;
+
+        Text = "The chief courtier comes forwards and puts the ball into your hands. \"So we get to launch the first round?\" you say. \"Very sporting.\"\n\n\"We are nothing if not magnanimous,\" he replies with a vaunting leer. \"Later, when you have lost, we will be equally be generous in dividing your carcass.\"\n\nYou watch him dart back to the sidelines. At the other end of the arena, the two shadow men stand ready.\n\n\"Begin,\" commands Necklace of Skulls.\n\nYou throw the ball against the side wall and run forward to intercept it on the rebound. The nearer of the shadow men charges towards you.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Tackle him head-on", 111));
+        Choices.push_back(Choice::Base("Weave around him towards the rear shadow man", 133));
+        Choices.push_back(Choice::Base("Try to score a point immediately", 156));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story089 : public Story::Base
+{
+public:
+    Story089()
+    {
+        ID = 89;
+
+        Text = "You aim the ball high up on the wall, so that it strikes the angle where the slope meets the vertical. As it rebounds in a long arc that carries it far out across the arena, you run forward and deflect it against the high-scoring zone on the opposite wall. The ball ricochets off towards your opponents, who leap in to seize possession.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::SCORE(player, 2);
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (player.Score > 6)
+        {
+            return 134;
+        }
+        else if (Character::VERIFY_CODEWORDS_ANY(player, {Codeword::Type::SHADE, Codeword::Type::ANGEL}))
+        {
+            return 19;
+        }
+        else
+        {
+            return 181;
+        }
+    }
 };
 
 class Story090 : public Story::Base
@@ -3826,7 +4018,7 @@ public:
     {
         ID = 188;
 
-        Text = "As you leave the market, a tall fellow emerges from the portico bordering on the temple plaza and stands surveying the marketplace. He is carrying pots that mark him as a fisherman, presumably from one of the coastal towns to the north. \"Huh!\" he mutters, half to himself. \"Is there no demand for good fish these days?\"\n\n\"Probably not when it is several days old,\" you remark, grimacing at the smell wafting from his goods.\n\nHe fixes you with a stare of outrage. \"Then buy one of my pots and take up fishing yourself!\" he cries, thrusting a lobster pot towards you. \"There! Destroy my livelihood, if you wish! I will sell you this pot for only two cacao.\"\n\nAs you turn to go, he adds: \"I would give anything for a taste of decent bread. I have been on the road for two days with nothing but my own fish to sustain me -- and, as you so tersely put it, they are no longer of the best quality.\"";
+        Text = "As you leave the market, a tall fellow emerges from the portico bordering on the temple plaza and stands surveying the marketplace. He is carrying pots that mark him as a fisherman, presumably from one of the coastal towns to the north. \"Huh!\" he mutters, half to himself. \"Is there no demand for good fish these days?\"\n\n\"Probably not when it is several days old,\" you remark, grimacing at the smell wafting from his goods.\n\nHe fixes you with a stare of outrage. \"Then buy one of my pots and take up fishing yourself!\" he cries, thrusting a LOBSTER POT towards you. \"There! Destroy my livelihood, if you wish! I will sell you this pot for only two cacao.\"\n\nAs you turn to go, he adds: \"I would give anything for a taste of decent bread. I have been on the road for two days with nothing but my own fish to sustain me -- and, as you so tersely put it, they are no longer of the best quality.\"";
 
         Image = "images/filler1.png";
 
@@ -6572,7 +6764,15 @@ auto story077 = Story077();
 auto story078 = Story078();
 auto story079 = Story079();
 auto story080 = Story080();
+auto story081 = Story081();
+auto story082 = Story082();
+auto story083 = Story083();
+auto story084 = Story084();
 auto story085 = Story085();
+auto story086 = Story086();
+auto story087 = Story087();
+auto story088 = Story088();
+auto story089 = Story089();
 auto story090 = Story090();
 auto story091 = Story091();
 auto story092 = Story092();
@@ -6741,7 +6941,7 @@ void InitializeStories()
         &story050, &story051, &story052, &story053, &story054, &story055, &story056, &story057, &story058, &story059,
         &story060, &story061, &story062, &story063, &story064, &story065, &story066, &story067, &story068, &story069,
         &story070, &story071, &story072, &story073, &story074, &story075, &story076, &story077, &story078, &story079,
-        &story080, &story085,
+        &story080, &story081, &story082, &story083, &story084, &story085, &story086, &story087, &story088, &story089,
         &story090, &story091, &story092, &story093, &story094, &story095, &story096,
         &story100, &story101, &story103, &story104, &story113,
         &story114, &story115, &story116, &story117, &story119,
