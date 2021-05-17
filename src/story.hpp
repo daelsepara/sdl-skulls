@@ -1743,8 +1743,6 @@ public:
 class Story058 : public Story::Base
 {
 public:
-    std::string PreText = "";
-
     Story058()
     {
         ID = 58;
@@ -1819,6 +1817,145 @@ public:
             Choices[2].Item = Item::Type::NONE;
             Choices[2].Type = Choice::Type::NORMAL;
         }
+    }
+};
+
+class Story061 : public Story::Base
+{
+public:
+    Story061()
+    {
+        ID = 61;
+
+        Text = "Grey clouds of fury darken the black pools of the sentinel's eyes. He lets his gory mouth drop open in a long appalling howl of fury that sounds like the heavens cracking in two. You drop cowering to the ground, so terrified that every muscle in your body loses all strength.\n\nAt last, like a storm, the awful sound passes. You uncurl yourself and glance timidly up. The sentinel has lost interest in you, having voiced his displeasure. He is once more staring directly ahead across the passage, giving you no more attention than he would give to an insect.\n\nStill dazed, you lope on along the passage. It is only now that you realize how the sentinel's howl has addled your wits.\n\nPray to all the gods that your single skill will be enough to see you through.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Select which SKILLS to lose", 37, Choice::Type::LOSE_SKILLS, 1));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story062 : public Story::Base
+{
+public:
+    Story062()
+    {
+        ID = 62;
+
+        Text = "He gives a wild shriek of rage and drives both knives towards your breast. The attack is so fast that you have no time even to flinch. At the last instant, the sentinel pulls his blows so that instead of impaling you the tips of the blades just prick your skin. You gulp and look down. Two bright drops of blood are trickling down your chest. This is not a normal injury, however. The wounds inflicted by Lord Blood's knives can never be healed.\n\nYou PERMANENTLY LOSE 2 Life Points.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.MAX_LIFE_LIMIT -= 2;
+
+        Character::GAIN_LIFE(player, -2);
+    }
+
+    int Continue(Character::Base &player) { return 84; }
+};
+
+class Story063 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story063()
+    {
+        ID = 63;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Your strongest leap carries you to the far side of the pit -- nearly. You teeter on the brink with just your toes on solid ground, arms spinning crazily in a vain attempt to save yourself. You fall back with a cry of alarm which turns into a scream of tortured pain as you land on the burning coals.";
+
+        Character::GAIN_LIFE(player, -3);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nThe smell of your own sizzling flesh gives you the burst of frantic strength you need to scramble up out of the pit. You stagger on to the end of the passage to find the courtiers waiting for you. They have wide canine smirks on their faces. \"I hope you appreciated our little jest,\" the chief courtier says. \"Now the real tests begin.\"";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story064 : public Story::Base
+{
+public:
+    Story064()
+    {
+        ID = 64;
+
+        Text = "You wedge yourself into a corner of the hall and watch the hovering knives. As they come sweeping towards you, you tear off a hunk of meat and throw it to them. They fall on it, shredding it quickly with stabbing blows, then retreat to float around in the centre of the hall. After a while they start to approach, and again you are able to distract them with a scrap of meat.\n\nThis continues throughout the knight. You get no sleep but at least you have kept the enchanted knives from your flesh. You have used up the last of the HAUNCH OF VENISON and are waiting nervously for the next assault of the knives, when they suddenly drop lifeless to the floor with the advent of morning.\n\nThe courtiers cannot disguise their ill temper when they open the door to find you unscathed. \"Your luck runs out tonight,\" snaps one. \"That's when you must enter the House of cold.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::HAUNCH_OF_VENISON});
+    }
+
+    int Continue(Character::Base &player) { return 132; }
+};
+
+class Story065 : public Story::Base
+{
+public:
+    Story065()
+    {
+        ID = 65;
+
+        Text = "You think it might be worth going for a long shot along the arena as soon as the game starts. If you are lucky you might score a point straight away, thus gaining an advantage. In subsequent rounds you know you will have to play more cautiously -- perhaps even allowing the attacking enemy player to get past you so that you can close in on the defensive player.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 88; }
+};
+
+class Story066 : public Story::Base
+{
+public:
+    Story066()
+    {
+        ID = 66;
+
+        Text = "On a signal from the chief courtier, both teams return to the end zones of the arena. It is your turn to serve again. You raise the ball and consider your best tactics. The first team to reach seven points wins the contest.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go for a long shot", 89));
+        Choices.push_back(Choice::Base("You prefer to be cautious and go for a safe point", 112));
+
+        Controls = StandardControls();
     }
 };
 
@@ -3553,7 +3690,7 @@ public:
     {
         ID = 187;
 
-        Text = "Your dart brings down a small brocket of deer. It is scarcely bigger than a dog, but enough to assuage your hunger and leave you with a good haunch of venison to consume later.\n\nYou GAIN 1 Life Point.";
+        Text = "Your dart brings down a small brocket of deer. It is scarcely bigger than a dog, but enough to assuage your hunger and leave you with a good HAUNCH OF VENISON to consume later.\n\nYou GAIN 1 Life Point.";
 
         Image = "images/filler1.png";
 
@@ -6305,6 +6442,12 @@ auto story057 = Story057();
 auto story058 = Story058();
 auto story059 = Story059();
 auto story060 = Story060();
+auto story061 = Story061();
+auto story062 = Story062();
+auto story063 = Story063();
+auto story064 = Story064();
+auto story065 = Story065();
+auto story066 = Story066();
 auto story067 = Story067();
 auto story068 = Story068();
 auto story069 = Story069();
@@ -6482,7 +6625,7 @@ void InitializeStories()
         &story030, &story031, &story032, &story033, &story034, &story035, &story036, &story037, &story038, &story039,
         &story040, &story041, &story042, &story043, &story044, &story045, &story046, &story047, &story048, &story049,
         &story050, &story051, &story052, &story053, &story054, &story055, &story056, &story057, &story058, &story059,
-        &story060, &story067, &story068, &story069,
+        &story060, &story061, &story062, &story063, &story064, &story065, &story066, &story067, &story068, &story069,
         &story070, &story071, &story072, &story075, &story077, &story078,
         &story080, &story085,
         &story090, &story091, &story092, &story093, &story094, &story095, &story096,

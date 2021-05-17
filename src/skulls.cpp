@@ -26,6 +26,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player);
 bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Control::Type mode);
 bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skill::Base> Skills);
+bool loseSkills(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int limit);
 bool mainScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool mapScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
@@ -1237,7 +1238,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
         controls.erase(controls.begin() + idx);
 
-        controls.push_back(Button(idx, "images/yes.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::TAKE));
+        controls.push_back(Button(idx, "images/yes.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::CONFIRM));
         controls.push_back(Button(idx + 1, "images/back-button.png", idx, idx + 1, idx - 1, idx + 1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         TTF_Init();
@@ -1297,7 +1298,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
             }
 
             putText(renderer, "ITEMS", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
-            putText(renderer, take.size() > 0 ? take.c_str() : "(None)", font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+            putText(renderer, selection.size() > 0 ? take.c_str() : "(None)", font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
@@ -1336,7 +1337,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
                     selected = false;
                 }
-                else if (controls[current].Type == Control::Type::TAKE && !hold)
+                else if (controls[current].Type == Control::Type::CONFIRM && !hold)
                 {
                     Character::GET_ITEMS(player, selection);
 
@@ -1347,6 +1348,202 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                     done = true;
 
                     break;
+                }
+                else if (controls[current].Type == Control::Type::BACK && !hold)
+                {
+                    done = false;
+
+                    break;
+                }
+            }
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+        }
+
+        TTF_Quit();
+    }
+
+    return done;
+}
+
+std::vector<Button> createSkillControls(std::vector<Skill::Base> Skills)
+{
+    auto text_space = 8;
+    auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+
+    auto controls = std::vector<Button>();
+
+    controls.clear();
+
+    for (auto idx = 0; idx < Skills.size(); idx++)
+    {
+        auto text = createText(Skills[idx].Name, "fonts/default.ttf", 16, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
+
+        auto y = texty + (idx > 0 ? controls[idx - 1].Y + controls[idx - 1].H : 2 * text_space);
+
+        controls.push_back(Button(idx, text, idx, idx, (idx > 0 ? idx - 1 : idx), (idx < Skills.size() ? idx + 1 : idx), textx + 2 * text_space, y, Control::Type::ACTION));
+
+        controls[idx].W = textwidth + button_space;
+        controls[idx].H = text->h;
+    }
+
+    return controls;
+}
+
+bool loseSkills(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int limit)
+{
+    auto done = false;
+
+    if (player.Skills.size() > limit)
+    {
+        const char *message = NULL;
+
+        auto error = false;
+
+        Uint32 start_ticks = 0;
+        Uint32 duration = 3000;
+
+        auto text_space = 8;
+
+        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+
+        auto controls = createSkillControls(player.Skills);
+
+        auto idx = player.Skills.size();
+
+        controls.push_back(Button(idx, "images/yes.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::CONFIRM));
+        controls.push_back(Button(idx + 1, "images/back-button.png", idx, idx + 1, idx - 1, idx + 1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", 16);
+
+        auto selected = false;
+        auto current = -1;
+        auto quit = false;
+        auto scrollUp = false;
+        auto scrollDown = false;
+        auto hold = false;
+
+        auto infoh = 36;
+        auto boxh = 75;
+
+        auto selection = std::vector<Skill::Base>();
+
+        while (!done)
+        {
+            SDL_SetWindowTitle(window, "Necklace of Skulls");
+
+            fillWindow(renderer, intWH);
+
+            if (error)
+            {
+                if ((SDL_GetTicks() - start_ticks) < duration)
+                {
+                    putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, boxh * 2, startx, starty);
+                }
+                else
+                {
+                    error = false;
+                }
+            }
+
+            if (!error)
+            {
+                std::string lose_message = "Select " + std::string((player.SKILLS_LIMIT - limit) > 1 ? std::string(std::to_string(player.SKILLS_LIMIT - limit) + " skills") : "a skill") + " to LOSE.";
+
+                putText(renderer, lose_message.c_str(), font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
+            }
+
+            std::string to_lose = "";
+
+            if (selection.size() > 0)
+            {
+                for (auto i = 0; i < selection.size(); i++)
+                {
+                    if (i > 0)
+                    {
+                        to_lose += ", ";
+                    }
+
+                    to_lose += std::string(selection[i].Name);
+                }
+            }
+
+            putText(renderer, "SKILLS", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, selection.size() > 0 ? to_lose.c_str() : "(None)", font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+
+            fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
+
+            renderButtons(renderer, controls, current, intGR, text_space, text_space / 2);
+
+            for (auto i = 0; i < player.Skills.size(); i++)
+            {
+                if (Skill::VERIFY(selection, player.Skills[i]))
+                {
+                    drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intDB);
+                }
+            }
+
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if (selected)
+            {
+                if (controls[current].Type == Control::Type::ACTION && !hold)
+                {
+                    if (current >= 0 && current < player.Skills.size())
+                    {
+                        if (Skill::VERIFY(selection, player.Skills[current]))
+                        {
+                            Skill::REMOVE(selection, player.Skills[current]);
+                        }
+                        else
+                        {
+                            if (selection.size() < (player.SKILLS_LIMIT - limit))
+                            {
+                                Skill::ADD(selection, player.Skills[current]);
+                            }
+                        }
+                    }
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::CONFIRM && !hold)
+                {
+                    if (selection.size() > 0 && ((player.SKILLS_LIMIT - selection.size()) <= limit))
+                    {
+                        auto skills = std::vector<Skill::Type>();
+
+                        for (auto i = 0; i < selection.size(); i++)
+                        {
+                            skills.push_back(selection[i].Type);
+                        }
+
+                        Character::LOSE_SKILLS(player, skills);
+
+                        done = true;
+
+                        break;
+                    }
+                    else
+                    {
+                        message = "Please complete your selection";
+
+                        start_ticks = SDL_GetTicks();
+
+                        error = true;
+                    }
+
+                    current = -1;
+
+                    selected = false;
                 }
                 else if (controls[current].Type == Control::Type::BACK && !hold)
                 {
@@ -1404,7 +1601,7 @@ int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &playe
 
         controls.erase(controls.begin() + idx);
 
-        controls.push_back(Button(idx, "images/yes.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::TAKE));
+        controls.push_back(Button(idx, "images/yes.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::CONFIRM));
         controls.push_back(Button(idx + 1, "images/back-button.png", idx, idx + 1, idx - 1, idx + 1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         TTF_Init();
@@ -1464,7 +1661,7 @@ int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &playe
             }
 
             putText(renderer, "SELECTED", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
-            putText(renderer, eat.size() > 0 ? eat.c_str() : "(None)", font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+            putText(renderer, selection.size() > 0 ? eat.c_str() : "(None)", font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
@@ -1503,7 +1700,7 @@ int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &playe
 
                     selected = false;
                 }
-                else if (controls[current].Type == Control::Type::TAKE && !hold)
+                else if (controls[current].Type == Control::Type::CONFIRM && !hold)
                 {
                     for (auto i = 0; i < selection.size(); i++)
                     {
@@ -2502,7 +2699,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 error = true;
                             }
                         }
-                        if (story->Choices[current].Type == Choice::Type::GIFT)
+                        else if (story->Choices[current].Type == Choice::Type::GIFT)
                         {
                             if (player.Items.size() > 0)
                             {
@@ -2521,6 +2718,30 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 start_ticks = SDL_GetTicks();
 
                                 error = true;
+                            }
+                        }
+                        else if (story->Choices[current].Type == Choice::Type::LOSE_SKILLS)
+                        {
+                            int limit = story->Choices[current].Value;
+
+                            auto done = loseSkills(window, renderer, player, limit);
+
+                            if (!done)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                if (player.Skills.size() <= limit)
+                                {
+                                    auto nextID = story->Choices[current].Destination;
+
+                                    next = (Story::Base *)findStory(nextID);
+
+                                    quit = true;
+
+                                    break;
+                                }
                             }
                         }
                     }

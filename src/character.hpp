@@ -24,6 +24,8 @@ namespace Character
 
         int MAX_LIFE_LIMIT = 10;
 
+        int SKILLS_LIMIT = 4;
+
         int DONATION = 0;
 
         bool IsBlessed = false;

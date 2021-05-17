@@ -69,6 +69,49 @@ namespace Skill
         FOLKLORE, ROGUERY, SEAFARING, SPELLS,
         SWORDPLAY, TARGETING, UNARMED_COMBAT, WILDERNESS_LORE};
 
+    int FIND(std::vector<Skill::Base> &skills, Skill::Base skill)
+    {
+        auto found = -1;
+
+        if (skills.size() > 0 && skill.Type != Skill::Type::NONE)
+        {
+            for (auto i = 0; i < skills.size(); i++)
+            {
+                if (skills[i].Type == skill.Type)
+                {
+                    found = i;
+
+                    break;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    bool VERIFY(std::vector<Skill::Base> &skills, Skill::Base skill)
+    {
+        return FIND(skills, skill) >= 0;
+    }
+
+    void ADD(std::vector<Skill::Base> &skills, Skill::Base skill)
+    {
+        if (!VERIFY(skills, skill))
+        {
+            skills.push_back(skill);
+        }
+    }
+
+    void REMOVE(std::vector<Skill::Base> &skills, Skill::Base skill)
+    {
+        auto result = FIND(skills, skill);
+
+        if (result >= 0)
+        {
+            skills.erase(skills.begin() + result);
+        }
+    }
+
 } // namespace Skill
 
 #endif

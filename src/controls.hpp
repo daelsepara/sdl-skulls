@@ -28,7 +28,7 @@ namespace Control
         BACK,
         USE,
         DROP,
-        TAKE,
+        CONFIRM,
         QUIT,
         PLUS,
         MINUS,
