@@ -31,6 +31,7 @@ namespace Choice
         LOSE_ITEM,
         LOSE_MONEY,
         LOSE_ALL,
+        LOSE_SKILLS,
         DONATE,
         EAT,
         EAT_HEAL,
@@ -1782,6 +1783,43 @@ public:
     }
 
     int Continue(Character::Base &player) { return 106; }
+};
+
+class Story060 : public Story::Base
+{
+public:
+    Story060()
+    {
+        ID = 60;
+
+        Text = "The stranger leaps up into the air, displaying a long thin body like a streak of lightning. Suddenly you realize you are not looking at a man at all, but a large iguana. It crouches on the rock, gives you a last lingering glare, and then goes darting off into the mist.\n\nYou trudge on, and gradually the mist breaks up to reveal that the path has become a raised stone causeway which snakes down towards a jetty in the distance. Beyond lies an endless green lake. An icy breeze blows in off the water, making you shiver. As you make your way along the causeway, you notice writhing movement under the thin veils of mist that still lie in the hollows. You stoop for a closer look, then recoil in disgust as you realize that the ground off the causeway consists of filth and mud infested with thousands of maggots.\n\n\"You don't like my pets?\"\n\nYou look up. A bizarre creature is waiting for you a little way down the causeway. You could have sworn it wasn't there a moment before. It has a large globular body supported on three strong clawed legs. Its eyes are bright narrow slits, and as it watches you it runs its tongue greedily across its lips. You realize that to reach the jetty you will have to get past that monster -- or else wade through the mass of wriggling maggots.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::TARGETING.Name, 217, Skill::Type::TARGETING));
+        Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::MAN_OF_GOLD], 241, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("March along the causeway", 194));
+        Choices.push_back(Choice::Base("Head directly for the jetty by leaving the causeway and wading through the maggots", 171));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
+        {
+            Choices[2].Destination = 148;
+            Choices[2].Item = Item::Type::JADE_BEAD;
+            Choices[2].Type = Choice::Type::ITEM;
+        }
+        else
+        {
+            Choices[2].Destination = 194;
+            Choices[2].Item = Item::Type::NONE;
+            Choices[2].Type = Choice::Type::NORMAL;
+        }
+    }
 };
 
 class Story067 : public Story::Base
@@ -6266,6 +6304,7 @@ auto story056 = Story056();
 auto story057 = Story057();
 auto story058 = Story058();
 auto story059 = Story059();
+auto story060 = Story060();
 auto story067 = Story067();
 auto story068 = Story068();
 auto story069 = Story069();
@@ -6443,7 +6482,7 @@ void InitializeStories()
         &story030, &story031, &story032, &story033, &story034, &story035, &story036, &story037, &story038, &story039,
         &story040, &story041, &story042, &story043, &story044, &story045, &story046, &story047, &story048, &story049,
         &story050, &story051, &story052, &story053, &story054, &story055, &story056, &story057, &story058, &story059,
-        &story067, &story068, &story069,
+        &story060, &story067, &story068, &story069,
         &story070, &story071, &story072, &story075, &story077, &story078,
         &story080, &story085,
         &story090, &story091, &story092, &story093, &story094, &story095, &story096,
