@@ -6740,7 +6740,7 @@ void InitializeStories()
         &story040, &story041, &story042, &story043, &story044, &story045, &story046, &story047, &story048, &story049,
         &story050, &story051, &story052, &story053, &story054, &story055, &story056, &story057, &story058, &story059,
         &story060, &story061, &story062, &story063, &story064, &story065, &story066, &story067, &story068, &story069,
-        &story070, &story071, &story072, &story075, &story077, &story078,
+        &story070, &story071, &story072, &story073, &story074, &story075, &story076, &story077, &story078, &story079,
         &story080, &story085,
         &story090, &story091, &story092, &story093, &story094, &story095, &story096,
         &story100, &story101, &story103, &story104, &story113,
