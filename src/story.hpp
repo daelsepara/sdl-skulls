@@ -2852,11 +2852,10 @@ public:
 class Story098 : public Story::Base
 {
 public:
+    std::string PreText = "";
     Story098()
     {
         ID = 98;
-
-        Text = "A cacophony of chitterings and gleeful screeches makes you look up. From the foliage overhead, dozens of beady pairs of eyes stare back at you. You laugh as you see the tiny comical faces of a troop of monkeys, teeth bared like grimacing old men.\n\nSuddenly you feel small fingers probing at your clothes. A couple of monkeys have crept up on you while the others distracted your attention. One leaps onto your head and puts its hands over your eyes while the other rifles through your belongings. You give vent to a loud curse and lunge to grab the little thieves, but they are too quick for you. You can only stand and watch helplessly as they go swinging happily off the through the trees.";
 
         Image = "images/filler1.png";
 
@@ -2866,6 +2865,83 @@ public:
         Choices.push_back(Choice::Base("Bear right", 29));
 
         Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "A cacophony of chitterings and gleeful screeches makes you look up. From the foliage overhead, dozens of beady pairs of eyes stare back at you. You laugh as you see the tiny comical faces of a troop of monkeys, teeth bared like grimacing old men.\n\nSuddenly you feel small fingers probing at your clothes. A couple of monkeys have crept up on you while the others distracted your attention. One leaps onto your head and puts its hands over your eyes while the other rifles through your belongings. You give vent to a loud curse and lunge to grab the little thieves, but they are too quick for you. You can only stand and watch helplessly as they go swinging happily off the through the trees.";
+
+        ToLose.clear();
+
+        LoseLimit = 0;
+
+        if (Character::VERIFY_ITEMS(player, {Item::Type::MAGIC_AMULET}))
+        {
+            ToLose.push_back({Item::Type::MAGIC_AMULET});
+        }
+
+        if (Character::VERIFY_ITEMS(player, {Item::Type::SHAWL}))
+        {
+            ToLose.push_back({Item::Type::SHAWL});
+        }
+
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
+        {
+            ToLose.push_back({Item::Type::JADE_BEAD});
+        }
+
+        if (Character::VERIFY_ITEMS(player, {Item::Type::MAGIC_DRINK}))
+        {
+            ToLose.push_back({Item::Type::MAGIC_DRINK});
+        }
+
+        if (Character::VERIFY_ITEMS(player, {Item::Type::MAIZE_CAKES}))
+        {
+            ToLose.push_back({Item::Type::MAIZE_CAKES});
+        }
+
+        if (ToLose.size() > 1)
+        {
+            PreText += "\n\nThe monkeys managed to filch one of your items. Select an item to drop.";
+
+            LoseLimit = ToLose.size() - 1;
+        }
+        else if (ToLose.size() == 1)
+        {
+            PreText += "\n\nThe monkeys managed to filch the " + std::string(Item::Descriptions[ToLose[0]]) + ".";
+
+            Character::LOSE_ITEMS(player, {ToLose[0]});
+        }
+        else
+        {
+            PreText += "\n\nThe monkeys did not manage to filch anything.";
+        }
+
+        Text = PreText.c_str();
+    }
+};
+
+class Story099 : public Story::Base
+{
+public:
+    Story099()
+    {
+        ID = 99;
+
+        Text = "You can hear the sound of rapids up ahead, and the current carries the boat faster and faster towards them. Hurriedly tying the rope into a loop, you cast it towards the side of the tunnel and manage to lasso an outcrop of rock. The boat is jerked to a halt and sent drifting towards a side tunnel where the current is not so strong. You are unable to dislodge the rope but at least you are safe.\n\nA flicker of daylight shows at the end of the tunnel. You can smell the reek of stagnant marshland in the air. Paddling onwards, you come out into the open under an overcast sky the colour of dead skin. The river here is no more than a muddy trickle winding through sickly grey marshland. A dreary landscape of sour white clay and colourless rushes stretches far off into the distance.\n\nYou put in a rotting wooden jetty and tether the boat.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Keep the PADDLE", 53, Choice::Type::GET_ITEM, Item::Type::PADDLE));
+        Choices.push_back(Choice::Base("Leave it", 53));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::ROPE});
     }
 };
 
@@ -3249,7 +3325,7 @@ public:
     void Event(Character::Base &player)
     {
         Character::GET_ITEMS(player, {Item::Type::BROTHERS_SKULL});
-        
+
         Choices.clear();
 
         if (!Character::VERIFY_CODEWORD(player, Codeword::Type::SAKBE))
@@ -6825,6 +6901,9 @@ auto story093 = Story093();
 auto story094 = Story094();
 auto story095 = Story095();
 auto story096 = Story096();
+auto story097 = Story097();
+auto story098 = Story098();
+auto story099 = Story099();
 auto story100 = Story100();
 auto story101 = Story101();
 auto story103 = Story103();
@@ -6987,7 +7066,7 @@ void InitializeStories()
         &story060, &story061, &story062, &story063, &story064, &story065, &story066, &story067, &story068, &story069,
         &story070, &story071, &story072, &story073, &story074, &story075, &story076, &story077, &story078, &story079,
         &story080, &story081, &story082, &story083, &story084, &story085, &story086, &story087, &story088, &story089,
-        &story090, &story091, &story092, &story093, &story094, &story095, &story096,
+        &story090, &story091, &story092, &story093, &story094, &story095, &story096, &story097, &story098, &story099,
         &story100, &story101, &story103, &story104, &story113,
         &story114, &story115, &story116, &story117, &story119,
         &story120, &story123, &story126, &story127,

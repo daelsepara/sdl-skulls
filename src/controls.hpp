@@ -33,7 +33,8 @@ namespace Control
         PLUS,
         MINUS,
         TRADE,
-        GIVE
+        GIVE,
+        STEAL
     };
 
     class Base

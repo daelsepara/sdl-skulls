@@ -975,11 +975,15 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
             {
                 if (mode == Control::Type::DROP)
                 {
-                    putText(renderer, "You are carrying too many items. Select an item to DROP.", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
+                    putText(renderer, "You are carrying too many items. Select item(s) to DROP.", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
                 }
                 else if (mode == Control::Type::USE)
                 {
                     putText(renderer, "Select an item to USE", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
+                }
+                else if (mode == Control::Type::STEAL)
+                {
+                    putText(renderer, "You were robbed. Choose the item(s) that were stolen.", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
                 }
                 else
                 {
@@ -1018,6 +1022,16 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                         if (mode == Control::Type::DROP)
                         {
                             Item::REMOVE(Items, item);
+
+                            controls.clear();
+
+                            controls = createItemControls(Items);
+                        }
+                        else if (mode == Control::Type::STEAL)
+                        {
+                            Item::REMOVE(Items, item);
+
+                            Character::LOSE_ITEMS(player, {item});
 
                             controls.clear();
 
@@ -3024,6 +3038,26 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                                     auto done = takeScreen(window, renderer, player, story->Take, story->TakeLimit);
 
                                     if (!done)
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                                if (story->LoseLimit > 0 && story->ToLose.size() > story->LoseLimit)
+                                {
+                                    auto done = false;
+
+                                    while (story->ToLose.size() > story->LoseLimit)
+                                    {
+                                        done = inventoryScreen(window, renderer, player, story->ToLose, Control::Type::STEAL);
+
+                                        if (done)
+                                        {
+                                            break;
+                                        }
+                                    }
+
+                                    if (done)
                                     {
                                         continue;
                                     }
