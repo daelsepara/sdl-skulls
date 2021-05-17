@@ -874,7 +874,7 @@ public:
 
         Text = "Convinced though you are by the strength of this argument, the Matriarch seems unimpressed. \"I wonder what you will find?\" she muses. \"The truth as to Morning Star's fate, perhaps. But also you may discover a deeper truth.\"\n\nShe turns aside to gaze up at the shimmering sunbeams slanting through the windows, showing her profile in an expression of disdain. \"You are useless to the clan until you learn wisdom, Evening Star. Depart whenever you wish.\"\n\nShe says nothing more. Awkwardly, you get to your feet and retreat from the room with a hesitant bow.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -893,7 +893,7 @@ public:
 
         Text = "The causeway to Yashuna is an arrow-straight road of packed limestone raised on stone blocks above the level of the countryside. As you walk, you scan the swaying fields of maize, the orchards and ranks of cotton plants that stretch off as far as the eye can see. Low stone walls mark the irrigation channels that ensure as much water as possible reaches the crops at this arid time of year. Peasant dwellings are scattered here and there across the countryside: oval single-storey buildings with sharply peaked roofs of dry thatch. It makes you thirsty just to watch the peasants at their back-breaking work, gathering cotton in long sacks under the sweltering sun.\n\nA dusty grove of papaya trees overhangs the causeway. Your mouth waters as you look at them. Surely on one would mind if you took just one papaya? As you reach up to pick one of the fruits, there is a sudden flurry of movement from the bole of the tree. You go rigid, and a thrill of clammy fear chills you despite the heat of the day. Poised atop the fruit is a tarantula! Its huge black forelimbs are resting on your fingers, and you can see the wet coating of venom on its fangs.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::WILDERNESS_LORE.Name, 48, Skill::Type::WILDERNESS_LORE));
@@ -913,7 +913,7 @@ public:
 
         Text = "With infinite care you delve into the gloomy hole and deftly remove the gold diadem. Clinging to the side of the tree, you clean off the moss and muck and examine your prize. It is a circlet such as a king or high priest might wear upon his row, patterned with holy sigils and bearing the cruciform symbol of the World Tree in inlaid plaques of jade. Such an item could fetch you a fortune in any market in the world.\n\nClimbing back down to the ground, you sense the stabai hovering close beside you, bending heir elongated skulls closer as they admire your find. \"It is a great treasure, as we promised,\" says one with a trace of envy in her voice. \"Now return our shawl.\"\n\n\"When I'm safely out of these woods, then I'll consider it,\" you snap back. \"Not before.\"\n\nYou got the GOLD DIADEM.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -937,7 +937,7 @@ public:
 
         Text = "Seeing your look of horror, one of the men prods the fire with a stick and says, \"We're roasting a monkey. Looks pretty gruesome, doesn't it? Tastes delicious, though.\"\n\nFilled with relief to discover that they are not cannibals after all, you join the jungle people in their meal. You soon learn that you have them to thank for the herbs that cured your fever.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -976,7 +976,7 @@ public:
 
         Text = "The sun casts its dusty gold light across the treetops to the west, awakening glints in your ceremonial regalia. Summoning up all your courage, you take the final step that carries you off the brink into oblivion. The water rushes up to meet you -- an icy slap, followed by darkness and a roaring silence. You are enfolded in a watery womb, numbly struggling out of the metal accoutrements that are carrying you down into the furthest depths of the well.\n\nBloody darkness thunders through your brain. There is no sign of the sunlit surface of the water overhead. You feel as though you are trapped on the border between sleeping and waking, and in the instant of departing consciousness you know you are not in the bottom of the well any more. You have plunged into the fabled river that leads out of the world of the living. You are on your way to the Deathlands.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -1000,7 +1000,7 @@ public:
 
         Text = "You push through a bank of ferns and pause to get your breath back. You have been walking for hours in the sweltering heat. Moisture trickles down off the leaf canopy, but you cannot even tell if it is rain or just condensation. If only you could get a clear look at the sky, you might be able to tell which way to go.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Head left from here", 144));
@@ -1020,7 +1020,7 @@ public:
 
         Text = "Nachan is the busy hub of trade up and down the river, so there are hundreds of boats bobbing up and down at the jetty waiting to unload their wares. You wend your way between bales of grain, fruit, feathers, jade and animal pelts. Most of the trader's vessels are dug-out canoes, but you see one crescent-shaped boat constructed of interwoven reeds. You guess that the owner is not from the wooded country upriver, but must be a native of the fens which lie between here and the coast. Seeing you approach, he straightens up from the task of loading clay pots aboard the boat and winces as he rubs his aching back.\n\n\"Good morning,\" you say to him. \"If you're going downriver, I wonder if you have room for a passenger?\"\n\nHe looks you up and down. \"If you have two cacao to spare.\"\n\n\"Two cacao!\" you cry in outrage. \"That is an exorbitant sum. I will offer--\"\n\nThe fenman holds up his hand to interrupt you. \"Haggling is pointless,\" he says. \"You would take up as much space as two large pitchers, and the profit I make on each pitcher is one cacao. Consequently you must pay a fee of two cacao to compensate me for my loss of earnings if I take you aboard.\"";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 332, Skill::Type::SEAFARING));
@@ -1040,7 +1040,7 @@ public:
 
         Text = "The folktales of heroes who have ventured into the underworld are as fresh in your mind now as when they were first told to you in infancy. You know that on no account must you part with the bead until you reach the crossroads where four coloured paths meet. The two demons are just tying to trick you. You make curt gestures of dismissal and turn away from them.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -1059,7 +1059,7 @@ public:
 
         Text = "You give them a puzzled look, your face the very picture of innocence as you reply: \"An OWL? Not at all -- my gift was a fine cloak of quetzal feathers with a jade clasp. I think that fellow over there presented the OWL...\"\n\nYou point to a fretful-looking gentleman who has been pacing along the colonnade for several minutes. You noticed him send in a gift earlier, but he failed to bribe the courtier sufficiently and does not realize he will be kept waiting as a result. He looks up with a bemused half-smile as the guards go striding over to him. The smile soon turns to a look of horror as they start to pummel him with their staves. Cowering under the hail of blows, he goes hobbling off through the crowd of onlookers. Meanwhile you take the opportunity to slink away before anyone finds out the truth.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -1078,7 +1078,7 @@ public:
     {
         ID = 33;
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -1122,7 +1122,7 @@ public:
 
         Text = "You moisten a little salt and rub it onto your neck as a precaution. You do not need much, so you can retain the rest of the parcel in case you need it later.\n\nYou gained the codeword SALVATION.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -1156,7 +1156,7 @@ public:
 
         Text = "Your amulet is held around your neck by a thong, which snaps as you are getting off the raft. You give a yelp of alarm and try to grab the amulet before it falls into the water, but for once luck is not with you and it slips through your fingers. However, instead of sinking without trace the amulet comes to rest just under the surface. You stoop to retrieve it, and in doing so you notice something rather interesting; the stairway does not just lead up to the shrine atop the pyramid; it also leads down beneath the lake.\n\nIs that the route you should take? Or is there some secret you must discover inside the shrine first? As you resecure the amulet around your neck, you ponder your next action.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Ascend to the shrine", 58));
@@ -1175,7 +1175,7 @@ public:
 
         Text = "You trudge on until you come to a well. On a ridge ahead stands a kapok tree with its upper branches surrounded by the mass of water that hangs above the Deathlands. Squinting in the intense unremitting sunlight, you can make out some figures reclining in the shade of its foliage.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Controls = StandardControls();
     }
@@ -1202,7 +1202,7 @@ public:
 
         Text = "You have passed two of the sentinels; there are two still to go. The next proves to be a lank bone-white demon with a sharply featured face that gives him an almost serpentine look. He holds a leaf-shaped knife of white onyx in each hand, tilting them like fans as he stoops to peer at you.\n\n\"Your name?\" The words ooze out of his mouth like venom.\n\n\"Evening Star,\" you reply.\n\nHe nods and an ugly lipless smile curls his long mouth, \"Good. Now address me with proper respect, Evening Star. Address me by name.\"\n\nWhat do you think his name is?";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Lord Blood", 84));
@@ -1222,7 +1222,7 @@ public:
 
         Text = "The servant falls to his knees with his arms clasped around your legs. he is racked with grief for his dead master, and begs you to restore the man to life. He must think you are some kind of miracle-worker. Understandable, since he has just seen you slay a monster that seemed more than a match for any ten normal men.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("[SPELLS] Try to revivify the dead man, though it would probably use up all your magical power", 108, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
@@ -1241,9 +1241,9 @@ public:
     {
         ID = 39;
 
-        Text = "You place it across the pit and walk across. When you reach the other side and turn to retrieve your makeshift bridge, however, the chief courtier whisks it away and snaps it across his knee. \"That was cheating,\" he says ill-temperedly.||\"How was I to know? You didn't mention any rules.\"||His scowl melts into a sly smile. He is obviously a creature of volatile moods. \"That's the kind of game we play around here. You discover the rules when you break them.\"||He tosses the broken item aside and takes a great leap which carries him right across the pit. The other courtiers follow with equal agility.";
+        Text = "You place it across the pit and walk across. When you reach the other side and turn to retrieve your makeshift bridge, however, the chief courtier whisks it away and snaps it across his knee. \"That was cheating,\" he says ill-temperedly.\n\n\"How was I to know? You didn't mention any rules.\"\n\nHis scowl melts into a sly smile. He is obviously a creature of volatile moods. \"That's the kind of game we play around here. You discover the rules when you break them.\"\n\nHe tosses the broken item aside and takes a great leap which carries him right across the pit. The other courtiers follow with equal agility.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -1251,6 +1251,128 @@ public:
     }
 
     int Continue(Character::Base &player) { return 431; }
+};
+
+class Story040 : public Story::Base
+{
+public:
+    Story040()
+    {
+        ID = 40;
+
+        Text = "\"I have survived all the ordeals,\" you say to the courtiers, \"and now I demand to see your master -- the sorcerer Necklace of Skulls.\"\n\nThey watch you with smouldering eyes, but the cocksure sneering looks with which they first greeted you are gone now. By passing the five tests you have earned their respect -- perhaps even their fear. As they escort you to the gateway of bones at the rear of the courtyard, the chief courtier studies you with a long sidelong stare before saying, \"You have got further than any mortal I can remember. But our master will crush you as I might crack a flea between my fingernails.\"\n\nWith a hollow rattling noise, the great gates swing inwards to reveal an avenue whose walls slope outwards on either side of you. The black pyramid stands at the far end of the avenue, its steep flanks clad in a block of cold shade that defies the harsh sunlight. The courtiers scatter at a signal you do not hear, rushing off with loping gaits that betray their half-canine ancestry. Climbing stone staircases, they take up positions along the top of the sloping walls.\n\nAs you take a step forward along the avenue, you notice rings set hip on the side walls. It is like the arena in which the sacred ball contest is played, and those stone rings are the goals.\n\nYou round angrily on the chief courtier, who is still standing close at your shoulder. \"What is this?\" you shout. \"I haven't come to play games! You told me I was going to meet Necklace of Skulls at last!\"\n\n\"I am here,\" echoes a sepulchral voice from the depths of the shrine atop the pyramid. \"Now let the game begin.\"";
+
+        Image = "images/ballgame-arena.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 317; }
+};
+
+class Story041 : public Story::Base
+{
+public:
+    Story041()
+    {
+        ID = 41;
+
+        Text = "You are waiting by the door when the dog-like courtiers come to release you in th e morning. The chief is not with them, but later in the day he comes over to where you are sitting at the edge of the plaza and asks: \"How are you enjoying your stay?\"\n\n\"If I were to be candid, I would say your hospitality leaves much to be desired,\" you reply, forcing a note of flippancy into your voice with some effort. \"But I feel this can be excused on the grounds that you received few visitors in these parts.\"\n\n\"On the contrary,\" he says with a broad smile, \"we often have people for dinner.\"\n\nStifling a shudder at this veiled threat, you ask what your next ordeal is to be.\n\nHe glances at the sound, which is already declining in the sky. \"You will shortly discover that for yourself. We call it the House of Knives.\"\n\nSoon afterwards you are taken to the third building. Here the floor is covered with knives of sharp green obsidian. As the sun sets, the knives come to life, springing up to slice at the air expectantly. The door crunches solidly into the place behind you. \"Now,\" the chief courtier calls through it, \"I expect you'll be cut down to size.\"";
+
+        Image = "images/filler5.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        if (!Character::VERIFY_ITEMS(player, {Item::Type::HAUNCH_OF_VENISON}))
+        {
+            Choices.push_back(Choice::Base("Use a STONE", 87, Item::Type::STONE));
+            Choices.push_back(Choice::Base("Otherwise", 110));
+        }
+    }
+
+    int Continue(Character::Base &player) { return 64; }
+};
+
+class Story042 : public Story::Base
+{
+public:
+    Story042()
+    {
+        ID = 42;
+
+        Text = "The ball contest is played in every city of the civilized world. It is much more than just a game. Its exponents travel far and wide, earning fame for themselves and glory for their home cities. The priests say that the origins of the contest lie rooted in ancient tradition, and it is said that the playing of each game is like the unfolding of a mighty spell. Portents for the future are read in the outcome. Losers are often sacrificed to the gods.\n\nThe contest involves two players on each side. The aim is to bounce a large rubber ball off the sloping side walls of the arena using only your wrists, elbows and knees. At the same time you have to avoid the opposing players, who are allowed to ram into you with stunning force. You have seen men carried off with the broken necks after a vicious tackle.\n\nThe side walls are marked into zones. You score points for hitting these with the ball, and the winning team is the first to score seven points. Alternatively, you can win an immediate victory by getting the ball to go through one of the stone rings set high up in the middle of each wall. This is a very difficult feat, rarely achieved by even the best players.\n\nThe ritual ball contest has started.";
+
+        Image = "images/filler5.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player) { player.RitualBallStarted = true; }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK))
+        {
+            return 65;
+        }
+        else
+        {
+            return 88;
+        }
+    }
+};
+
+class Story043 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story043()
+    {
+        ID = 43;
+
+        Image = "images/filler5.png";
+
+        Choices.clear();
+
+        Choices.push_back(Choice::Base("Attack the sorcerer now", 19));
+        Choices.push_back(Choice::Base("Otherwise", 157));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Type = Story::Type::NORMAL;
+
+        PreText = "To your own astonishment as much as anyone else's, the blood ball soars up and unerringly passes through the stone ring set in the middle of the wall. A howl of disbelief rises from the watching courtiers. They sound like hounds at the baying of the moon.\n\nYour brother rushes over to join you. \"Can you feel it, Evening Star?\" he says excitedly. \"The tingle of magic on the air?\"\n\nHe is right. In some strange way your victory worked a spell which now empowers you both with an invigorating surge of energy.";
+
+        if (player.LostSkills.size() > 0)
+        {
+            PreText += "\n\nYou REGAINED all of the skills you have LOST previously.";
+
+            for (auto i = 0; i < player.LostSkills.size(); i++)
+            {
+                if (!Character::VERIFY_SKILL(player, player.LostSkills[i].Type))
+                {
+                    player.Skills.push_back(player.LostSkills[i]);
+                }
+            }
+        }
+
+        PreText += "\n\nA wail of petulant rage echoes down from the sorcerer's sanctum. \"Apparently he's not happy with the result of the contest,\" you say to Morning Star.";
+
+        Text = PreText.c_str();
+    }
 };
 
 class Story044 : public Story::Base
@@ -1286,7 +1408,7 @@ public:
 
         Text = "The golden manikin draws life from the warmth of your hand. Leaping down to the ground, he leaps through the flame barrier and emerge unscathed bearing the wand. You take the wand and give it to the Jade Thunder, who is delighted.\n\nWhen you go to pick up the MAN OF GOLD, you discover he has tunnelled down into the sand. \"I know the legend of that manikin,\" says Jade Thunder. \"It could only be used once.\"\n\n\"Evidently,\" you reply, staring at the mound of sand where the MAN OF GOLD dug down out of sight.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -1310,7 +1432,7 @@ public:
     {
         ID = 46;
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -1371,7 +1493,7 @@ public:
 
         Text = "\"What would others think of our clan,\" you assert, \"if we meekly ignored the loss of my brother? Honour is like the sun: it cannot hide its face.\"\n\nThe Matriarch thrusts her head forward and stares at you along the great hook of her nose. Perched thus on her stone seat, she reminds you of a fat owl watching a mouse. You begin to fear you have offended her with your frank answer, but then to your relief she gives a rumble of approving laughter. \"Well said, young Evening Star. How like your brother you are -- and both of you like your late father, always brimming over with impatient courage.\"\n\nYou set down your cup. \"Then have I your leave to go, my lady?\"\n\nShe nods. \"Yes, but since your determination glorifies the clan, I feel that the clan should give you assistance in this quest. Consider what help you need most, Evening Star. I could arrange for you to have an audience with one of our high priests, and you could seek their advice. Or I could allow you to equip yourself with the clan's special ancestral treasures. Or would you prefer a companion on your quest?\"";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Request a meeting with one of the high priests", 116));
@@ -1391,7 +1513,7 @@ public:
 
         Text = "You know that the spider must be torpid from the heat. Tarantulas are night hunters. It is unlikely to bite if you jerk your hand away, and even if it did the venom is little worse than a wasp sting. Touching it would be far more unpleasant, since the bristles inject a powerful irritant.\n\nThe tarantula sleepily probes your fingers with its limbs. You snatch your hand back out of its clutches. Its only reaction is to slowly curl back into the shade of the papaya fruit. You breathe a sigh of relief and step back to the middle of the causeway.\n\n\"Hey there! What're you doing?\"\n\nYou turn to see an old peasant coming through the dusty orchard towards you.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Talk to him", 117));
@@ -1426,7 +1548,7 @@ public:
 
         Text = "You reach into the forbidding hole and snatch up the diadem. As you bring it out into the leaf-spattered sunlight however, a baleful roar issues from the interior of the dead tree. You are started by a scaly moss-covered arm that suddenly thrusts forth, groping for you as a voice thunders: \"Who has taken my trinket? A curse be upon that sly long-fingered thief!\"";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("You don't mind losing the SHAWL (CUNNING)", 425, Skill::Type::CUNNING, Item::Type::SHAWL));
@@ -5963,6 +6085,10 @@ auto story036 = Story036();
 auto story037 = Story037();
 auto story038 = Story036();
 auto story039 = Story039();
+auto story040 = Story040();
+auto story041 = Story041();
+auto story042 = Story042();
+auto story043 = Story043();
 auto story044 = Story044();
 auto story045 = Story045();
 auto story046 = Story046();
@@ -6147,7 +6273,7 @@ void InitializeStories()
         &story010, &story011, &story012, &story013, &story014, &story015, &story016, &story017, &story018, &story019,
         &story020, &story021, &story022, &story023, &story024, &story025, &story026, &story027, &story028, &story029,
         &story030, &story031, &story032, &story033, &story034, &story035, &story036, &story037, &story038, &story039,
-        &story044, &story045, &story046, &story047, &story048, &story049,
+        &story040, &story041, &story042, &story043, &story044, &story045, &story046, &story047, &story048, &story049,
         &story051, &story052, &story054,
         &story067, &story068, &story069,
         &story070, &story071, &story072, &story075, &story077, &story078,

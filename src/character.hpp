@@ -30,11 +30,14 @@ namespace Character
 
         bool IsImmortal = false;
 
+        bool RitualBallStarted = false;
+
         std::vector<Skill::Base> Skills = std::vector<Skill::Base>();
         std::vector<Item::Type> Items = std::vector<Item::Type>();
         std::vector<Codeword::Type> Codewords = std::vector<Codeword::Type>();
         
         std::vector<Item::Type> LostItems = std::vector<Item::Type>();
+        std::vector<Skill::Base> LostSkills = std::vector<Skill::Base>();
         
         int LostMoney = 0;
 
@@ -403,6 +406,8 @@ namespace Character
 
                 if (result >= 0)
                 {
+                    player.LostSkills.push_back(player.Skills[result]);
+
                     player.Skills.erase(player.Skills.begin() + result);
                 }
             }
