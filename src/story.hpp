@@ -3994,7 +3994,7 @@ public:
 
         Text = "You steady yourself against the rough stone walls, only to recoil with a gasp of disgust. The brief contact has left an unpleasant coating of slime on your hands. You hurriedly wipe it away on your cloak. The stench grows stronger with each step you take until it is almost unbearable. You feel sick, but you manage to reach the chamber and stoop to inspect the item that caught your eye. It is a bowl of polished stone incised with the emblem of the Creator God, who gave life to all things. You need no special sense to recognize the aura of divine magic. This can only be the fabled CHALICE OF LIFE in which the gods brewed the primordial potion that birthed the ancestors of mankind.\n\nAs you rise to return to the boat, however, a trickle of viscous slime drips from the roof of the chamber across your face. Spluttering, you look up. A shiver of horror runs through you as you see the creatures whose lair this is.\n\nThere are about a dozen of them, clinging to the walls and ceiling of tunnel like bloated pods. They are about as big as large dogs, humanoid in the upper body but with the hindquarters of giant snails. Their flesh, where it is exposed from their shells, glistens with thick mucus. There features are horribly unformed, like babies torn prematurely from their mother's womb, and they utter soft bleating cries as they close inexorable to block your escape.";
 
-        Image = "images/filler1.png";
+        Image = "images/snail-creatures.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Use an item", 305));
@@ -5734,7 +5734,7 @@ public:
 
         Text = "You find a river -- not of blood this time, but of cold pus-coloured fluid -- and follow its course through pale rolling dales until you come to a massive stone arch. Peering inside, you see steps rising up a long a tunnel that goes up through the layer of water roofing the Deathlands. From far ahead comes a shaft of true daylight. You have the way back to the land of the living.\n\nYou advance up the tunnel. Soon you can see the bright sunlight ahead, and smell the clean air of the upper world. But to reach it you must run a perilous gauntlet, for now you see that the passage is guarded by four baleful sentinels who sit in alcoves along the walls. They are nearly twice as big as you, with faces of brooding nightmare and talons like jaguar's teeth. From the legends you heard in childhood, you know that the only way safely past these four is to greet each by name.";
 
-        Image = "images/filler1.png";
+        Image = "images/threshold-gods.png";
 
         Controls = StandardControls();
     }
