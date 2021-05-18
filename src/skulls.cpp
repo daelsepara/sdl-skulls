@@ -3031,6 +3031,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                         {
                             characterScreen(window, renderer, player);
                         }
+                        else
+                        {
+                            message = "This adventure is over.";
+
+                            start_ticks = SDL_GetTicks();
+
+                            error = true;
+                        }
 
                         current = -1;
 
@@ -3050,6 +3058,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                         {
                             inventoryScreen(window, renderer, player, player.Items, Control::Type::USE);
                         }
+                        else
+                        {
+                            message = "This adventure is over.";
+
+                            start_ticks = SDL_GetTicks();
+
+                            error = true;
+                        }
 
                         current = -1;
 
@@ -3061,6 +3077,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                         {
                             shopScreen(window, renderer, player, story);
                         }
+                        else
+                        {
+                            message = "This adventure is over.";
+
+                            start_ticks = SDL_GetTicks();
+
+                            error = true;
+                        }
 
                         current = -1;
 
@@ -3071,6 +3095,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                         if (story->Type == Story::Type::NORMAL && player.Life > 0)
                         {
                             tradeScreen(window, renderer, player, story->Trade.first, story->Trade.second);
+                        }
+                        else
+                        {
+                            message = "This adventure is over.";
+
+                            start_ticks = SDL_GetTicks();
+
+                            error = true;
                         }
 
                         current = -1;
