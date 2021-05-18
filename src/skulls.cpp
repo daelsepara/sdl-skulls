@@ -24,7 +24,7 @@
 bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player);
 bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player);
-bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> &Items, Control::Type mode);
+bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> &Items, Control::Type mode, int limit);
 bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skill::Base> Skills);
 bool loseSkills(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int limit);
 bool mainScreen(SDL_Window *window, SDL_Renderer *renderer);
@@ -761,7 +761,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                     }
                     else if (controls[current].Type == Control::Type::ACTION)
                     {
-                        inventoryScreen(window, renderer, player, player.Items, Control::Type::USE);
+                        inventoryScreen(window, renderer, player, player.Items, Control::Type::USE, 0);
 
                         current = -1;
 
@@ -928,7 +928,7 @@ std::vector<Button> createItemControls(std::vector<Item::Type> Items)
     return controls;
 }
 
-bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> &Items, Control::Type mode)
+bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> &Items, Control::Type mode, int limit)
 {
     if (Items.size() > 0)
     {
@@ -992,7 +992,9 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                 }
                 else if (mode == Control::Type::STEAL)
                 {
-                    putText(renderer, "You were robbed. Choose the item(s) that were stolen.", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
+                    std::string stolen_message = "You were robbed. DROP item(s) until only " + std::to_string(limit) + " item" + std::string(limit > 1 ? "s" : "") + " remains.";
+
+                    putText(renderer, stolen_message.c_str(), font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, boxh, startx, starty);
                 }
                 else
                 {
@@ -1038,18 +1040,18 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                         }
                         else if (mode == Control::Type::STEAL)
                         {
-                            Item::REMOVE(Items, item);
+                            if (Items.size() > limit)
+                            {
+                                Item::REMOVE(Items, item);
 
-                            Character::LOSE_ITEMS(player, {item});
+                                Character::LOSE_ITEMS(player, {item});
 
-                            controls.clear();
+                                controls.clear();
 
-                            controls = createItemControls(Items);
+                                controls = createItemControls(Items);
+                            }
                         }
                         else if (mode == Control::Type::USE)
-                        {
-                        }
-                        else
                         {
                         }
                     }
@@ -2195,7 +2197,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
                                 while (!Character::VERIFY_POSSESSIONS(player))
                                 {
-                                    inventoryScreen(window, renderer, player, player.Items, Control::Type::DROP);
+                                    inventoryScreen(window, renderer, player, player.Items, Control::Type::DROP, 0);
                                 }
 
                                 message = std::string(std::string(Item::Descriptions[item]) + " purchased.");
@@ -2229,7 +2231,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 }
                 else if (controls[current].Type == Control::Type::USE && !hold)
                 {
-                    inventoryScreen(window, renderer, player, player.Items, Control::Type::USE);
+                    inventoryScreen(window, renderer, player, player.Items, Control::Type::USE, 0);
 
                     current = -1;
 
@@ -2446,7 +2448,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                             while (!Character::VERIFY_POSSESSIONS(player))
                             {
-                                inventoryScreen(window, renderer, player, player.Items, Control::Type::DROP);
+                                inventoryScreen(window, renderer, player, player.Items, Control::Type::DROP, 0);
                             }
 
                             next = (Story::Base *)findStory(story->Choices[current].Destination);
@@ -2802,7 +2804,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 }
                 else if (controls[current].Type == Control::Type::USE && !hold)
                 {
-                    inventoryScreen(window, renderer, player, player.Items, Control::Type::USE);
+                    inventoryScreen(window, renderer, player, player.Items, Control::Type::USE, 0);
 
                     current = -1;
 
@@ -3050,7 +3052,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     {
                         if (story->Type == Story::Type::NORMAL && player.Life > 0)
                         {
-                            inventoryScreen(window, renderer, player, player.Items, Control::Type::USE);
+                            inventoryScreen(window, renderer, player, player.Items, Control::Type::USE, 0);
                         }
                         else
                         {
@@ -3141,13 +3143,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                                 {
                                     while (story->ToLose.size() > story->Limit)
                                     {
-                                        inventoryScreen(window, renderer, player, story->ToLose, Control::Type::STEAL);
+                                        inventoryScreen(window, renderer, player, story->ToLose, Control::Type::STEAL, story->Limit);
                                     }
                                 }
 
                                 while (!Character::VERIFY_POSSESSIONS(player))
                                 {
-                                    inventoryScreen(window, renderer, player, player.Items, Control::Type::DROP);
+                                    inventoryScreen(window, renderer, player, player.Items, Control::Type::DROP, 0);
                                 }
 
                                 current = -1;

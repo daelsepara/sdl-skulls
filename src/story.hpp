@@ -606,7 +606,7 @@ public:
         {
             Character::GAIN_LIFE(player, -1);
 
-            PreText += "\n\nYou LOST 1 Life Point.";
+            PreText += "\n\nYou LOSE 1 Life Point.";
         }
 
         if (player.Life > 0)
@@ -841,7 +841,7 @@ public:
 
             Character::LOSE_ITEMS(player, {Item::Type::WATERSKIN});
 
-            PreText += "\n\nYou LOST 2 Life Points. Your waterskin has been emptied.";
+            PreText += "\n\nYou LOSE 2 Life Points. Your waterskin has been emptied.";
 
             Choices.push_back(Choice::Base("Continue", 69));
         }
@@ -1469,7 +1469,7 @@ public:
             DAMAGE += 1;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -2021,7 +2021,7 @@ public:
             DAMAGE = -3;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -2172,7 +2172,7 @@ public:
             DAMAGE = -4;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -2931,7 +2931,7 @@ public:
     {
         ID = 99;
 
-        Text = "You can hear the sound of rapids up ahead, and the current carries the boat faster and faster towards them. Hurriedly tying the rope into a loop, you cast it towards the side of the tunnel and manage to lasso an outcrop of rock. The boat is jerked to a halt and sent drifting towards a side tunnel where the current is not so strong. You are unable to dislodge the rope but at least you are safe.\n\nA flicker of daylight shows at the end of the tunnel. You can smell the reek of stagnant marshland in the air. Paddling onwards, you come out into the open under an overcast sky the colour of dead skin. The river here is no more than a muddy trickle winding through sickly grey marshland. A dreary landscape of sour white clay and colourless rushes stretches far off into the distance.\n\nYou put in a rotting wooden jetty and tether the boat.";
+        Text = "You can hear the sound of rapids up ahead, and the current carries the boat faster and faster towards them. Hurriedly tying the ROPE into a loop, you cast it towards the side of the tunnel and manage to lasso an outcrop of rock. The boat is jerked to a halt and sent drifting towards a side tunnel where the current is not so strong. You are unable to dislodge the ROPE but at least you are safe.\n\nA flicker of daylight shows at the end of the tunnel. You can smell the reek of stagnant marshland in the air. Paddling onwards, you come out into the open under an overcast sky the colour of dead skin. The river here is no more than a muddy trickle winding through sickly grey marshland. A dreary landscape of sour white clay and colourless rushes stretches far off into the distance.\n\nYou put in a rotting wooden jetty and tether the boat.";
 
         Image = "images/filler1.png";
 
@@ -3040,7 +3040,7 @@ public:
             DAMAGE = -5;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -3241,7 +3241,7 @@ public:
             DAMAGE = -1;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -3408,7 +3408,7 @@ public:
             DAMAGE = -2;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -4234,7 +4234,7 @@ public:
             DAMAGE += 1;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -4616,7 +4616,7 @@ public:
             ARMED = true;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -4715,7 +4715,7 @@ public:
             DAMAGE = -3;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -4792,7 +4792,7 @@ public:
             PreText += "[WILDERNESS LORE] ";
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -5082,7 +5082,7 @@ public:
             DAMAGE = -2;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -5255,7 +5255,7 @@ public:
         }
         else
         {
-            PreText += "\n\nYou LOST 2 Life Points.";
+            PreText += "\n\nYou LOSE 2 Life Points.";
 
             Character::GAIN_LIFE(player, -2);
         }
@@ -5514,7 +5514,7 @@ public:
             DAMAGE = -3;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -5566,7 +5566,7 @@ public:
             DAMAGE = -3;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -5707,7 +5707,7 @@ public:
             PreText += "[WILDERNESS LORE] ";
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -5947,7 +5947,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        PreText = "Your sword lashes out, clattering loudly against the lord's. The crowd stares in excitement and horror as the two of you circle warily. You see the lord's wife draw her children protectively against her skirts. You lunge in close. Your opponent's sword comes up in a desperate parry that breaks splinters off its obsidian edge. He grunts as a red weal appears across his arm, but he responds with a clubbing upswing of the sword hilt that leaves you stunned.\n\nThe fight goes on, carrying you to and fro across quay. At last you score a mighty blow that slashes his hand knocking his sword into the water. He gives a snarl which is as much annoyance as pain, then pulls his family off into the crowd.\n\nYou are bleeding from several deep cuts.\n\nYou LOST 2 Life Points.";
+        PreText = "Your sword lashes out, clattering loudly against the lord's. The crowd stares in excitement and horror as the two of you circle warily. You see the lord's wife draw her children protectively against her skirts. You lunge in close. Your opponent's sword comes up in a desperate parry that breaks splinters off its obsidian edge. He grunts as a red weal appears across his arm, but he responds with a clubbing upswing of the sword hilt that leaves you stunned.\n\nThe fight goes on, carrying you to and fro across quay. At last you score a mighty blow that slashes his hand knocking his sword into the water. He gives a snarl which is as much annoyance as pain, then pulls his family off into the crowd.\n\nYou are bleeding from several deep cuts.\n\nYou LOSE 2 Life Points.";
 
         Character::GAIN_LIFE(player, -2);
 
@@ -6156,7 +6156,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        PreText = "With a wave of your wand and a muttered incantation, you animate the rope. Guiding it like a snake charmer, you impel it to rise up to the ledge above.";
+        PreText = "With a wave of your wand and a muttered incantation, you animate the ROPE. Guiding it like a snake charmer, you impel it to rise up to the ledge above.";
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
         {
@@ -6165,7 +6165,7 @@ public:
             Character::LOSE_ITEMS(player, {Item::Type::JADE_BEAD});
         }
 
-        PreText += "A tug on the rope confirms that it is taut. You climb up to the ledge without any trouble. The doors of the tombs are massive slabs of stone, each with a bas-relief carving of the occupant. At first glance they look impregnable, but then you notice that there is one slab which has a crack running right across it. Even better, you discover a HAMMER lying on the ledge. You estimate that it would be about an hour's hard work to smash a way into the tomb.";
+        PreText += "A tug on the ROPE confirms that it is taut. You climb up to the ledge without any trouble. The doors of the tombs are massive slabs of stone, each with a bas-relief carving of the occupant. At first glance they look impregnable, but then you notice that there is one slab which has a crack running right across it. Even better, you discover a HAMMER lying on the ledge. You estimate that it would be about an hour's hard work to smash a way into the tomb.";
 
         Choices.clear();
 
@@ -6549,7 +6549,7 @@ public:
             PreText += "[CHARMS] ";
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -6629,7 +6629,7 @@ public:
             DAMAGE = -2;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Point(s).";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Point(s).";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -6982,7 +6982,7 @@ public:
         }
         else
         {
-            PreText += "You LOST 2 Life Points.";
+            PreText += "You LOSE 2 Life Points.";
 
             Character::GAIN_LIFE(player, -2);
         }
@@ -7101,7 +7101,7 @@ public:
             PreText += "[WILDERNESS LORE] ";
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -7430,6 +7430,26 @@ public:
     }
 };
 
+class Story261 : public Story::Base
+{
+public:
+    Story261()
+    {
+        ID = 261;
+
+        Text = "Just when it seems certain that the canoe will get stuck in the passage, immuring you below the earth for ever, you realize that the gap is widening. The canoe drifts on into a vast tunnel through which runs a wide underground river. Misty blue light sparkles on the water and trickles across the glistening rock. It appears to emanate from veins of glassy stone which you can see running through the walls of the tunnel.\n\nThe demons manoeuvre their craft between a forest of stalagmites which protrude from the water like thin fangs. Once on the open river they begin to ply their oars with vigour, propelling the canoe amid whoops of crazed glee.\n\nYou gaze in awe at the wondrous sight surrounding you. The tunnel is far wider than any stream to be found in the dry countryside around Koba, with walls rising almost vertically to a shadow-filled roof a hundred metres above your head. The air here is hot and musty and has a vile taste that makes you cough, but other than that you could almost imagine you are being steered along a canyon in the open air.\n\nRounding a bend in the river, you notice a series of stone doors set off a ledge high up in the right-hand wall of the tunnel. \"The cave tombs of the first ancestors,\" says the demon in the back of the boat when he sees where you are looking.\n\n\"I expect you'll want to take a closer look,\" says the other demon and, without waiting for a reply, they row over to the side of the river and steady the canoe below the ledge.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("[AGILITY] Climb up to the tombs", 190, Skill::Type::AGILITY));
+        Choices.push_back(Choice::Base("Use magic to get up there (SPELLS and ROPE)", 213, Skill::Type::SPELLS, Item::Type::ROPE));
+        Choices.push_back(Choice::Base("Do not to explore the tombs", 236));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story262 : public Story::Base
 {
 public:
@@ -7442,7 +7462,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Try one of your devious schemes", 308, Skill::Type::CUNNING));
+        Choices.push_back(Choice::Base("[CUNNING] Try one of your devious schemes", 308, Skill::Type::CUNNING));
         Choices.push_back(Choice::Base("Pay for lodging if you have some money", 101, Choice::Type::MONEY, 1));
         Choices.push_back(Choice::Base("Continue on westwards", 8));
         Choices.push_back(Choice::Base("Follow the river northwards", 30));
@@ -7550,7 +7570,7 @@ public:
             DAMAGE = -2;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -7558,6 +7578,279 @@ public:
     }
 
     int Continue(Character::Base &player) { return 288; }
+};
+
+class Story266 : public Story::Base
+{
+public:
+    Story266()
+    {
+        ID = 266;
+
+        Text = "As you walk, you pass through bands of bright golden light interspersed by shadow. The flickering effect leaves you dazed and disoriented, so you are slow to react when something heavy slams into your back, forcing you down. You hear a deep resonant growl of a jaguar. Despite your fear, you struggle to rise. Hands -- or paws? -- fumble at your pack. You get to your feet in time to catch a fleeting glimpse of a large feline shape bounding off into the gloom.\n\nYou examine your possessions and find you have lost everything except for one item which you managed to hold on to. You have also been robbed of all your money.\n\nAngrily you retrace your steps to the crossroads and select a different route.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Follow the red path", 196));
+        Choices.push_back(Choice::Base("Follow the white path", 243));
+        Choices.push_back(Choice::Base("Follow the black path", 219));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        ToLose.clear();
+
+        if (player.Items.size() > 1)
+        {
+            for (auto i = 0; i < player.Items.size(); i++)
+            {
+                ToLose.push_back(player.Items[i]);
+            }
+
+            Limit = 1;
+        }
+        else
+        {
+            Limit = 0;
+        }
+
+        player.LostMoney += player.Money;
+
+        player.Money = 0;
+    }
+};
+
+class Story267 : public Story::Base
+{
+public:
+    Story267()
+    {
+        ID = 267;
+
+        Text = "According to legend, the hero-twins called Forethought and Afterthought once travelled west across the great desert in search of the tunnel leading to the underworld. There they had to pass these four sentinels. They addressed each with due deference, calling the first Lord Skull, the second Lord Blood, the third Thunderbolt Laughter, and the fourth Grandfather of Darkness. Thus they finally penetrated of the underworld.\n\nMake your you know the detail of the legend.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 313; }
+};
+
+class Story268 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story268()
+    {
+        ID = 268;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The monster dips one of its necks close to the ground and swings it around behind your legs while another lunges towards your face.\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            PreText += "You jump back over the neck that is trying to trip you while simultaneously ducking the attack of the other.";
+        }
+        else
+        {
+            Character::GAIN_LIFE(player, -2);
+
+            PreText += "You caught a staggering blow and it is only by falling backwards that you avoid having your head torn off.\n\nYou LOSE 1 Life Point.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            return 337;
+        }
+        else
+        {
+            return 222;
+        }
+    }
+};
+
+class Story269 : public Story::Base
+{
+public:
+    Story269()
+    {
+        ID = 269;
+
+        Text = "Stooping Eagle and his servant are led off across the courtyard towards a group of buildings. \"They will be our guests also, but in another part of the palace from you,\" says the chief of the courtiers, smiling to display a sharp set of teeth.\n\n\"Do not worry, friend,\" Stooping Eagle calls back to you, \"we have only to persevere and our swords shall drink the fiend's blood eventually!\"\n\nYou would like to resists the courtiers, but there too many to fight in your weakened state. \"After five nights I will be taken to Necklace of Skulls?\" you ask. It occurs to you that five nights' rest will leave you all the fitter to deal with the wizard.\n\nThe chief courtier dips his head. \"Exactly. Our master lives in the inner precinct of the palace.\" He gestures with a thin hairy hand towards a pyramid that towers over the inner courtyard. The black colouring of the pyramid makes it look like a crack of the night sky that has lingered on after sunrise.\n\n\"Take me to my quarters, then,\" you tell him.\n\nThe assembled courtiers give a high howling laugh at this. \"Not so fast,\" titters their chief when he has recovered himself. \"First you have to choose your route to our compound.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 315; }
+};
+
+class Story270 : public Story::Base
+{
+public:
+    Story270()
+    {
+        ID = 270;
+
+        Text = "The albino hound leaps forward with a savage bark as it sees you approach. Suddenly jumping back, you lure it out of the passage and into the bright sunshine, where its weak eyes are blinded by the glare. Making sure to keep up a stream of taunts so that it can hear you, you double around and race back towards the unguarded tunnel.\n\nThe hound lopes after you, furiously intent on rending your flesh in its powerful jaws. Dazzled, it does not see you stop on one side of the tunnel entrance. You toss a pebble into the open tunnel and the hound, hearing this, bounds off along it thinking you are still in full flight.\n\nThe arch of the tunnel shudders and gives way, burying the hound under a mass of falling masonry. Once the dust clears there is no sign of it. You go along to the passage previously guarded by the hound and make your way through to the inner courtyard, where you find the courtiers already waiting for you.\n\n\"Clever,\" remarks the chief courtier. \"You'll need more tricks like that if you're going to get through the real tests, though.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story271 : public Story::Base
+{
+public:
+    Story271()
+    {
+        ID = 271;
+
+        Text = "You scrape some clay out of the walls and spit into it, smearing it into a grey-white mixture which you apply to your eyelids. Once that has dried, you collect a little soot from the candle-flame and dab a black spot into the middle of each eyelid. You have no mirror in which to check the finished result, but it ought to now look as though your eyes are open even when you in fact have them screwed tight shut.\n\nSettling down with your back to the wall, you pull your cloak across in front of you like blanket. After a few minutes, a gust of cool dry air blows out of the candle and you are left in darkness,. As if on cue, the ghosts come seeping up from their graves under the floor. You see flickers of luminosity sketching the outlines of skeletal bodies and grotesque dead faces against the darkness. As they draw near, you close your eyes.\n\n\"Ah, we have a visitor among us,\" whispers a voice like wind sighing in a well. \"Watch, brothers, as I unleash my most terrifying visage.\"\n\nThere is a revolting wet sound a a blaze of grey-blue light that you see even through your closed eyelids. After a long pause, another ghostly voice says: \"That didn't work. Let me try: I'll send the mortal screaming to the rafters.\"\n\nThe ensuing sound is suggestive of maggots, shrieking torments and fluttering dead things. Fortunately you do not see the manifestation that caused it. As far as the ghosts can tell, you are looking on at their best efforts to haunt you without batting an eyelid.\n\n\"Aren't you getting the least bit scared, mortal?\" asks a voice like a death-rattle.\n\n\"No,\" you say in feigned innocence. \"I'm quite enjoying the show, actually. Do go on.\"\n\nHaving been fooled into thinking you aren't frightened by them, the ghosts lose interest and return grumbling to their graves. Even so, you find it difficult to get any sleep with the thought of their corpses lying just under the mounds of earth. At dawn you emerge gratefully from the House of Gloom and retrieve your pack of belongings, eager for the final stage of your quest to commence.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 40; }
+};
+
+class Story272 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story272()
+    {
+        ID = 272;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The onrushing figure looks just like a black rip in the air and makes no sound as he runs, but the impact when he hits you is like having a tree-branch swung into your midriff.";
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            PreText += "[AGILITY] You deflect the blow and was not wounded.";
+        }
+        else
+        {
+            Character::GAIN_LIFE(player, -2);
+
+            PreText += "You LOSE 2 Life Points.";
+        }
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nWhile you stagger back recovering your balance, your opponent sends the ball sailing against the high-score zone.";
+
+            Character::SCORE(player, player.Cross, 2);
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 66; }
+};
+
+class Story273 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story273()
+    {
+        ID = 273;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "As you race along the arena and up the steps of the pyramid, Necklace of Skulls conjures down a storm of blazing meteors.";
+
+        PreText += "\n\n";
+
+        auto DAMAGE = -3;
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            DAMAGE = -1;
+
+            PreText += "[AGILITY] ";
+        }
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Point(s).";
+
+        if (player.Life > 0)
+        {
+            if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+            {
+                PreText += "\n\n[AGILITY] You move too fast for him.";
+            }
+
+            PreText += "\n\nYou close with your foe for the final battle.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::VENUS))
+        {
+            return 240;
+        }
+        else
+        {
+            return 296;
+        }
+    }
 };
 
 class Story274 : public Story::Base
@@ -7598,6 +7891,30 @@ public:
 
         Controls = ShopControls();
     }
+};
+
+class Story276 : public Story::Base
+{
+public:
+    Story276()
+    {
+        ID = 276;
+
+        Text = "You get water from the bush by biting the tips off the hard sharp-tipped leaves and sucking the moisture out of them. It is barely enough to slake your thirst. You head on a cross the barren and blistered rocks, knowing that your ordeal will continue for many gruelling days yet.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, -2);
+    }
+
+    int Continue(Character::Base &player) { return 152; }
 };
 
 class Story277 : public Story::Base
@@ -7989,7 +8306,7 @@ public:
             DAMAGE = -5;
         }
 
-        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -8353,7 +8670,7 @@ public:
     {
         ID = 346;
 
-        Text = "The high priest looks disappointed, but seems to understand when you explain that you have barely enough to purchase the supplies you will need for the journey.\n\n\"A coil of rope might not be a bad idea,\" he suggests. \"I've often found the rope to come in handy. Oh, and a decent sword of course -- assuming you know how to use one.\" He juggles the heavy rubber ball he's carrying from one hand to the other. \"What about a practice session in the arena before you head off?\"";
+        Text = "The high priest looks disappointed, but seems to understand when you explain that you have barely enough to purchase the supplies you will need for the journey.\n\n\"A coil of ROPE might not be a bad idea,\" he suggests. \"I've often found the ROPE to come in handy. Oh, and a decent SWORD of course -- assuming you know how to use one.\" He juggles the heavy rubber ball he's carrying from one hand to the other. \"What about a practice session in the arena before you head off?\"";
 
         Image = "images/filler1.png";
 
@@ -8872,7 +9189,7 @@ public:
             PreText += "The ground comes up to hit you with a crushing force.";
         }
 
-        PreText += "\n\nYou LOST " + std::to_string(-DAMAGE) + " Life Points.";
+        PreText += "\n\nYou LOSE " + std::to_string(-DAMAGE) + " Life Points.";
 
         Character::GAIN_LIFE(player, DAMAGE);
 
@@ -9515,12 +9832,22 @@ auto story257 = Story257();
 auto story258 = Story258();
 auto story259 = Story259();
 auto story260 = Story260();
+auto story261 = Story261();
 auto story262 = Story262();
 auto story263 = Story263();
 auto story264 = Story264();
 auto story265 = Story265();
+auto story266 = Story266();
+auto story267 = Story267();
+auto story268 = Story268();
+auto story269 = Story269();
+auto story270 = Story270();
+auto story271 = Story271();
+auto story272 = Story272();
+auto story273 = Story273();
 auto story274 = Story274();
 auto story275 = Story275();
+auto story276 = Story276();
 auto story277 = Story277();
 auto story278 = Story278();
 auto story279 = Story279();
@@ -9619,8 +9946,8 @@ void InitializeStories()
         &story230, &story231, &story232, &story233, &story234, &story235, &story236, &story237, &story238, &story239,
         &story240, &story241, &story242, &story243, &story244, &story245, &story246, &story247, &story248, &story249,
         &story250, &story251, &story252, &story253, &story254, &story255, &story256, &story257, &story258, &story259,
-        &story260, &story262, &story263, &story264, &story265,
-        &story274, &story275, &story277, &story278, &story279,
+        &story260, &story261, &story262, &story263, &story264, &story265, &story266, &story267, &story268, &story269,
+        &story270, &story271, &story272, &story273, &story274, &story275, &story276, &story277, &story278, &story279,
         &story280, &story281, &story285, &story288,
         &story297, &story298,
         &story300, &story301, &story302, &story304,
