@@ -3282,7 +3282,7 @@ public:
 
             if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
             {
-                PreText += "You get possession of the ball and send it bouncing against the end zone, scoring a point.";
+                PreText += "[UNARMED COMBAT] You get possession of the ball and send it bouncing against the end zone, scoring a point.";
 
                 Character::SCORE(player, player.Ticks, 1);
             }
@@ -4858,6 +4858,39 @@ public:
     int Continue(Character::Base &player) { return 263; }
 };
 
+class Story171 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story171()
+    {
+        ID = 171;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You lower yourself off the causeway. Standing waist-deep in the foul mass of maggots and murky slime gives you a strong urge to vomit. The monster is left fairly hopping with rage, shuffling from one stumpy leg to another as it watches you wade across in the direction of the jetty. \"Cowardly mortal!\" it roars. \"Afraid to face me, eh?\"\n\nWho wouldn't be afraid, with a face like that? In comparison, the maggots are unpleasant but not dangerous. You arrive at the jetty and pull yourself out of the mire, plucking maggots off the backpack which contains your possessions.";
+
+        if (Character::VERIFY_ITEMS(player, {Item::Type::HAUNCH_OF_VENISON}))
+        {
+            PreText += "\n\nThe maggots CONSUMED the HAUNCH OF VENISON.";
+
+            Character::LOSE_ITEMS(player, {Item::Type::HAUNCH_OF_VENISON});
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 20; }
+};
+
 class Story172 : public Story::Base
 {
 public:
@@ -4865,7 +4898,7 @@ public:
     {
         ID = 172;
 
-        Text = "\"Nightcrawlers are disembodied heads that live in calabash trees and descend to glide through the air in the dead of night,\" the fenman tells you. \"They find their way into houses through the roof, and can sometimes be heard crunching the charcoal beside the hearth. I myself once woke after a night of disturbing dreams to find my stock of firewood had mysteriously vanished.\"\n\n\"These nightcrawlers are mischievous creatures, then,\" you reply.\n\nHe gives a snort of grim laughter. \"I prefer to think of them as steeped in evil, in view of the fact that they also smother babies.\"\n\n\"I shall be sure to keep a weather eye out for flying head,\" you assure him.\n\n\"Oh, they are more cunning than that! A nightcrawler will sometimes latch onto a human neck, sinking tendrils into the host in the manner of a strangler fig taking root in another tree. In that guise, they may use trickery and guile to entice you off the road into the swamps.\"\n\n\"Presumably the presence of two heads on a body is a sure giveaway, though?\" you say.\n\nHe shrugs as though this had never occurred to him. \"Salt is the only remedy,\" he maintains. \"Nightcrawlers are repelled by salt. Farewell to you, then.\" He strolls off towards his house and you are left to mull over his advise as you continue your journey on foot.";
+        Text = "\"Nightcrawlers are disembodied heads that live in calabash trees and descend to glide through the air in the dead of night,\" the fenman tells you. \"They find their way into houses through the roof, and can sometimes be heard crunching the charcoal beside the hearth. I myself once woke after a night of disturbing dreams to find my stock of firewood had mysteriously vanished.\"\n\n\"These nightcrawlers are mischievous creatures, then,\" you reply.\n\nHe gives a snort of grim laughter. \"I prefer to think of them as steeped in evil, in view of the fact that they also smother babies.\"\n\n\"I shall be sure to keep a weather eye out for flying head,\" you assure him.\n\n\"Oh, they are more cunning than that! A nightcrawler will sometimes latch onto a human neck, sinking tendrils into the host in the manner of a strangler fig taking root in another tree. In that guise, they may use trickery and guile to entice you off the road into the swamps.\"\n\n\"Presumably the presence of two heads on a body is a sure giveaway, though?\" you say.\n\nHe shrugs as though this had never occurred to him. \"Salt is the only remedy,\" he maintains. \"Nightcrawlers are repelled by salt. Farewell to you, then.\" He strolls off towards his house and you are left to mull over his advise as you continue your journey on foot.\n\nYou gained the codeword CALABASH.";
 
         Image = "images/filler1.png";
 
@@ -4880,6 +4913,280 @@ public:
     }
 
     int Continue(Character::Base &player) { return 264; }
+};
+
+class Story173 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story173()
+    {
+        ID = 173;
+
+        Image = "images/filler1.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        PreText = "You reach the circle of light and plunge through, relieved to discover that you have emerged into open air. It is cold here, but nothing like the deadly cold of the lake.\n\nYou wring out your clothes and look around you. The water of the lake is suspended eerily about two metres above your head, forming a roof over this strange world that extends far off into the distance. On the horizon hangs a glaring ball of white light which sends its low rays slanting across the land. The light shines straight into your eyes giving you a headache. You raise one hand to shield yourself from the glare.\n\nNow you notice that you are standing at a crossroads.";
+
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
+        {
+            PreText += "\n\nYou remember that you were advised to keep the JADE_BEAD under your tongue until you reached a crossroads. You can take it out of your mouth, and choose to discard it altogether.";
+
+            Choices.push_back(Choice::Base("Discard the JADE BEAD first", 173, Choice::Type::LOSE_ITEM, Item::Type::JADE_BEAD));
+        }
+
+        Choices.push_back(Choice::Base(Skill::FOLKLORE.Name, 289, Skill::Type::FOLKLORE));
+        Choices.push_back(Choice::Base(Skill::SPELLS.Name, 312, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("Take the white road", 243));
+        Choices.push_back(Choice::Base("Take the red road", 196));
+        Choices.push_back(Choice::Base("Take the black road", 219));
+        Choices.push_back(Choice::Base("Take the yellow road", 266));
+
+        Text = PreText.c_str();
+    }
+};
+
+class Story174 : public Story::Base
+{
+public:
+    Story174()
+    {
+        ID = 174;
+
+        Text = "On a impulse you drop the JADE BEAD into the well. As it falls into the water, it emits a gleam of gold-green light for an instant and then dissolves.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Drink from the well", 197));
+        Choices.push_back(Choice::Base("Leave it alone", 180));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::JADE_BEAD});
+    }
+};
+
+class Story175 : public Story::Base
+{
+public:
+    Story175()
+    {
+        ID = 175;
+
+        Text = "You rush down the side of the dune and past the warrior, ignoring his gasp of surprise. You are eager to have the glory of killing this creature.\n\nYou gained the codeword ANGEL.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::ANGEL});
+    }
+
+    int Continue(Character::Base &player) { return 222; }
+};
+
+class Story176 : public Story::Base
+{
+public:
+    Story176()
+    {
+        ID = 176;
+
+        Text = "With the servant, you trek on until the stars are snuffed out by a limpid haze that heralds the approach of dawn. As the heat of the day grows stifling, you find shelter beneath a sand-blasted spar of rock where you rest until nightfall. Then you gather your belongings and set out again. The moon appears over the horizon and casts its colourless beams, lighting your way.\n\n\"Am I now to serve you?\" asks the servant -- almost the first words you've exchanged since killing the hydra.\n\n\"Consider yourself a free man,\" you tell him indifferently. \"Since we may be going to our deaths, it's only fitting that in your last days you should taste the benefits of freedom.\"\n\nHe casts a woebegone look at his sagging WATERSKIN. \"If only you'd mention that earlier, I'd have retrieved my late master's WATERSKIN. It seemed disrespectful at the time.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::WATERSKIN}))
+        {
+            return 220;
+        }
+        else
+        {
+            return 199;
+        }
+    }
+};
+
+class Story177 : public Story::Base
+{
+public:
+    Story177()
+    {
+        ID = 177;
+
+        Text = "A prayer springs to mind that seems appropriate now. As you step cautiously forward along the passage, you touch your amulet and recite: \"Let me not suffer misfortune, nor fall among deceivers; let me not suffer hurt upon the road, nor be impeded by obstacles to back or front; let me not suffer disgrace in my journey, nor be deterred by qualms. Grant me all this, O Lord of the Skies, by your divine grace.\"\n\nYou reach the end of the passage. The courtiers are crouching there in the shade of the wall. When they see you emerge unscathed they leap up with expressions of high dudgeon. The chief courtier recovers quickly from the surprise. He puts on an ingratiating smile as he slips his arm around your shoulder. \"Well, you got through that all right,\" he says. \"There's more to you than meets the eye.\"\n\nOne of the other courtiers sticks his head into the passage to inspect the vaulting. It immediately collapses. The courtier throws up his arms and has just time to give a startled yelp before he is buried under tons of falling rubble.\n\nA cloud of dust gusts out of the passage. Once it has cleared the passage is entirely blocked. There is no sign of their unlucky courtier, except for a trickle of blood that seeps from under the debris and soaks into the dust at your feet.\n\n\"Courtiers are getting thin on the ground these days,\" you say with a mocking smile.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story178 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story178()
+    {
+        ID = 178;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You feel yourself getting drowsy as the chill seeps into your bones. If you fall asleep here you will certainly perish, so you force yourself to pace up and down the long hall. Ice crunches underfoot as you walk, and your limbs are soon blue with cold.";
+
+        auto DAMAGE = -3;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+        {
+            PreText += "[WILDERNESS LORE] ";
+
+            DAMAGE = -2;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+            {
+                PreText += "\n\nYour natural resilience helps you resist the cold.";
+            }
+
+            PreText += "\n\nIt can only be raw determination that sustains you. When the courtiers come to open the door, you note with satisfaction that you have only one more ordeal to face. Then you will be taken to meet the one whom you hate more than any in the world, and yet have never seen. The sorcerer Necklace of Skulls.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 202; }
+};
+
+class Story179 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story179()
+    {
+        ID = 179;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The ball bounces towards your partner, who slams it across the arena in your direction.";
+
+        PreText += "\n\n";
+
+        auto score = 1;
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            PreText += "[AGILITY] You bat it up into a high-scoring zone.";
+
+            score = 2;
+        }
+        else
+        {
+            PreText += "You go for a safer shot but you still get one point.";
+        }
+
+        Character::SCORE(player, player.Ticks, score);
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 226; }
+};
+
+class Story180 : public Story::Base
+{
+public:
+    Story180()
+    {
+        ID = 180;
+
+        Text = "You walk on until you reach the tree. The figures seated there are of macabre appearance: living skeletons whose bones are green with algae. Roots and soil clump their joints, and you can see snakes burrowing between the bars of their ribcages One raises a grinning skull-face to greet you. As it does, a butterfly opens wings of scarlet and gold across its emerald brow. If you saw such a sight in one of the murals on a temple wall, you might be moved to admire its uncanny beauty. Faced with such a thing in stark reality, however, you find yourself jumping back in fright. You hurry past without acknowledging the skeleton's welcoming gestures.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 200; }
+};
+
+class Story181 : public Story::Base
+{
+public:
+    Story181()
+    {
+        ID = 181;
+
+        Text = "You walk on until you reach the tree. The figures seated there are of macabre appearance: living skeletons whose bones are green with algae. Roots and soil clump their joints, and you can see snakes burrowing between the bars of their ribcages One raises a grinning skull-face to greet you. As it does, a butterfly opens wings of scarlet and gold across its emerald brow. If you saw such a sight in one of the murals on a temple wall, you might be moved to admire its uncanny beauty. Faced with such a thing in stark reality, however, you find yourself jumping back in fright. You hurry past without acknowledging the skeleton's welcoming gestures.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::VENUS))
+        {
+            Character::REMOVE_CODEWORD(player, Codeword::Type::VENUS);
+        }
+    }
+
+    int Continue(Character::Base &player) { return 19; }
 };
 
 class Story182 : public Story::Base
@@ -7885,7 +8192,17 @@ auto story167 = Story167();
 auto story168 = Story168();
 auto story169 = Story169();
 auto story170 = Story170();
+auto story171 = Story171();
 auto story172 = Story172();
+auto story173 = Story173();
+auto story174 = Story174();
+auto story175 = Story175();
+auto story176 = Story176();
+auto story177 = Story177();
+auto story178 = Story178();
+auto story179 = Story179();
+auto story180 = Story180();
+auto story181 = Story181();
 auto story182 = Story182();
 auto story183 = Story183();
 auto story184 = Story184();
@@ -8017,8 +8334,8 @@ void InitializeStories()
         &story140, &story141, &story142, &story143, &story144, &story145, &story146, &story147, &story148, &story149,
         &story150, &story151, &story152, &story153, &story154, &story155, &story156, &story157, &story158, &story159,
         &story160, &story161, &story162, &story163, &story164, &story165, &story166, &story167, &story168, &story169,
-        &story170, &story172,
-        &story182, &story183, &story184, &story185, &story188, &story189, &story186, &story187,
+        &story170, &story171, &story172, &story173, &story174, &story175, &story176, &story177, &story178, &story179,
+        &story180, &story181, &story182, &story183, &story184, &story185, &story186, &story187, &story188, &story189,
         &story192, &story193, &story195,
         &story205, &story206, &story207, &story208, &story209,
         &story210, &story211, &story212, &story215, &story216, &story218,
