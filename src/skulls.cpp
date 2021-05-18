@@ -3027,7 +3027,10 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                     else if (story->Controls[current].Type == Control::Type::CHARACTER && !hold)
                     {
-                        characterScreen(window, renderer, player);
+                        if (story->Type == Story::Type::NORMAL && player.Life > 0)
+                        {
+                            characterScreen(window, renderer, player);
+                        }
 
                         current = -1;
 
