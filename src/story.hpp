@@ -8025,6 +8025,72 @@ public:
     }
 };
 
+class Story282 : public Story::Base
+{
+public:
+    Story282()
+    {
+        ID = 282;
+
+        Text = "Your talent for stealth seems heightened in this otherworldly realm. You creep forward as noiselessly as a shadow. Gruesome slime coats the rough stone walls and the smell is almost unbearable, but you reach the chamber and stoop to inspect the item that caught your eye. It is a bowl of polished stone bearing the insignia of the Creator God, who gave life to all things, and you need no special senses to recognize the aura of divine magic. This can only be the fabled Chalice of Life in which the gods mixed the brew that spawned mankind.\n\nYou slip quietly back to the boat and gesture for the demons to convey you on.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_ITEMS(player, {Item::Type::CHALICE_OF_LIFE});
+    }
+
+    int Continue(Character::Base &player) { return 258; }
+};
+
+class Story283 : public Story::Base
+{
+public:
+    Story283()
+    {
+        ID = 283;
+
+        Text = "Circular marks are scored into the stone of the ledge. To anyone else they would mean nothing, but you realize that the slabs must be built to swivel on a central axis. Searching, your deft fingers soon find a concealed catch which unlocks the slab. With a grinding noise it revolves to reveal the darkened interior of the tomb.\n\nSomething moves within it. At first a sense of dread stirs the hairs on the nape of your neck, but it is no horrific walking corpse that emerges from the hole -- just a snake. You are almost relieved; at least this is a natural foe, although a deadly one. But then you see it is no ordinary snake. Its hood is enlarged to form translucent oval wings which flap slowly, carrying it on the warm updraught with a sinister gliding motion. Its iridescent scales make it resemble an obsidian idol, but there is no mistaking the living menace in those beady eyes and thin flickering tongue.";
+
+        Image = "images/flying-snake.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("[SWORDPLAY] Try closing with the snake to fight it", 375, Choice::Type::SKILL_ANY, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base(Skill::UNARMED_COMBAT.Name, 375, Skill::Type::UNARMED_COMBAT));
+        Choices.push_back(Choice::Base("[TARGETING] Shoot it", 352, Skill::Type::TARGETING));
+        Choices.push_back(Choice::Base("[CHARMS] Cast a protective enchantment", 394, Skill::Type::CHARMS));
+        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 413, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Give up any hope of looting the tomb and climb back down to the canoe while you still can", 167));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story284 : public Story::Base
+{
+public:
+    Story284()
+    {
+        ID = 284;
+
+        Text = "You bring some water back in your cupped hands. It is green with pond scum and smells like bile, so you are not surprised when the little fellow turns his long nose up at it. But then he clasps your arm and explains in a weak voice. \"It's not water I need, friend, but nice warm blood. Will you let me have drop or two of yours? If not, I fear I'm doomed to end my days here in this cold ditch.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Let him drink some of your blood", 395));
+        Choices.push_back(Choice::Base("Shake free of his grip and continue on your way", 307));
+
+        Controls = StandardControls();
+    }
+};
+
 class Story285 : public Story::Base
 {
 public:
@@ -8050,6 +8116,53 @@ public:
     }
 };
 
+class Story286 : public Story::Base
+{
+public:
+    Story286()
+    {
+        ID = 286;
+
+        Text = "This is the so-called Death Canyon which prevents spirits returning form the deathlands by means of the underworld. The story goes that even the hero Jewelled Bird nearly fell when he tried jumping between the spires of rock, so you guess that such a feat would demand great agility. Dredging deeper into your memory you recall a legend of the dragon Kawak, a serpentine monster with a head at each end who is said to span this canyon, lying with one head on each side. The hero-twins Forethought and Afterthought returned from the Deathlands by walking into the open jaws of the dragon and making their way through its bowels. It goes without saying that such a route might not be so easy in reality as it was for such heroes of long ago. Kawak might just devour you!";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Search for the two-headed dragon", 309));
+        Choices.push_back(Choice::Base("Use a BLOWGUN to get across", 170, Item::Type::BLOWGUN));
+        Choices.push_back(Choice::Base("Try jumping between the spires of rock", 147));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story287 : public Story::Base
+{
+public:
+    Story287()
+    {
+        ID = 287;
+
+        Text = "All signs are that the woman is a victim of one of the parasitical monsters that people call nightcrawlers. These are disembodied heads that latch onto a human host, sinking tendrils deep into the flesh that allow them to control their victim like a puppet. By day they prefer to shield themselves from the sun, which no doubt explains the overturned pitcher on the woman's shoulder. After nightfall they detach from the host and go gliding about in search of blood to feed on.\n\nYou know that salt prevents the night-crawler from fixing onto its prey.";
+
+        Image = "images/filler1.png";
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::PARCEL_OF_SALT}))
+        {
+            return 34;
+        }
+        else
+        {
+            return 57;
+        }
+    }
+};
+
 class Story288 : public Story::Base
 {
 public:
@@ -8067,6 +8180,297 @@ public:
     }
 
     int Continue(Character::Base &player) { return 417; }
+};
+
+class Story289 : public Story::Base
+{
+public:
+    Story289()
+    {
+        ID = 289;
+
+        Text = "In the mythology of your people, each of the cardinal points is associate with a colour. White is the colour of the north, the colour of mankind's ancient ancestors, a palace of lost memories. Red is the east, denoting birth and a return to fresh beginnings. Yellow is the southern route of misfortune and loss. And black is the west, where the Deathlands lie. That is the route you must follow.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 219; }
+};
+
+class Story290 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story290()
+    {
+        ID = 290;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You press yourself into the angle where the floor meets the wall and slither forward like a snake. You pass right under the alcove where the first sentinel sits, but he never notices a thing. As you go past the second, he sniff the air suspiciously but says nothing. Beneath the alcove of the third, you accidentally scuff the stone flagging; the sentinel pricks up his ears and looks left and right along the passage, but he does not think to look down.\n\nYou are almost past the fourth alcove when your luck runs out. A speck of dust wafts up your nose and you give a loud sneeze. Instantly you are on your feet and running, but just as quickly the last sentinel makes a grab for you. He snatches away something you were carrying.";
+
+        ToLose.clear();
+        Limit = 0;
+
+        if (player.Items.size() > 1)
+        {
+            for (auto i = 0; i < player.Items.size(); i++)
+            {
+                ToLose.push_back(player.Items[i]);
+            }
+
+            Limit = player.Items.size() - 1;
+        }
+        else if (player.Items.size() == 1)
+        {
+            Character::LOSE_ITEMS(player, {player.Items[0]});
+        }
+        else
+        {
+            PreText += "\n\nIt was a strip of flesh that he ripped off.\n\nYou LOSE 1 Life Point.";
+
+            Character::GAIN_LIFE(player, -1);
+        }
+
+        Text = PreText.c_str();
+    }
+};
+
+class Story291 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story291()
+    {
+        ID = 291;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Dodge back away from it", 245));
+        Choices.push_back(Choice::Base("Make a headlong assault", 268));
+        Choices.push_back(Choice::Base("Attempt to distract it with a feint", 419));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Two of the monster's head lash out together. You give a cry of pain as long curved fangs scythe a chunk out of your flesh.";
+
+        auto DAMAGE = -3;
+        auto BLOCKED = false;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            BLOCKED = true;
+
+            DAMAGE = -2;
+
+            PreText += "[SWORDPLAY] ";
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            BLOCKED = true;
+
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE = -2;
+        }
+
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            if (BLOCKED)
+            {
+                PreText += "\n\nYou blocked one of the attacks.";
+            }
+        }
+
+        Text = PreText.c_str();
+    }
+};
+
+class Story292 : public Story::Base
+{
+public:
+    Story292()
+    {
+        ID = 292;
+
+        Text = "Your companion is led off across the courtyard towards a group of buildings. He looks back at you with sudden alarm, only to be jostled by the throng of dog-like courtiers surrounding him. \"Do not be afraid,\" you call after him. \"Courage and determination will win us through the trials to come.\"\n\nThe chief courtier picks at his teeth and murmurs in a mocking tone. \"By the look of him, he doesn't share your sterling qualities. Timidity and wretchedness seem more his mark.\"\n\nYou watch until the poor man is bustled inside, then round on the chief courtier. \"I demand to be taken to Necklace of Skulls.\"\n\n\"In good time,\" he chortles. \"Have I not invited you to be our guest first? After five nights you will be admitted to the sanctum of our master.\" He points a long hairy finger towards the pyramid that towers over the inner courtyard. The black colouring of the building makes it look like a sliver of night that remains to defy the daytime.\n\n\"Take me to my quarters, then,\" you tell him.\n\nThe assembled courtiers give a high howling laugh at this. \"Not so fast,\" titters the chief when he has recovered himself. \"First you have to choose your route to our compound.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 315; }
+};
+
+class Story293 : public Story::Base
+{
+public:
+    Story293()
+    {
+        ID = 293;
+
+        Text = "You lick your lips nervously and venture another step closer to the burly hound. Its snarl becomes a roar as it throws itself at your throat.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Stand your ground and fight", 229));
+        Choices.push_back(Choice::Base("Retreat to the colonnade at the mouth of the passage", 362));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story294 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story294()
+    {
+        ID = 294;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The candle looks as though it will last for about an hour. Just as you are thinking this, a draft of cold air suddenly blows it out, plunging you into darkness.||Silence hangs like a waiting presence in the air. The darkness dances in front of your eyes, causing your imagination to paint pictures of horror on the back of your mind. Your flesh creeps with unidentifiable fears.||You hear a noise that sets your heart pounding and every nerve shrieking. It was the sound of something dragging itself across the dry earthen floor. It stops beside you and you feel it reach out to stroke your leg: a thin dry hand with no flesh on it...||And then you scream.||All through the night you are beset by gibbering phantoms that come prancing out of the darkness, running their unseen hands over your skin and whispering horrible things in your ears.\n\nYou LOSE 1 Life Point from this harrowing ordeal.";
+
+        Character::GAIN_LIFE(player, -1);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nWhen the dawn arrives you stagger out on shaking legs to retrieve your pack of belongings. No matter what dangers you have to face now, you cannot conceive of anything more unpleasant than another night in the House of Gloom.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 40; }
+};
+
+class Story295 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story295()
+    {
+        ID = 295;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "With a breathtaking lunge he catches up with the ball and strikes it a sweeping blow which sends it thudding up against the scoring zone.";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::CHARMS))
+        {
+            PreText += "\n\nYou are unlucky and it catches you a hard blow on the side of the head. You LOSE 1 Life Point.";
+
+            Character::GAIN_LIFE(player, -1);
+        }
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nWhen the dawn arrives you stagger out on shaking legs to retrieve your pack of belongings. No matter what dangers you have to face now, you cannot conceive of anything more unpleasant than another night in the House of Gloom.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 66; }
+};
+
+class Story296 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story296()
+    {
+        ID = 296;
+
+        Image = "images/necklace-of-skulls.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Necklace of Skulls towers over you, his grotesque head looming like a pallid mushroom against the deep blue bowl of the heavens. His sword descends in a jagged sweep, and you throw yourself to one side. You hear it clash against the stone steps. At the same time as fighting you physically, he also uses his magic -- unleashing tendrils of poisonous gas from his throat and enchanting the skulls hanging at his chest so that they strain on their cords to snap at.";
+
+        auto DAMAGE = -9;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            DAMAGE += 2;
+
+            PreText += "[SWORDPLAY] ";
+        }
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE += 2;
+        }
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::CHARMS))
+        {
+            PreText += "[CHARMS] ";
+
+            DAMAGE += 2;
+        }
+
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 342; }
 };
 
 class Story297 : public Story::Base
@@ -8133,6 +8537,30 @@ public:
 
         Text = PreText.c_str();
     }
+};
+
+class Story299 : public Story::Base
+{
+public:
+    Story299()
+    {
+        ID = 299;
+
+        Text = "You break the stem of the cactus and it oozes a clear sweet-smelling fluid. You taste a little, then suck at it until you have drained all you can. It is barely enough. You stumble on across the lifeless wilderness of stone and sand, thirst burning a throbbing gulf in your throat.\n\nYou LOSE 4 Life Points.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, -4);
+    }
+
+    int Continue(Character::Base &player) { return 152; }
 };
 
 class Story300 : public Story::Base
@@ -9853,10 +10281,24 @@ auto story278 = Story278();
 auto story279 = Story279();
 auto story280 = Story280();
 auto story281 = Story281();
+auto story282 = Story282();
+auto story283 = Story283();
+auto story284 = Story284();
 auto story285 = Story285();
+auto story286 = Story286();
+auto story287 = Story287();
 auto story288 = Story288();
+auto story289 = Story289();
+auto story290 = Story290();
+auto story291 = Story291();
+auto story292 = Story292();
+auto story293 = Story293();
+auto story294 = Story294();
+auto story295 = Story295();
+auto story296 = Story296();
 auto story297 = Story297();
 auto story298 = Story298();
+auto story299 = Story299();
 auto story300 = Story300();
 auto story301 = Story301();
 auto story302 = Story302();
@@ -9948,8 +10390,8 @@ void InitializeStories()
         &story250, &story251, &story252, &story253, &story254, &story255, &story256, &story257, &story258, &story259,
         &story260, &story261, &story262, &story263, &story264, &story265, &story266, &story267, &story268, &story269,
         &story270, &story271, &story272, &story273, &story274, &story275, &story276, &story277, &story278, &story279,
-        &story280, &story281, &story285, &story288,
-        &story297, &story298,
+        &story280, &story281, &story282, &story283, &story284, &story285, &story286, &story287, &story288, &story289,
+        &story290, &story291, &story292, &story293, &story294, &story295, &story296, &story297, &story298, &story299,
         &story300, &story301, &story302, &story304,
         &story311,
         &story320, &story321, &story322, &story323, &story324, &story325, &story326, &story327,
