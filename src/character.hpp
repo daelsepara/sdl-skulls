@@ -9,6 +9,18 @@
 
 namespace Character
 {
+    enum class Type
+    {
+        CUSTOM = 0,
+        WARRIOR,
+        HUNTER,
+        MYSTIC,
+        WAYFARER,
+        MERCHANT,
+        ACOLYTE,
+        SORCERER
+    };
+
     class Base
     {
     public:
@@ -46,6 +58,8 @@ namespace Character
 
         int LostMoney = 0;
 
+        Character::Type Type = Character::Type::CUSTOM;
+
         Base()
         {
         }
@@ -68,15 +82,36 @@ namespace Character
             Items = items;
             Money = money;
         }
+
+        Base(const char *name, Character::Type type, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Type> items, int money)
+        {
+            Name = name;
+            Type = type;
+            Description = description;
+            Skills = skills;
+            Items = items;
+            Money = money;
+        }
+
+        Base(const char *name, Character::Type type, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Type> items, std::vector<Codeword::Type> codewords, int money)
+        {
+            Name = name;
+            Type = type;
+            Description = description;
+            Skills = skills;
+            Codewords = codewords;
+            Items = items;
+            Money = money;
+        }
     };
 
-    auto WARRIOR = Base("The Warrior", "A proud noble of the Maya people, and strong in the arts of war, you tolerate no insolence from any man.", {Skill::AGILITY, Skill::ETIQUETTE, Skill::SWORDPLAY, Skill::UNARMED_COMBAT}, {Item::Type::SWORD}, 10);
-    auto HUNTER = Base("The Hunter", "You can keep pace with the deer of the woods, wrestle jaguars, and your blowgun can bring down a bird in flight. Your sharp instincts make you almost a creature of the wild yourself.", {Skill::AGILITY, Skill::TARGETING, Skill::UNARMED_COMBAT, Skill::WILDERNESS_LORE}, {Item::Type::BLOWGUN}, 10);
-    auto MYSTIC = Base("The Mystic", "You feel that other's lives are mundane. You learnt your skills from solitary, exploration and the dreams that came while you lay asleep under the stars.", {Skill::AGILITY, Skill::CHARMS, Skill::TARGETING, Skill::WILDERNESS_LORE}, {Item::Type::MAGIC_AMULET, Item::Type::BLOWGUN}, 10);
-    auto WAYFARER = Base("The Wayfarer", "You have travelled widely and witnessed countless strange sights. Your wanderings have taught you many useful skills.", {Skill::CUNNING, Skill::FOLKLORE, Skill::SEAFARING, Skill::WILDERNESS_LORE}, {}, 10);
-    auto MERCHANT = Base("The Merchant", "Daring adventure, subtle villainy, and always one eye open for a tidy profit -- these are your tenets.", {Skill::CUNNING, Skill::ROGUERY, Skill::SEAFARING, Skill::SWORDPLAY}, {Item::Type::SWORD}, 15);
-    auto ACOLYTE = Base("The Acolyte", "You are master of many skills, but you know it is the god who shape man's destiny.", {Skill::ETIQUETTE, Skill::FOLKLORE, Skill::SPELLS, Skill::SWORDPLAY}, {Item::Type::MAGIC_WAND, Item::Type::SWORD}, 10);
-    auto SORCERER = Base("The Sorcerer", "Born into a high clan, you were schooled in sorcery by priests and wise men. Now you can twist reality itself to suit your wishes.", {Skill::CHARMS, Skill::ETIQUETTE, Skill::ROGUERY, Skill::SPELLS}, {Item::Type::MAGIC_AMULET, Item::Type::MAGIC_WAND}, 10);
+    auto WARRIOR = Base("The Warrior", Character::Type::WARRIOR, "A proud noble of the Maya people, and strong in the arts of war, you tolerate no insolence from any man.", {Skill::AGILITY, Skill::ETIQUETTE, Skill::SWORDPLAY, Skill::UNARMED_COMBAT}, {Item::Type::SWORD}, 10);
+    auto HUNTER = Base("The Hunter", Character::Type::HUNTER, "You can keep pace with the deer of the woods, wrestle jaguars, and your blowgun can bring down a bird in flight. Your sharp instincts make you almost a creature of the wild yourself.", {Skill::AGILITY, Skill::TARGETING, Skill::UNARMED_COMBAT, Skill::WILDERNESS_LORE}, {Item::Type::BLOWGUN}, 10);
+    auto MYSTIC = Base("The Mystic", Character::Type::MYSTIC, "You feel that other's lives are mundane. You learnt your skills from solitary, exploration and the dreams that came while you lay asleep under the stars.", {Skill::AGILITY, Skill::CHARMS, Skill::TARGETING, Skill::WILDERNESS_LORE}, {Item::Type::MAGIC_AMULET, Item::Type::BLOWGUN}, 10);
+    auto WAYFARER = Base("The Wayfarer", Character::Type::WAYFARER, "You have travelled widely and witnessed countless strange sights. Your wanderings have taught you many useful skills.", {Skill::CUNNING, Skill::FOLKLORE, Skill::SEAFARING, Skill::WILDERNESS_LORE}, {}, 10);
+    auto MERCHANT = Base("The Merchant", Character::Type::MERCHANT, "Daring adventure, subtle villainy, and always one eye open for a tidy profit -- these are your tenets.", {Skill::CUNNING, Skill::ROGUERY, Skill::SEAFARING, Skill::SWORDPLAY}, {Item::Type::SWORD}, 15);
+    auto ACOLYTE = Base("The Acolyte", Character::Type::ACOLYTE, "You are master of many skills, but you know it is the god who shape man's destiny.", {Skill::ETIQUETTE, Skill::FOLKLORE, Skill::SPELLS, Skill::SWORDPLAY}, {Item::Type::MAGIC_WAND, Item::Type::SWORD}, 10);
+    auto SORCERER = Base("The Sorcerer", Character::Type::SORCERER, "Born into a high clan, you were schooled in sorcery by priests and wise men. Now you can twist reality itself to suit your wishes.", {Skill::CHARMS, Skill::ETIQUETTE, Skill::ROGUERY, Skill::SPELLS}, {Item::Type::MAGIC_AMULET, Item::Type::MAGIC_WAND}, 10);
 
     std::vector<Character::Base> Classes = {WARRIOR, HUNTER, MYSTIC, WAYFARER, MERCHANT, ACOLYTE, SORCERER};
 

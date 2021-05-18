@@ -5152,7 +5152,7 @@ public:
 
         Text = "You walk on until you reach the tree. The figures seated there are of macabre appearance: living skeletons whose bones are green with algae. Roots and soil clump their joints, and you can see snakes burrowing between the bars of their ribcages One raises a grinning skull-face to greet you. As it does, a butterfly opens wings of scarlet and gold across its emerald brow. If you saw such a sight in one of the murals on a temple wall, you might be moved to admire its uncanny beauty. Faced with such a thing in stark reality, however, you find yourself jumping back in fright. You hurry past without acknowledging the skeleton's welcoming gestures.";
 
-        Image = "images/filler1.png";
+        Image = "images/dead-nobles.png";
 
         Choices.clear();
 
@@ -5388,6 +5388,50 @@ public:
     int Continue(Character::Base &player) { return 97; }
 };
 
+class Story190 : public Story::Base
+{
+public:
+    Story190()
+    {
+        ID = 190;
+
+        Text = "The hard veins of luminous crystal running through the cavern wall make fine handholds. You quickly ascend to the ledge and stand inspecting the tombs. Each is sealed by a massive slab of stone bearing an engraved image of the person buried within. At first glance they look too solid for you to have nay hope of gaining entry, but then you notice that there is one slab which already has a crack in it. Even better, you discover a HAMMER lying on the ledge. You estimate that it would be an hour's hard work to smash a way into the tomb.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::ROGUERY.Name, 283, Skill::Type::ROGUERY));
+        Choices.push_back(Choice::Base("Break the tomb open using the hammer", 329));
+        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 306, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Decide against further exploration of the tombs: return to the canoe and continue on your way", 167));
+
+        Take = {Item::Type::HAMMER};
+
+        Limit = 1;
+
+        Controls = StandardControls();
+    }
+};
+
+class Story191 : public Story::Base
+{
+public:
+    Story191()
+    {
+        ID = 191;
+
+        Text = "Ordinarily you might try to seize the cobra before it strikes. You have heard of hunters doing this, and your own reflexes are as sharp as any man's. But at the moment your arms are trembling, muscles turned to jelly by the exertions of the past two hours. You could not rely on getting a firm grip.\n\nThe cobra is about to attack. It puts its head back, neck bracing for the lethal strike -- an action which momentarily blinds it. It is the one chance you will get, and you do not hesitate. You take a swift step closer and thrust your head forward with all your strength. There is aloud crack as your forehead slams into the cobra and crushes it back into the hard stone of the wall.\n\nYou reel back, stunned. The cobra drops limply to the floor and writhes there weakly until you recover your wits enough to stamp on it. Nursing a swelling bump on your head, you squeeze through into the tomb.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 339; }
+};
+
 class Story192 : public Story::Base
 {
 public:
@@ -5429,6 +5473,58 @@ public:
     }
 
     int Continue(Character::Base &player) { return 263; }
+};
+
+class Story194 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story194()
+    {
+        ID = 194;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The monster charges along the causeway. Its three legs are short but thick with muscle, giving it a powerful lurching gait. You almost retch at the foul animal stench of its breath as it opens its jaws to snap at you. You dodge away, trying to move around to the side before counter-attacking. Your reasoning is that its tripedal stance will make it slow to turn. Unfortunately you guessed wrong: it simply rears back onto its hind leg and whirls about to face you, ripping a hunk of flesh from your arm as you step in to strike it.";
+
+        auto DAMAGE = -4;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            DAMAGE = -2;
+
+            PreText += "[SWORDPLAY] ";
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE = -3;
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou finally manage to fight your way past the monster and go running on towards the jetty.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 20; }
 };
 
 class Story195 : public Story::Base
@@ -5476,6 +5572,304 @@ public:
     }
 
     int Continue(Character::Base &player) { return 288; }
+};
+
+class Story196 : public Story::Base
+{
+public:
+    Story196()
+    {
+        ID = 196;
+
+        Text = "You start out along the road, relieved at the fact that this leaves the dazzling sun of the underworld at your back. You trudge on for hours. For more than hours. Time begins to have no meaning. It seems you are waling on sand, illuminated by a ruddy glow. Your pulse sounds like the roar of the tide. The redness becomes a deep gloomy haze. You feel you can hardly breathe. Each step weighs you down, but you struggle onward towards a blaze of light...\n\nYou awaken with a sobbing intake of breath. You are back in your clanhouse in Koba. You have returned through time and space to the start of your adventure. You have a chance to begin again, forewarned by your previous mistakes.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        for (auto i = 0; i < Character::Classes.size(); i++)
+        {
+            if (player.Type == Character::Classes[i].Type)
+            {
+                player = Character::Classes[i];
+
+                break;
+            }
+        }
+    }
+
+    int Continue(Character::Base &player) { return 1; }
+};
+
+class Story197 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story197()
+    {
+        ID = 197;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The drink proves cool and invigorating. You RECOVER 2 Life Points.";
+
+        Character::GAIN_LIFE(player, 2);
+
+        PreText += "\n\nYou walk on until you reach the tree, passing throngs of wandering souls on your way. All have their arms raised to shield their eyes from the terrible glare of the eternally setting sun. Those under the tree, however, lounge in comfort. They are shaded from the sunlight by the dense foliage. From their rich costumes you perceive them to be the souls of nobles, who enjoy this privilege by reason of their status.";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::ETIQUETTE))
+        {
+            PreText += "\n\nThe nobles recognize you as one of them and invite you to sit.";
+        }
+        else
+        {
+            PreText += "\n\nThey react haughtily, telling you to begone.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_SKILL(player, Skill::Type::ETIQUETTE))
+        {
+            return 106;
+        }
+        else
+        {
+            return 200;
+        }
+    };
+};
+
+class Story198 : public Story::Base
+{
+public:
+    Story198()
+    {
+        ID = 198;
+
+        Text = "You see the jagged outline of a sword in the warrior's hand. He is no fool. He realizes the sword is not long enough to reach the vulnerable point where the four huge necks join the monster's body, so he begins by dodging away from its attacks. This forces it to haul its bulk closer. As it does, the warrior suddenly rushes in to the attack.\n\nAt first it seems the ploy might work -- three of the heads are extended, slavering eagerly, and he easily jumps past their guard. But from your vantage point you see that he should have made more of his pretence at retreating, since one of the heads has stayed cautiously aloft on the long stalk of its neck, watching warily like a hovering eagle. It lashes down with terrifying ferocity when the warrior is still an arm's length from making his strike. His head is severed from his body in a single snap of those long jaws.\n\nYou hurriedly descend the slope of the dune. The fallen warrior's head rolls across the sand and comes to rest at your feet. You glare up at the monster, determined not to fall victim to it in the same way. It sees you and gives vent to four predatory snarls.\n\nYou move in. You have no choice. You must slay the hydra or you cannot reach your goal.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 222; }
+};
+
+class Story199 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story199()
+    {
+        ID = 199;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You are trembling with thirst and exhaustion. Your mouth feels as dry as the endless wastes surrounding you.";
+
+        auto DAMAGE = -2;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+        {
+            DAMAGE = -1;
+
+            PreText += "[WILDERNESS LORE] ";
+        }
+
+        PreText += "You LOST " + std::to_string(-DAMAGE) + " Life Points.";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+            {
+                PreText += "\n\n[WILDERNESS LORE] You have a natural hardiness.";
+            }
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 220; }
+};
+
+class Story200 : public Story::Base
+{
+public:
+    Story200()
+    {
+        ID = 200;
+
+        Text = "You find a river -- not of blood this time, but of cold pus-coloured fluid -- and follow its course through pale rolling dales until you come to a massive stone arch. Peering inside, you see steps rising up a long a tunnel that goes up through the layer of water roofing the Deathlands. From far ahead comes a shaft of true daylight. You have the way back to the land of the living.\n\nYou advance up the tunnel. Soon you can see the bright sunlight ahead, and smell the clean air of the upper world. But to reach it you must run a perilous gauntlet, for now you see that the passage is guarded by four baleful sentinels who sit in alcoves along the walls. They are nearly twice as big as you, with faces of brooding nightmare and talons like jaguar's teeth. From the legends you heard in childhood, you know that the only way safely past these four is to greet each by name.";
+
+        Image = "images/filler1.png";
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Choices.clear();
+
+        if (!Character::VERIFY_CODEWORD(player, Codeword::Type::ZAZ))
+        {
+            Choices.push_back(Choice::Base(Skill::FOLKLORE.Name, 267, Skill::Type::FOLKLORE));
+            Choices.push_back(Choice::Base(Skill::ROGUERY.Name, 290, Skill::Type::ROGUERY));
+            Choices.push_back(Choice::Base("You have none of those", 313));
+        }
+    }
+
+    int Continue(Character::Base &player) { return 244; }
+};
+
+class Story201 : public Story::Base
+{
+public:
+    Story201()
+    {
+        ID = 201;
+
+        Text = "A deep crunch reverberates through the stone around you and cracks appear in the corbels of the roof with such startling suddenness that they could almost be long splashes of ink. But you know that they are not, and even as the masonry blocks start to shift you are throwing yourself into a forward somersault that carries you safely to the end of the passage. There you turn to see a thick cloud of rock dust billowing out. When the dust settles, the passage has been entirely buried under huge slabs of fallen masonry.\n\nThe courtiers join you. \"You're quick on your feet,\" says the chief courtier, patting your shoulder.\n\nYou instinctively recoil at his touch. You make no pretence at hiding your loathing as you look at him. \" get the feeling I'm going to need to be.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story202 : public Story::Base
+{
+public:
+    Story202()
+    {
+        ID = 202;
+
+        Text = "When it is time for you to be taken to the House of Gloom, the courtiers summon you with surly grunts. It is obvious from their glowering looks that they did not expect you to endure this long. As they prod you through the doorway, the chief courtier is struck by inspiration.\n\n\"You have been cheating in the ordeals,\" he says. \"Using items to help you. Give me your travelling pack.\" He takes the pack containing your belongings and places it outside the door. \"It will be returned to you tomorrow. If you survive.\" It is a dingy cobweb-strewn chamber with many shadowy recesses. The packed-earth floor rises at intervals in long low mounds. Something about the place stirs the hairs on the nape of your neck. You feel the tingle of awakening dread as you ask: \"What is the ordeal here?\"\n\nThe chief courtier places a single short candle on the floor just inside the door. \"This is the place where our ancestors are buried. See those mounds? Their graves. If you can keep the candle alight until morning, they'll leave you alone. But it goes out then their ghosts wills be sure to pay you a visit.\"\n\nThe door grates shut, leaving just the trembling flame of the candle between you and eldritch terror.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::IGNIS))
+        {
+            return 248;
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::CUNNING))
+        {
+            return 271;
+        }
+        else
+        {
+            return 294;
+        }
+    }
+};
+
+class Story203 : public Story::Base
+{
+public:
+    Story203()
+    {
+        ID = 203;
+
+        Text = "The ball bounces towards your brother, but with one arm held to his brow he is not nimble enough to get possession and send it back to you. The attacking shadow man leaps up swatting the ball against one of the scoring zones.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::SCORE(player, player.Cross, 1);
+    }
+
+    int Continue(Character::Base &player)
+    {
+        return 226;
+    }
+};
+
+class Story204 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story204()
+    {
+        ID = 204;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You place a dart directly between his cobwebby eyes. It would kill any mortal man, but Necklace of Skulls has endured for a thousand years. The sorcery he used to prolong his life turned him into a creature halfway between life and death. He reels back, giving vent to a roar of anguish that sounds like the sky being ripped in two, and pulls the dart out of his bloodless flesh.\n\nYou race up the pyramid steps towards him, ducking as he sends a fountain of ultraviolet fire streaming from his fingertips. It scorches your flesh. A direct hit would have charred you to the bone. \n\nYou LOSE 1 Life Point.";
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nBefore he has time for another spell, you have closed with him for the final battle.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::VENUS))
+        {
+            return 240;
+        }
+        else
+        {
+            return 296;
+        }
+    }
 };
 
 class Story205 : public Story::Base
@@ -8211,9 +8605,21 @@ auto story186 = Story186();
 auto story187 = Story187();
 auto story188 = Story188();
 auto story189 = Story189();
+auto story190 = Story190();
+auto story191 = Story191();
 auto story192 = Story192();
 auto story193 = Story193();
+auto story194 = Story194();
 auto story195 = Story195();
+auto story196 = Story196();
+auto story197 = Story197();
+auto story198 = Story198();
+auto story199 = Story199();
+auto story200 = Story200();
+auto story201 = Story201();
+auto story202 = Story202();
+auto story203 = Story203();
+auto story204 = Story204();
 auto story205 = Story205();
 auto story206 = Story206();
 auto story207 = Story207();
@@ -8336,8 +8742,8 @@ void InitializeStories()
         &story160, &story161, &story162, &story163, &story164, &story165, &story166, &story167, &story168, &story169,
         &story170, &story171, &story172, &story173, &story174, &story175, &story176, &story177, &story178, &story179,
         &story180, &story181, &story182, &story183, &story184, &story185, &story186, &story187, &story188, &story189,
-        &story192, &story193, &story195,
-        &story205, &story206, &story207, &story208, &story209,
+        &story190, &story191, &story192, &story193, &story194, &story195, &story196, &story197, &story198, &story199,
+        &story200, &story201, &story202, &story203, &story204, &story205, &story206, &story207, &story208, &story209,
         &story210, &story211, &story212, &story215, &story216, &story218,
         &story228, &story231,
         &story232, &story233, &story234, &story235, &story238,
