@@ -2348,7 +2348,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
             if (!story->Image || (splash && splash->h < 2 * (boxh + infoh + box_space)))
             {
-                putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+                putText(renderer, "Life", font, text_space, clrWH, (player.Life > 0 && story->Type != Story::Type::DOOM) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
                 putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
             }
 
@@ -2778,7 +2778,14 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 {
                                     auto nextID = story->Choices[current].Destination;
 
-                                    next = (Story::Base *)findStory(nextID);
+                                    if (nextID != story->ID)
+                                    {
+                                        next = (Story::Base *)findStory(nextID);
+                                    }
+                                    else
+                                    {
+                                        next = story;
+                                    }
 
                                     quit = true;
 
@@ -2965,7 +2972,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                 if (!story->Image || (splash && splash->h < 2 * (boxh + infoh + box_space)))
                 {
-                    putText(renderer, "Life", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+                    putText(renderer, "Life", font, text_space, clrWH, (player.Life > 0 && story->Type != Story::Type::DOOM) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
                     putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
                 }
 
@@ -3036,7 +3043,10 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                     else if (story->Controls[current].Type == Control::Type::USE && !hold)
                     {
-                        inventoryScreen(window, renderer, player, player.Items, Control::Type::USE);
+                        if (story->Type == Story::Type::NORMAL && player.Life > 0)
+                        {
+                            inventoryScreen(window, renderer, player, player.Items, Control::Type::USE);
+                        }
 
                         current = -1;
 
@@ -3044,7 +3054,10 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                     else if (story->Controls[current].Type == Control::Type::SHOP && !hold)
                     {
-                        shopScreen(window, renderer, player, story);
+                        if (story->Type == Story::Type::NORMAL && player.Life > 0)
+                        {
+                            shopScreen(window, renderer, player, story);
+                        }
 
                         current = -1;
 
@@ -3052,7 +3065,10 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                     else if (story->Controls[current].Type == Control::Type::TRADE && !hold)
                     {
-                        tradeScreen(window, renderer, player, story->Trade.first, story->Trade.second);
+                        if (story->Type == Story::Type::NORMAL && player.Life > 0)
+                        {
+                            tradeScreen(window, renderer, player, story->Trade.first, story->Trade.second);
+                        }
 
                         current = -1;
 
@@ -3064,6 +3080,20 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                         {
                             if (player.Life > 0)
                             {
+                                if (story->LimitSkills > 0)
+                                {
+                                    auto done = loseSkills(window, renderer, player, story->LimitSkills);
+
+                                    if (!done)
+                                    {
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        story->LimitSkills = 0;
+                                    }
+                                }
+
                                 if (story->Take.size() > 0 && story->Limit > 0)
                                 {
                                     auto done = takeScreen(window, renderer, player, story->Take, story->Limit);

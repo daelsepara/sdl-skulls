@@ -44,6 +44,7 @@ namespace Item
         PADDLE,
         LUMP_OF_CHARCOAL,
         HAMMER,
+        HYDRA_BLOOD_BALL,
         First = SWORD,
         Last = HAMMER
     };
@@ -84,7 +85,8 @@ namespace Item
         {Item::Type::STONE, "STONE"},
         {Item::Type::PADDLE, "PADDLE"},
         {Item::Type::LUMP_OF_CHARCOAL, "LUMP OF CHARCOAL"},
-        {Item::Type::HAMMER, "HAMMER"}};
+        {Item::Type::HAMMER, "HAMMER"},
+        {Item::Type::HYDRA_BLOOD_BALL, "HYDRA BLOOD BALL"}};
 
     std::vector<Item::Type> UniqueItems = {
         Item::Type::LETTER_OF_INTRODUCTION,
@@ -98,7 +100,8 @@ namespace Item
         Item::Type::GOLD_DIADEM,
         Item::Type::BROTHERS_SKULL,
         Item::Type::GOLDEN_HELMET,
-        Item::Type::CHALICE_OF_LIFE};
+        Item::Type::CHALICE_OF_LIFE,
+        Item::Type::HYDRA_BLOOD_BALL};
 
     bool IsUnique(Item::Type item)
     {
