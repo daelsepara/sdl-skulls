@@ -28,6 +28,8 @@ namespace Character
 
         const char *Description = NULL;
 
+        Character::Type Type = Character::Type::CUSTOM;
+
         int Life = 10;
 
         int Money = 10;
@@ -58,7 +60,7 @@ namespace Character
 
         int LostMoney = 0;
 
-        Character::Type Type = Character::Type::CUSTOM;
+        int StoryID = 0;
 
         Base()
         {

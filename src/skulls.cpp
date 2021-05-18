@@ -2913,6 +2913,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
             story->Event(player);
         }
 
+        player.StoryID = story->ID;
+        
         if (story->Image)
         {
             splash = createImage(story->Image);
