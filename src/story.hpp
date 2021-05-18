@@ -1191,7 +1191,7 @@ public:
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
         {
-            Choices.push_back(Choice::Base("Discard the JADE BEAD", 179, Choice::Type::LOSE_ITEM, Item::Type::JADE_BEAD));
+            Choices.push_back(Choice::Base("Discard the JADE BEAD", 174, Choice::Type::LOSE_ITEM, Item::Type::JADE_BEAD));
         }
 
         Choices.push_back(Choice::Base("Continue", 180));
@@ -6113,8 +6113,6 @@ public:
 
         Trade = std::make_pair(Item::Type::MAIZE_CAKES, Item::Type::PARCEL_OF_SALT);
     }
-
-    int Continue(Character::Base &player) { return 389; }
 };
 
 class Story212 : public Story::Base
@@ -6124,7 +6122,72 @@ public:
     {
         ID = 212;
 
-        Text = "You open your mouth to speak and jade the bead rolls out. It falls, bounces off the rock and disappears into the water with a tiny splash.\n\nIn the same moment, the tenebrous image of the Rain God leaps into sharp focus. You see him as clearly now as if all the sun's light were focused just where he is standing. Everything else goes plunging into darkness. Your vision is filled with the blazing presence of the divinity.\n\nHis face is far from human; you can see that now. He opens his hand in the traditional beneficent gesture of royalty throughout the ages, inviting you to speak.\n\n\"O supreme lord...\"\n\nYou falter. How can you address a god?\n\nThen you hear his voice inside your head, telling you that he knows why you have been sent. He accepts the sacrifice. Your life will buy the heavy rains needed to irrigate the crops.\n\nYou try to open your mouth to tell him more -- about your quest to find your brother, about the thirst for truth and for vengeance on the sorcerer in the western desert. But you are too drowsy. The dazzling radiance of the Rain God's aura is veiled by a wave of darkness. You relax, strangely content.\n\nIn the gloom of the underworld, a monstrous serpent contentedly laps up the last of your blood and dives beneath the water.";
+        Text = "You open your mouth to speak and the JADE BEAD rolls out. It falls, bounces off the rock and disappears into the water with a tiny splash.\n\nIn the same moment, the tenebrous image of the Rain God leaps into sharp focus. You see him as clearly now as if all the sun's light were focused just where he is standing. Everything else goes plunging into darkness. Your vision is filled with the blazing presence of the divinity.\n\nHis face is far from human; you can see that now. He opens his hand in the traditional beneficent gesture of royalty throughout the ages, inviting you to speak.\n\n\"O supreme lord...\"\n\nYou falter. How can you address a god?\n\nThen you hear his voice inside your head, telling you that he knows why you have been sent. He accepts the sacrifice. Your life will buy the heavy rains needed to irrigate the crops.\n\nYou try to open your mouth to tell him more -- about your quest to find your brother, about the thirst for truth and for vengeance on the sorcerer in the western desert. But you are too drowsy. The dazzling radiance of the Rain God's aura is veiled by a wave of darkness. You relax, strangely content.\n\nIn the gloom of the underworld, a monstrous serpent contentedly laps up the last of your blood and dives beneath the water.";
+
+        Image = "images/filler1.png";
+
+        Type = Story::Type::DOOM;
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+};
+
+class Story213 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story213()
+    {
+        ID = 213;
+
+        Image = "images/filler1.png";
+
+        Take = {Item::Type::HAMMER};
+
+        Limit = 1;
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "With a wave of your wand and a muttered incantation, you animate the rope. Guiding it like a snake charmer, you impel it to rise up to the ledge above.";
+
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
+        {
+            PreText += "Unfortunately, the JADE BEAD rolls out of your mouth while you are speaking the spell and is lost in the water.";
+
+            Character::LOSE_ITEMS(player, {Item::Type::JADE_BEAD});
+        }
+
+        PreText += "A tug on the rope confirms that it is taut. You climb up to the ledge without any trouble. The doors of the tombs are massive slabs of stone, each with a bas-relief carving of the occupant. At first glance they look impregnable, but then you notice that there is one slab which has a crack running right across it. Even better, you discover a hammer lying on the ledge. You estimate that it would be about an hour's hard work to smash a way into the tomb.";
+
+        Choices.clear();
+
+        if (!Character::VERIFY_SKILL(player, Skill::Type::ROGUERY))
+        {
+            Choices.push_back(Choice::Base("Smash the tomb open using the HAMMER", 329));
+            Choices.push_back(Choice::Base("Use the MAN OF GOLD", 306, Item::Type::MAN_OF_GOLD));
+            Choices.push_back(Choice::Base("Decide against violating the tombs and return to the canoe, continuing on your way", 167));
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 283; }
+};
+
+class Story214 : public Story::Base
+{
+public:
+    Story214()
+    {
+        ID = 214;
+
+        Text = "You try to paddle the canoe, but the current is too strong. You are borne helplessly on to an underground waterfall and flung out as the canoe goes plunging over the brink. Something strikes your head. There is a blaze of painful light, then darkness as you go under the surface. You drift down towards the river bed, dimly aware that your life ebbing away with the thin trickle of air bubbles rising from your slack jaw.";
 
         Image = "images/filler1.png";
 
@@ -6190,6 +6253,25 @@ public:
     int Continue(Character::Base &player) { return 239; }
 };
 
+class Story217 : public Story::Base
+{
+public:
+    Story217()
+    {
+        ID = 217;
+
+        Text = "You pop a dart into your BLOWGUN and start walking towards the monster. It shuffles eagerly from side to side on its strong stumpy legs. \"Why aren't you afraid, mortal?\" it asks. \"I'm going to swallow you up -- crunch your bones, drink your juices, and spit out the skin for my maggots to enjoy!\"\n\nYou keep on walking along the causeway, apparently unperturbed.\n\n\"You haven't got a chance!\" snarls the monster, tensing its legs to spring on you.\n\n\"Your only reply is to raise the BLOWGUN and puff your dart straight into the monster's eye. It gives a howl of pain and stumbles off the causeway into the mass of maggots, while you go racing towards the jetty.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 20; }
+};
+
 class Story218 : public Story::Base
 {
 public:
@@ -6229,6 +6311,64 @@ public:
         }
 
         Text = PreText.c_str();
+    }
+};
+
+class Story219 : public Story::Base
+{
+public:
+    Story219()
+    {
+        ID = 219;
+
+        Text = "The road takes you into a dingy region devoid of any feature except for a sheer cliff that stretches across the horizon ahead. You see someone in the distance, shining like a jewel against the drab surrounds because of his feather cloak and turquoise head-dress. Though you call out, he is too far away to hear. As you hurry along the causeway, you see him reach the cliff and disappear into one of the two cave mouths.\n\nYou are so intent on reaching the cliff that you almost fail to notice a pitted stone idol beside the road. The skeletal jaw and blackened eyes mark it as an effigy of the Death God who rules this land. The stone bowl in front of the idol is bare of offerings, so obviously the figure in the feather cloak left nothing. On the other hand, you might consider it wise to donate some money of your own to secure the god's benison.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::FOLKLORE.Name, 379, Skill::Type::FOLKLORE));
+        Choices.push_back(Choice::Base("Make a Donation", 259, Choice::Type::DONATE));
+        Choices.push_back(Choice::Base("Ignore the idol", 259));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.DONATION = 0;
+    }
+
+    int Continue(Character::Base &player) { return 379; }
+};
+
+class Story220 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story220()
+    {
+        ID = 220;
+
+        Text = "The sun rises again, flooding the sands with the stifling heat of day. You realize that soon you must find shade, or the sun will bake you alive. Stumbling wearily up to the top of the next dune, however, all such thoughts fly from your mind to be replaced by a feeling of exhilaration. You have found it! The wizard's palace lies just ahead across a stretch of brown-gold sand. The dawn light makes it seem to shimmer like a mirage in the deep blue shadows between the dunes, but you know it is real.\n\nDouble doors swing open in the wall as you approach. Confronting you are a horde of men in ragged animal skins. Their long thin faces and downcast smiles give them a canine appearance. All of them bear stone axes which they lift when you walk through the palace gates -- not a gesture of immediate attack, but just to warn you where you stand.\n\n\"I have come,\" you say, \"to speak to Necklace of Skulls.\"\n\nOne of the men gives a bark of laughter. \"It is not as easy as that. Do you think our master sees every stray mongrel who wanders to his door? First you will have to pass five nights among us, his faithful courtiers.\"\n\nYou decide to change tack. \"What of my brother, Morning Star?\" you ask.\n\n\"He's been here. Perhaps you'll get to meet him -- later.\"";
+
+        Image = "images/courtiers.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+        {
+            return 269;
+        }
+        else
+        {
+            return 292;
+        }
     }
 };
 
@@ -8628,9 +8768,14 @@ auto story209 = Story209();
 auto story210 = Story210();
 auto story211 = Story211();
 auto story212 = Story212();
+auto story213 = Story213();
+auto story214 = Story214();
 auto story215 = Story215();
 auto story216 = Story216();
+auto story217 = Story217();
 auto story218 = Story218();
+auto story219 = Story219();
+auto story220 = Story220();
 auto story228 = Story228();
 auto story231 = Story231();
 auto story232 = Story232();
@@ -8744,8 +8889,8 @@ void InitializeStories()
         &story180, &story181, &story182, &story183, &story184, &story185, &story186, &story187, &story188, &story189,
         &story190, &story191, &story192, &story193, &story194, &story195, &story196, &story197, &story198, &story199,
         &story200, &story201, &story202, &story203, &story204, &story205, &story206, &story207, &story208, &story209,
-        &story210, &story211, &story212, &story215, &story216, &story218,
-        &story228, &story231,
+        &story210, &story211, &story212, &story213, &story214, &story215, &story216, &story217, &story218, &story219,
+        &story220, &story228, &story231,
         &story232, &story233, &story234, &story235, &story238,
         &story242,
         &story251, &story254, &story255, &story256, &story257,
