@@ -2326,24 +2326,9 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
             fillWindow(renderer, intWH);
 
-            if (error)
+            if (splash)
             {
-                if ((SDL_GetTicks() - start_ticks) < duration)
-                {
-                    putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
-                }
-                else
-                {
-                    error = false;
-                }
-            }
-
-            if (!error)
-            {
-                if (splash)
-                {
-                    renderImage(renderer, splash, startx, starty);
-                }
+                renderImage(renderer, splash, startx, starty);
             }
 
             if (!story->Image || (splash && splash->h < 2 * (boxh + infoh + box_space)))
@@ -2356,6 +2341,18 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
             {
                 putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
                 putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+            }
+
+            if (error)
+            {
+                if ((SDL_GetTicks() - start_ticks) < duration)
+                {
+                    putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
+                }
+                else
+                {
+                    error = false;
+                }
             }
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
@@ -2950,24 +2947,9 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                 // Fill the surface with background color
                 fillWindow(renderer, intWH);
 
-                if (error)
+                if (story->Image)
                 {
-                    if ((SDL_GetTicks() - start_ticks) < duration)
-                    {
-                        putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
-                    }
-                    else
-                    {
-                        error = false;
-                    }
-                }
-
-                if (!error)
-                {
-                    if (story->Image)
-                    {
-                        renderImage(renderer, splash, startx, texty);
-                    }
+                    renderImage(renderer, splash, startx, texty);
                 }
 
                 if (!story->Image || (splash && splash->h < 2 * (boxh + infoh + box_space)))
@@ -2980,6 +2962,18 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                 {
                     putText(renderer, "Money", font, text_space, clrWH, (story->Type == Story::Type::NORMAL && player.Life > 0) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
                     putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+                }
+
+                if (error)
+                {
+                    if ((SDL_GetTicks() - start_ticks) < duration)
+                    {
+                        putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
+                    }
+                    else
+                    {
+                        error = false;
+                    }
                 }
 
                 fillRect(renderer, textwidth, text_bounds, textx, texty, intBE);
