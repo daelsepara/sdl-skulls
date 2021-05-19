@@ -65,7 +65,7 @@ public:
         SCREEN_WIDTH = width;
         SCREEN_HEIGHT = height;
 
-        splashw = 0.35 * (1.0 - 3.0 * Margin) * SCREEN_WIDTH;
+        splashw = 0.30 * (1.0 - 3.0 * Margin) * SCREEN_WIDTH;
 
         ComputeBounds();
     }

@@ -68,8 +68,8 @@ void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, co
 
         SDL_GetCurrentDisplayMode(0, &mode);
 
-        SCREEN_WIDTH = (mode.w) * 0.9;
-        SCREEN_HEIGHT = (mode.h) * 0.9;
+        SCREEN_WIDTH = (mode.w) * 0.8;
+        SCREEN_HEIGHT = (mode.h) * 0.8;
 
         Recompute();
 
@@ -1857,9 +1857,10 @@ bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
         auto button_plus = createHeaderButton(window, "+", clrWH, intDB, 32, 32, -1);
         auto button_minus = createHeaderButton(window, "-", clrWH, intDB, 32, 32, -1);
+        auto button_size = 35;
 
-        controls.push_back(Button(idx, button_plus, idx, idx + 1, idx, idx + 2, textx + 2 * text_space, texty + 35 + 2 * box_space, Control::Type::PLUS));
-        controls.push_back(Button(idx + 1, button_minus, idx, idx + 1, idx, idx + 2, textx + 2 * text_space + button_space + 32, texty + 35 + 2 * box_space, Control::Type::MINUS));
+        controls.push_back(Button(idx, button_plus, idx, idx + 1, idx, idx + 2, textx + 2 * text_space, texty + button_size + 2 * box_space, Control::Type::PLUS));
+        controls.push_back(Button(idx + 1, button_minus, idx, idx + 1, idx, idx + 2, textx + 2 * text_space + button_space + 32, texty + button_size + 2 * box_space, Control::Type::MINUS));
         controls.push_back(Button(idx + 2, "icons/yes.png", idx + 2, idx + 2, idx + 1, idx + 2, startx, buttony, Control::Type::ACTION));
         controls.push_back(Button(idx + 3, "icons/back-button.png", idx + 3, idx + 3, idx, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
@@ -1911,7 +1912,7 @@ bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
             std::string donation_text = "DONATE " + (std::to_string(donation)) + " cacao";
-            putText(renderer, donation_text.c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, textwidth, 35, textx + text_space, texty + text_space);
+            putText(renderer, donation_text.c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, textwidth, button_size, textx + text_space, texty + text_space);
 
             renderButtons(renderer, controls, current, intGR, text_space, text_space / 2);
 
@@ -2962,11 +2963,16 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
         // TODO: Should store them as offsets instead?
         if (story->Controls.size() > 0)
         {
-            auto offset_x = startx - story->Controls[2].X;
+            auto offset_x = 0;
 
-            if (offset_x < 0)
+            if (story->Controls.size() >= 3)
             {
-                offset_x = 0;
+                auto offset_x = startx - story->Controls[2].X;
+
+                if (offset_x < 0)
+                {
+                    offset_x = 0;
+                }
             }
 
             for (auto i = 0; i < story->Controls.size(); i++)
