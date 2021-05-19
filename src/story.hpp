@@ -9307,6 +9307,107 @@ public:
     }
 };
 
+class Story328 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story328()
+    {
+        ID = 328;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Type = Story::Type::NORMAL;
+
+        PreText = "You cannot suppress a scream as their wet stubby fingers clutch at you. It is like a scene from your worst nightmares. Striking out blindly, you stumble along the tunnel. You feel their shells crack under your frantic blows, but then a slimy hand presses over your face and you reel under a hail of punches. Ichor spurts into your eyes as you drive a deep blow hard into your eyes as you drive a deep blow hard into one of the creatures, and its eerie keening wail evokes a feeling of unendurable horror.";
+
+        auto DAMAGE = 0;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            DAMAGE = -3;
+
+            PreText += "[SWORDPLAY] ";
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE = -4;
+        }
+        else
+        {
+            PreText += "There is nothing you can do to prevent yourself being overwhelmed and slain.";
+
+            Type = Story::Type::DOOM;
+        }
+
+        if (DAMAGE != 0)
+        {
+            PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Points.";
+        }
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 258; }
+};
+
+class Story329 : public Story::Base
+{
+public:
+    Story329()
+    {
+        ID = 329;
+
+        Text = "You were optimistic. It takes you nearly two hours to smash a hole large enough to squeeze through. As you stand on the ledge, panting with exhaustion and with sweat pouring off your body, there is a movement from inside the tomb.\n\nOut of the hole slithers a flying cobra. Its hood is vastly extended to form translucent oval wings which beat slowly, carrying the snake forward through the air with venatic precision. Its iridescent scales and hood make it seem like a polished stone effigy, but there is no mistaking the living menace in its glittering golden eyes and flickering forked tongue.\n\nAfter the hours spent pounding away at the slab, your shoulders are aching and you can barely lift your arms. There is no way you could climb back down to the canoe right now. The cobra swoops higher, arching its head as it hovers just above you. You must think of something quickly, or you will fall prey to its lethal bite.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("[CHARMS] Cast a protective enchantment", 394, Skill::Type::CHARMS));
+        Choices.push_back(Choice::Base(Skill::UNARMED_COMBAT.Name, 191, Skill::Type::UNARMED_COMBAT));
+        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 413, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Otherwise", 145));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story330 : public Story::Base
+{
+public:
+    Story330()
+    {
+        ID = 330;
+
+        Text = "By the time you return with a little of the river water cupped in your hands, the strange dwarfish man has disappeared. Presumably he has crawled off into the reeds. You scan the bleak landscape, straining your ears for the sound of someone sloshing through the wet mud, but to no avail. He looked so weak that he could not get far, but you are not keen to go wading off the path in search of him. At least you know that you tried to help.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        return 373;
+    }
+};
+
 class Story331 : public Story::Base
 {
 public:
@@ -10710,6 +10811,9 @@ auto story324 = Story324();
 auto story325 = Story325();
 auto story326 = Story326();
 auto story327 = Story327();
+auto story328 = Story328();
+auto story329 = Story329();
+auto story330 = Story330();
 auto story331 = Story331();
 auto story332 = Story332();
 auto story333 = Story333();
@@ -10792,8 +10896,8 @@ void InitializeStories()
         &story290, &story291, &story292, &story293, &story294, &story295, &story296, &story297, &story298, &story299,
         &story300, &story301, &story302, &story303, &story304, &story305, &story306, &story307, &story308, &story309,
         &story310, &story311, &story312, &story313, &story314, &story315, &story316, &story317, &story318, &story319,
-        &story320, &story321, &story322, &story323, &story324, &story325, &story326, &story327,
-        &story331, &story332, &story333, &story334, &story335,
+        &story320, &story321, &story322, &story323, &story324, &story325, &story326, &story327, &story328, &story329,
+        &story330, &story331, &story332, &story333, &story334, &story335,
         &story343, &story344, &story345, &story346, &story347,
         &story350, &story354, &story355, &story356, &story357,
         &story366, &story367, &story368, &story369,
