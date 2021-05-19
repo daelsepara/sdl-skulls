@@ -10072,6 +10072,84 @@ public:
     int Continue(Character::Base &player) { return 399; }
 };
 
+class Story359 : public Story::Base
+{
+public:
+    Story359()
+    {
+        ID = 359;
+
+        Text = "He listens to your greeting and gives a curt regal nod before waving you on towards the next sentinel. This one rubs his jaw as he looks at you. Then you notice with a shudder that his lower jaw is a bare of skin -- just a raw glistening mass of sinew and tendon. His eyes are like the gulf of stars on a cloudless night. How will you address him?";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Address him as 'Lord Thunderbolt Laughter'", 37));
+        Choices.push_back(Choice::Base("... as 'Lord Blood'", 61));
+        Choices.push_back(Choice::Base("... as 'Lord Skull'", 107));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story360 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story360()
+    {
+        ID = 360;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You reach the slope of the dune and stumble as you try to retreat up it. The hydra's nearest head gives a triumphant hiss and lances down towards you as you lie helpless.";
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::CHARMS))
+        {
+            PreText += "You are lucky enough to have got a handful of sand which you throw in its face buying you the time to scrabble away unscathed.";
+        }
+        else
+        {
+            PreText += "Its bite inflicts some damage. You LOSE 2 Life Points.";
+
+            Character::GAIN_LIFE(player, -2);
+        }
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou have no recourse but to attack now.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_SKILL_ALL(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            return 429;
+        }
+        else if (!Character::VERIFY_ITEMS(player, {Item::Type::FLINT_KNIFE}) && !Character::VERIFY_ITEMS(player, {Item::Type::FLINT_KNIFE}))
+        {
+            return 402;
+        }
+        else
+        {
+            return 429;
+        }
+    }
+};
+
 class Story366 : public Story::Base
 {
 public:
