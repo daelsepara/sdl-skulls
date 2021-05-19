@@ -24,26 +24,43 @@ Uint8 B(Uint32 c) { return (Uint8)(c & 0x0000FF); }
 Uint8 A(Uint32 c) { return (Uint8)(c >> 24); }
 
 // Screen dimension constants
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+int SCREEN_WIDTH = 1024;
+int SCREEN_HEIGHT = 768;
 
-const double Margin = 0.05;
+double Margin = 0.05;
 
-const int splashw = 250;
-const int startx = (SCREEN_WIDTH * Margin);
-const int starty = (SCREEN_HEIGHT * Margin);
-const int textx = startx * 2 + splashw;
-const int texty = starty;
-const int buttonw = 64;
-const int buttonh = 64;
-const int buttony = (int)(SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
+int splashw = 0.35 * (SCREEN_WIDTH * (1.0 - 3.0 * Margin));
+int startx = (SCREEN_WIDTH * Margin);
+int starty = (SCREEN_HEIGHT * Margin);
+int textx = startx * 2 + splashw;
+int texty = starty;
+int buttonw = 64;
+int buttonh = 64;
+int buttony = (int)(SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
 
-const int button_space = 20;
-const int gridsize = buttonw + button_space;
-const int border_space = 8;
-const int border_pts = 4;
-const int arrow_size = 32;
-const int text_bounds = SCREEN_HEIGHT * (1.0 - Margin * 2.0) - buttonh - button_space * 2;
-const int textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space);
+int button_space = 20;
+int gridsize = buttonw + button_space;
+int border_space = 8;
+int border_pts = 4;
+int arrow_size = 32;
+int text_bounds = SCREEN_HEIGHT * (1.0 - Margin * 2.0) - buttonh - button_space * 2;
+int textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space);
+
+void Recompute()
+{
+    splashw = 0.35 * (SCREEN_WIDTH * (1.0 - 3.0 * Margin));
+    
+    startx = (SCREEN_WIDTH * Margin);
+    starty = (SCREEN_HEIGHT * Margin);
+    
+    textx = startx * 2 + splashw;
+    texty = starty;
+    
+    buttony = (int)(SCREEN_HEIGHT * (1.0 - Margin) - buttonh);
+    gridsize = buttonw + button_space;
+    
+    textwidth = ((1.0 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space);
+    text_bounds = SCREEN_HEIGHT * (1.0 - Margin * 2.0) - buttonh - button_space * 2;
+}
 
 #endif

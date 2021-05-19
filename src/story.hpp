@@ -244,14 +244,14 @@ std::vector<Button> StandardControls()
 {
     auto controls = std::vector<Button>();
 
-    controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
-    controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+    controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+    controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
     controls.push_back(Button(2, "icons/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
     controls.push_back(Button(3, "icons/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
     controls.push_back(Button(4, "icons/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
     controls.push_back(Button(5, "icons/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
     controls.push_back(Button(6, "icons/next.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::NEXT));
-    controls.push_back(Button(7, "icons/exit.png", 6, 7, 1, 7, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+    controls.push_back(Button(7, "icons/exit.png", 6, 7, 1, 7, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
     return controls;
 }
@@ -260,15 +260,15 @@ std::vector<Button> ShopControls()
 {
     auto controls = std::vector<Button>();
 
-    controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
-    controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+    controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+    controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
     controls.push_back(Button(2, "icons/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
     controls.push_back(Button(3, "icons/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
     controls.push_back(Button(4, "icons/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
     controls.push_back(Button(5, "icons/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
     controls.push_back(Button(6, "icons/shop.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::SHOP));
     controls.push_back(Button(7, "icons/next.png", 6, 8, 1, 7, startx + 5 * gridsize, buttony, Control::Type::NEXT));
-    controls.push_back(Button(8, "icons/exit.png", 7, 8, 1, 8, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+    controls.push_back(Button(8, "icons/exit.png", 7, 8, 1, 8, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
     return controls;
 }
@@ -277,15 +277,15 @@ std::vector<Button> TradeControls()
 {
     auto controls = std::vector<Button>();
 
-    controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
-    controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+    controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+    controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
     controls.push_back(Button(2, "icons/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
     controls.push_back(Button(3, "icons/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
     controls.push_back(Button(4, "icons/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
     controls.push_back(Button(5, "icons/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
     controls.push_back(Button(6, "icons/shop.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::TRADE));
     controls.push_back(Button(7, "icons/next.png", 6, 8, 1, 7, startx + 5 * gridsize, buttony, Control::Type::NEXT));
-    controls.push_back(Button(8, "icons/exit.png", 7, 8, 1, 8, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+    controls.push_back(Button(8, "icons/exit.png", 7, 8, 1, 8, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
     return controls;
 }
@@ -10134,7 +10134,7 @@ public:
         Title = "Not implemented yet";
 
         Controls.clear();
-        Controls.push_back(Button(0, "icons/exit.png", 0, 0, -1, -1, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+        Controls.push_back(Button(0, "icons/exit.png", 0, 0, -1, -1, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
     }
 };
 

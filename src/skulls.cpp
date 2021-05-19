@@ -64,17 +64,17 @@ void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, co
     }
     else
     {
-        /*
         SDL_DisplayMode mode;
 
         SDL_GetCurrentDisplayMode(0, &mode);
 
         SCREEN_WIDTH = mode.w;
         SCREEN_HEIGHT = mode.h;
-        */
+
+        Recompute();
 
         // Create window and renderer
-        SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_RENDERER_ACCELERATED, window, renderer);
+        SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN | SDL_RENDERER_ACCELERATED, window, renderer);
 
         SDL_SetRenderDrawBlendMode(*renderer, SDL_BLENDMODE_NONE);
 
@@ -133,9 +133,10 @@ void renderImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y)
     }
 }
 
-int fitImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y, int w)
+int fitImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y, int w, int h)
 {
-    int h = image->h;
+    int splash_h = image->h;
+    int splash_w = w;
 
     if (image && renderer)
     {
@@ -143,11 +144,20 @@ int fitImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y, int w)
 
         if (w != image->w)
         {
-            h = (int)((double)w / image->w * image->h);
+            if (image->w > image->h)
+            {
+                splash_h = (int)((double)w / image->w * image->h);
+                splash_w = w;
+            }
+            else
+            {
+                splash_h = h;
+                splash_w = (int)((double)h / image->h * image->w);
+            }
         }
 
         position.w = w;
-        position.h = h;
+        position.h = splash_h;
         position.x = x;
         position.y = y;
 
@@ -170,7 +180,7 @@ int fitImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y, int w)
         }
     }
 
-    return h;
+    return splash_h;
 }
 
 // Render a portion of the text (image) on bounded surface within the specified window
@@ -422,7 +432,7 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
             // Fill the surface with background color
             fillWindow(renderer, intDB);
 
-            fitImage(renderer, splash, startx, starty, splashw);
+            fitImage(renderer, splash, startx, starty, splashw, text_bounds);
             renderText(renderer, text, intDB, startx * 2 + splashw, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
             renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
 
@@ -475,7 +485,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
             // Fill the surface with background color
             fillWindow(renderer, intWH);
 
-            fitImage(renderer, splash, startx, starty, marginw);
+            fitImage(renderer, splash, startx, starty, marginw, text_bounds);
 
             renderButtons(renderer, controls, current, intGR, 8, 4);
 
@@ -2381,7 +2391,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
             if (splash)
             {
-                splash_h = fitImage(renderer, splash, startx, starty, splashw);
+                splash_h = fitImage(renderer, splash, startx, starty, splashw, text_bounds);
             }
 
             if (!story->Image || (splash && splash_h < 2 * (boxh + infoh + box_space)))
@@ -2953,6 +2963,46 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
         SDL_Surface *text = NULL;
 
+        // TODO: Should store them as offsets instead?
+        if (story->Controls.size() > 0)
+        {
+            auto offset_x = startx - story->Controls[2].X;
+            
+            if (offset_x < 0)
+            {
+                offset_x = 0;
+            }
+
+            for (auto i = 0; i < story->Controls.size(); i++)
+            {
+                if (story->Controls[i].Type == Control::Type::SCROLL_UP || story->Controls[i].Type == Control::Type::SCROLL_DOWN)
+                {
+                    story->Controls[i].X = (1.0 - Margin) * SCREEN_WIDTH - arrow_size;
+
+                    if (story->Controls[i].Type == Control::Type::SCROLL_UP)
+                    {
+                        story->Controls[i].Y = texty + border_space;
+                    }
+                    else
+                    {
+                        story->Controls[i].Y = texty + text_bounds - arrow_size - border_space;
+                    }
+                }
+                else if (story->Controls[i].Type == Control::Type::BACK || story->Controls[i].Type == Control::Type::QUIT)
+                {
+                    story->Controls[i].X = (1.0 - Margin) * SCREEN_WIDTH - buttonw;
+                    
+                    story->Controls[i].Y = buttony;
+                }
+                else
+                {
+                    story->Controls[i].X = story->Controls[i].X + offset_x;
+                    
+                    story->Controls[i].Y = buttony;
+                }
+            }
+        }
+
         if (run_once)
         {
             run_once = false;
@@ -3016,7 +3066,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                 if (story->Image)
                 {
-                    splash_h = fitImage(renderer, splash, startx, texty, splashw);
+                    splash_h = fitImage(renderer, splash, startx, texty, splashw, text_bounds);
                 }
 
                 if (!story->Image || (splash && splash_h < 2 * (boxh + infoh + box_space)))
@@ -3360,7 +3410,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
             // Fill the surface with background color
             fillWindow(renderer, intDB);
 
-            fitImage(renderer, splash, startx, starty, splashw);
+            fitImage(renderer, splash, startx, starty, splashw, text_bounds);
             renderText(renderer, text, intDB, startx * 2 + splashw, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
             renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, font_size, TTF_STYLE_NORMAL);
 
