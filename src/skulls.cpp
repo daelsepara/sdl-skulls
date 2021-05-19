@@ -144,19 +144,17 @@ int fitImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y, int w, in
 
         if (w != image->w)
         {
-            if (image->w > image->h)
-            {
-                splash_h = (int)((double)w / image->w * image->h);
-                splash_w = w;
-            }
-            else
+            splash_h = (int)((double)w / image->w * image->h);
+            splash_w = w;
+
+            if (splash_h > h)
             {
                 splash_h = h;
                 splash_w = (int)((double)h / image->h * image->w);
             }
         }
 
-        position.w = w;
+        position.w = splash_w;
         position.h = splash_h;
         position.x = x;
         position.y = y;
@@ -2394,13 +2392,13 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 splash_h = fitImage(renderer, splash, startx, starty, splashw, text_bounds);
             }
 
-            if (!story->Image || (splash && splash_h < 2 * (boxh + infoh + box_space)))
+            if (!story->Image || (splash && splash_h < (text_bounds - (boxh + infoh))))
             {
                 putText(renderer, "Life", font, text_space, clrWH, (player.Life > 0 && story->Type != Story::Type::DOOM) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
                 putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
             }
 
-            if (!story->Image || (splash && splash_h < (boxh + infoh + box_space)))
+            if (!story->Image || (splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)))
             {
                 putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
                 putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
@@ -2967,7 +2965,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
         if (story->Controls.size() > 0)
         {
             auto offset_x = startx - story->Controls[2].X;
-            
+
             if (offset_x < 0)
             {
                 offset_x = 0;
@@ -2991,13 +2989,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                 else if (story->Controls[i].Type == Control::Type::BACK || story->Controls[i].Type == Control::Type::QUIT)
                 {
                     story->Controls[i].X = (1.0 - Margin) * SCREEN_WIDTH - buttonw;
-                    
+
                     story->Controls[i].Y = buttony;
                 }
                 else
                 {
                     story->Controls[i].X = story->Controls[i].X + offset_x;
-                    
+
                     story->Controls[i].Y = buttony;
                 }
             }
@@ -3069,15 +3067,15 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     splash_h = fitImage(renderer, splash, startx, texty, splashw, text_bounds);
                 }
 
-                if (!story->Image || (splash && splash_h < 2 * (boxh + infoh + box_space)))
+                if (!story->Image || (splash && splash_h < (text_bounds - (boxh + infoh))))
                 {
                     putText(renderer, "Life", font, text_space, clrWH, (player.Life > 0 && story->Type != Story::Type::DOOM) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
                     putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
                 }
 
-                if (!story->Image || (splash && splash_h < (boxh + infoh + box_space)))
+                if (!story->Image || (splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)))
                 {
-                    putText(renderer, "Money", font, text_space, clrWH, (story->Type == Story::Type::NORMAL && player.Life > 0) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+                    putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
                     putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
                 }
 

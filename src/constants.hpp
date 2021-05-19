@@ -29,7 +29,7 @@ int SCREEN_HEIGHT = 768;
 
 double Margin = 0.05;
 
-int splashw = 0.35 * (SCREEN_WIDTH * (1.0 - 3.0 * Margin));
+int splashw = 0.30 * (SCREEN_WIDTH * (1.0 - 3.0 * Margin));
 int startx = (SCREEN_WIDTH * Margin);
 int starty = (SCREEN_HEIGHT * Margin);
 int textx = startx * 2 + splashw;
@@ -48,7 +48,7 @@ int textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_spa
 
 void Recompute()
 {
-    splashw = 0.35 * (SCREEN_WIDTH * (1.0 - 3.0 * Margin));
+    splashw = 0.30 * (SCREEN_WIDTH * (1.0 - 3.0 * Margin));
     
     startx = (SCREEN_WIDTH * Margin);
     starty = (SCREEN_HEIGHT * Margin);
