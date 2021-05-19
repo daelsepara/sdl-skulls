@@ -68,13 +68,13 @@ void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, co
 
         SDL_GetCurrentDisplayMode(0, &mode);
 
-        SCREEN_WIDTH = mode.w;
-        SCREEN_HEIGHT = mode.h;
+        SCREEN_WIDTH = (mode.w) * 0.9;
+        SCREEN_HEIGHT = (mode.h) * 0.9;
 
         Recompute();
 
         // Create window and renderer
-        SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_FULLSCREEN | SDL_RENDERER_ACCELERATED, window, renderer);
+        SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN | SDL_RENDERER_ACCELERATED, window, renderer);
 
         SDL_SetRenderDrawBlendMode(*renderer, SDL_BLENDMODE_NONE);
 
@@ -470,20 +470,18 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
         auto selected = false;
         auto current = -1;
 
-        const int map_buttonw = 150;
-        const int map_buttonh = 48;
-        const int map_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - map_buttonh);
-
         auto marginw = (1.0 - 2.0 * Margin) * SCREEN_WIDTH;
 
         std::vector<Button> controls = {Button(0, "icons/back-button.png", 0, 0, 0, 0, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK)};
+
+        int offset_x = (marginw - (double)text_bounds / splash->h * splash->w) / 2;
 
         while (!quit)
         {
             // Fill the surface with background color
             fillWindow(renderer, intWH);
 
-            fitImage(renderer, splash, startx, starty, marginw, text_bounds);
+            fitImage(renderer, splash, startx + offset_x, starty, marginw, text_bounds);
 
             renderButtons(renderer, controls, current, intGR, 8, 4);
 
@@ -512,8 +510,8 @@ void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font
     const int profilew = SCREEN_WIDTH * (1.0 - 2.0 * Margin);
     const int profileh = 70;
 
-    auto headerw = 150;
-    auto headerh = 36;
+    auto headerw = 0.6 * splashw;
+    auto headerh = 0.06 * SCREEN_HEIGHT;
     auto space = 8;
 
     auto marginw = Margin * SCREEN_WIDTH;
@@ -739,8 +737,8 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
         auto marginw = Margin * SCREEN_WIDTH;
         auto marginh = Margin * SCREEN_HEIGHT / 2;
 
-        auto headerw = 150;
-        auto headerh = 36;
+        auto headerw = 0.6 * splashw;
+        auto headerh = 0.06 * SCREEN_HEIGHT;
         auto space = 8;
         auto font_size = 18;
 
@@ -1007,8 +1005,8 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
         auto scrollDown = false;
         auto hold = false;
 
-        auto infoh = 36;
-        auto boxh = 75;
+        auto infoh = 0.06 * SCREEN_HEIGHT;
+        auto boxh = 0.125 * SCREEN_HEIGHT;
         auto box_space = 10;
 
         while (!done)
@@ -1165,8 +1163,8 @@ int giftScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, C
         auto scrollDown = false;
         auto hold = false;
 
-        auto infoh = 36;
-        auto boxh = 75;
+        auto infoh = 0.06 * SCREEN_HEIGHT;
+        auto boxh = 0.125 * SCREEN_HEIGHT;
 
         auto selected_item = -1;
 
@@ -1326,8 +1324,8 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
         auto scrollDown = false;
         auto hold = false;
 
-        auto infoh = 36;
-        auto boxh = 75;
+        auto infoh = 0.06 * SCREEN_HEIGHT;
+        auto boxh = 0.125 * SCREEN_HEIGHT;
 
         auto selection = std::vector<Item::Type>();
 
@@ -1520,8 +1518,8 @@ bool loseSkills(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
         auto scrollDown = false;
         auto hold = false;
 
-        auto infoh = 36;
-        auto boxh = 75;
+        auto infoh = 0.06 * SCREEN_HEIGHT;
+        auto boxh = 0.125 * SCREEN_HEIGHT;
 
         auto selection = std::vector<Skill::Base>();
 
@@ -1705,8 +1703,8 @@ int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &playe
         auto scrollDown = false;
         auto hold = false;
 
-        auto infoh = 36;
-        auto boxh = 75;
+        auto infoh = 0.06 * SCREEN_HEIGHT;
+        auto boxh = 0.125 * SCREEN_HEIGHT;
 
         auto selection = std::vector<int>();
 
@@ -1876,8 +1874,8 @@ bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
         auto scrollDown = false;
         auto hold = false;
 
-        auto infoh = 36;
-        auto boxh = 75;
+        auto infoh = 0.06 * SCREEN_HEIGHT;
+        auto boxh = 0.125 * SCREEN_HEIGHT;
 
         auto donation = 1;
 
@@ -2016,8 +2014,8 @@ bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pl
         auto scrollDown = false;
         auto hold = false;
 
-        auto infoh = 36;
-        auto boxh = 75;
+        auto infoh = 0.06 * SCREEN_HEIGHT;
+        auto boxh = 0.125 * SCREEN_HEIGHT;
 
         auto donation = 1;
 
@@ -2150,9 +2148,9 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
         auto scrollDown = false;
         auto hold = false;
 
-        auto messageh = 150;
-        auto boxh = 75;
-        auto infoh = 36;
+        auto messageh = 0.25 * SCREEN_HEIGHT;
+        auto boxh = 0.125 * SCREEN_HEIGHT;
+        auto infoh = 0.06 * SCREEN_HEIGHT;
         auto box_space = 10;
 
         while (!done)
@@ -2340,9 +2338,9 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
         auto text_space = 8;
         auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
-        auto messageh = 150;
-        auto boxh = 75;
-        auto infoh = 36;
+        auto messageh = 0.25 * SCREEN_HEIGHT;
+        auto boxh = 0.125 * SCREEN_HEIGHT;
+        auto infoh = 0.06 * SCREEN_HEIGHT;
         auto box_space = 10;
 
         for (int i = 0; i < choices.size(); i++)
@@ -2368,7 +2366,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
         auto font = TTF_OpenFont("fonts/default.ttf", 20);
 
-        int splash_h = 150;
+        int splash_h = splashw;
 
         if (splash)
         {
@@ -2942,10 +2940,10 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
     auto font = TTF_OpenFont("fonts/default.ttf", font_size);
     auto text_space = 8;
-    auto messageh = 150;
+    auto messageh = 0.25 * SCREEN_HEIGHT;
 
-    auto infoh = 36;
-    auto boxh = 75;
+    auto infoh = 0.06 * SCREEN_HEIGHT;
+    auto boxh = 0.125 * SCREEN_HEIGHT;
     auto box_space = 10;
 
     Character::Base saveCharacter;
