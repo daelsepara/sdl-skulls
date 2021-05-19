@@ -338,7 +338,7 @@ public:
     {
         ID = 2;
 
-        Text = "The priest accepts your offering, glancing at the cacao with a slight smile before dropping them into his belt pouch. \"I consulted the oracle before you came, and here is the advice given. Travel first to the town of Balak on the northern coast. Do not put to sea at once; wait a week before you set sail. You might be tempted to put in at the Isle of the Iguana, but be warned that only an accomplished seafarer should venture out of sight of land.\"\n\n\"What about the desert?\" you ask.\n\n\"I told you already, buy a waterskin. And there's one other thing that the oracle revealed. You must seek the blood that is like sap.\"\n\n\"Enigmatic,\" you say, considering this, \"but I suppose that's the way of oracles.\"\n\nThe priest beams happily. \"Just so. Before you go, can I interest you in a companion for the journey?\" He claps his hands, and a novitiate priest steps out from around the side side of the shrine carrying a bird on his arm.\n\nYou look from the high priest to the bird to the novitiate. \"A companion, you say? Do you mean this lad, or the owl?\"\n\n\"The owl. The lad is needed here to trim the votive lamps in the shrine each evening. But I think you will find the owl a personable companion. Just keep it fed on small rodents and the like. The price is three cacao.\"\n\nYou peer closely at the owl. \"Isn't the owl the symbol of death? Additionally, unless I am much mistaken this bird has only one leg.\"\n\nThe high priest shrugs. \"Call it two cacao, then. And let me set your mind at rest: the owl is also a symbol of night and the moon.\"";
+        Text = "The priest accepts your offering, glancing at the cacao with a slight smile before dropping them into his belt pouch. \"I consulted the oracle before you came, and here is the advice given. Travel first to the town of Balak on the northern coast. Do not put to sea at once; wait a week before you set sail. You might be tempted to put in at the Isle of the Iguana, but be warned that only an accomplished seafarer should venture out of sight of land.\"\n\n\"What about the desert?\" you ask.\n\n\"I told you already, buy a waterskin. And there's one other thing that the oracle revealed. You must seek the blood that is like sap.\"\n\n\"Enigmatic,\" you say, considering this, \"but I suppose that's the way of oracles.\"\n\nThe priest beams happily. \"Just so. Before you go, can I interest you in a companion for the journey?\" He claps his hands, and a novitiate priest steps out from around the side side of the shrine carrying a bird on his arm.\n\nYou look from the high priest to the bird to the novitiate. \"A companion, you say? Do you mean this lad, or the OWL?\"\n\n\"The OWL. The lad is needed here to trim the votive lamps in the shrine each evening. But I think you will find the OWL a personable companion. Just keep it fed on small rodents and the like. The price is three cacao.\"\n\nYou peer closely at the OWL. \"Isn't the OWL the symbol of death? Additionally, unless I am much mistaken this bird has only one leg.\"\n\nThe high priest shrugs. \"Call it two cacao, then. And let me set your mind at rest: the OWL is also a symbol of night and the moon.\"";
 
         Image = "images/filler1.png";
 
@@ -11642,6 +11642,81 @@ public:
     }
 };
 
+class Story421 : public Story::Base
+{
+public:
+    Story421()
+    {
+        ID = 421;
+
+        Text = "The OWL is a natural predator of the bats. It perches on your shoulder and scans the dim vaults of the hall, its luminous eyes drinking up even the faintest glimmer of light. You feel reassured that, even through your own senses are helpless in the darkness, the OWL remains alert and watchful. Any bat who dared to descend from its roost would meet a sticky end. They seem to know this, and despite the rank stench of the place you are able to get a restful night's sleep.\n\nYou RECOVER 1 Life Point.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, 1);
+    }
+
+    int Continue(Character::Base &player) { return 41; }
+};
+
+class Story422 : public Story::Base
+{
+public:
+    Story422()
+    {
+        ID = 422;
+
+        Text = "You take out the chalice and hold it reverentially in your hands. If it is indeed Chalice of Life, it is the same bowl in which the Supreme God gave birth to mankind. Praying that it still has some power to work miracles, you set the chalice on the ground and place your brother's skull within.\n\nThe sun's golden rays blaze down, catching in an incandescent cusp on the rim of the chalice. A stream of heavy vapour rapidly boils up, and within seconds you can no longer make out the skull within its pool of gold mist. The mist rises up into a swirling column about two metres high and hangs there above the chalice, shining with an inner core of light.\n\nA brief gust of wind stirs and dissipates the mist. The last strands are blown away and you stare incredulously for a long moment before giving a great shout of joy. Your brother is standing there in front of you -- alive again!\n\n\"Morning Star!\" As two of you embrace, there is a crackle of energy and you feel the injuries and fatigue of the last few weeks burned away by life-giving magic.\n\n\"It is good to see you, Evening Star,\" says your brother, smiling as he hugs you to him.\n\n\"And you.\" You point towards the brooding shrine overlooking the ball contest arena. \"Now, brother, let's show that sorcerer our true mettle!\"\n\nYou RECOVER 4 Life Points.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, 4);
+
+        Character::REMOVE_CODEWORD(player, Codeword::Type::VENUS);
+    }
+
+    int Continue(Character::Base &player) { return 42; }
+};
+
+class Story423 : public Story::Base
+{
+public:
+    Story423()
+    {
+        ID = 423;
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+
+    int Background(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::HYDRA_BLOOD_BALL}))
+        {
+            return 386;
+        }
+        else
+        {
+            return 405;
+        }
+    }
+};
+
 class Story424 : public Story::Base
 {
 public:
@@ -12234,6 +12309,9 @@ auto story417 = Story417();
 auto story418 = Story418();
 auto story419 = Story419();
 auto story420 = Story420();
+auto story421 = Story421();
+auto story422 = Story422();
+auto story423 = Story423();
 auto story424 = Story424();
 auto story425 = Story425();
 auto story426 = Story426();
@@ -12286,7 +12364,7 @@ void InitializeStories()
         &story390, &story391, &story392, &story393, &story394, &story395, &story396, &story397, &story398, &story399,
         &story400, &story401, &story402, &story403, &story404, &story405, &story406, &story407, &story408, &story409,
         &story410, &story411, &story412, &story413, &story414, &story415, &story416, &story417, &story418, &story419,
-        &story420, &story424, &story425, &story426,
+        &story420, &story421, &story422, &story423, &story424, &story425, &story426,
         &story435, &story437,
         &story441};
 }
