@@ -133,17 +133,17 @@ void renderImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y)
     }
 }
 
-void fitImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y, int w)
+int fitImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y, int w)
 {
+    int h = image->h;
+
     if (image && renderer)
     {
         SDL_Rect position;
 
-        int h = image->h;
-
         if (w != image->w)
         {
-            h = (w / image->w) * image->h;
+            h = (int)((double)w / image->w * image->h);
         }
 
         position.w = w;
@@ -169,6 +169,8 @@ void fitImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y, int w)
             texture = NULL;
         }
     }
+
+    return h;
 }
 
 // Render a portion of the text (image) on bounded surface within the specified window
@@ -396,8 +398,9 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 
     auto *about = "Virtual Reality Adventure Games are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
 
-    auto splash = createImage("images/pyramid.png");
-    auto text = createText(about, "fonts/default.ttf", 18, clrWH, SCREEN_WIDTH * (1.0 - 3 * Margin) - splash->w);
+    auto splash = createImage("images/pyramid.jpg");
+
+    auto text = createText(about, "fonts/default.ttf", 18, clrWH, SCREEN_WIDTH * (1.0 - 3 * Margin) - splashw);
 
     // Render the image
     if (window && renderer && splash && text)
@@ -419,8 +422,8 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
             // Fill the surface with background color
             fillWindow(renderer, intDB);
 
-            renderImage(renderer, splash, startx, starty);
-            renderText(renderer, text, intDB, startx * 2 + splash->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
+            fitImage(renderer, splash, startx, starty, splashw);
+            renderText(renderer, text, intDB, startx * 2 + splashw, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
             renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
 
             bool scrollUp = false;
@@ -449,7 +452,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
     auto quit = false;
 
-    auto splash = createImage("images/map-one-world.png");
+    auto splash = createImage("images/map-one-world.jpg");
 
     // Render the image
     if (window && renderer && splash)
@@ -463,6 +466,8 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
         const int map_buttonh = 48;
         const int map_buttony = (int)(SCREEN_HEIGHT * (1 - Margin) - map_buttonh);
 
+        auto marginw = (1.0 - 2.0 * Margin) * SCREEN_WIDTH;
+
         std::vector<Button> controls = {Button(0, "images/back-button.png", 0, 0, 0, 0, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK)};
 
         while (!quit)
@@ -470,7 +475,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
             // Fill the surface with background color
             fillWindow(renderer, intWH);
 
-            renderImage(renderer, splash, startx, starty);
+            fitImage(renderer, splash, startx, starty, marginw);
 
             renderButtons(renderer, controls, current, intGR, 8, 4);
 
@@ -2355,6 +2360,16 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
         auto font = TTF_OpenFont("fonts/default.ttf", 20);
 
+        int splash_h = 150;
+
+        if (splash)
+        {
+            if (splash->w != splashw)
+            {
+                splash_h = (int)((double)splashw / splash->w * splash->h);
+            }
+        }
+
         while (!quit)
         {
             if (story->Title)
@@ -2366,16 +2381,16 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
             if (splash)
             {
-                renderImage(renderer, splash, startx, starty);
+                splash_h = fitImage(renderer, splash, startx, starty, splashw);
             }
 
-            if (!story->Image || (splash && splash->h < 2 * (boxh + infoh + box_space)))
+            if (!story->Image || (splash && splash_h < 2 * (boxh + infoh + box_space)))
             {
                 putText(renderer, "Life", font, text_space, clrWH, (player.Life > 0 && story->Type != Story::Type::DOOM) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
                 putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
             }
 
-            if (!story->Image || (splash && splash->h < (boxh + infoh + box_space)))
+            if (!story->Image || (splash && splash_h < (boxh + infoh + box_space)))
             {
                 putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
                 putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
@@ -2956,9 +2971,16 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
         player.StoryID = story->ID;
 
+        int splash_h = 250;
+
         if (story->Image)
         {
             splash = createImage(story->Image);
+
+            if (splash->w != splashw)
+            {
+                splash_h = (int)((double)splashw / splash->w * splash->h);
+            }
         }
 
         if (story->Text)
@@ -2994,16 +3016,16 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                 if (story->Image)
                 {
-                    renderImage(renderer, splash, startx, texty);
+                    splash_h = fitImage(renderer, splash, startx, texty, splashw);
                 }
 
-                if (!story->Image || (splash && splash->h < 2 * (boxh + infoh + box_space)))
+                if (!story->Image || (splash && splash_h < 2 * (boxh + infoh + box_space)))
                 {
                     putText(renderer, "Life", font, text_space, clrWH, (player.Life > 0 && story->Type != Story::Type::DOOM) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
                     putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
                 }
 
-                if (!story->Image || (splash && splash->h < (boxh + infoh + box_space)))
+                if (!story->Image || (splash && splash_h < (boxh + infoh + box_space)))
                 {
                     putText(renderer, "Money", font, text_space, clrWH, (story->Type == Story::Type::NORMAL && player.Life > 0) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
                     putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
@@ -3206,7 +3228,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                                     if (story->Bye)
                                     {
                                         auto bye = createText(story->Bye, "fonts/default.ttf", font_size + 4, clrBK, (SCREEN_WIDTH * (1.0 - 2.0 * Margin)), TTF_STYLE_NORMAL);
-                                        auto forward = createImage("images/next.png");
+                                        auto forward = createImage("images/next.jpg");
 
                                         if (bye && forward)
                                         {
@@ -3261,20 +3283,20 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                 }
             }
+        }
 
-            if (splash)
-            {
-                SDL_FreeSurface(splash);
+        if (splash)
+        {
+            SDL_FreeSurface(splash);
 
-                splash = NULL;
-            }
+            splash = NULL;
+        }
 
-            if (text)
-            {
-                SDL_FreeSurface(text);
+        if (text)
+        {
+            SDL_FreeSurface(text);
 
-                text = NULL;
-            }
+            text = NULL;
         }
     }
 
@@ -3301,9 +3323,9 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
 
     auto *introduction = "The sole survivor of an expedition brings news of disaster. Your twin brother is lost in the trackless western sierra. Resolving to find out his fate, you leave the safety of your home far behind. Your quest takes you to lost jungle cities, across mountains and seas, and even into the depths of the underworld.\n\nYou will plunge into the eerie world of Mayan myth. You will confront ghosts and gods, bargain for your life against wily demons, find allies and enemies among both the living and the dead. If you are breave enough to survive the dangers of the spirit-haunted western desert, you must still confront the wizard called Necklace of skulls in a deadly contest whose stakes are nothing less than your own soul.";
 
-    auto splash = createImage("images/skulls-cover.png");
+    auto splash = createImage("images/skulls-cover.jpg");
 
-    auto text = createText(introduction, "fonts/default.ttf", font_size, clrWH, SCREEN_WIDTH * (1.0 - 3.0 * Margin) - splash->w);
+    auto text = createText(introduction, "fonts/default.ttf", font_size, clrWH, SCREEN_WIDTH * (1.0 - 3.0 * Margin) - splashw);
 
     auto title = "Necklace of Skulls";
 
@@ -3338,8 +3360,8 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
             // Fill the surface with background color
             fillWindow(renderer, intDB);
 
-            renderImage(renderer, splash, startx, starty);
-            renderText(renderer, text, intDB, startx * 2 + splash->w, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
+            fitImage(renderer, splash, startx, starty, splashw);
+            renderText(renderer, text, intDB, startx * 2 + splashw, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
             renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, font_size, TTF_STYLE_NORMAL);
 
             bool scrollUp = false;
