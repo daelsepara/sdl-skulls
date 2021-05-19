@@ -4407,7 +4407,7 @@ public:
         }
         else
         {
-            PreText += "You stumble and jar your elbow on the side pall, recoiling in agony while your opponent gains possession of the ball.";
+            PreText = "You stumble and jar your elbow on the side pall, recoiling in agony while your opponent gains possession of the ball.";
         }
 
         Text = PreText.c_str();
@@ -10400,14 +10400,14 @@ public:
         Controls = StandardControls();
     }
 
-    int Continue(Character::Base &player) { return 182; }
-
     void Event(Character::Base &player)
     {
         player.Life = player.MAX_LIFE_LIMIT;
 
         Character::GET_CODEWORDS(player, {Codeword::Type::SAKBE});
     }
+
+    int Continue(Character::Base &player) { return 182; }
 };
 
 class Story371 : public Story::Base
@@ -10429,6 +10429,49 @@ public:
     int Continue(Character::Base &player) { return 97; }
 };
 
+class Story372 : public Story::Base
+{
+public:
+    Story372()
+    {
+        ID = 372;
+
+        Text = "Ripping open the packet, you scatter a handful of salt into the face of the closes snail-creature. It emits a ghastly whining cry and pulls back into its shell as the salt stings its sensitive flesh like acid.\n\nYou advance, casting more salt at any of the creatures that are bold enough to try to stop you. It is hard going, for they are clustered thickly in the tunnel and you are shuddering with terror by now, but at last you reach the canoe. Scattering the last of the salt back to deter pursuers, you jump into the canoe and gesture for the demonic oarsmen to cast off.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::PARCEL_OF_SALT});
+    }
+
+    int Continue(Character::Base &player) { return 258; }
+};
+
+class Story373 : public Story::Base
+{
+public:
+    Story373()
+    {
+        ID = 373;
+
+        Text = "You continue westwards, trudging beneath the living world on a journey that will carry you to the lower reaches of the Deathlands. Any attempt to contemplate your bizarre situation threatens to bring on an attack of claustrophobic panic, so you try to think only of your quest for Morning Star. You swear you'll give that wizard cause to rue the day he chose to work his wiles on your brother.\n\nAll the light drains out of the sky, leaving a hot sulphurous darkness. A flicker of red light shows as a haze on the horizon, like glowing coals against the blackness. You head towards it.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 80; }
+};
+
 class Story374 : public Story::Base
 {
 public:
@@ -10446,6 +10489,73 @@ public:
     }
 
     int Continue(Character::Base &player) { return 415; }
+};
+
+class Story375 : public Story::Base
+{
+public:
+    Story375()
+    {
+        ID = 375;
+
+        Text = "The cobra hovers in the air, head swaying from side to side with the beat of its strange wings. The wings are lit up by the luminous veins of glassy rock shining from behind it, displaying dark spots which on a normal cobra would be the patterning of its hood. They look like huge black eyes hanging in the gloom.";
+
+        Image = "images/flying-snake.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Lunge forward and strike it at once", 122));
+        Choices.push_back(Choice::Base("Wait until the cobra swoops in and then attempt a counterattack", 145));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story376 : public Story::Base
+{
+public:
+    Story376()
+    {
+        ID = 376;
+
+        Text = "He receives your answer with a languid smile. You suddenly have a nasty feeling you have been tricked.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
+        {
+            return 56;
+        }
+        else
+        {
+            return 60;
+        }
+    }
+};
+
+class Story377 : public Story::Base
+{
+public:
+    Story377()
+    {
+        ID = 377;
+
+        Text = "You hide behind some bushes and wait for the sun to set. As dusk descends, the pitcher tips over to reveal a second head perched on the sleeping woman's shoulder. It has long coiled hair, stark white flesh and a black slit of a mouth. Rolling its eyes, it gives vent to a thin shriek of annoyance at seeing no sign of you. Then its hair flicks out, twisting to form thin legs like a pond-skater's which it braces against the ground before pulling itself off its host's neck with a sucking noise.\n\nYou wait until it has gone loping off into the night in search of prey, then look along the river bank until you find what you need: a smooth rock about the size and shape of a head. Using mud to daub some facial features on this, you prop it on the sleeping woman's shoulder and drape it with reeds to resemble hair. Then you go back and hide in the bushes.\n\nHours pas before the monster returns, prancing out of the darkness on its thin stilt-like legs. On catching sight of another of its kind perched on its own host body, it gives a shriek like an enraged bird and hurls itself forward -- only to fall stunned when it bites hard on the 'interloper' and breaks its teeth. You rush out of cover, snatch up the creature, and stuff pebbles into its bloodied mouth. All it can do is writhe weakly and emit choking noises. You take it to the edge of the river and throw it in, where it sinks without a trace.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 398; }
 };
 
 class Story378 : public Story::Base
@@ -10470,6 +10580,214 @@ public:
     }
 
     int Continue(Character::Base &player) { return 398; }
+};
+
+class Story379 : public Story::Base
+{
+public:
+    Story379()
+    {
+        ID = 379;
+
+        Text = "Legend states that a rich man can only enter the afterlife if led there by a poor man. Judging by his regalia, the figure you saw walking ahead of you was rich, and he evidently did not get rid of his money when he passed the idol or the bowl would not be empty. The sensible thing to do would therefore be to get rid of all your money at this point.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.LostMoney = player.Money;
+        player.Money = 0;
+    }
+
+    int Continue(Character::Base &player) { return 259; }
+};
+
+class Story380 : public Story::Base
+{
+public:
+    Story380()
+    {
+        ID = 380;
+
+        Text = "No expression shows on the hard mask-like face as you make your genuflection. There is no roar of rage to show he is affronted, nor flash of sullen anger in his eye. He only raises his sceptre slowly, as though to emphasize a point he is about to make .Then, before you have a chance to move, he brings the sceptre swishing down to split your skull open like a melon. It ends suddenly and horribly for you.";
+
+        Image = "images/filler1.png";
+
+        Type = Story::Type::DOOM;
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+};
+
+class Story381 : public Story::Base
+{
+public:
+    Story381()
+    {
+        ID = 381;
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+
+    int Background(Character::Base &player)
+    {
+        if (!Character::VERIFY_ITEMS(player, {Item::Type::SWORD}) && !Character::VERIFY_ITEMS(player, {Item::Type::JADE_SWORD}) && !Character::VERIFY_ITEMS(player, {Item::Type::FLINT_KNIFE}) && !Character::VERIFY_ITEMS(player, {Item::Type::HAMMER}))
+        {
+            return 402;
+        }
+        else
+        {
+            return 429;
+        }
+    }
+};
+
+class Story382 : public Story::Base
+{
+public:
+    Story382()
+    {
+        ID = 382;
+
+        Text = "You pause at the archway and look along the passage. It looks deceptively easy -- just half a dozen paces would take you to the far end, where you can see a dusty sun-bleached courtyard.\n\nYou take one cautious step. Another. Then there is an ominous creak from the lintel above, and a fine sift of rock dust falls from the passage roof...";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_SKILL(player, Skill::Type::CHARMS))
+        {
+            return 177;
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            return 201;
+        }
+        else
+        {
+            return 224;
+        }
+    }
+};
+
+class Story383 : public Story::Base
+{
+public:
+    Story383()
+    {
+        ID = 383;
+
+        Text = "Legend states that a rich man can only enter the afterlife if led there by a poor man. Judging by his regalia, the figure you saw walking ahead of you was rich, and he evidently did not get rid of his money when he passed the idol or the bowl would not be empty. The sensible thing to do would therefore be to get rid of all your money at this point.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::HYDRA_BLOOD_BALL});
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story384 : public Story::Base
+{
+public:
+    Story384()
+    {
+        ID = 384;
+
+        Text = "The ball contest requires two participants on each side. \"Am I to face these shadow beings alone?\" you cry out angrily.\n\nNecklace of Skulls' voice rushes from the depths of his shrine. It is like a whisper that is somehow loud enough to carry right along the arena. \"You came here seeking your brother. He shall fight beside you.\"\n\nA chill settles in the hot air for an instant. A figure has appeared beside you. You turn, not recognizing him at first. It is Morning Star, but there is a ghastly pallor to his skin and his eyes have a hollow look. His arm is pressed to his forehead in the gesture of the denizens of the Deathlands, who must forever shield their eyes from the glare of the sun beneath the world.\n\n\"Evening Star,\" he says forlornly. \"I am so cold. The grave has scant comforts.\"\n\nYou must fight beside the ghost of your brother in a contest to the death.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GET_CODEWORDS(player, {Codeword::Type::SHADE});
+    }
+
+    int Continue(Character::Base &player) { return 42; }
+};
+
+class Story385 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story385()
+    {
+        ID = 385;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Your brother makes the best shot he can, but he is off balance and the ball goes wide. The enemy defensive player sees a chance and comes rushing in, trying to beat you to the ball.";
+
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK))
+        {
+            PreText = "\n\nYou wrest possession from him and score a point.";
+
+            Character::SCORE(player, player.Ticks, 1);
+        }
+        else
+        {
+            PreText = "\n\nHe beats you to the ball and scores.";
+
+            Character::SCORE(player, player.Cross, 1);
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 66; }
+};
+
+class Story386 : public Story::Base
+{
+public:
+    Story386()
+    {
+        ID = 386;
+
+        Text = "Morning Star lobs the ball directly towards you. Timing your move perfectly, you hug it to your chest while substituting the blood ball.";
+
+        Image = "images/flying-snake.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go for a standard scoring shot", 405));
+        Choices.push_back(Choice::Base("Risk everything on putting the ball through the stone ring and winning an instant victory", 43));
+
+        Controls = StandardControls();
+    }
 };
 
 class Story387 : public Story::Base
@@ -11441,8 +11759,21 @@ auto story368 = Story368();
 auto story369 = Story369();
 auto story370 = Story370();
 auto story371 = Story371();
+auto story372 = Story372();
+auto story373 = Story373();
 auto story374 = Story374();
+auto story375 = Story375();
+auto story376 = Story376();
+auto story377 = Story377();
 auto story378 = Story378();
+auto story379 = Story379();
+auto story380 = Story380();
+auto story381 = Story381();
+auto story382 = Story382();
+auto story383 = Story383();
+auto story384 = Story384();
+auto story385 = Story385();
+auto story386 = Story386();
 auto story387 = Story387();
 auto story388 = Story388();
 auto story389 = Story389();
@@ -11507,8 +11838,8 @@ void InitializeStories()
         &story340, &story341, &story342, &story343, &story344, &story345, &story346, &story347, &story348, &story349,
         &story350, &story351, &story352, &story353, &story354, &story355, &story356, &story357, &story358, &story359,
         &story360, &story361, &story362, &story363, &story364, &story365, &story366, &story367, &story368, &story369,
-        &story370, &story371, &story374, &story378,
-        &story387, &story388, &story389,
+        &story370, &story371, &story372, &story373, &story374, &story375, &story376, &story377, &story378, &story379,
+        &story380, &story381, &story382, &story383, &story384, &story385, &story386, &story387, &story388, &story389,
         &story390, &story391, &story392, &story398,
         &story400, &story406, &story407, &story408, &story409,
         &story411, &story415, &story416, &story417,
