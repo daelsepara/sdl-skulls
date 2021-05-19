@@ -8860,6 +8860,226 @@ public:
     int Continue(Character::Base &player) { return 357; }
 };
 
+class Story312 : public Story::Base
+{
+public:
+    Story312()
+    {
+        ID = 312;
+
+        Text = "You set your wand down on the ground in the middle of the crossroads and spin it, meanwhile uttering the words of a divining spell. It comes to rest pointing along the black path. That is the route you must take to reach the Deathlands.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 219; }
+};
+
+class Story313 : public Story::Base
+{
+public:
+    Story313()
+    {
+        ID = 313;
+
+        Text = "You approach the first of the sentinels. Seeing you, he leans forward on his granite throne and taps your shoulder with a sceptre carved from a human thighbone. \"Where are your manners?\" he thunders. His voice sounds like a shriek of an eagle in the instant of seizing its prey.\n\nWhat name will you greet him by?";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("'Lord Blood'", 401));
+        Choices.push_back(Choice::Base("'Thunderbolt Laughter'", 380));
+        Choices.push_back(Choice::Base("'Grandfather of Darkness'", 359));
+        Choices.push_back(Choice::Base("'Lord Skull'", 14));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story314 : public Story::Base
+{
+public:
+    Story314()
+    {
+        ID = 314;
+
+        Text = "Again you avoid the monster's bites by a hair's breadth. Spitting with fury at its failure to trap you, it slithers forward with all four necks extended.\n\nDecide your next move.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Continue to jump away from the hydra", 360));
+        Choices.push_back(Choice::Base("Rush in to strike a blow", 381));
+        Choices.push_back(Choice::Base("Try a feint", 419));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story315 : public Story::Base
+{
+public:
+    Story315()
+    {
+        ID = 315;
+
+        Text = "You are taken to the back wall of the courtyard, where colonnade gives respite from the intense sun. Beneath a frieze patterned like a rattlesnake's skin, four archways lead on from here to the next courtyard of the palace. The courtiers give you wide grins and invite you to make a choice.\n\nYou look into the first archway. A short flight of steps leads up to the edge of a pit about two metres across. The purpose of the steps is apparently to ensure that you cannot take a running jump. The bottom of the pit is filled with smoking coals.\n\nBeyond the next archway is a tunnel blocked by an artful tangle of wooden beams, some of which seem to be shoring up the walls. \"The trick there is to remove the right combination of beams in the right order,\" says the chief courtier, leaning over your shoulder. \"You want to clear enough space to get past without causing the tunnel to collapse.\"\n\nThe third route is a passage with no obstacles -- just a triangular vault leading through to the next courtyard. then you notice the sigils inscribed along the corbels of the vault: sigils indicating calamity and catastrophe. Is the vault designed to cave in when someone walks along it?\n\nThe passage beyond the last archway is guarded by a large pallid hound with narrow pink eyes. It greets you with a threatening growl as you poke your head around the corner, but makes no move to attack. \"My second cousin twice removed,\" says the chief courtier in your ear. \"Nasty temper. His bite's worse than his bark, of course.\"\n\nIt is time for you to decide.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Cross the pit", 338));
+        Choices.push_back(Choice::Base("Attempt to clear the blocked tunnel", 361));
+        Choices.push_back(Choice::Base("Walk along the unguarded tunnel", 382));
+        Choices.push_back(Choice::Base("Brave the albino hound", 420));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story316 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story316()
+    {
+        ID = 316;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Your dart tears into the hound's flank, leaving a raw bloody gash. It whines and shrinks back, only to leap forward without warning when you move to get past it along the tunnel. You feel a stab of pain as its teeth tear a hunk of flesh out of your thigh, but you stagger on regardless.\n\nYou LOSE 1 Life Point.";
+
+        Character::GAIN_LIFE(player, -1);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou emerge into the inner courtyard to find the courtiers already there waiting for you. \"You're a blowgunner, eh?\" says the chief courtier. \"Well, I'm afraid you'll find the creatures who serve Necklace of Skulls are less easy to intimidate than your average deer.\"";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story317 : public Story::Base
+{
+public:
+    Story317()
+    {
+        ID = 317;
+
+        Text = "You squint in the shimmering glare of the sun, but your eyes cannot make out any shape within the black void of the shrine entrance. The soot-coloured pillars give its darkened interior the look of a fleshless mouth. Again Necklace of Skull's voice rolls along the avenue, each syllable driving like a grave-cool gust of wind through the blistering desert heat. \"Your brother came here before you.\"\n\nRed rage seethes in your heart. \"That's right, you --\"\n\nThe sorcerer's words continue, unperturbed by your outburst. \"He played the ritual ball contest and he lost. His life was forfeit. Now you will play for the same stakes. Behold your antagonists.\" Two long rivulets of shadow flow out of the shrine and down the pyramid steps, looking like spreading pools of black blood against the ebon stone. Reaching the bottom, they rise up in obscenely palpitating columns which gradually take solid form. Human form. Confronting you now are your opponents in the ball contest: two creatures of living shadow fashioned by the sorcerer's magic.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.RitualBallStarted = true;
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::BROTHERS_SKULL}))
+        {
+            return 340;
+        }
+        else if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+        {
+            return 363;
+        }
+        else
+        {
+            return 384;
+        }
+    }
+};
+
+class Story318 : public Story::Base
+{
+public:
+    Story318()
+    {
+        ID = 318;
+
+        Text = "You bear down on the enemy defensive player. Glancing back you see that the far shadow man has reached the far end of the arena, where your partner has managed to intercept the ball and get possession. You shout for him to bounce it along the wall towards you.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::SHADE))
+        {
+            return 385;
+        }
+        else
+        {
+            return 405;
+        }
+    }
+};
+
+class Story319 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story319()
+    {
+        ID = 319;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You manage to get the firebrand alight. It gives a little warmth, but not much. You spend a miserable night shivering in the icy draughts blowing through the House of Cold.";
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+        {
+            PreText += "[WILDERNESS LORE] Your hardiness inures you to the extreme cold.";
+        }
+        else
+        {
+            PreText += "You LOSE 1 Life Point.";
+
+            Character::GAIN_LIFE(player, -1);
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 212; }
+};
+
 class Story320 : public Story::Base
 {
 public:
@@ -10474,6 +10694,14 @@ auto story308 = Story308();
 auto story309 = Story309();
 auto story310 = Story310();
 auto story311 = Story311();
+auto story312 = Story312();
+auto story313 = Story313();
+auto story314 = Story314();
+auto story315 = Story315();
+auto story316 = Story316();
+auto story317 = Story317();
+auto story318 = Story318();
+auto story319 = Story319();
 auto story320 = Story320();
 auto story321 = Story321();
 auto story322 = Story322();
@@ -10563,7 +10791,7 @@ void InitializeStories()
         &story280, &story281, &story282, &story283, &story284, &story285, &story286, &story287, &story288, &story289,
         &story290, &story291, &story292, &story293, &story294, &story295, &story296, &story297, &story298, &story299,
         &story300, &story301, &story302, &story303, &story304, &story305, &story306, &story307, &story308, &story309,
-        &story310, &story311,
+        &story310, &story311, &story312, &story313, &story314, &story315, &story316, &story317, &story318, &story319,
         &story320, &story321, &story322, &story323, &story324, &story325, &story326, &story327,
         &story331, &story332, &story333, &story334, &story335,
         &story343, &story344, &story345, &story346, &story347,
