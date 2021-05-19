@@ -3007,7 +3007,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
             text = createText(story->Text, "fonts/default.ttf", font_size, clrDB, textwidth, TTF_STYLE_NORMAL);
         }
 
-        auto compact = text->h > text_bounds - 2 * text_space;
+        auto compact = text->h <= text_bounds - 2 * text_space;
 
         if (story->Controls == Story::Controls::STANDARD)
         {
