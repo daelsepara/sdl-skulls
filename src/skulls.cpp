@@ -35,7 +35,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Item::Type mine, Item::Type theirs);
 
 int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit);
-int giveScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, Character::Base &player, std::vector<std::pair<Item::Type, int>> gifts, int default_destination);
+int giftScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, Character::Base &player, std::vector<std::pair<Item::Type, int>> gifts, int default_destination);
 
 SDL_Surface *createImage(const char *image)
 {
@@ -1078,7 +1078,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
     return false;
 }
 
-int giveScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, Character::Base &player, std::vector<std::pair<Item::Type, int>> gifts, int default_destination)
+int giftScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, Character::Base &player, std::vector<std::pair<Item::Type, int>> gifts, int default_destination)
 {
     int storyID = default_destination;
 
@@ -2744,7 +2744,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                         {
                             if (player.Items.size() > 0)
                             {
-                                auto nextID = giveScreen(window, renderer, story, player, story->Choices[current].Gifts, story->Choices[current].Destination);
+                                auto nextID = giftScreen(window, renderer, story, player, story->Choices[current].Gifts, story->Choices[current].Destination);
 
                                 next = (Story::Base *)findStory(nextID);
 
@@ -2889,8 +2889,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
     auto boxh = 75;
     auto box_space = 10;
 
+    Character::Base saveCharacter;
+
     while (!quit)
     {
+        // capture player state before running the story
+        saveCharacter = player;
+
         auto run_once = true;
 
         SDL_Surface *splash = NULL;
@@ -2914,7 +2919,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
         }
 
         player.StoryID = story->ID;
-        
+
         if (story->Image)
         {
             splash = createImage(story->Image);

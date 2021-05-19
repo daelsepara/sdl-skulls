@@ -981,7 +981,7 @@ public:
     {
         ID = 28;
 
-        Text = "The sun casts its dusty gold light across the treetops to the west, awakening glints in your ceremonial regalia. Summoning up all your courage, you take the final step that carries you off the brink into oblivion. The water rushes up to meet you -- an icy slap, followed by darkness and a roaring silence. You are enfolded in a watery womb, numbly struggling out of the metal accoutrements that are carrying you down into the furthest depths of the well.\n\nBloody darkness thunders through your brain. There is no sign of the sunlit surface of the water overhead. You feel as though you are trapped on the border between sleeping and waking, and in the instant of departing consciousness you know you are not in the bottom of the well any more. You have plunged into the fabled river that leads out of the world of the living. You are on your way to the Deathlands.";
+        Text = "The sun casts its dusty gold light across the treetops to the west, awakening glints in your ceremonial regalia. Summoning up all your courage, you take the final step that carries you off the brink into oblivion. The water rushes up to meet you -- an icy slap, followed by darkness and a roaring silence. You are enfolded in a watery womb, numbly struggling out of the metal accoutrements that are carrying you down into the furthest depths of the well.\n\nBloody darkness thunders through your brain. There is no sign of the sunlit surface of the water overhead. You feel as though you are trapped on the border between sleeping and waking, and in the instant of departing consciousness you know you are not in the bottom of the well any more. You have plunged into the fabled river that leads out of the world of the living. You are on your way to the Deathlands.\n\nYou LOSE 3 Life Points.";
 
         Image = "images/filler1.png";
 
@@ -7250,7 +7250,7 @@ public:
     {
         ID = 253;
 
-        Text = "You slice off the top of one of the cacti and drink its sap. The taste is unpleasantly bitter. You manage to resist the urge to vomit, knowing that to do so now would mean your death. Resting until your stomach stops gurgling, you head on across the barren sun-bleached land.";
+        Text = "You slice off the top of one of the cacti and drink its sap. The taste is unpleasantly bitter. You manage to resist the urge to vomit, knowing that to do so now would mean your death. Resting until your stomach stops gurgling, you head on across the barren sun-bleached land.\n\nYou LOSE 3 Life Points.";
 
         Image = "images/filler1.png";
 
@@ -7900,7 +7900,7 @@ public:
     {
         ID = 276;
 
-        Text = "You get water from the bush by biting the tips off the hard sharp-tipped leaves and sucking the moisture out of them. It is barely enough to slake your thirst. You head on a cross the barren and blistered rocks, knowing that your ordeal will continue for many gruelling days yet.";
+        Text = "You get water from the bush by biting the tips off the hard sharp-tipped leaves and sucking the moisture out of them. It is barely enough to slake your thirst. You head on a cross the barren and blistered rocks, knowing that your ordeal will continue for many gruelling days yet.\n\nYou LOSE 2 Life Points.";
 
         Image = "images/filler1.png";
 
@@ -8365,7 +8365,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        PreText = "The candle looks as though it will last for about an hour. Just as you are thinking this, a draft of cold air suddenly blows it out, plunging you into darkness.||Silence hangs like a waiting presence in the air. The darkness dances in front of your eyes, causing your imagination to paint pictures of horror on the back of your mind. Your flesh creeps with unidentifiable fears.||You hear a noise that sets your heart pounding and every nerve shrieking. It was the sound of something dragging itself across the dry earthen floor. It stops beside you and you feel it reach out to stroke your leg: a thin dry hand with no flesh on it...||And then you scream.||All through the night you are beset by gibbering phantoms that come prancing out of the darkness, running their unseen hands over your skin and whispering horrible things in your ears.\n\nYou LOSE 1 Life Point from this harrowing ordeal.";
+        PreText = "The candle looks as though it will last for about an hour. Just as you are thinking this, a draft of cold air suddenly blows it out, plunging you into darkness.\n\nSilence hangs like a waiting presence in the air. The darkness dances in front of your eyes, causing your imagination to paint pictures of horror on the back of your mind. Your flesh creeps with unidentifiable fears.\n\nYou hear a noise that sets your heart pounding and every nerve shrieking. It was the sound of something dragging itself across the dry earthen floor. It stops beside you and you feel it reach out to stroke your leg: a thin dry hand with no flesh on it...\n\nAnd then you scream.\n\nAll through the night you are beset by gibbering phantoms that come prancing out of the darkness, running their unseen hands over your skin and whispering horrible things in your ears.\n\nYou LOSE 1 Life Point from this harrowing ordeal.";
 
         Character::GAIN_LIFE(player, -1);
 
@@ -8629,6 +8629,25 @@ public:
     }
 };
 
+class Story303 : public Story::Base
+{
+public:
+    Story303()
+    {
+        ID = 303;
+
+        Text = "The sun rises again, flooding the sands with red-gold light. You are contemplating the need for shelter when, cresting a dune, you catch sight of it at long last -- the wizard's palace. Double ramparts surround a central courtyard where a high black pyramid rises like a blotch of midnight. The palace lies just ahead across a stretch of brown-gold sand. The dawn light makes it seem to shimmer like a mirage in the deep blue shadows between the dunes, but you know it is real.\n\nDouble doors swing open in the wall as you approach. Confronting you is a horde of men in ragged animal skins. Their long thin faces and downcast smiles give them a canine appearance. All of them bear stone axes which they lift when you walk through the palace gate -- not a gesture of impending violence, but just to warn you where you stand.\n\n\"I have come,\" you say, \"to see Necklace of Skulls.\"\n\nOne of the men gives a bark of laughter. \"It's not as easy as that. Do you think our master sees every stray mongrel who wanders to his door? First you will have to pass five nights among us, his faithful courtiers. And before that you'll face another test: deciding which route to take to the inner courtyard.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 315; }
+};
+
 class Story304 : public Story::Base
 {
 public:
@@ -8660,6 +8679,149 @@ public:
     }
 
     int Continue(Character::Base &player) { return 411; }
+};
+
+class Story305 : public Story::Base
+{
+public:
+    Story305()
+    {
+        ID = 305;
+
+        Text = "Which of these items will you use?";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 351, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("... the PARCEL OF SALT", 372, Item::Type::PARCEL_OF_SALT));
+        Choices.push_back(Choice::Base("... the FIREBRAND", 393, Item::Type::FIREBRAND));
+        Choices.push_back(Choice::Base("Otherwise, you will have to fight", 328));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story306 : public Story::Base
+{
+public:
+    Story306()
+    {
+        ID = 306;
+
+        Text = "The MAN OF GOLD comes to life in the warmth of your hands. You set him down on the ledge and he surveys the sealed tomb with a smile on his tiny sculpted features. You have no need to tell him what you want him to do. Striding forward, he batters at the slab with thunderous blows. You are amazed to see chips of stone fly away as he gradually tunnels a hole large enough for you to squeeze through. Then, his task completed, he turns and dives off into the river below.\n\nA movement from inside the tomb makes you jump. Out of the hole slithers a cobra. It is no ordinary cobra: its hood is vastly extended to form translucent oval wings which beat slowly, carrying it through the air with a sinister gliding motion. With its iridescent scales it seems like a polished stone idol, but there is no mistaking the living menace in the glittering eyes and forked tongue.";
+
+        Image = "images/flying-snake.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Retreat back down to the canoe", 167));
+        Choices.push_back(Choice::Base("[SWORDPLAY] Close with the snake and fight it", 375, Choice::Type::SKILL_ANY, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base(Skill::UNARMED_COMBAT.Name, 375, Skill::Type::UNARMED_COMBAT));
+        Choices.push_back(Choice::Base("[TARGETING] Shoot it", 352, Skill::Type::TARGETING));
+        Choices.push_back(Choice::Base("[SPELLS] Cast a protective enchantment", 394, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::MAN_OF_GOLD});
+    }
+};
+
+class Story307 : public Story::Base
+{
+public:
+    Story307()
+    {
+        ID = 307;
+
+        Text = "A bundle lies across the path ahead. Quickening your pace, you are startled when the 'bundle' suddenly raises its head. It is a dwarf with withered legs but very broad shoulders wrapped in a long black mantle. His large ears and upturned nose give him a grotesque appearance, and you are on the point of hurrying past when he raises a long imploring arm.\n\n\"Please help me,\" he begs. \"I'm too weak to go on, and I'm terribly thirsty...\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go back to the river to fetch him some water", 330));
+        Choices.push_back(Choice::Base("Gash your hand and let him drink some of your blood", 353));
+        Choices.push_back(Choice::Base("Step over him and continue along the path without stopping", 373));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story308 : public Story::Base
+{
+public:
+    Story308()
+    {
+        ID = 308;
+
+        Text = "You discover that King Cloud Jaguar is sitting with his courtiers in the steam bath at the rear of the palace. Leaving your clothes and belongings in a bundle behind a wall, you mingle in among the servants and pick up a jar of water. Clad in only loin-cloth, there is nothing to draw attention to you when you enter the bath-house with downcast eyes and pour water onto the sizzling stones of the hearth.\n\nThe King and the nobles of his court sit naked on the benches of the bath-house, sweltering in the wreathes of herb-scented steam. \"Will you be communing with your late father tonight, your Majesty?\" you hear one of the nobles asking.\n\n\"Of course!\" says the King gruffly. \"I must discover the import of recent events. The collapse of the Great City will have far-reaching consequences.\"\n\n\"The astrologers have read the signs,\" puts in the King's vizier. \"The most auspicious time is the hour just before dawn. We shall ascend the pyramid and speak our questions into the spirit tube which leads to King Sky Shield's tomb. Perhaps you would like to accompany us, Lord Smoke Shell?\"\n\nThe noble who spoke first looks up with sudden alarm. \"Ah... er, that's most gracious, but I need my sleep if I'm to cope with all the excitement tomorrow. I'm not as young as I once was.\"\n\n\"Nor as brave,\" says the King pointedly, provoking a gust of laughter at Smoke Shell's expense. You leave the bath-house and retrieve your belongings.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Seek lodging if you have some money", 101, Choice::Type::MONEY, 1));
+        Choices.push_back(Choice::Base("Continue on your journey westwards", 8));
+        Choices.push_back(Choice::Base("Continue north to the coast", 30));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story309 : public Story::Base
+{
+public:
+    Story309()
+    {
+        ID = 309;
+
+        Text = "You walk along the side of the canyon in search of the dragon Kawak. The sky slowly acquires a sullen red glare like the inside of a kiln. Through the clouds of gritty yellow vapour rising out of the depths, you begin to discern a rock outcropping just ahead. Then you take a step or two closer and you realize it is not a pile of boulders that you see resting at the lip of the chasm. It is a gigantic head.\n\nKawak's snout reminds you of the temple pyramids of your homeland, with its size and bright patterning of carmine and bone-white. His mouth stands open like an ominous gateway, tongue leading up like a temple's stairway to where his eyes burn darkly under brows like shields of stone. You can see the immense curve of his body, as broad as a city plaza, arcing off into the distance towards the other side of the canyon. His claws resemble the prows of ocean-going canoes hanging over the edge of the precipice.\n\n\"You wish to cross. To enter my mouth and pass into the world beyond.\" His voice is the sound of birth and death, the dull titanic roar that is more felt than heard. \"You must pay for your passage with a JADE BEAD.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Let Kawak have the JADE BEAD", 33, Choice::Type::GIVE_ITEM, Item::Type::JADE_BEAD));
+        Choices.push_back(Choice::Base("Employ the MAN OF GOLD", 79, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Use a BLOWGUN", 170, Item::Type::BLOWGUN));
+        Choices.push_back(Choice::Base("Try crossing via the line of stepping-stones formed by the tips of the rock spires", 147));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story310 : public Story::Base
+{
+public:
+    Story310()
+    {
+        ID = 310;
+
+        Text = "This situation reminds you unpleasantly of what the fenman told you about nightcrawlers. You find that you cannot even consider what might be hidden under the overturned pitcher without a shudder of horror. The fenman also said that salt will stop a nightcrawler from attaching itself to a victim.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::REMOVE_CODEWORD(player, Codeword::Type::CALABASH);
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::PARCEL_OF_SALT}))
+        {
+            return 34;
+        }
+        else
+        {
+            return 57;
+        }
+    }
 };
 
 class Story311 : public Story::Base
@@ -10302,7 +10464,14 @@ auto story299 = Story299();
 auto story300 = Story300();
 auto story301 = Story301();
 auto story302 = Story302();
+auto story303 = Story303();
 auto story304 = Story304();
+auto story305 = Story305();
+auto story306 = Story306();
+auto story307 = Story307();
+auto story308 = Story308();
+auto story309 = Story309();
+auto story310 = Story310();
 auto story311 = Story311();
 auto story320 = Story320();
 auto story321 = Story321();
@@ -10392,8 +10561,8 @@ void InitializeStories()
         &story270, &story271, &story272, &story273, &story274, &story275, &story276, &story277, &story278, &story279,
         &story280, &story281, &story282, &story283, &story284, &story285, &story286, &story287, &story288, &story289,
         &story290, &story291, &story292, &story293, &story294, &story295, &story296, &story297, &story298, &story299,
-        &story300, &story301, &story302, &story304,
-        &story311,
+        &story300, &story301, &story302, &story303, &story304, &story305, &story306, &story307, &story308, &story309,
+        &story310, &story311,
         &story320, &story321, &story322, &story323, &story324, &story325, &story326, &story327,
         &story331, &story332, &story333, &story334, &story335,
         &story343, &story344, &story345, &story346, &story347,
