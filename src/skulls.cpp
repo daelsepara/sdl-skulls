@@ -99,6 +99,14 @@ void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, co
 
             surface = NULL;
         }
+
+        SDL_SetRenderDrawColor(*renderer, 0, 0, 0, 255);
+        SDL_RenderClear(*renderer);
+        SDL_RenderPresent(*renderer);
+
+        SDL_SetRenderDrawColor(*renderer, 0, 0, 0, 255);
+        SDL_RenderClear(*renderer);
+        SDL_RenderPresent(*renderer);
     }
 }
 
@@ -508,7 +516,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
 void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Character::Base &player)
 {
     const int profilew = SCREEN_WIDTH * (1.0 - 2.0 * Margin);
-    const int profileh = 70;
+    const int profileh = 0.12 * SCREEN_HEIGHT;
 
     auto headerw = 0.6 * splashw;
     auto headerh = 0.06 * SCREEN_HEIGHT;
@@ -730,7 +738,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
         const int back_buttonh = 48;
         const int profilew = SCREEN_WIDTH * (1.0 - 2.0 * Margin);
-        const int profileh = 70;
+        const int profileh = 0.12 * SCREEN_HEIGHT;
 
         auto controls = std::vector<Button>();
 

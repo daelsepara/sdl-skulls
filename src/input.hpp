@@ -66,6 +66,8 @@ namespace Input
 
         auto sensitivity = 32000;
 
+        auto start_ticks = SDL_GetTicks();
+
         while (1)
         {
             SDL_PollEvent(&result);
@@ -322,6 +324,11 @@ namespace Input
 
                     break;
                 }
+            }
+
+            if (SDL_GetTicks() - start_ticks > 1000)
+            {
+                break;
             }
         }
 
