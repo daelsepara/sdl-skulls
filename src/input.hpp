@@ -76,6 +76,13 @@ namespace Input
 
                 break;
             }
+            else if (result.type == SDL_WINDOWEVENT)
+            {
+                if (result.window.event == SDL_WINDOWEVENT_RESTORED || result.window.event == SDL_WINDOWEVENT_MAXIMIZED || result.window.event == SDL_WINDOWEVENT_SHOWN || result.window.event == SDL_WINDOWEVENT_EXPOSED)
+                {
+                    break;
+                }
+            }
             else if (result.type == SDL_CONTROLLERDEVICEADDED)
             {
                 InitializeGamePads();
@@ -312,7 +319,7 @@ namespace Input
                 if (current >= 0 && current < choices.size() && (choices[current].Type == Control::Type::SCROLL_UP || choices[current].Type == Control::Type::SCROLL_DOWN))
                 {
                     SDL_Delay(50);
-                    
+
                     break;
                 }
             }

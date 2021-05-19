@@ -2967,12 +2967,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
             if (story->Controls.size() >= 3)
             {
-                auto offset_x = startx - story->Controls[2].X;
-
-                if (offset_x < 0)
-                {
-                    offset_x = 0;
-                }
+                offset_x = startx - story->Controls[2].X;
             }
 
             for (auto i = 0; i < story->Controls.size(); i++)
