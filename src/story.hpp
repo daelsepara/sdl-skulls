@@ -2,6 +2,7 @@
 #define __STORY__HPP__
 
 #include <vector>
+
 #include "constants.hpp"
 #include "controls.hpp"
 #include "codewords.hpp"

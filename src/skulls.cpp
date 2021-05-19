@@ -13,6 +13,7 @@
 #include "nlohmann/json.hpp"
 
 #include "constants.hpp"
+#include "config.hpp"
 #include "controls.hpp"
 #include "input.hpp"
 #include "items.hpp"
@@ -109,6 +110,44 @@ void renderImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y)
 
         position.w = image->w;
         position.h = image->h;
+        position.x = x;
+        position.y = y;
+
+        auto texture = SDL_CreateTextureFromSurface(renderer, image);
+
+        if (texture)
+        {
+            SDL_Rect src;
+
+            src.w = image->w;
+            src.h = image->h;
+            src.x = 0;
+            src.y = 0;
+
+            SDL_RenderCopy(renderer, texture, &src, &position);
+
+            SDL_DestroyTexture(texture);
+
+            texture = NULL;
+        }
+    }
+}
+
+void fitImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y, int w)
+{
+    if (image && renderer)
+    {
+        SDL_Rect position;
+
+        int h = image->h;
+
+        if (w > image->w)
+        {
+            h = (w / image->w) * image->h;
+        }
+
+        position.w = w;
+        position.h = h;
         position.x = x;
         position.y = y;
 
@@ -457,15 +496,12 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
 
 void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Character::Base &player)
 {
-    auto main_buttonh = 48;
-
     const int profilew = SCREEN_WIDTH * (1.0 - 2.0 * Margin);
     const int profileh = 70;
 
     auto headerw = 150;
     auto headerh = 36;
     auto space = 8;
-    auto font_size = 18;
 
     auto marginw = Margin * SCREEN_WIDTH;
     auto marginh = Margin * SCREEN_HEIGHT / 2;
