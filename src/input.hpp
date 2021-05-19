@@ -80,7 +80,7 @@ namespace Input
             {
                 if (result.window.event == SDL_WINDOWEVENT_RESTORED || result.window.event == SDL_WINDOWEVENT_MAXIMIZED || result.window.event == SDL_WINDOWEVENT_SHOWN || result.window.event == SDL_WINDOWEVENT_EXPOSED)
                 {
-                    break;
+                    SDL_RenderPresent(renderer);
                 }
             }
             else if (result.type == SDL_CONTROLLERDEVICEADDED)
@@ -328,7 +328,7 @@ namespace Input
         return quit;
     }
 
-    void WaitForNext()
+    void WaitForNext(SDL_Renderer *renderer)
     {
         SDL_Event result;
 
@@ -339,6 +339,13 @@ namespace Input
             if (result.type == SDL_QUIT)
             {
                 break;
+            }
+            else if (result.type == SDL_WINDOWEVENT)
+            {
+                if (result.window.event == SDL_WINDOWEVENT_RESTORED || result.window.event == SDL_WINDOWEVENT_MAXIMIZED || result.window.event == SDL_WINDOWEVENT_SHOWN || result.window.event == SDL_WINDOWEVENT_EXPOSED)
+                {
+                    SDL_RenderPresent(renderer);
+                }
             }
             else if (result.type == SDL_CONTROLLERDEVICEADDED)
             {
