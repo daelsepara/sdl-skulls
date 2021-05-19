@@ -311,6 +311,8 @@ namespace Input
             {
                 if (current >= 0 && current < choices.size() && (choices[current].Type == Control::Type::SCROLL_UP || choices[current].Type == Control::Type::SCROLL_DOWN))
                 {
+                    SDL_Delay(50);
+                    
                     break;
                 }
             }

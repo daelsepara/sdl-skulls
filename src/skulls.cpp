@@ -3031,6 +3031,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
                 }
 
+                fillRect(renderer, textwidth, text_bounds, textx, texty, intBE);
+
+                if (story->Text)
+                {
+                    renderText(renderer, text, intBE, textx + space, texty + space, text_bounds - 2 * space, offset);
+                }
+
                 if (error)
                 {
                     if ((SDL_GetTicks() - start_ticks) < duration)
@@ -3041,13 +3048,6 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     {
                         error = false;
                     }
-                }
-
-                fillRect(renderer, textwidth, text_bounds, textx, texty, intBE);
-
-                if (story->Text)
-                {
-                    renderText(renderer, text, intBE, textx + space, texty + space, text_bounds - 2 * space, offset);
                 }
 
                 renderButtons(renderer, story->Controls, current, intGR, border_space, border_pts);
