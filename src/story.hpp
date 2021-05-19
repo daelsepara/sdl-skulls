@@ -9520,7 +9520,7 @@ public:
 
         Text = "You reach the end of the tunnel and emerge into the open under a bright blue sky. The sun of the upper world blazes high in the heavens -- a welcome change from the grey glare permeating the Deathlands, although you know that too long an exposure to its blistering rays may eventually leave you weak with thirst. Waves of heat rise around you off the baking sands of the great desert. Dunes stretch like the tops of clouds as far as the eye can see.\n\nNear by, you see various items poking up out of the sand. They may be the grave goods of spirits who descended here to the Deathlands. A closer inspection uncovers a SWORD, a WATERSKIN, and a copper-tipped SPEAR.";
 
-        Image = "images/snail-creatures.png";
+        Image = "images/filler1.png";
 
         Choices.clear();
 
@@ -10058,7 +10058,7 @@ public:
 
         Text = "A knot unties itself and one of the gates swing open. No sooner have you gone through than it closes behind you. You proceed along a short tunnel to a chamber which is open on the far side, giving onto a ledge overlooking a river of foaming blood. You step out onto the ledge and look downriver. There is another ledge corresponding to the other doorway, and there you see the feather-robed noble who got here before you.\n\nHe points to two obsidian beams spanning the river to the far bank. At first you think they are bridges, but then you notice the shape. They are wedge-shaped, coming to a sharp edge on the upper surface. \"It would be difficult to keep one's balance on that,\" you call out to him.\n\n\"That isn't the intention,\" says the noble. He holds up a POLE with a hook on the end. \"I found this here on the ledge. Notice that there is a similar POLE next to you.\"\n\nYou glance down. A POLE like the one the noble is holding rests against the wall, and you pick it up.\n\n\"You have a plan?\" you ask him.\n\nHe nods. \"If we extend our arms, we'll be able to hook the poles together. Then, leaning away from each other with our feet on the sloping outer surfaces of the obsidian beams, we'll be able to cross together.\"\n\nThe plan is ingenious. You agree to put it to the test, and by this means you are both able to get across the river of the blood to the far bank.";
 
-        Image = "images/snail-creatures.png";
+        Image = "images/filler1.png";
 
         Choices.clear();
 
@@ -10135,17 +10135,167 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_SKILL_ALL(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
-        {
-            return 429;
-        }
-        else if (!Character::VERIFY_ITEMS(player, {Item::Type::FLINT_KNIFE}) && !Character::VERIFY_ITEMS(player, {Item::Type::FLINT_KNIFE}))
+        if (!Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}) && !Character::VERIFY_ITEMS(player, {Item::Type::FLINT_KNIFE}) && !Character::VERIFY_ITEMS(player, {Item::Type::FLINT_KNIFE}))
         {
             return 402;
         }
         else
         {
             return 429;
+        }
+    }
+};
+
+class Story361 : public Story::Base
+{
+public:
+    Story361()
+    {
+        ID = 361;
+
+        Text = "You advance into the passage and start to examine the perplexing structure of wooden beams. The trick is to clear enough of them out of the way so as to be able to get past, but without bringing the whole passage down on top of you. It is like a child's puzzle, only this is a puzzle with a deadly twist.\n\nYou select one of the beams and dislodge it. As you haul it out of position, there is a crack and a thin trickle of plaster dust sifts down from the roof of the passage. You look up in alarm, heart skipping a beat, but the roof holds.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::ROGUERY.Name, 86, Skill::Type::ROGUERY));
+        Choices.push_back(Choice::Base("[SPELLS] Use a wand", 109, Choice::Type::SKILL_ALL, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("Tru using the MAN OF GOLD", 131, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Otherwise", 154));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story362 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story362()
+    {
+        ID = 362;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The albino hound is so intent on reaching you and closing its jaws on your windpipe that it does not realize you are luring it back into the open. The moment it rushes out under the colonnade, the sunshine forces it to screw up its weak eyes. When you see it is dazzled, you feel more confident about closing in to do battle.";
+
+        auto DAMAGE = -3;
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            PreText += "[SWORDPLAY] ";
+
+            DAMAGE = -1;
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE = -2;
+        }
+
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Point(s).";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou finally manage to force the hound down with your foot on its throat and administer the death-blow. Then you make your way along the passage it was guarding to the inner courtyard, where you find the courtiers already waiting for you. The chief courtier looks at you with a surprise, as though he did not expect you to win through.\n\n\"About your cousin --\"\n\n\"Yes?\" he says, peering back along the tunnel with a puzzled frown.\n\n\"He's dog meat.\"";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 431; }
+};
+
+class Story363 : public Story::Base
+{
+public:
+    Story363()
+    {
+        ID = 363;
+
+        Text = "The ball contest requires two participants on each side. \"Am I to face this challenge alone?\" you cry out angrily.\n\nNecklace of Skulls' voice rustles from the depths of his shrine. It sounds like a whisper, but is loud enough to carry right along the arena. \"The man you befriended on the journey here. He shall fight beside you.\"\n\nHearing a footstep behind you, you glance back to see Stooping Eagle approaching through the skeletal gate. \"Evening Star!\" he says, glad to see that you too have survived the ordeals set by the courtiers. He touches his sword. \"Where is the wizard? I am eager to see if his blood is red and clean like other men's, or flows like foul sewage!\"\n\nYou gesture to the pyramid at the far end of the arena. \"He awaits us there. But first we must prove ourselves in the contest.\"\n\nHe nods and leans closer to whisper in your ear. \"I know something of the strategy of the ball contest. Begin boldly so as to unsettle your opponents, then allow their leading player past you and drive deep towards the enemy defence.\"\n\n\"Well,\" you say with a shrug, \"it's as good a plan as any.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 42; }
+};
+
+class Story364 : public Story::Base
+{
+public:
+    Story364()
+    {
+        ID = 364;
+
+        Text = "Your partner darts forward and succeeds in intercepting the ball. You see that he cannot keep possession for long with the enemy attacking player dogging his every move. \"Send it over here!\" you yell at him.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::SHADE))
+        {
+            return 385;
+        }
+        else if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+        {
+            return 405;
+        }
+        else
+        {
+            return 423;
+        }
+    }
+};
+
+class Story365 : public Story::Base
+{
+public:
+    Story365()
+    {
+        ID = 365;
+
+        Text = "Leaving the battle behind, you hurry on until the stars begin to drown in the limpid haze heralding a new day. As the sun's heat grows stifling, you find shelter beneath a sand-blasted spar of rock where you rest until night comes again. Then you gather your belongings and set out again by moonlight. Your mouth feels as dry as the endless wastes surrounding you.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::WATERSKIN}))
+        {
+            return 303;
+        }
+        else
+        {
+            return 438;
         }
     }
 };
@@ -11270,10 +11420,21 @@ auto story347 = Story347();
 auto story348 = Story348();
 auto story349 = Story349();
 auto story350 = Story350();
+auto story351 = Story351();
+auto story352 = Story352();
+auto story353 = Story353();
 auto story354 = Story354();
 auto story355 = Story355();
 auto story356 = Story356();
 auto story357 = Story357();
+auto story358 = Story358();
+auto story359 = Story359();
+auto story360 = Story360();
+auto story361 = Story361();
+auto story362 = Story362();
+auto story363 = Story363();
+auto story364 = Story364();
+auto story365 = Story365();
 auto story366 = Story366();
 auto story367 = Story367();
 auto story368 = Story368();
@@ -11344,8 +11505,8 @@ void InitializeStories()
         &story320, &story321, &story322, &story323, &story324, &story325, &story326, &story327, &story328, &story329,
         &story330, &story331, &story332, &story333, &story334, &story335, &story336, &story337, &story338, &story339,
         &story340, &story341, &story342, &story343, &story344, &story345, &story346, &story347, &story348, &story349,
-        &story350, &story354, &story355, &story356, &story357,
-        &story366, &story367, &story368, &story369,
+        &story350, &story351, &story352, &story353, &story354, &story355, &story356, &story357, &story358, &story359,
+        &story360, &story361, &story362, &story363, &story364, &story365, &story366, &story367, &story368, &story369,
         &story370, &story371, &story374, &story378,
         &story387, &story388, &story389,
         &story390, &story391, &story392, &story398,
