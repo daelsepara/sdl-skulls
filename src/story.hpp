@@ -9642,6 +9642,64 @@ public:
     }
 };
 
+class Story341 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story341()
+    {
+        ID = 341;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "Without warning, the shadow creature suddenly stops dead and throws his leg out to trip you. You are taken by surprise, since no human opponent could act so fast.";
+
+        PreText += "\n\n";
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            PreText += "[AGILITY] You jump over his leg and whirl around, managing to block his attempt at scoring.";
+        }
+        else
+        {
+            PreText += "He deflects the ball into the low-score zone.";
+
+            Character::SCORE(player, player.Cross, 1);
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 66; }
+};
+
+class Story342 : public Story::Base
+{
+public:
+    Story342()
+    {
+        ID = 342;
+
+        Text = "You have defeated the sorcerer. His monstrous body topples onto the steps of his black pyramid and begins to seethe with putrid vapours. With the magic that sustained him unnaturally throughout the centuries now broken, Necklace of Skulls decomposes into dank grey dust.\n\nThe walls of the palace begin to stir. You can feel the ground trembling underfoot. You hurry back through the courtyard and out of the gates. After a dozen pace you cannot resist the urge to look back. The pyramid and surrounding buildings are sinking into the sand. In minutes they have vanished entirely, and there is no sign to show that this was the spot where Necklace of Skulls once dwelt among his bestial courtiers. You look around for the courtiers, but see only a pack of malnourished dogs slinking off amid the dunes.\n\nIt is over. You turn your face to the east. You have a long journey back to civilization. If only you had been able to save your brother...\n\nYou dismiss such thoughts with a shrug. It is too late for regrets. At least you avenged Morning Star's death and rid the world of an evil monster.\n\nOne of the dogs gives a howl. You look round, into the glowering darkness along the western horizon that marks the boundary of the Deathlands. That is where your brother is now.\n\nYou look east, then west again. Civilization -- or further adventure? Only you can decide which way your destiny beckons. This quest is ended, but perhaps further adventures still await you? The only limit is your own imagination.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+
+        Type = Story::Type::GOOD;
+    }
+};
+
 class Story343 : public Story::Base
 {
 public:
@@ -9747,6 +9805,58 @@ public:
     }
 
     int Continue(Character::Base &player) { return 324; }
+};
+
+class Story348 : public Story::Base
+{
+public:
+    Story348()
+    {
+        ID = 348;
+
+        Text = "You come to a huge buttress which at first you mistake for a cliff. Only when you get closer do you see what it truly is, and the realization draws a gasp from your lips: \"A tree!\" A tree whose trunk is as thick and solid as a temple-pyramid. You look up. You cannot see the upper branches. It stretches right through the forest canopy, dwarfing even the biggest trees, seeming to reach right up through the clouds.\n\nYou know what it is. It can only be the World Tree, which according to fable supports the heavens. Awestruck, you reach out and touch it, discovering that the bark is tingling. It is alive with the rhythms of life throughout the world.\n\nYou rest under the World Tree for a while. It fills you with a sense of joy to be so close to the roots of all existence, stronger and more confident than before. Now there is no peril that seems too daunting for you to face.\n\nYour Life Points are restored.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.Life = player.MAX_LIFE_LIMIT;
+    }
+
+    int Continue(Character::Base &player) { return 412; }
+};
+
+class Story349 : public Story::Base
+{
+public:
+    Story349()
+    {
+        ID = 349;
+
+        Text = "Lord Skull rocks his bulbous head and gives a groan of distress at being greeted incorrectly. Etiquette is obviously very important to these demons, because he also clouts you hard across the eyes as punishment. You reel back stunned, waiting for your vision to clear. It does so only partially: you can still sea, but not so clearly as before.\n\nYou retreat sullenly out of the sentinel's presence. The curse he has laid on you makes no difference. You have sworn to avenge your brother, and nothing short of death will stop you.\n\nYou can no longer use the [TARGETING] skill.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_SKILLS(player, {Skill::Type::TARGETING});
+        Character::REMOVE_CODEWORD(player, Codeword::Type::POKTAPOK);
+    }
+
+    int Continue(Character::Base &player)
+    {
+        return 336;
+    }
 };
 
 class Story350 : public Story::Base
@@ -10955,11 +11065,15 @@ auto story337 = Story337();
 auto story338 = Story338();
 auto story339 = Story339();
 auto story340 = Story340();
+auto story341 = Story341();
+auto story342 = Story342();
 auto story343 = Story343();
 auto story344 = Story344();
 auto story345 = Story345();
 auto story346 = Story346();
 auto story347 = Story347();
+auto story348 = Story348();
+auto story349 = Story349();
 auto story350 = Story350();
 auto story354 = Story354();
 auto story355 = Story355();
@@ -11034,7 +11148,7 @@ void InitializeStories()
         &story310, &story311, &story312, &story313, &story314, &story315, &story316, &story317, &story318, &story319,
         &story320, &story321, &story322, &story323, &story324, &story325, &story326, &story327, &story328, &story329,
         &story330, &story331, &story332, &story333, &story334, &story335, &story336, &story337, &story338, &story339,
-        &story340, &story343, &story344, &story345, &story346, &story347,
+        &story340, &story341, &story342, &story343, &story344, &story345, &story346, &story347, &story348, &story349,
         &story350, &story354, &story355, &story356, &story357,
         &story366, &story367, &story368, &story369,
         &story370, &story371, &story374, &story378,
