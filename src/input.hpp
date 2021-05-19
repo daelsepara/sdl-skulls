@@ -260,7 +260,7 @@ namespace Input
                     current = -1;
                 }
 
-                if (current >=0 && current < choices.size() && previous != current)
+                if (previous != current)
                 {
                     break;
                 }
