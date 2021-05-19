@@ -177,6 +177,14 @@ namespace Story
         DOOM
     };
 
+    enum class Controls
+    {
+        NONE = 0,
+        STANDARD,
+        SHOP,
+        TRADE
+    };
+
     class Base
     {
     public:
@@ -190,7 +198,8 @@ namespace Story
 
         const char *Image = NULL;
 
-        std::vector<Button> Controls = std::vector<Button>();
+        Story::Controls Controls = Story::Controls::NONE;
+
         std::vector<Choice::Base> Choices = std::vector<Choice::Base>();
         std::vector<std::pair<Item::Type, int>> Shop = std::vector<std::pair<Item::Type, int>>();
         std::pair<Item::Type, Item::Type> Trade;
@@ -238,57 +247,67 @@ namespace Story
             type = type;
         }
     };
+
+    std::vector<Button> StandardControls()
+    {
+        auto controls = std::vector<Button>();
+
+        controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+        controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+        controls.push_back(Button(2, "icons/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
+        controls.push_back(Button(3, "icons/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
+        controls.push_back(Button(4, "icons/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+        controls.push_back(Button(5, "icons/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
+        controls.push_back(Button(6, "icons/next.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::NEXT));
+        controls.push_back(Button(7, "icons/exit.png", 6, 7, 1, 7, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        return controls;
+    }
+
+    std::vector<Button> ShopControls()
+    {
+        auto controls = std::vector<Button>();
+
+        controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+        controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+        controls.push_back(Button(2, "icons/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
+        controls.push_back(Button(3, "icons/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
+        controls.push_back(Button(4, "icons/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+        controls.push_back(Button(5, "icons/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
+        controls.push_back(Button(6, "icons/shop.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::SHOP));
+        controls.push_back(Button(7, "icons/next.png", 6, 8, 1, 7, startx + 5 * gridsize, buttony, Control::Type::NEXT));
+        controls.push_back(Button(8, "icons/exit.png", 7, 8, 1, 8, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        return controls;
+    }
+
+    std::vector<Button> TradeControls()
+    {
+        auto controls = std::vector<Button>();
+
+        controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+        controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+        controls.push_back(Button(2, "icons/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
+        controls.push_back(Button(3, "icons/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
+        controls.push_back(Button(4, "icons/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+        controls.push_back(Button(5, "icons/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
+        controls.push_back(Button(6, "icons/shop.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::TRADE));
+        controls.push_back(Button(7, "icons/next.png", 6, 8, 1, 7, startx + 5 * gridsize, buttony, Control::Type::NEXT));
+        controls.push_back(Button(8, "icons/exit.png", 7, 8, 1, 8, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        return controls;
+    }
+
+    std::vector<Button> ExitControls()
+    {
+        auto controls = std::vector<Button>();
+
+        controls.push_back(Button(0, "icons/exit.png", 0, 0, -1, -1, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        return controls;
+    }
+
 } // namespace Story
-
-std::vector<Button> StandardControls()
-{
-    auto controls = std::vector<Button>();
-
-    controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
-    controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
-    controls.push_back(Button(2, "icons/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
-    controls.push_back(Button(3, "icons/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
-    controls.push_back(Button(4, "icons/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
-    controls.push_back(Button(5, "icons/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
-    controls.push_back(Button(6, "icons/next.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::NEXT));
-    controls.push_back(Button(7, "icons/exit.png", 6, 7, 1, 7, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
-
-    return controls;
-}
-
-std::vector<Button> ShopControls()
-{
-    auto controls = std::vector<Button>();
-
-    controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
-    controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
-    controls.push_back(Button(2, "icons/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
-    controls.push_back(Button(3, "icons/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
-    controls.push_back(Button(4, "icons/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
-    controls.push_back(Button(5, "icons/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
-    controls.push_back(Button(6, "icons/shop.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::SHOP));
-    controls.push_back(Button(7, "icons/next.png", 6, 8, 1, 7, startx + 5 * gridsize, buttony, Control::Type::NEXT));
-    controls.push_back(Button(8, "icons/exit.png", 7, 8, 1, 8, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
-
-    return controls;
-}
-
-std::vector<Button> TradeControls()
-{
-    auto controls = std::vector<Button>();
-
-    controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
-    controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
-    controls.push_back(Button(2, "icons/map.png", 1, 3, 1, 2, startx, buttony, Control::Type::MAP));
-    controls.push_back(Button(3, "icons/disk.png", 2, 4, 1, 3, startx + gridsize, buttony, Control::Type::GAME));
-    controls.push_back(Button(4, "icons/user.png", 3, 5, 1, 4, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
-    controls.push_back(Button(5, "icons/items.png", 4, 6, 1, 5, startx + 3 * gridsize, buttony, Control::Type::USE));
-    controls.push_back(Button(6, "icons/shop.png", 5, 7, 1, 6, startx + 4 * gridsize, buttony, Control::Type::TRADE));
-    controls.push_back(Button(7, "icons/next.png", 6, 8, 1, 7, startx + 5 * gridsize, buttony, Control::Type::NEXT));
-    controls.push_back(Button(8, "icons/exit.png", 7, 8, 1, 8, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
-
-    return controls;
-}
 
 class Prologue : public Story::Base
 {
@@ -305,7 +324,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 1; };
@@ -327,7 +346,7 @@ public:
         Choices.push_back(Choice::Base("...that on the contrary, clan honour demands that you go", 47));
         Choices.push_back(Choice::Base("Say nothing", 70));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -346,7 +365,7 @@ public:
 
         Shop = {{Item::Type::OWL, 2}};
 
-        Controls = ShopControls();
+        Controls = Story::Controls::SHOP;
     }
 
     int Continue(Character::Base &player) { return 93; }
@@ -367,7 +386,7 @@ public:
         Choices.push_back(Choice::Base("Grab the arm and let it pull you inside the bole of the dead tree", 141));
         Choices.push_back(Choice::Base("Chop at it as it flails blindly for you", 164));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -384,7 +403,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -408,7 +427,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 97; }
@@ -430,7 +449,7 @@ public:
         Choices.push_back(Choice::Base("Go left", 160));
         Choices.push_back(Choice::Base("Go straight ahead", 98));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -450,7 +469,7 @@ public:
         Choices.push_back(Choice::Base("Use a ROPE", 99, Item::Type::ROPE));
         Choices.push_back(Choice::Base("Otherwise", 214));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -477,7 +496,7 @@ public:
         Choices.push_back(Choice::Base("Decide against visiting Ashaka by continuing to travel overland", 298));
         Choices.push_back(Choice::Base("Detour to the sea and travel up the coast to Tahil", 228));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -494,7 +513,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -529,7 +548,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -558,7 +577,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 398; }
@@ -577,7 +596,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 105; }
@@ -596,7 +615,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -636,7 +655,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -653,7 +672,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -686,7 +705,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 431; }
@@ -705,7 +724,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -738,7 +757,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -773,7 +792,7 @@ public:
         Choices.push_back(Choice::Base("MELEE: Charge straight at him", 250));
         Choices.push_back(Choice::Base("MELEE: Charge at him zigzagging as you run", 273));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -793,7 +812,7 @@ public:
         Choices.push_back(Choice::Base(Skill::CHARMS.Name, 35, Skill::Type::CHARMS));
         Choices.push_back(Choice::Base("Otherwise", 58));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -810,7 +829,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 91; }
@@ -827,7 +846,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -869,7 +888,7 @@ public:
         Choices.push_back(Choice::Base("Wealth", 67));
         Choices.push_back(Choice::Base("Advice", 90));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -886,7 +905,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 93; }
@@ -908,7 +927,7 @@ public:
         Choices.push_back(Choice::Base("Jerk your hand away quickly", 71));
         Choices.push_back(Choice::Base("Slowly reach around with your other hand to seize the tarantula from behind", 94));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -925,7 +944,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -949,7 +968,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -988,7 +1007,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1015,7 +1034,7 @@ public:
         Choices.push_back(Choice::Base("Go right", 75));
         Choices.push_back(Choice::Base("Go straight on", 98));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1035,7 +1054,7 @@ public:
         Choices.push_back(Choice::Base("Pay him (2 cacao)", 355, Choice::Type::LOSE_MONEY, 2));
         Choices.push_back(Choice::Base("Make your way north on foot", 264));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1052,7 +1071,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 53; }
@@ -1071,7 +1090,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 308; }
@@ -1094,7 +1113,7 @@ public:
         Choices.push_back(Choice::Base(Skill::CUNNING.Name, 428, Skill::Type::CUNNING));
         Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::CHILLI_PEPPERS], 125, Item::Type::CHILLI_PEPPERS));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1134,7 +1153,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1170,7 +1189,7 @@ public:
         Choices.push_back(Choice::Base("Ascend to the shrine", 58));
         Choices.push_back(Choice::Base("Descend into the water", 105));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1185,7 +1204,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1217,7 +1236,7 @@ public:
         Choices.push_back(Choice::Base("Lord Skull", 129));
         Choices.push_back(Choice::Base("Thunderbolt Laughter", 62));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1238,7 +1257,7 @@ public:
         Choices.push_back(Choice::Base("... or a CHALIFE OF LIFE", 153, Item::Type::CHALICE_OF_LIFE));
         Choices.push_back(Choice::Base("Otherwise", 176));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1255,7 +1274,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 431; }
@@ -1274,7 +1293,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 317; }
@@ -1291,7 +1310,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1321,7 +1340,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player) { player.RitualBallStarted = true; }
@@ -1355,7 +1374,7 @@ public:
         Choices.push_back(Choice::Base("Attack the sorcerer now", 19));
         Choices.push_back(Choice::Base("Otherwise", 157));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1398,7 +1417,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1422,7 +1441,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1446,7 +1465,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1510,7 +1529,7 @@ public:
         Choices.push_back(Choice::Base("Ask to see the ancestral treasures of the clan", 138));
         Choices.push_back(Choice::Base("You think a companion would be useful", 162));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1529,7 +1548,7 @@ public:
         Choices.push_back(Choice::Base("Talk to him", 117));
         Choices.push_back(Choice::Base("Hurry off before he gets here", 163));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1565,7 +1584,7 @@ public:
         Choices.push_back(Choice::Base("Release your grip and fall back off the tree", 400));
         Choices.push_back(Choice::Base("Cling on and risk letting the monstrous arm seize you", 3));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1582,7 +1601,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1610,7 +1629,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1637,7 +1656,7 @@ public:
         Choices.push_back(Choice::Base("Continue in the direction you have been walking up till now", 98));
         Choices.push_back(Choice::Base("Go left", 144));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1656,7 +1675,7 @@ public:
         Choices.push_back(Choice::Base("Go back to the river and fetch some water for him", 284));
         Choices.push_back(Choice::Base("Ignore him and walk past", 307));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1676,7 +1695,7 @@ public:
         Choices.push_back(Choice::Base("Ask about the noble and the servant", 146));
         Choices.push_back(Choice::Base("You are more interested in finding out about the festival", 169));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1696,7 +1715,7 @@ public:
         Choices.push_back(Choice::Base("Fight the guards", 102));
         Choices.push_back(Choice::Base("Make no attempt to resist", 124));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1713,7 +1732,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1744,7 +1763,7 @@ public:
         Choices.push_back(Choice::Base("Battle with the creature: attack it now while it is still attached to its host", 104));
         Choices.push_back(Choice::Base("Wait until nightfall", 100));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1763,7 +1782,7 @@ public:
         Choices.push_back(Choice::Base("Offer INCENSE", 82, Choice::Type::LOSE_ITEM, Item::Type::INCENSE));
         Choices.push_back(Choice::Base("Offer your own life blood (LOSE 1 Life Point)", 82, Choice::Type::LIFE, -1));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1780,7 +1799,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1808,7 +1827,7 @@ public:
         Choices.push_back(Choice::Base("March along the causeway", 194));
         Choices.push_back(Choice::Base("Head directly for the jetty by leaving the causeway and wading through the maggots", 171));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1842,7 +1861,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("Select which SKILLS to lose", 37, Choice::Type::LOSE_SKILLS, 1));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1859,7 +1878,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1885,7 +1904,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1918,7 +1937,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -1942,7 +1961,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 88; }
@@ -1963,7 +1982,7 @@ public:
         Choices.push_back(Choice::Base("Go for a long shot", 89));
         Choices.push_back(Choice::Base("You prefer to be cautious and go for a safe point", 112));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -1980,7 +1999,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2004,7 +2023,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2054,7 +2073,7 @@ public:
         Choices.push_back(Choice::Base("Stand ready to fight the demons off", 115));
         Choices.push_back(Choice::Base("Run back towards the cliffs", 137));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -2071,7 +2090,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2097,7 +2116,7 @@ public:
         Choices.push_back(Choice::Base("Talk to him", 117));
         Choices.push_back(Choice::Base("Hurry off before he gets here", 163));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2130,7 +2149,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 118; }
@@ -2149,7 +2168,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2199,7 +2218,7 @@ public:
         Choices.push_back(Choice::Base("[ROGUERY] Sneak into the tunnel", 282, Skill::Type::ROGUERY));
         Choices.push_back(Choice::Base("Enter into the tunnel", 140));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -2219,7 +2238,7 @@ public:
         Choices.push_back(Choice::Base("Go left from here", 412));
         Choices.push_back(Choice::Base("Go right from here", 121));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -2238,7 +2257,7 @@ public:
         Choices.push_back(Choice::Base("Keep the PADDLE", 53, Choice::Type::GET_ITEM, Item::Type::PADDLE));
         Choices.push_back(Choice::Base("Leave it", 53));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -2253,7 +2272,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Background(Character::Base &player)
@@ -2301,7 +2320,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2343,7 +2362,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2365,7 +2384,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2409,7 +2428,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2433,7 +2452,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 105; }
@@ -2452,7 +2471,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -2483,7 +2502,7 @@ public:
         Choices.push_back(Choice::Base("Address him as Lord Skull", 336));
         Choices.push_back(Choice::Base("Call him Thunderbolt Laughter", 349));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -2502,7 +2521,7 @@ public:
 
         Bye = "Days turn to weeks. At last you catch sight of the town of Shakalla in the distance, its pyramids trembling in a haze of heat and dust. Beyond it lies a grim grey shadow: the desert, stretched like a basking serpent along the edge of the world.";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2535,7 +2554,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 431; }
@@ -2554,7 +2573,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2581,7 +2600,7 @@ public:
         Choices.push_back(Choice::Base("Weave around him towards the rear shadow man", 133));
         Choices.push_back(Choice::Base("Try to score a point immediately", 156));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -2598,7 +2617,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2636,7 +2655,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 135; }
@@ -2657,7 +2676,7 @@ public:
         Choices.push_back(Choice::Base("Go east to Tahil", 300));
         Choices.push_back(Choice::Base("Go south as the wizard suggested", 136));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2692,7 +2711,7 @@ public:
         Choices.push_back(Choice::Base("Do battle with the demons", 115));
         Choices.push_back(Choice::Base("Run away from them", 137));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2739,7 +2758,7 @@ public:
             {Item::Type::POT_OF_DYE, 2},
             {Item::Type::CHILLI_PEPPERS, 1}};
 
-        Controls = ShopControls();
+        Controls = Story::Controls::SHOP;
     }
 
     int Continue(Character::Base &player) { return 389; }
@@ -2760,7 +2779,7 @@ public:
         Choices.push_back(Choice::Base("Talk to him", 117));
         Choices.push_back(Choice::Base("Hurry off before he gets here", 163));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2811,7 +2830,7 @@ public:
         Choices.push_back(Choice::Base("Attack these cannibals at once", 73));
         Choices.push_back(Choice::Base("Wait to see what they have to say", 27));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -2828,7 +2847,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 350; };
@@ -2849,7 +2868,7 @@ public:
         Choices.push_back(Choice::Base("Disembark and climb up to the crevice", 74));
         Choices.push_back(Choice::Base("Wait for the strange demons to row on", 258));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -2868,7 +2887,7 @@ public:
         Choices.push_back(Choice::Base("Bear left from here", 412));
         Choices.push_back(Choice::Base("Bear right", 29));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2940,7 +2959,7 @@ public:
         Choices.push_back(Choice::Base("Keep the PADDLE", 53, Choice::Type::GET_ITEM, Item::Type::PADDLE));
         Choices.push_back(Choice::Base("Leave it", 53));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -2962,7 +2981,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -2995,7 +3014,7 @@ public:
         Choices.push_back(Choice::Base("Follow the river to the coast", 30, Choice::Type::LIFE, 1));
         Choices.push_back(Choice::Base("Stay for the festival", 416, Choice::Type::LIFE, 1));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3017,7 +3036,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3071,7 +3090,7 @@ public:
         Choices.push_back(Choice::Base("Jump into the sacred well", 327));
         Choices.push_back(Choice::Base("[SPELLS] Cast a protective enchantment first", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3091,7 +3110,7 @@ public:
         Choices.push_back(Choice::Base("Back away", 265));
         Choices.push_back(Choice::Base("Stand your ground and dodge to one side at the last moment", 242));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3108,7 +3127,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -3137,7 +3156,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3162,7 +3181,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("Select which SKILLS to lose", 37, Choice::Type::LOSE_SKILLS, 1));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3179,7 +3198,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3205,7 +3224,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 431; }
@@ -3224,7 +3243,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3270,7 +3289,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3316,7 +3335,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3340,7 +3359,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3364,7 +3383,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 260; }
@@ -3385,7 +3404,7 @@ public:
         Choices.push_back(Choice::Base(Skill::SPELLS.Name, 92, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base("Flee for your life", 137));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3439,7 +3458,7 @@ public:
         Choices.push_back(Choice::Base("Visit the temple of the Death God", 277));
         Choices.push_back(Choice::Base("You do not think any of the priests will be of much help,and would ask the Matriarch to let you have some of the clan treasures", 138));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3460,7 +3479,7 @@ public:
 
         Shop = {{Item::Type::SERPENT_BRACELET, 1}};
 
-        Controls = ShopControls();
+        Controls = Story::Controls::SHOP;
     }
 
     int Continue(Character::Base &player) { return 163; }
@@ -3483,7 +3502,7 @@ public:
         Choices.push_back(Choice::Base("[ROGUERY] Sneak up on some game", 233, Skill::Type::ROGUERY));
         Choices.push_back(Choice::Base("Search among your belongings for something to eat", 256));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3502,7 +3521,7 @@ public:
         Choices.push_back(Choice::Base("Struggle to your feet and chase the serpent off", 166));
         Choices.push_back(Choice::Base("Lie still and do nothing", 143));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3519,7 +3538,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -3551,7 +3570,7 @@ public:
         Choices.push_back(Choice::Base("Go left", 412));
         Choices.push_back(Choice::Base("Go straight ahead", 129));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3582,7 +3601,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 339; }
@@ -3603,7 +3622,7 @@ public:
         Choices.push_back(Choice::Base("Seek an audience with the King", 77));
         Choices.push_back(Choice::Base("Pay for lodging in the city if you have nay money", 101, Choice::Type::MONEY, 1));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3620,7 +3639,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3644,7 +3663,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3671,7 +3690,7 @@ public:
         Choices.push_back(Choice::Base("Dive to the ground and try to force its face into the dirt", 311));
         Choices.push_back(Choice::Base("Attempt to batter it against the bole of the nearby tree", 378));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3691,7 +3710,7 @@ public:
         Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 391, Skill::Type::SEAFARING));
         Choices.push_back(Choice::Base("Otherwise", 158));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3708,7 +3727,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 106; }
@@ -3727,7 +3746,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3753,7 +3772,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3779,7 +3798,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3806,7 +3825,7 @@ public:
         Choices.push_back(Choice::Base("Use a FIREBRAND", 319, Item::Type::FIREBRAND));
         Choices.push_back(Choice::Base("Otherwise", 178));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3825,7 +3844,7 @@ public:
         Choices.push_back(Choice::Base("Run towards the enemy defensive player", 111));
         Choices.push_back(Choice::Base("Stand where you are and hope your partner can get the ball to you", 179));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3868,7 +3887,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 19; }
@@ -3887,7 +3906,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -3921,7 +3940,7 @@ public:
         Choices.push_back(Choice::Base("Agree to being set down on the mainland coast south of the Isle of the Iguana", 260));
         Choices.push_back(Choice::Base("You would rather sail on to Tahil", 300));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3938,7 +3957,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 161; }
@@ -3959,7 +3978,7 @@ public:
         Choices.push_back(Choice::Base("Take the MAN OF GOLD", 93, Choice::Type::GET_ITEM, Item::Type::MAN_OF_GOLD));
         Choices.push_back(Choice::Base("Choose from the rest of the treasures", 185));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -3980,7 +3999,7 @@ public:
 
         Shop = {{Item::Type::PAPAYA, 1}};
 
-        Controls = ShopControls();
+        Controls = Story::Controls::SHOP;
     }
 
     int Continue(Character::Base &player) { return 163; }
@@ -4001,7 +4020,7 @@ public:
         Choices.push_back(Choice::Base("Use an item", 305));
         Choices.push_back(Choice::Base("Fight your way to safety", 328));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
 
         Take = {Item::Type::CHALICE_OF_LIFE};
 
@@ -4029,7 +4048,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -4053,7 +4072,7 @@ public:
             {Item::Type::BLOWGUN, 3},
             {Item::Type::INCENSE, 3}};
 
-        Controls = ShopControls();
+        Controls = Story::Controls::SHOP;
     }
 
     int Continue(Character::Base &player) { return 188; }
@@ -4074,7 +4093,7 @@ public:
         Choices.push_back(Choice::Base("Speak to the Rain God", 212));
         Choices.push_back(Choice::Base("Rise up and fight", 166));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4099,7 +4118,7 @@ public:
         Choices.push_back(Choice::Base("Go straight on from here", 121));
         Choices.push_back(Choice::Base("Head left", 6));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -4118,7 +4137,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -4137,7 +4156,7 @@ public:
         Choices.push_back(Choice::Base("Go to the royal palace and ask to see the King", 77));
         Choices.push_back(Choice::Base("Spend some money on arranging a place to stay", 101, Choice::Type::MONEY, 1));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -4149,8 +4168,6 @@ public:
         ID = 147;
 
         Choices.clear();
-
-        Controls.clear();
     }
 
     int Background(Character::Base &player)
@@ -4179,7 +4196,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 20; }
@@ -4200,7 +4217,7 @@ public:
         Choices.push_back(Choice::Base("Match your strength against the head and try to fling it away", 334));
         Choices.push_back(Choice::Base("Fall to the ground and try grappling with it there", 311));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -4217,7 +4234,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4268,7 +4285,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 200; }
@@ -4290,7 +4307,7 @@ public:
         Choices.push_back(Choice::Base("Sneak off while the warrior is fighting it", 365));
         Choices.push_back(Choice::Base("Stand by and watch what happens", 198));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -4307,7 +4324,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4333,7 +4350,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4370,7 +4387,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4394,7 +4411,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4439,7 +4456,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 442; }
@@ -4460,7 +4477,7 @@ public:
         Choices.push_back(Choice::Base("Sail with the first man for free", 280));
         Choices.push_back(Choice::Base("Agree to pay (4 cacao) and travel in a week", 205, Choice::Type::LOSE_MONEY, 4));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -4477,7 +4494,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 85; }
@@ -4499,7 +4516,7 @@ public:
         Choices.push_back(Choice::Base("Head on overland towards Ashaka", 8));
         Choices.push_back(Choice::Base("Follow the river to the coast", 30));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -4516,7 +4533,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -4545,7 +4562,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4572,7 +4589,7 @@ public:
         Choices.push_back(Choice::Base("Give some food from your own pack (PAPAYA)", 186, Choice::Type::GIVE_ITEM, Item::Type::PAPAYA));
         Choices.push_back(Choice::Base("Stand by and watch them pick the fruit", 96));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -4589,7 +4606,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4668,7 +4685,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4692,7 +4709,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4746,7 +4763,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -4775,7 +4792,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4828,7 +4845,7 @@ public:
         Choices.push_back(Choice::Base("Go to the royal palace and ask to see the King", 77));
         Choices.push_back(Choice::Base("Spend some money on arranging a place to stay", 101, Choice::Type::MONEY, 1));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4850,7 +4867,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4874,7 +4891,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4907,7 +4924,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4929,7 +4946,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4971,7 +4988,7 @@ public:
         Choices.push_back(Choice::Base("Drink from the well", 197));
         Choices.push_back(Choice::Base("Leave it alone", 180));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -4993,7 +5010,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5017,7 +5034,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -5046,7 +5063,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 431; }
@@ -5065,7 +5082,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5116,7 +5133,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5159,7 +5176,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 200; }
@@ -5178,7 +5195,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5205,7 +5222,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 406; }
@@ -5224,7 +5241,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 85; }
@@ -5243,7 +5260,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5290,7 +5307,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
 
         Take = {{Item::Type::GREEN_MIRROR, Item::Type::MAGIC_DRINK, Item::Type::JADE_SWORD}};
 
@@ -5318,7 +5335,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 350; };
@@ -5337,7 +5354,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5368,7 +5385,7 @@ public:
 
         Shop = {{Item::Type::LOBSTER_POT, 2}};
 
-        Controls = ShopControls();
+        Controls = Story::Controls::SHOP;
     }
 };
 
@@ -5385,7 +5402,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 97; }
@@ -5412,7 +5429,7 @@ public:
 
         Limit = 1;
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -5429,7 +5446,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 339; }
@@ -5448,7 +5465,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5472,7 +5489,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 263; }
@@ -5491,7 +5508,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5543,7 +5560,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5590,7 +5607,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5622,7 +5639,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5671,7 +5688,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 222; }
@@ -5690,7 +5707,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5737,7 +5754,7 @@ public:
 
         Image = "images/threshold-gods.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5768,7 +5785,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 431; }
@@ -5787,7 +5804,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -5820,7 +5837,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5847,7 +5864,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5886,7 +5903,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5943,7 +5960,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -5981,7 +5998,7 @@ public:
         Choices.push_back(Choice::Base("... from the bulbous cactus", 299));
         Choices.push_back(Choice::Base("None of these plants will help you", 322));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -5996,7 +6013,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6067,7 +6084,7 @@ public:
         Choices.push_back(Choice::Base("Pursue her", 232));
         Choices.push_back(Choice::Base("Leave her alone", 160));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -6084,7 +6101,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6114,7 +6131,7 @@ public:
 
         Trade = std::make_pair(Item::Type::MAIZE_CAKES, Item::Type::PARCEL_OF_SALT);
 
-        Controls = TradeControls();
+        Controls = Story::Controls::TRADE;
     }
 };
 
@@ -6133,7 +6150,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -6152,7 +6169,7 @@ public:
 
         Limit = 1;
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6198,7 +6215,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -6215,7 +6232,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 192; }
@@ -6234,7 +6251,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6269,7 +6286,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 20; }
@@ -6290,7 +6307,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6333,7 +6350,7 @@ public:
         Choices.push_back(Choice::Base("Make a Donation", 259, Choice::Type::DONATE));
         Choices.push_back(Choice::Base("Ignore the idol", 259));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6357,7 +6374,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -6386,7 +6403,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 36; }
@@ -6408,7 +6425,7 @@ public:
         Choices.push_back(Choice::Base("Rush straight in towards it", 268));
         Choices.push_back(Choice::Base("Stand your ground and make ready to parry", 291));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -6425,7 +6442,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 220; }
@@ -6444,7 +6461,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6479,7 +6496,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -6515,7 +6532,7 @@ public:
         Choices.push_back(Choice::Base("Make a tackle", 272));
         Choices.push_back(Choice::Base("Retreat ahead of him", 295));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -6532,7 +6549,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6583,7 +6600,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 85; };
@@ -6606,7 +6623,7 @@ public:
         Choices.push_back(Choice::Base("... the tunnel blocked by wooden beams", 361));
         Choices.push_back(Choice::Base("... the ominously unguarded passage", 382));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6656,7 +6673,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6682,7 +6699,7 @@ public:
         Choices.push_back(Choice::Base("Make a Donation", 301, Choice::Type::DONATE));
         Choices.push_back(Choice::Base("Leave the Temple", 301));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6706,7 +6723,7 @@ public:
         Choices.push_back(Choice::Base("Continue the chase", 278));
         Choices.push_back(Choice::Base("Give up and retrace your steps to find your original route", 160));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6737,7 +6754,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 279; }
@@ -6756,7 +6773,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -6787,7 +6804,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6820,7 +6837,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6850,7 +6867,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
     void Event(Character::Base &player)
     {
@@ -6884,7 +6901,7 @@ public:
         Choices.push_back(Choice::Base("Bribe him (3 cacao)", 285, Choice::Type::LOSE_MONEY, 3));
         Choices.push_back(Choice::Base("An audience with the King is not worth it", 262));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -6901,7 +6918,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6925,7 +6942,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 442; }
@@ -6944,7 +6961,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -6968,7 +6985,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7010,7 +7027,7 @@ public:
         Choices.push_back(Choice::Base("Follow the black road", 219));
         Choices.push_back(Choice::Base("Follow the yellow road", 266));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7041,7 +7058,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7067,7 +7084,7 @@ public:
         Choices.push_back(Choice::Base("Continue to dodge back", 314));
         Choices.push_back(Choice::Base("You think that now is the right moment to charge in and attack", 337));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7084,7 +7101,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7137,7 +7154,7 @@ public:
         Choices.push_back(Choice::Base(Skill::TARGETING.Name, 316, Skill::Type::TARGETING));
         Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::HYDRA_BLOOD_BALL], 383, Item::Type::HYDRA_BLOOD_BALL));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7154,7 +7171,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7181,7 +7198,7 @@ public:
         Choices.push_back(Choice::Base("Run towards the enemy defence", 318));
         Choices.push_back(Choice::Base("Stay in mid-arena", 364));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7200,7 +7217,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7221,7 +7238,7 @@ public:
         Choices.push_back(Choice::Base("Pay for your passage (6 cacao)", 300, Choice::Type::LOSE_MONEY, 6));
         Choices.push_back(Choice::Base("Travel overland instead", 228));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7240,7 +7257,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7257,7 +7274,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7284,7 +7301,7 @@ public:
         Choices.push_back(Choice::Base("Make a DONATION (2 cacao)", 2, Choice::Type::LOSE_MONEY, 2));
         Choices.push_back(Choice::Base("You are not prepared to make any donation and you need to hurry over to the market and spend your money on supplies instead", 93));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7301,7 +7318,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 369; }
@@ -7318,7 +7335,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7352,7 +7369,7 @@ public:
         Choices.push_back(Choice::Base("[SPELLS] Cast a protective enchantment", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base("Agree to being thrown into the pit", 327));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7371,7 +7388,7 @@ public:
         Choices.push_back(Choice::Base("Tell them to take you back to the cave and find another route", 237));
         Choices.push_back(Choice::Base("Let them row on", 361));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7388,7 +7405,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -7419,7 +7436,7 @@ public:
         Choices.push_back(Choice::Base("Ask the giant for a favour", 23));
         Choices.push_back(Choice::Base("It is time to get on with planning your journey to Tahil", 113));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7447,7 +7464,7 @@ public:
         Choices.push_back(Choice::Base("Use magic to get up there (SPELLS and ROPE)", 213, Skill::Type::SPELLS, Item::Type::ROPE));
         Choices.push_back(Choice::Base("Do not to explore the tombs", 236));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7468,7 +7485,7 @@ public:
         Choices.push_back(Choice::Base("Continue on westwards", 8));
         Choices.push_back(Choice::Base("Follow the river northwards", 30));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7489,7 +7506,7 @@ public:
         Choices.push_back(Choice::Base("'Water'", 10));
         Choices.push_back(Choice::Base("None of these", 60));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7504,7 +7521,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7547,7 +7564,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7597,7 +7614,7 @@ public:
         Choices.push_back(Choice::Base("Follow the white path", 243));
         Choices.push_back(Choice::Base("Follow the black path", 219));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7637,7 +7654,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 313; }
@@ -7656,7 +7673,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7703,7 +7720,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 315; }
@@ -7722,7 +7739,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 431; }
@@ -7741,7 +7758,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 40; }
@@ -7760,7 +7777,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7806,7 +7823,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7867,7 +7884,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 343; }
@@ -7890,7 +7907,7 @@ public:
 
         Shop = {{Item::Type::SALTED_MEAT, 1}};
 
-        Controls = ShopControls();
+        Controls = Story::Controls::SHOP;
     }
 };
 
@@ -7907,7 +7924,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7933,7 +7950,7 @@ public:
         Choices.push_back(Choice::Base("Make an OFFERING (5 cacao)", 408, Choice::Type::LOSE_MONEY, 5));
         Choices.push_back(Choice::Base("You cannot spare the money and must bid the priest farewell and see about getting supplies for the trip", 93));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7952,7 +7969,7 @@ public:
         Choices.push_back(Choice::Base("Keep the SHAWL", 302, Choice::Type::GET_ITEM, Item::Type::SHAWL));
         Choices.push_back(Choice::Base("Leave the SHAWL", 324));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -7977,7 +7994,7 @@ public:
         Choices.push_back(Choice::Base(Skill::CHARMS.Name, 75, Skill::Type::CHARMS));
         Choices.push_back(Choice::Base("Otherwise", 326));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -7997,7 +8014,7 @@ public:
         Choices.push_back(Choice::Base(Skill::TARGETING.Name, 297, Skill::Type::TARGETING));
         Choices.push_back(Choice::Base("Otherwise", 320));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8017,7 +8034,7 @@ public:
         Choices.push_back(Choice::Base("Fight on", 51));
         Choices.push_back(Choice::Base("Leap into the sacred well", 235));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8039,7 +8056,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8069,7 +8086,7 @@ public:
         Choices.push_back(Choice::Base("Use the MAN OF GOLD", 413, Item::Type::MAN_OF_GOLD));
         Choices.push_back(Choice::Base("Give up any hope of looting the tomb and climb back down to the canoe while you still can", 167));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8088,7 +8105,7 @@ public:
         Choices.push_back(Choice::Base("Let him drink some of your blood", 395));
         Choices.push_back(Choice::Base("Shake free of his grip and continue on your way", 307));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8113,7 +8130,7 @@ public:
         Choices.push_back(Choice::Base("Choose", 78, gifts));
         Choices.push_back(Choice::Base("Try something else", 262));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8133,7 +8150,7 @@ public:
         Choices.push_back(Choice::Base("Use a BLOWGUN to get across", 170, Item::Type::BLOWGUN));
         Choices.push_back(Choice::Base("Try jumping between the spires of rock", 147));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8148,7 +8165,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -8177,7 +8194,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 417; }
@@ -8196,7 +8213,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 219; }
@@ -8215,7 +8232,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8265,7 +8282,7 @@ public:
         Choices.push_back(Choice::Base("Make a headlong assault", 268));
         Choices.push_back(Choice::Base("Attempt to distract it with a feint", 419));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8323,7 +8340,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 315; }
@@ -8344,7 +8361,7 @@ public:
         Choices.push_back(Choice::Base("Stand your ground and fight", 229));
         Choices.push_back(Choice::Base("Retreat to the colonnade at the mouth of the passage", 362));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8361,7 +8378,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8394,7 +8411,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8432,7 +8449,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8487,7 +8504,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 343; }
@@ -8510,7 +8527,7 @@ public:
 
         Bye = "Days turn to weeks. At last you catch sight of the town of Shakalla in the distance. Beyond it lies the great stony rim of the desert, crouching like a baleful predator at the edge of the world.";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8553,7 +8570,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8581,7 +8598,7 @@ public:
         Choices.push_back(Choice::Base(Skill::SWORDPLAY.Name, 206, Choice::Type::SKILL_ANY, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}));
         Choices.push_back(Choice::Base("You are not bothered about him taking the vessel, you can just set out towards Shakalla", 85));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8593,8 +8610,6 @@ public:
         ID = 301;
 
         Choices.clear();
-
-        Controls.clear();
     }
 
     int Background(Character::Base &player)
@@ -8626,7 +8641,7 @@ public:
         Choices.push_back(Choice::Base("Return the SHAWL", 347, Item::Type::SHAWL));
         Choices.push_back(Choice::Base("Keep the SHAWL", 369, Item::Type::SHAWL));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8643,7 +8658,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 315; }
@@ -8662,7 +8677,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8699,7 +8714,7 @@ public:
         Choices.push_back(Choice::Base("... the FIREBRAND", 393, Item::Type::FIREBRAND));
         Choices.push_back(Choice::Base("Otherwise, you will have to fight", 328));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8721,7 +8736,7 @@ public:
         Choices.push_back(Choice::Base("[TARGETING] Shoot it", 352, Skill::Type::TARGETING));
         Choices.push_back(Choice::Base("[SPELLS] Cast a protective enchantment", 394, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8746,7 +8761,7 @@ public:
         Choices.push_back(Choice::Base("Gash your hand and let him drink some of your blood", 353));
         Choices.push_back(Choice::Base("Step over him and continue along the path without stopping", 373));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8766,7 +8781,7 @@ public:
         Choices.push_back(Choice::Base("Continue on your journey westwards", 8));
         Choices.push_back(Choice::Base("Continue north to the coast", 30));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8787,7 +8802,7 @@ public:
         Choices.push_back(Choice::Base("Use a BLOWGUN", 170, Item::Type::BLOWGUN));
         Choices.push_back(Choice::Base("Try crossing via the line of stepping-stones formed by the tips of the rock spires", 147));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8804,7 +8819,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8838,7 +8853,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8873,7 +8888,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 219; }
@@ -8896,7 +8911,7 @@ public:
         Choices.push_back(Choice::Base("'Grandfather of Darkness'", 359));
         Choices.push_back(Choice::Base("'Lord Skull'", 14));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8916,7 +8931,7 @@ public:
         Choices.push_back(Choice::Base("Rush in to strike a blow", 381));
         Choices.push_back(Choice::Base("Try a feint", 419));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8937,7 +8952,7 @@ public:
         Choices.push_back(Choice::Base("Walk along the unguarded tunnel", 382));
         Choices.push_back(Choice::Base("Brave the albino hound", 420));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -8954,7 +8969,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -8987,7 +9002,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9025,7 +9040,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -9054,7 +9069,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9093,7 +9108,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9147,7 +9162,7 @@ public:
         Choices.push_back(Choice::Base("Enter the shop", 344));
         Choices.push_back(Choice::Base("Carry on to the west gate of the town", 325));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9166,7 +9181,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9185,7 +9200,7 @@ public:
         Choices.push_back(Choice::Base("Join him for a practice bout in the arena", 368));
         Choices.push_back(Choice::Base("You had better get on with the rest of your preparations for the journey", 93));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9208,7 +9223,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("Continue", 118));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9247,7 +9262,7 @@ public:
         Choices.push_back(Choice::Base("... or the nearby boulder", 388));
         Choices.push_back(Choice::Base("Set out in the desert", 407));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9266,7 +9281,7 @@ public:
         Choices.push_back(Choice::Base("Go left", 412));
         Choices.push_back(Choice::Base("Take the right-hand fork", 348));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9289,7 +9304,7 @@ public:
         Choices.push_back(Choice::Base(Item::Descriptions[Item::Type::BLOWGUN], 5, Item::Type::BLOWGUN));
         Choices.push_back(Choice::Base("Otherwise", 28));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9320,7 +9335,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9382,7 +9397,7 @@ public:
         Choices.push_back(Choice::Base("Use the MAN OF GOLD", 413, Item::Type::MAN_OF_GOLD));
         Choices.push_back(Choice::Base("Otherwise", 145));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9399,7 +9414,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -9425,7 +9440,7 @@ public:
         Choices.push_back(Choice::Base("Go north to the coast", 30, Choice::Type::LIFE, 1));
         Choices.push_back(Choice::Base("Stay in Nachan for the festival", 416, Choice::Type::LIFE, 1));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9442,7 +9457,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 355; };
@@ -9461,7 +9476,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9487,7 +9502,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9507,7 +9522,7 @@ public:
         Choices.push_back(Choice::Base("Leave the shrine and wait until morning to resume your journey overland to Ashaka", 8));
         Choices.push_back(Choice::Base("Go downriver to the coast", 30));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9524,7 +9539,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
 
         Take = {Item::Type::WATERSKIN, Item::Type::SWORD, Item::Type::SPEAR};
 
@@ -9542,8 +9557,6 @@ public:
         ID = 337;
 
         Choices.clear();
-
-        Controls.clear();
     }
 
     int Background(Character::Base &player)
@@ -9580,7 +9593,7 @@ public:
         Choices.push_back(Choice::Base("... or a SPEAR", 39, Choice::Type::LOSE_ITEM, Item::Type::SPEAR));
         Choices.push_back(Choice::Base("Otherwise", 63));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9599,7 +9612,7 @@ public:
         Choices.push_back(Choice::Base("Loot the contents of the sarcophagus", 427));
         Choices.push_back(Choice::Base("You had better climb back down to the canoe before the two demons get fed up with waiting", 167));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9619,7 +9632,7 @@ public:
         Choices.push_back(Choice::Base("... or the CHALICE OF LIFE", 422, Item::Type::CHALICE_OF_LIFE));
         Choices.push_back(Choice::Base("[SPELLS] ... or a WAND", 18, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Background(Character::Base &player)
@@ -9655,7 +9668,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9694,7 +9707,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
 
         Type = Story::Type::GOOD;
     }
@@ -9715,7 +9728,7 @@ public:
         Choices.push_back(Choice::Base("Put in at the island", 366));
         Choices.push_back(Choice::Base("Sail on to Tahil", 300));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9739,7 +9752,7 @@ public:
             {Item::Type::BLOWGUN, 3},
             {Item::Type::BLANKET, 2}};
 
-        Controls = ShopControls();
+        Controls = Story::Controls::SHOP;
     }
 
     int Continue(Character::Base &player) { return 325; }
@@ -9758,7 +9771,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 137; }
@@ -9779,7 +9792,7 @@ public:
         Choices.push_back(Choice::Base("Practice the ball contest with him", 368));
         Choices.push_back(Choice::Base("Get on with preparations for your journey", 93));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9796,7 +9809,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9820,7 +9833,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9844,7 +9857,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9875,7 +9888,7 @@ public:
         Choices.push_back(Choice::Base("Head north out of the city", 120));
         Choices.push_back(Choice::Base("Take the southern road towards the forest", 165));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -9892,7 +9905,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9916,7 +9929,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9951,7 +9964,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -9986,7 +9999,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 415; }
@@ -10007,7 +10020,7 @@ public:
         Choices.push_back(Choice::Base("[FOLKLORE] Assure him that you are wise to such magical menaces", 264, Skill::Type::FOLKLORE));
         Choices.push_back(Choice::Base("Perhaps you had better ask him to explain further", 172));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10026,7 +10039,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10045,7 +10058,7 @@ public:
         Choices.push_back(Choice::Base("Strike it with your fist", 334));
         Choices.push_back(Choice::Base("Dash it against the trunk of the nearest tree", 378));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10062,7 +10075,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
 
         Take = {Item::Type::POLE};
 
@@ -10088,7 +10101,7 @@ public:
         Choices.push_back(Choice::Base("... as 'Lord Blood'", 61));
         Choices.push_back(Choice::Base("... as 'Lord Skull'", 107));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10105,7 +10118,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10163,7 +10176,7 @@ public:
         Choices.push_back(Choice::Base("Tru using the MAN OF GOLD", 131, Item::Type::MAN_OF_GOLD));
         Choices.push_back(Choice::Base("Otherwise", 154));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10180,7 +10193,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10232,7 +10245,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 42; }
@@ -10251,7 +10264,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -10284,7 +10297,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -10318,7 +10331,7 @@ public:
         Choices.push_back(Choice::Base("Walk boldly into the flames", 68));
         Choices.push_back(Choice::Base("Decide against helping him", 437));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10335,7 +10348,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 407; };
@@ -10354,7 +10367,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10380,7 +10393,7 @@ public:
         Choices.push_back(Choice::Base("Ask them to show you the treasure", 409));
         Choices.push_back(Choice::Base("Insist on being led back to the trail you were following before", 390));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10397,7 +10410,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10423,7 +10436,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 97; }
@@ -10442,7 +10455,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10466,7 +10479,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 80; }
@@ -10485,7 +10498,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 415; }
@@ -10506,7 +10519,7 @@ public:
         Choices.push_back(Choice::Base("Lunge forward and strike it at once", 122));
         Choices.push_back(Choice::Base("Wait until the cobra swoops in and then attempt a counterattack", 145));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10523,7 +10536,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -10552,7 +10565,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 398; }
@@ -10571,7 +10584,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10595,7 +10608,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10622,7 +10635,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10634,8 +10647,6 @@ public:
         ID = 381;
 
         Choices.clear();
-
-        Controls.clear();
     }
 
     int Background(Character::Base &player)
@@ -10664,7 +10675,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -10697,7 +10708,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10721,7 +10732,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10745,7 +10756,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10786,7 +10797,7 @@ public:
         Choices.push_back(Choice::Base("Go for a standard scoring shot", 405));
         Choices.push_back(Choice::Base("Risk everything on putting the ball through the stone ring and winning an instant victory", 43));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10799,7 +10810,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10839,7 +10850,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 407; };
@@ -10858,7 +10869,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10885,7 +10896,7 @@ public:
         Choices.push_back(Choice::Base("Return the SHAWL in the hope of gaining the stabai's goodwill", 347, Item::Type::SHAWL));
         Choices.push_back(Choice::Base("Continue to let them guide you", 168));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10902,7 +10913,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 205; }
@@ -10921,7 +10932,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 97; }
@@ -10942,7 +10953,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -10959,7 +10970,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -10992,7 +11003,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11027,7 +11038,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 415; }
@@ -11044,7 +11055,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player)
@@ -11073,7 +11084,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11099,7 +11110,7 @@ public:
         Choices.push_back(Choice::Base("Do the same (JADE BEAD)", 59, Item::Type::JADE_BEAD));
         Choices.push_back(Choice::Base("Otherwise", 83));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -11116,7 +11127,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11170,7 +11181,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -11189,7 +11200,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -11206,7 +11217,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
 
         Take = {Item::Type::LUMP_OF_CHARCOAL, Item::Type::STONE};
 
@@ -11229,7 +11240,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11255,7 +11266,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11286,7 +11297,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11308,7 +11319,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11338,7 +11349,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11360,7 +11371,7 @@ public:
 
         Image = "images/filler1.png";
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11390,7 +11401,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 160; }
@@ -11411,7 +11422,7 @@ public:
         Choices.push_back(Choice::Base("Keep the GOLDEN HELMET", 97, Choice::Type::GET_ITEM, Item::Type::GOLDEN_HELMET));
         Choices.push_back(Choice::Base("Leave it", 97));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -11431,7 +11442,7 @@ public:
         Choices.push_back(Choice::Base("Go left along the bank", 6));
         Choices.push_back(Choice::Base("Go", 52));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -11448,7 +11459,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11476,7 +11487,7 @@ public:
         Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 221, Skill::Type::SEAFARING));
         Choices.push_back(Choice::Base("Otherwise", 13));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -11493,7 +11504,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 335; }
@@ -11514,7 +11525,7 @@ public:
         Choices.push_back(Choice::Base("Continue overland to Ashaka", 8));
         Choices.push_back(Choice::Base("Go downriver to the coast", 30));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -11531,7 +11542,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11561,7 +11572,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 36; }
@@ -11580,7 +11591,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11638,7 +11649,7 @@ public:
         Choices.push_back(Choice::Base("Use the HYDRA BLOOD BALL", 383, Item::Type::HYDRA_BLOOD_BALL));
         Choices.push_back(Choice::Base("Fight the beast", 293));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -11655,7 +11666,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11679,7 +11690,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11700,8 +11711,6 @@ public:
         ID = 423;
 
         Choices.clear();
-
-        Controls.clear();
     }
 
     int Background(Character::Base &player)
@@ -11730,7 +11739,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 93; };
@@ -11749,7 +11758,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
@@ -11777,7 +11786,7 @@ public:
         Choices.push_back(Choice::Base("Find a place to stay", 101, Choice::Type::MONEY, 1));
         Choices.push_back(Choice::Base("Seek an audience with the King of Nachan", 77));
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -11794,7 +11803,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 91; }
@@ -11813,7 +11822,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Background(Character::Base &player)
@@ -11844,7 +11853,7 @@ public:
 
         Choices.clear();
 
-        Controls = StandardControls();
+        Controls = Story::Controls::STANDARD;
     }
 
     int Continue(Character::Base &player) { return 326; }
@@ -11859,8 +11868,7 @@ public:
 
         Title = "Not implemented yet";
 
-        Controls.clear();
-        Controls.push_back(Button(0, "icons/exit.png", 0, 0, -1, -1, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+        Controls = Story::Controls::NONE;
     }
 };
 

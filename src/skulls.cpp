@@ -2968,44 +2968,23 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
         SDL_Surface *text = NULL;
 
-        // TODO: Should store them as offsets instead?
-        if (story->Controls.size() > 0)
+        std::vector<Button> controls = std::vector<Button>();
+
+        if (story->Controls == Story::Controls::STANDARD)
         {
-            auto offset_x = 0;
-
-            if (story->Controls.size() >= 3)
-            {
-                offset_x = startx - story->Controls[2].X;
-            }
-
-            for (auto i = 0; i < story->Controls.size(); i++)
-            {
-                if (story->Controls[i].Type == Control::Type::SCROLL_UP || story->Controls[i].Type == Control::Type::SCROLL_DOWN)
-                {
-                    story->Controls[i].X = (1.0 - Margin) * SCREEN_WIDTH - arrow_size;
-
-                    if (story->Controls[i].Type == Control::Type::SCROLL_UP)
-                    {
-                        story->Controls[i].Y = texty + border_space;
-                    }
-                    else
-                    {
-                        story->Controls[i].Y = texty + text_bounds - arrow_size - border_space;
-                    }
-                }
-                else if (story->Controls[i].Type == Control::Type::BACK || story->Controls[i].Type == Control::Type::QUIT)
-                {
-                    story->Controls[i].X = (1.0 - Margin) * SCREEN_WIDTH - buttonw;
-
-                    story->Controls[i].Y = buttony;
-                }
-                else
-                {
-                    story->Controls[i].X = story->Controls[i].X + offset_x;
-
-                    story->Controls[i].Y = buttony;
-                }
-            }
+            controls = Story::StandardControls();
+        }
+        else if (story->Controls == Story::Controls::SHOP)
+        {
+            controls = Story::ShopControls();
+        }
+        else if (story->Controls == Story::Controls::TRADE)
+        {
+            controls = Story::TradeControls();
+        }
+        else
+        {
+            controls = Story::ExitControls();
         }
 
         if (run_once)
@@ -3105,16 +3084,16 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                 }
 
-                renderButtons(renderer, story->Controls, current, intGR, border_space, border_pts);
+                renderButtons(renderer, controls, current, intGR, border_space, border_pts);
 
                 bool scrollUp = false;
                 bool scrollDown = false;
 
-                quit = Input::GetInput(renderer, story->Controls, current, selected, scrollUp, scrollDown, hold);
+                quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
-                if ((selected && current >= 0 && current < story->Controls.size()) || scrollUp || scrollDown || hold)
+                if ((selected && current >= 0 && current < controls.size()) || scrollUp || scrollDown || hold)
                 {
-                    if (story->Controls[current].Type == Control::Type::SCROLL_UP || (story->Controls[current].Type == Control::Type::SCROLL_UP && hold) || scrollUp)
+                    if (controls[current].Type == Control::Type::SCROLL_UP || (controls[current].Type == Control::Type::SCROLL_UP && hold) || scrollUp)
                     {
                         if (offset > 0)
                         {
@@ -3126,7 +3105,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             offset = 0;
                         }
                     }
-                    else if (story->Controls[current].Type == Control::Type::SCROLL_DOWN || ((story->Controls[current].Type == Control::Type::SCROLL_DOWN && hold) || scrollDown))
+                    else if (controls[current].Type == Control::Type::SCROLL_DOWN || ((controls[current].Type == Control::Type::SCROLL_DOWN && hold) || scrollDown))
                     {
                         if (text->h >= text_bounds - 2 * space)
                         {
@@ -3141,7 +3120,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             }
                         }
                     }
-                    else if (story->Controls[current].Type == Control::Type::CHARACTER && !hold)
+                    else if (controls[current].Type == Control::Type::CHARACTER && !hold)
                     {
                         if (story->Type == Story::Type::NORMAL && player.Life > 0)
                         {
@@ -3160,7 +3139,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                         selected = false;
                     }
-                    else if (story->Controls[current].Type == Control::Type::MAP && !hold)
+                    else if (controls[current].Type == Control::Type::MAP && !hold)
                     {
                         mapScreen(window, renderer);
 
@@ -3168,7 +3147,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                         selected = false;
                     }
-                    else if (story->Controls[current].Type == Control::Type::USE && !hold)
+                    else if (controls[current].Type == Control::Type::USE && !hold)
                     {
                         if (story->Type == Story::Type::NORMAL && player.Life > 0)
                         {
@@ -3187,7 +3166,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                         selected = false;
                     }
-                    else if (story->Controls[current].Type == Control::Type::SHOP && !hold)
+                    else if (controls[current].Type == Control::Type::SHOP && !hold)
                     {
                         if (story->Type == Story::Type::NORMAL && player.Life > 0)
                         {
@@ -3206,7 +3185,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                         selected = false;
                     }
-                    else if (story->Controls[current].Type == Control::Type::TRADE && !hold)
+                    else if (controls[current].Type == Control::Type::TRADE && !hold)
                     {
                         if (story->Type == Story::Type::NORMAL && player.Life > 0)
                         {
@@ -3225,7 +3204,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                         selected = false;
                     }
-                    else if (story->Controls[current].Type == Control::Type::NEXT && !hold)
+                    else if (controls[current].Type == Control::Type::NEXT && !hold)
                     {
                         if (story->Type == Story::Type::NORMAL)
                         {
@@ -3331,7 +3310,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             error = true;
                         }
                     }
-                    else if (story->Controls[current].Type == Control::Type::BACK && !hold)
+                    else if (controls[current].Type == Control::Type::BACK && !hold)
                     {
                         quit = true;
 
