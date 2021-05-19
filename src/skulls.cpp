@@ -3006,18 +3006,20 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
             text = createText(story->Text, "fonts/default.ttf", font_size, clrDB, textwidth, TTF_STYLE_NORMAL);
         }
-        
+
+        auto compact = text->h > text_bounds - 2 * text_space;
+
         if (story->Controls == Story::Controls::STANDARD)
         {
-            controls = Story::StandardControls();
+            controls = Story::StandardControls(compact);
         }
         else if (story->Controls == Story::Controls::SHOP)
         {
-            controls = Story::ShopControls();
+            controls = Story::ShopControls(compact);
         }
         else if (story->Controls == Story::Controls::TRADE)
         {
-            controls = Story::TradeControls();
+            controls = Story::TradeControls(compact);
         }
         else
         {
