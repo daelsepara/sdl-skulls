@@ -246,6 +246,8 @@ namespace Input
             {
                 hold = false;
 
+                auto previous = current;
+
                 for (auto i = 0; i < choices.size(); i++)
                 {
                     if (result.motion.x >= choices[i].X && result.motion.x <= choices[i].X + choices[i].W - 1 && result.motion.y >= choices[i].Y && result.motion.y <= choices[i].Y + choices[i].H - 1)
@@ -254,13 +256,14 @@ namespace Input
 
                         break;
                     }
-                    else
-                    {
-                        current = -1;
-                    }
+
+                    current = -1;
                 }
 
-                break;
+                if (current >=0 && current < choices.size() && previous != current)
+                {
+                    break;
+                }
             }
             else if (result.type == SDL_MOUSEBUTTONDOWN && result.button.button == SDL_BUTTON_LEFT)
             {
@@ -308,8 +311,6 @@ namespace Input
             {
                 if (current >= 0 && current < choices.size() && (choices[current].Type == Control::Type::SCROLL_UP || choices[current].Type == Control::Type::SCROLL_DOWN))
                 {
-                    SDL_Delay(50);
-
                     break;
                 }
             }
