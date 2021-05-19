@@ -141,7 +141,7 @@ void fitImage(SDL_Renderer *renderer, SDL_Surface *image, int x, int y, int w)
 
         int h = image->h;
 
-        if (w > image->w)
+        if (w != image->w)
         {
             h = (w / image->w) * image->h;
         }
