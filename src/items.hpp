@@ -46,6 +46,7 @@ namespace Item
         HAMMER,
         HYDRA_BLOOD_BALL,
         SPEAR,
+        POLE,
         First = SWORD,
         Last = SPEAR
     };
@@ -88,7 +89,8 @@ namespace Item
         {Item::Type::LUMP_OF_CHARCOAL, "LUMP OF CHARCOAL"},
         {Item::Type::HAMMER, "HAMMER"},
         {Item::Type::HYDRA_BLOOD_BALL, "HYDRA BLOOD BALL"},
-        {Item::Type::SPEAR, "SPEAR"}};
+        {Item::Type::SPEAR, "SPEAR"},
+        {Item::Type::POLE, "POLE"}};
 
     std::vector<Item::Type> UniqueItems = {
         Item::Type::LETTER_OF_INTRODUCTION,

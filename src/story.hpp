@@ -9879,6 +9879,100 @@ public:
     }
 };
 
+class Story351 : public Story::Base
+{
+public:
+    Story351()
+    {
+        ID = 351;
+
+        Text = "The MAN OF GOLD comes to life in your hands and jumps down to the ground. You have no need to explain your needs -- after one glance at the small-creatures, the little golden manikin leaps to the attack. His sharp blows crack their shells with ease and soon a path is cleared along the tunnel for you to dash back to the waiting canoe.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::MAN_OF_GOLD});
+    }
+
+    int Continue(Character::Base &player) { return 258; }
+};
+
+class Story352 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story352()
+    {
+        ID = 352;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You drop low as the cobra comes sailing through the air. It passes over your head, jaw snapping just inches from your flesh. Instinct warns you that the slightest scratch from those long curved fangs would spell your death. You pivot on your heel as the cobra swings gracefully to hover out off the ledge, readying itself for another attack.\n\nA single short puff sends a lethal dart deep into the cobra's head. You watch it drop into the river below. The demons in the canoe, seeing it fall, nod up at you with witless grins of encouragement.";
+
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
+        {
+            PreText += "\n\nYou realize that you have lost the JADE BEAD. You check the BLOWGUN but it is not there. You must have blown it out along with the dart!";
+
+            Character::LOSE_ITEMS(player, {Item::Type::JADE_BEAD});
+        }
+
+        PreText += "\n\nThe tomb yawns open beside you. Having so nearly died at the fangs of its guardian, you decide you might as well take a look inside. Perhaps there will be some treasures worth taking.";
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 339; }
+};
+
+class Story353 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story353()
+    {
+        ID = 353;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "He opens a vein in the back of your hand using his long sharp fingernails, then laps eagerly at the blood. His tongue is rough and rasping at first, but soon the discomfort and the stinging of the wound begin to fade. You guess that there is something in his saliva that has a numbing effect.\n\nYou LOSE 1 Life Point.";
+
+        Character::GAIN_LIFE(player, -1);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nThe dwarf wipes his mouth fastidiously and gets to his feet. Once he is standing up he looks even more peculiar. Because of his stunted legs, his arms trail right down to the ground. \"You are most charitable,\" he says, grinning to reveal a snagged array of sharp little teeth. \"Rest assured that I'm not one to forget my obligations. Until we meet again, farewell!\"\n\nSo saying, he spreads his arms wide and executes a remarkable leap that carries him right over your head. His cloak flutters like a sail in the wind. Whirling around, you seen no sign of him in any direction. When you gaze up, there is just a distant black shape flying off into the grey sky.\n\nYou gained the codeword ZOTZ.";
+
+            Character::GET_CODEWORDS(player, {Codeword::Type::ZOTZ});
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 212; }
+};
+
 class Story354 : public Story::Base
 {
 public:
@@ -9953,6 +10047,29 @@ public:
 
         Controls = StandardControls();
     }
+};
+
+class Story358 : public Story::Base
+{
+public:
+    Story358()
+    {
+        ID = 358;
+
+        Text = "A knot unties itself and one of the gates swing open. No sooner have you gone through than it closes behind you. You proceed along a short tunnel to a chamber which is open on the far side, giving onto a ledge overlooking a river of foaming blood. You step out onto the ledge and look downriver. There is another ledge corresponding to the other doorway, and there you see the feather-robed noble who got here before you.\n\nHe points to two obsidian beams spanning the river to the far bank. At first you think they are bridges, but then you notice the shape. They are wedge-shaped, coming to a sharp edge on the upper surface. \"It would be difficult to keep one's balance on that,\" you call out to him.\n\n\"That isn't the intention,\" says the noble. He holds up a POLE with a hook on the end. \"I found this here on the ledge. Notice that there is a similar POLE next to you.\"\n\nYou glance down. A POLE like the one the noble is holding rests against the wall, and you pick it up.\n\n\"You have a plan?\" you ask him.\n\nHe nods. \"If we extend our arms, we'll be able to hook the poles together. Then, leaning away from each other with our feet on the sloping outer surfaces of the obsidian beams, we'll be able to cross together.\"\n\nThe plan is ingenious. You agree to put it to the test, and by this means you are both able to get across the river of the blood to the far bank.";
+
+        Image = "images/snail-creatures.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+
+        Take = {Item::Type::POLE};
+
+        Limit = 1;
+    }
+
+    int Continue(Character::Base &player) { return 399; }
 };
 
 class Story366 : public Story::Base
