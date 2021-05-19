@@ -6858,7 +6858,7 @@ public:
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
         {
-            PreText += "The jade bead rolls out from under your tongue when you speak and it falls into the water.\n\n";
+            PreText += "The JADE BEAD rolls out from under your tongue when you speak and it falls into the water.\n\n";
         }
 
         PreText += "\"There's no other way,\" replies the demon with the jaguar-skin skullcap.\"\n\n\"Not if you want to reach the Deathlands alive,\" adds his accomplice, and they rock with immoderate joy like two senile old men.";
@@ -10927,6 +10927,93 @@ public:
     int Continue(Character::Base &player) { return 97; }
 };
 
+class Story393 : public Story::Base
+{
+public:
+    Story393()
+    {
+        ID = 393;
+
+        Text = "You light the firebrand and thrust it straight into the face of the nearest of the creatures -- the one hanging on the rock directly above your head. It throws up its stubby arms with a sickening bleat of anguish and falls, dashing you to the ground and smothering the burning brand. Before you can struggle free and rise to your feet, the rest of the creatures have slithered forward and seized you in their slimy fingers. You try to fight, but there are too many of them. All you can do is scream in panic as they overwhelm you. You have come to a horrible end.";
+
+        Image = "images/filler1.png";
+
+        Type = Story::Type::DOOM;
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+};
+
+class Story394 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story394()
+    {
+        ID = 394;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You complete the charm an instant before the cobra strikes. It comes sailing in and closes its jaws on your neck, but you feel barely more than a pinprick as the fangs glance harmlessly off your skin. The charm will keep you safe from its bite while you explore the tomb.";
+
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
+        {
+            PreText += "\n\nThe JADE BEAD fell out of your mouth when you spoke the charm. You are too late to stop it rolling off the ledge and being lost in the water below.";
+
+            Character::LOSE_ITEMS(player, {Item::Type::JADE_BEAD});
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 339; }
+};
+
+class Story395 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story395()
+    {
+        ID = 395;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The little man bites your wrist and sucks at it as though savouring the juice of a plum.\n\nYou LOSE 1 Life Point.";
+
+        Character::GAIN_LIFE(player, -1);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nAfter a short while he looks up. Under the hook of his extraordinary nose, his mouth is curled into a tight smile. \"That's a rare act of kindness for a stranger to do,\" he says in his thin voice, leaping to his tiny feet with miraculous vigour. \"I won't soon forget it, I assure you. Oh, and let me give you a word of advice. Get rid of any money you've got once you reach the crossroads.\"\n\nWith that he darts off and is soon lost to view among the rushes. You are left to ponder the meaning of this strange encounter as you continue on your way.\n\nYou gained the codeword ZAZ.";
+
+            Character::GET_CODEWORDS(player, {Codeword::Type::ZAZ});
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 307; }
+};
+
 class Story396 : public Story::Base
 {
 public:
@@ -10944,6 +11031,33 @@ public:
     }
 
     int Continue(Character::Base &player) { return 415; }
+};
+
+class Story397 : public Story::Base
+{
+public:
+    Story397()
+    {
+        ID = 397;
+
+        Text = "Your answer is greeted with a sneer and a hiss of laughter. It occurs to you that you may have been tricked.";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
+        {
+            return 56;
+        }
+        else
+        {
+            return 60;
+        }
+    }
 };
 
 class Story398 : public Story::Base
@@ -10968,6 +11082,25 @@ public:
     }
 
     int Continue(Character::Base &player) { return 417; }
+};
+
+class Story399 : public Story::Base
+{
+public:
+    Story399()
+    {
+        ID = 399;
+
+        Text = "The remorseless glare of the unearthly sun dazzles you both, forcing you to shield your eyes. Walking on, you come in sight of a kapok tree whose spreading branches poke up into the roof of water above the underworld. Several figures are resting in its shade.\n\nAs you press on towards the tree, you pass a well beside the road. Your companion pauses and fishes in his belt-pouch for a JADE BEAD, which he casts into the well. There is a glint of golden light from the water, and the noble pauses to take a drink.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Do the same (JADE BEAD)", 59, Item::Type::JADE_BEAD));
+        Choices.push_back(Choice::Base("Otherwise", 83));
+
+        Controls = StandardControls();
+    }
 };
 
 class Story400 : public Story::Base
@@ -11022,6 +11155,124 @@ public:
     int Continue(Character::Base &player) { return 324; }
 };
 
+class Story401 : public Story::Base
+{
+public:
+    Story401()
+    {
+        ID = 401;
+
+        Text = "You greet the sentinel by name. He receives your greeting with barely a change in expression. Only in a narrowing of those burning eyes and a drooping of the chiselled lips do you begin to sense your error.\n\nHis sceptre flashes out without warning, shattering your breast-bone and drinking through into your heart. Impaled, you give a last spasm before death congeals on your features. You have met your doom.";
+
+        Image = "images/filler1.png";
+
+        Type = Story::Type::DOOM;
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+};
+
+class Story402 : public Story::Base
+{
+public:
+    Story402()
+    {
+        ID = 402;
+
+        Text = "You have no weapon strong enough to penetrate the monster's scaly hide. Snarling at your impudence in attacking it, it envelops you in its four necks like a ma closing his fist on a gnat. Fangs sharper than flakes of obsidian sink deep into your flesh and it raises your bloody carcass aloft to the night sky with a great shriek of inhuman glee. You sold your life valiantly, but you failed.";
+
+        Image = "images/filler1.png";
+
+        Type = Story::Type::DOOM;
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+};
+
+class Story403 : public Story::Base
+{
+public:
+    Story403()
+    {
+        ID = 403;
+
+        Text = "The intense fire has burned down to a sullen cindery glow by daybreak. You are dimly aware of the door being swung open, and you begin to crawl feebly across the floor towards the flow of cool morning air. In doing so, your hand brushes against a large lump of charcoal which must have fallen out of the fire during the night. You also notice that one of the round stones which formed the sides of the fire-trough has worked itself loose. It is still warm to the touch, but not unbearably so.\n\n\"Come along,\" snaps the chief courtier impatiently. He sends in a couple of his men, who drag you outside. Staring down at you as your strength returns, he says nastily: \"Did you have a pleasant night?\"\n\n\"Very comfortable,\" you mutter through parched lips. \"What's next?\"\n\n\"Next,\" e says, \"is the House of Bats.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+
+        Take = {Item::Type::LUMP_OF_CHARCOAL, Item::Type::STONE};
+
+        Limit = 2;
+    }
+
+    int Continue(Character::Base &player) { return 225; }
+};
+
+class Story404 : public Story::Base
+{
+public:
+    Story404()
+    {
+        ID = 404;
+
+        Text = "The symbol on the diadem represents the World Tree, the source of all birth and regeneration. Now you can feel it throbbing in your hand, its magical energy sending tingling sparks through your fingers. You carefully set your brother's skull on the dusty ground in front of you and place the diadem over its brow.\n\nSunlight splashes on the rim of the diadem, growing into a blinding cusp of unbearable intensity. The courtiers look away with a moan of awe, and the two shadow men shrink back against the flanks of their creator's pyramid. Narrowing your eyes, you peer into the heart of the glow and there you witness -- a miracle.\n\nThe glow fades. Your brother is standing before you, fully restored, grinning like a demigod with the diadem on his brow. It takes you a moment before the wave of dizzying joy passes enough for you to speak: \"Morning Star!\"\n\n\"It is good to see you!\" says your brother, coming forward to hug you. As the two of you touch, there is a crackle of energy and you feel the injuries and fatigue of the last few weeks burned away by life-giving magic.\n\n\"I feared you were lost for ever.\" You point towards the brooding shrine overlooking the ball contest arena. \"Now, brother, let's show that sorcerer our true mettle!\"\"\n\nYou RECOVER 4 Life Points.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, 4);
+
+        Character::REMOVE_CODEWORD(player, Codeword::Type::VENUS);
+    }
+
+    int Continue(Character::Base &player) { return 42; }
+};
+
+class Story405 : public Story::Base
+{
+public:
+    Story405()
+    {
+        ID = 405;
+
+        Text = "You swing your elbow up in a perfectly judge blow that hits the ball high up against the scoring zone.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        auto score = 1;
+
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK))
+        {
+            score = 2;
+        }
+
+        Character::SCORE(player, player.Ticks, score);
+    }
+
+    int Continue(Character::Base &player) { return 66; }
+};
+
 class Story406 : public Story::Base
 {
 public:
@@ -11071,10 +11322,7 @@ public:
         }
     }
 
-    int Continue(Character::Base &player)
-    {
-        return 434;
-    }
+    int Continue(Character::Base &player) { return 434; }
 };
 
 class Story408 : public Story::Base
@@ -11093,12 +11341,12 @@ public:
         Controls = StandardControls();
     }
 
-    int Continue(Character::Base &player) { return 93; }
-
     void Event(Character::Base &player)
     {
         Character::GET_CODEWORDS(player, {Codeword::Type::CENOTE});
     }
+
+    int Continue(Character::Base &player) { return 93; }
 };
 
 class Story409 : public Story::Base
@@ -11129,6 +11377,25 @@ public:
     int Continue(Character::Base &player) { return 26; }
 };
 
+class Story410 : public Story::Base
+{
+public:
+    Story410()
+    {
+        ID = 410;
+
+        Text = "The lad is as good as his word, and takes you along an obscure track that leads towards the edge of the forest. As you walk, he tells you of his people, whose task is to guard the World Tree.\n\n\"Who appointed you to this sacred duty?\" you ask, hiding a smile because you do not believe such an outrageous claim.\n\n\"It was the God of Gods, who at the dawn of time created our ancestors from whom came all men,\" he says. His sing-song intonation suggests he is reciting the words of his tribal shaman. But what he says next makes you pause for thought: \"You're going to Nachan? My father went there once, in the time of the old king. I hear there is a passage into the underworld.\"\n\nInterested, you ply him with questions but he knows nothing more. At last he points along a lightly wooded lane. \"Follow this path and you will soon reach the outside world,\" he says.\n\nThanking him, you say good-bye and set out along the lane.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 160; }
+};
+
 class Story411 : public Story::Base
 {
 public:
@@ -11143,6 +11410,71 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("Keep the GOLDEN HELMET", 97, Choice::Type::GET_ITEM, Item::Type::GOLDEN_HELMET));
         Choices.push_back(Choice::Base("Leave it", 97));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story412 : public Story::Base
+{
+public:
+    Story412()
+    {
+        ID = 412;
+
+        Text = "The path reaches a shallow brook. Midges cloud the damp gloomy air. In the branches high above, a macaw dips its long yellow beak to peer at you.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Go straight across the brook", 29));
+        Choices.push_back(Choice::Base("Go left along the bank", 6));
+        Choices.push_back(Choice::Base("Go", 52));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story413 : public Story::Base
+{
+public:
+    Story413()
+    {
+        ID = 413;
+
+        Text = "The warmth of your grip awakens the spark of life in the golden manikin. Dropping from your hand to the ledge, it takes in the situation with a single haughty glance. You wonder how anything so small could help against the flying cobra, but the MAN OF GOLD was fashioned by a god and is far more powerful than you could imagine. As the cobra comes swooping to attack you, the Man of Gold leaps up and seizes its tail, dragging it down to the ledge. The struggle is brief. After casting the lifeless body into the river, the Man of Gold makes a gesture of farewell and then dives off the ledge itself. You hear it fall with a short heavy splash, and by the time you look over the edge it has sunk without a trace.\n\n\"That was handy, having that little figurine,\" calls up one of the demonic oarsmen.\n\nThe other chimes in with: \"Too bad you couldn't keep it. He is right.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::LOSE_ITEMS(player, {Item::Type::MAN_OF_GOLD});
+    }
+
+    int Continue(Character::Base &player) { return 339; }
+};
+
+class Story414 : public Story::Base
+{
+public:
+    Story414()
+    {
+        ID = 414;
+
+        Text = "The knot on one of the gates unties itself. The gate swings open to let you enter, then closes behind you. At the end of a short tunnel you find a chamber which is open on the far side, giving onto a ledge overlooking a river of foaming blood. A man stands on the ledge, and you recognize him as the feather-robed noble you saw on the causeway outside.\n\nHe points to an obsidian beam spanning the river to the far bank. At first you think it is a bridge, but when you step out onto the ledge for a closer look you see that it is wedge-shaped, coming to a sharp edge on its upper surface. \"It would be difficult to keep one's balance on that,\" you remark drily.\n\n\"That isn't the intention,\" says the noble. He holds up a pole with a hook on the end. \"I found this here on the ledge. Notice that there is a similar pole on the other ledge yonder.\"\n\nYou look upriver. There is indeed another ledge with an identical beam a few metres away, presumably where you would have come out if you had gone through the other doorway. A pole like the one the noble is holding rests there.\n\n\"Eventually a poor man will arrive,\" he says. \"He will emerge on the other ledge, at which time he and I will reach out and hook our poles together. Then, leaning out and walking on the sloping surface of the obsidian beams, we will be able to cross together.\"\n\n\"Ingenious!\" you say. But you are thinking about how you will get across.";
+
+        Image = "images/pyramid.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::AGILITY.Name, 418, Skill::Type::AGILITY));
+        Choices.push_back(Choice::Base(Skill::ROGUERY.Name, 430, Skill::Type::ROGUERY));
+        Choices.push_back(Choice::Base(Skill::SEAFARING.Name, 221, Skill::Type::SEAFARING));
+        Choices.push_back(Choice::Base("Otherwise", 13));
 
         Controls = StandardControls();
     }
@@ -11214,6 +11546,100 @@ public:
     }
 
     int Continue(Character::Base &player) { return 260; }
+};
+
+class Story418 : public Story::Base
+{
+public:
+    Story418()
+    {
+        ID = 418;
+
+        Text = "\"You can wait for a poor man to show up if you like,\" you say to the noble, \"but I don't have the patience for that.\"\n\n\"Wait!\" he cries as you step out onto the beam. \"You'll fall into the river and be drowned!\"\n\nBut he has reckoned without your extraordinary sense of balance. You run along the thin edge of the beam like a tightrope walker and leap off safely on the far bank. Glancing back, you wave to him, saying flippantly, \"I'm an expert. Don't try it yourself.\"";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    int Continue(Character::Base &player) { return 36; }
+};
+
+class Story419 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story419()
+    {
+        ID = 419;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "One of the heads flinches back as you fake a lunge towards it, but then you are caught a glancing blow by one of the others which sends you reeling off across the sand. Your blood drenches the ground underfoot.";
+
+        PreText += "\n\n";
+
+        auto DAMAGE = -2;
+
+        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        {
+            PreText += "[SWORDPLAY] ";
+
+            DAMAGE = -1;
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::TARGETING))
+        {
+            PreText += "[TARGETING] ";
+
+            DAMAGE = -1;
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        {
+            PreText += "[UNARMED COMBAT] ";
+
+            DAMAGE = -1;
+        }
+
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Point(s).";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 222; }
+};
+
+class Story420 : public Story::Base
+{
+public:
+    Story420()
+    {
+        ID = 420;
+
+        Text = "The hound's hot glowering gaze burns in the brutal white wedge of its face. It looks as strong as a jaguar, but with the jaguar's easygoing disposition. As it sees you take a step into the passage, its jaws begin to slaver and it gives a rasping snarl.";
+
+        Image = "images/pyramid.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::FOLKLORE.Name, 247, Skill::Type::FOLKLORE));
+        Choices.push_back(Choice::Base("[TARGETING] Use a BLOWGUN", 316, Skill::Type::TARGETING));
+        Choices.push_back(Choice::Base("Rely on [CUNNING]", 270, Skill::Type::CUNNING));
+        Choices.push_back(Choice::Base("Use the HYDRA BLOOD BALL", 383, Item::Type::HYDRA_BLOOD_BALL));
+        Choices.push_back(Choice::Base("Fight the beast", 293));
+
+        Controls = StandardControls();
+    }
 };
 
 class Story424 : public Story::Base
@@ -11780,17 +12206,34 @@ auto story389 = Story389();
 auto story390 = Story390();
 auto story391 = Story391();
 auto story392 = Story392();
+auto story393 = Story393();
+auto story394 = Story394();
+auto story395 = Story395();
 auto story396 = Story396();
+auto story397 = Story397();
 auto story398 = Story398();
+auto story399 = Story399();
 auto story400 = Story400();
+auto story401 = Story401();
+auto story402 = Story402();
+auto story403 = Story403();
+auto story404 = Story404();
+auto story405 = Story405();
 auto story406 = Story406();
 auto story407 = Story407();
 auto story408 = Story408();
 auto story409 = Story409();
+auto story410 = Story410();
 auto story411 = Story411();
+auto story412 = Story412();
+auto story413 = Story413();
+auto story414 = Story414();
 auto story415 = Story415();
 auto story416 = Story416();
 auto story417 = Story417();
+auto story418 = Story418();
+auto story419 = Story419();
+auto story420 = Story420();
 auto story424 = Story424();
 auto story425 = Story425();
 auto story426 = Story426();
@@ -11840,10 +12283,10 @@ void InitializeStories()
         &story360, &story361, &story362, &story363, &story364, &story365, &story366, &story367, &story368, &story369,
         &story370, &story371, &story372, &story373, &story374, &story375, &story376, &story377, &story378, &story379,
         &story380, &story381, &story382, &story383, &story384, &story385, &story386, &story387, &story388, &story389,
-        &story390, &story391, &story392, &story398,
-        &story400, &story406, &story407, &story408, &story409,
-        &story411, &story415, &story416, &story417,
-        &story424, &story425, &story426,
+        &story390, &story391, &story392, &story393, &story394, &story395, &story396, &story397, &story398, &story399,
+        &story400, &story401, &story402, &story403, &story404, &story405, &story406, &story407, &story408, &story409,
+        &story410, &story411, &story412, &story413, &story414, &story415, &story416, &story417, &story418, &story419,
+        &story420, &story424, &story425, &story426,
         &story435, &story437,
         &story441};
 }
