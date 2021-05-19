@@ -9511,6 +9511,137 @@ public:
     }
 };
 
+class Story336 : public Story::Base
+{
+public:
+    Story336()
+    {
+        ID = 336;
+
+        Text = "You reach the end of the tunnel and emerge into the open under a bright blue sky. The sun of the upper world blazes high in the heavens -- a welcome change from the grey glare permeating the Deathlands, although you know that too long an exposure to its blistering rays may eventually leave you weak with thirst. Waves of heat rise around you off the baking sands of the great desert. Dunes stretch like the tops of clouds as far as the eye can see.\n\nNear by, you see various items poking up out of the sand. They may be the grave goods of spirits who descended here to the Deathlands. A closer inspection uncovers a SWORD, a WATERSKIN, and a copper-tipped SPEAR.";
+
+        Image = "images/snail-creatures.png";
+
+        Choices.clear();
+
+        Controls = StandardControls();
+
+        Take = {Item::Type::WATERSKIN, Item::Type::SWORD, Item::Type::SPEAR};
+
+        Limit = 3;
+    }
+
+    int Continue(Character::Base &player) { return 152; }
+};
+
+class Story337 : public Story::Base
+{
+public:
+    Story337()
+    {
+        ID = 337;
+
+        Choices.clear();
+
+        Controls.clear();
+    }
+
+    int Background(Character::Base &player)
+    {
+        if (Character::VERIFY_ITEMS(player, {Item::Type::SPEAR}))
+        {
+            return 429;
+        }
+        else if (Character::VERIFY_SKILL(player, Skill::Type::AGILITY))
+        {
+            return 222;
+        }
+        else
+        {
+            return 402;
+        }
+    }
+};
+
+class Story338 : public Story::Base
+{
+public:
+    Story338()
+    {
+        ID = 338;
+
+        Text = "You step up to the edge of the pit. The smoke rising off the coals at the bottom is thick and choking. You can feel the waves of heat simmering up on the still air. The pit is not deep, but even so you would not relish falling in!";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base(Skill::AGILITY.Name, 16, Skill::Type::AGILITY));
+        Choices.push_back(Choice::Base("Use a BLOWGUN", 39, Choice::Type::LOSE_ITEM, Item::Type::BLOWGUN));
+        Choices.push_back(Choice::Base("... or a SPEAR", 39, Choice::Type::LOSE_ITEM, Item::Type::SPEAR));
+        Choices.push_back(Choice::Base("Otherwise", 63));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story339 : public Story::Base
+{
+public:
+    Story339()
+    {
+        ID = 339;
+
+        Text = "You find yourself in a narrow chamber. The air of the tomb is thick with the smell of old incense. In the faint light shining in from outside, you see an upright sarcophagus set against the far wall. Stylized features moulded into the sarcophagus lid suggest a woman in the raiment of a priestess. Then you notice that in her arms she carries two newborn children.\n\nCuriosity gets the better of you. Dislodging the lid, you strain with all your strength and finally succeed in dragging it open. For an instant the face of a beautiful woman stares out at you, and you give a startled cry. She has two little children in her arms. All three seem only asleep, but then the air you have allowed into the sarcophagus unlocks the closed gates of time. The bodies cave in and crumble to dust in front of your eyes.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Loot the contents of the sarcophagus", 427));
+        Choices.push_back(Choice::Base("You had better climb back down to the canoe before the two demons get fed up with waiting", 167));
+
+        Controls = StandardControls();
+    }
+};
+
+class Story340 : public Story::Base
+{
+public:
+    Story340()
+    {
+        ID = 340;
+
+        Text = "Decide what to do next";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Use the GOLD DIADEM", 404, Item::Type::GOLD_DIADEM));
+        Choices.push_back(Choice::Base("... or the CHALICE OF LIFE", 422, Item::Type::CHALICE_OF_LIFE));
+        Choices.push_back(Choice::Base("[SPELLS] ... or a WAND", 18, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+
+        Controls = StandardControls();
+    }
+
+    int Background(Character::Base &player)
+    {
+        if (!Character::VERIFY_ITEMS(player, {Item::Type::GOLD_DIADEM}) && !Character::VERIFY_ITEMS(player, {Item::Type::CHALICE_OF_LIFE}) && !Character::VERIFY_SKILL_ANY(player, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}))
+        {
+            if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+            {
+                return 363;
+            }
+            else
+            {
+                return 384;
+            }
+        }
+        else
+        {
+            return -1;
+        }
+    }
+};
+
 class Story343 : public Story::Base
 {
 public:
@@ -10819,6 +10950,11 @@ auto story332 = Story332();
 auto story333 = Story333();
 auto story334 = Story334();
 auto story335 = Story335();
+auto story336 = Story336();
+auto story337 = Story337();
+auto story338 = Story338();
+auto story339 = Story339();
+auto story340 = Story340();
 auto story343 = Story343();
 auto story344 = Story344();
 auto story345 = Story345();
@@ -10897,8 +11033,8 @@ void InitializeStories()
         &story300, &story301, &story302, &story303, &story304, &story305, &story306, &story307, &story308, &story309,
         &story310, &story311, &story312, &story313, &story314, &story315, &story316, &story317, &story318, &story319,
         &story320, &story321, &story322, &story323, &story324, &story325, &story326, &story327, &story328, &story329,
-        &story330, &story331, &story332, &story333, &story334, &story335,
-        &story343, &story344, &story345, &story346, &story347,
+        &story330, &story331, &story332, &story333, &story334, &story335, &story336, &story337, &story338, &story339,
+        &story340, &story343, &story344, &story345, &story346, &story347,
         &story350, &story354, &story355, &story356, &story357,
         &story366, &story367, &story368, &story369,
         &story370, &story371, &story374, &story378,

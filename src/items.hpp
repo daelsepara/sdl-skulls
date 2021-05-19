@@ -45,8 +45,9 @@ namespace Item
         LUMP_OF_CHARCOAL,
         HAMMER,
         HYDRA_BLOOD_BALL,
+        SPEAR,
         First = SWORD,
-        Last = HAMMER
+        Last = SPEAR
     };
 
     std::map<Item::Type, const char *> Descriptions = {
@@ -86,7 +87,8 @@ namespace Item
         {Item::Type::PADDLE, "PADDLE"},
         {Item::Type::LUMP_OF_CHARCOAL, "LUMP OF CHARCOAL"},
         {Item::Type::HAMMER, "HAMMER"},
-        {Item::Type::HYDRA_BLOOD_BALL, "HYDRA BLOOD BALL"}};
+        {Item::Type::HYDRA_BLOOD_BALL, "HYDRA BLOOD BALL"},
+        {Item::Type::SPEAR, "SPEAR"}};
 
     std::vector<Item::Type> UniqueItems = {
         Item::Type::LETTER_OF_INTRODUCTION,
