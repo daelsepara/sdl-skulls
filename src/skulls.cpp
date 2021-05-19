@@ -2957,6 +2957,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
     Character::Base saveCharacter;
 
+    std::vector<Button> controls = std::vector<Button>();
+
     while (!quit)
     {
         // capture player state before running the story
@@ -2967,25 +2969,6 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
         SDL_Surface *splash = NULL;
 
         SDL_Surface *text = NULL;
-
-        std::vector<Button> controls = std::vector<Button>();
-
-        if (story->Controls == Story::Controls::STANDARD)
-        {
-            controls = Story::StandardControls();
-        }
-        else if (story->Controls == Story::Controls::SHOP)
-        {
-            controls = Story::ShopControls();
-        }
-        else if (story->Controls == Story::Controls::TRADE)
-        {
-            controls = Story::TradeControls();
-        }
-        else
-        {
-            controls = Story::ExitControls();
-        }
 
         if (run_once)
         {
@@ -3022,6 +3005,23 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
             auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * space;
 
             text = createText(story->Text, "fonts/default.ttf", font_size, clrDB, textwidth, TTF_STYLE_NORMAL);
+        }
+        
+        if (story->Controls == Story::Controls::STANDARD)
+        {
+            controls = Story::StandardControls();
+        }
+        else if (story->Controls == Story::Controls::SHOP)
+        {
+            controls = Story::ShopControls();
+        }
+        else if (story->Controls == Story::Controls::TRADE)
+        {
+            controls = Story::TradeControls();
+        }
+        else
+        {
+            controls = Story::ExitControls();
         }
 
         // Render the image
