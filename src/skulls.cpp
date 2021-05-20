@@ -2244,7 +2244,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
             {
                 if ((SDL_GetTicks() - start_ticks) < duration)
                 {
-                    putText(renderer, message.c_str(), font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
+                    putText(renderer, message.c_str(), font, text_space, clrWH, intLB, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
                 }
                 else
                 {
