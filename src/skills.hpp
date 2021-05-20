@@ -69,15 +69,15 @@ namespace Skill
         FOLKLORE, ROGUERY, SEAFARING, SPELLS,
         SWORDPLAY, TARGETING, UNARMED_COMBAT, WILDERNESS_LORE};
 
-    int FIND(std::vector<Skill::Base> &skills, Skill::Base skill)
+    int FIND(std::vector<Skill::Base> &skills, Skill::Type skill)
     {
         auto found = -1;
 
-        if (skills.size() > 0 && skill.Type != Skill::Type::NONE)
+        if (skills.size() > 0 && skill != Skill::Type::NONE)
         {
             for (auto i = 0; i < skills.size(); i++)
             {
-                if (skills[i].Type == skill.Type)
+                if (skills[i].Type == skill)
                 {
                     found = i;
 
@@ -91,7 +91,7 @@ namespace Skill
 
     bool VERIFY(std::vector<Skill::Base> &skills, Skill::Base skill)
     {
-        return FIND(skills, skill) >= 0;
+        return FIND(skills, skill.Type) >= 0;
     }
 
     void ADD(std::vector<Skill::Base> &skills, Skill::Base skill)
@@ -104,7 +104,7 @@ namespace Skill
 
     void REMOVE(std::vector<Skill::Base> &skills, Skill::Base skill)
     {
-        auto result = FIND(skills, skill);
+        auto result = FIND(skills, skill.Type);
 
         if (result >= 0)
         {

@@ -3001,6 +3001,103 @@ bool saveGame(Character::Base &player)
     return true;
 }
 
+Character::Base loadGame(std::string file_name)
+{
+    std::ifstream ifs(file_name);
+
+    auto character = Character::Base();
+
+    if (ifs.good())
+    {
+        auto data = nlohmann::json::parse(ifs);
+
+        ifs.close();
+
+        auto name = std::string(data["name"]);
+        auto description = std::string(data["description"]);
+        auto type = static_cast<Character::Type>((int)data["type"]);
+
+        auto skills = std::vector<Skill::Base>();
+        auto items = std::vector<Item::Type>();
+        auto codewords = std::vector<Codeword::Type>();
+
+        auto lostSkills = std::vector<Skill::Base>();
+        auto lostItems = std::vector<Item::Type>();
+
+        for (auto i = 0; i < (int)data["skills"].size(); i++)
+        {
+            auto skill = static_cast<Skill::Type>((int)data["skills"][i]);
+            auto found = Skill::FIND(Skill::ALL, skill);
+
+            if (found >= 0)
+            {
+                skills.push_back(Skill::ALL[found]);
+            }
+        }
+
+        for (auto i = 0; i < (int)data["lostSkills"].size(); i++)
+        {
+            auto skill = static_cast<Skill::Type>((int)data["lostSkills"][i]);
+            auto found = Skill::FIND(Skill::ALL, skill);
+
+            if (found >= 0)
+            {
+                lostSkills.push_back(Skill::ALL[found]);
+            }
+        }
+
+        for (auto i = 0; i < (int)data["items"].size(); i++)
+        {
+            auto item = static_cast<Item::Type>((int)data["items"][i]);
+
+            items.push_back(item);
+        }
+
+        for (auto i = 0; i < (int)data["lostItems"].size(); i++)
+        {
+            auto item = static_cast<Item::Type>((int)data["lostItems"][i]);
+
+            lostItems.push_back(item);
+        }
+
+        for (auto i = 0; i < (int)data["codewords"].size(); i++)
+        {
+            auto codeword = static_cast<Codeword::Type>((int)data["codewords"][i]);
+
+            codewords.push_back(codeword);
+        }
+
+        auto money = (int)data["money"];
+        auto life = (int)data["life"];
+
+        character = Character::Base(name.c_str(), type, description.c_str(), skills, items, codewords, life, money);
+
+        character.LostSkills = lostSkills;
+        character.LostItems = lostItems;
+        character.LostMoney = (int)data["lostMoney"];
+
+        character.Ticks = (int)data["ticks"];
+        character.Cross = (int)data["cross"];
+
+        character.IsBlessed = (bool)data["isBlessed"];
+        character.IsImmortal = (bool)data["isImmortal"];
+        character.RitualBallStarted = (bool)data["ritualBallStarted"];
+
+        character.DONATION = (int)data["donation"];
+
+        character.ITEM_LIMIT = (int)data["itemLimit"];
+        character.MAX_LIFE_LIMIT = (int)data["lifeLimit"];
+        character.SKILLS_LIMIT = (int)data["skillsLimit"];
+        character.StoryID = (int)data["storyID"];
+    }
+    else
+    {
+        character.StoryID = -1;
+    }
+
+    return character;
+}
+
 bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     auto quit = false;

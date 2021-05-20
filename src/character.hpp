@@ -105,6 +105,18 @@ namespace Character
             Items = items;
             Money = money;
         }
+
+        Base(const char *name, Character::Type type, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Type> items, std::vector<Codeword::Type> codewords, int life, int money)
+        {
+            Name = name;
+            Type = type;
+            Description = description;
+            Skills = skills;
+            Codewords = codewords;
+            Items = items;
+            Life = life;
+            Money = money;
+        }
     };
 
     auto WARRIOR = Base("The Warrior", Character::Type::WARRIOR, "A proud noble of the Maya people, and strong in the arts of war, you tolerate no insolence from any man.", {Skill::AGILITY, Skill::ETIQUETTE, Skill::SWORDPLAY, Skill::UNARMED_COMBAT}, {Item::Type::SWORD}, 10);
