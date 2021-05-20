@@ -7,6 +7,15 @@
 #include <sstream>
 #include <vector>
 
+#if __cplusplus < 201703L // If the version of C++ is less than 17
+#include <experimental/filesystem>
+// It was still in the experimental:: namespace
+namespace fs = std::experimental::filesystem;
+#else
+#include <filesystem>
+namespace fs = std::filesystem;
+#endif
+
 // Using SDL
 #include <SDL.h>
 #include <SDL_image.h>
@@ -2369,10 +2378,9 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
         auto idx = choices.size();
 
         controls.push_back(Button(idx, "icons/map.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::MAP));
-        controls.push_back(Button(idx + 1, "icons/disk.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
-        controls.push_back(Button(idx + 2, "icons/user.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
-        controls.push_back(Button(idx + 3, "icons/items.png", idx + 2, idx + 4, idx - 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
-        controls.push_back(Button(idx + 4, "icons/back-button.png", idx + 3, idx + 4, idx - 1, idx + 4, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+        controls.push_back(Button(idx + 1, "icons/user.png", idx, idx + 2, idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::CHARACTER));
+        controls.push_back(Button(idx + 2, "icons/items.png", idx + 1, idx + 3, idx - 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::USE));
+        controls.push_back(Button(idx + 3, "icons/back-button.png", idx + 2, idx + 3, idx - 1, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         TTF_Init();
 
@@ -2940,6 +2948,8 @@ bool saveGame(Character::Base &player)
 
     std::ostringstream buffer;
 
+    fs::create_directory("save");
+
     buffer << "save/" << std::to_string(seed) << ".save";
 
     nlohmann::json data;
@@ -2960,7 +2970,7 @@ bool saveGame(Character::Base &player)
     data["cross"] = player.Cross;
     data["codewords"] = player.Codewords;
     data["lostItems"] = player.LostItems;
-    
+
     auto skills = std::vector<Skill::Type>();
     auto lostSkills = std::vector<Skill::Type>();
 
