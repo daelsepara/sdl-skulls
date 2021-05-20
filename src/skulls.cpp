@@ -2410,7 +2410,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 splash_h = fitImage(renderer, splash, startx, starty, splashw, text_bounds);
             }
 
-            if (!story->Image || (splash && splash_h < (text_bounds - (boxh + infoh))) && !player.RitualBallStarted)
+            if (!story->Image || (splash && splash_h < (text_bounds - (boxh + infoh))))
             {
                 putText(renderer, "Life", font, text_space, clrWH, (player.Life > 0 && story->Type != Story::Type::DOOM) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
                 putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
@@ -2422,16 +2422,11 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
             }
 
-            if (player.RitualBallStarted)
+            if (!story->Image || (splash && splash_h < (text_bounds - (boxh + infoh))) && player.RitualBallStarted)
             {
-                putText(renderer, "YOUR SCORE", font, text_space, clrWH, (player.Life > 0 && story->Type != Story::Type::DOOM) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
-                putText(renderer, (std::to_string(player.Ticks)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
-            }
-
-            if (player.RitualBallStarted)
-            {
-                putText(renderer, "ENEMY SCORE", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
-                putText(renderer, (std::to_string(player.Cross)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+                std::string score_string = "Ticks: " + std::to_string(player.Ticks) + "\nCross: " + std::to_string(player.Cross);
+                putText(renderer, "SCORES", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
+                putText(renderer, score_string.c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
             }
 
             if (error)
