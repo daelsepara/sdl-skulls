@@ -6,6 +6,7 @@
 const SDL_Color clrBK = {0, 0, 0, 0};
 const SDL_Color clrDB = {7, 7, 58, 0};
 const SDL_Color clrWH = {255, 255, 255, 0};
+const SDL_Color clrLB = {10, 100, 173, 0};
 
 const Uint32 intBK = 0x00000000;
 const Uint32 intRD = 0XFFFF0000;
@@ -17,6 +18,9 @@ const Uint32 intDB = 0xFF07073A;
 
 // Beige in ARG format
 const Uint32 intBE = 0xFFF5F5DC;
+
+// Light Blue in ARG format
+const Uint32 intLB = 0xFF0A64AD;
 
 Uint8 R(Uint32 c) { return (Uint8)((c & 0xFF0000) >> 16); }
 Uint8 G(Uint32 c) { return (Uint8)((c & 0x00FF00) >> 8); }

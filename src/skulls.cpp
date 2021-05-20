@@ -3218,7 +3218,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
         auto trigger_blessing = player.IsBlessed && saveCharacter.Life > player.Life;
 
-        auto bless_text = createText("You have lost some Life Points. Do you wish to use the War God's Blessing?", "fonts/default.ttf", 20, clrWH, textwidth, TTF_STYLE_NORMAL);
+        auto bless_text = createText("You have lost some Life Points. Do you wish to use the War God's Blessing?", "fonts/default.ttf", 20, clrWH, textwidth - 2 * text_space, TTF_STYLE_NORMAL);
         auto message_x = (SCREEN_WIDTH - textwidth) / 2;
         auto message_y = (SCREEN_HEIGHT - messageh) / 2;
 
@@ -3307,7 +3307,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                 if (trigger_blessing)
                 {
-                    fillRect(renderer, textwidth, messageh, message_x, message_y, intDB);
+                    fillRect(renderer, textwidth, messageh, message_x, message_y, intLB);
                     renderImage(renderer, bless_text, (SCREEN_WIDTH - bless_text->w) / 2, message_y + text_space);
 
                     renderButtons(renderer, message_controls, current, intWH, border_space, border_pts);
