@@ -817,6 +817,11 @@ public:
 
         Controls = Story::Controls::STANDARD;
     }
+
+    void Event(Character::Base &player)
+    {
+        player.RitualBallStarted = true;
+    }
 };
 
 class Story020 : public Story::Base
@@ -1405,6 +1410,8 @@ public:
 
     void Event(Character::Base &player)
     {
+        player.RitualBallStarted = true;
+
         Type = Story::Type::NORMAL;
 
         PreText = "To your own astonishment as much as anyone else's, the blood ball soars up and unerringly passes through the stone ring set in the middle of the wall. A howl of disbelief rises from the watching courtiers. They sound like hounds at the baying of the moon.\n\nYour brother rushes over to join you. \"Can you feel it, Evening Star?\" he says excitedly. \"The tingle of magic on the air?\"\n\nHe is right. In some strange way your victory worked a spell which now empowers you both with an invigorating surge of energy.";
@@ -2009,6 +2016,11 @@ public:
         Choices.push_back(Choice::Base("You prefer to be cautious and go for a safe point", 112));
 
         Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.RitualBallStarted = true;
     }
 };
 
@@ -4483,6 +4495,11 @@ public:
         Controls = Story::Controls::STANDARD;
     }
 
+    void Event(Character::Base &player)
+    {
+        player.RitualBallStarted = true;
+    }
+
     int Continue(Character::Base &player) { return 442; }
 };
 
@@ -6556,6 +6573,11 @@ public:
 
         Controls = Story::Controls::STANDARD;
     }
+
+    void Event(Character::Base &player)
+    {
+        player.RitualBallStarted = true;
+    }
 };
 
 class Story227 : public Story::Base
@@ -7222,6 +7244,11 @@ public:
 
         Controls = Story::Controls::STANDARD;
     }
+
+    void Event(Character::Base &player)
+    {
+        player.RitualBallStarted = true;
+    }
 };
 
 class Story250 : public Story::Base
@@ -7804,6 +7831,8 @@ public:
 
     void Event(Character::Base &player)
     {
+        player.RitualBallStarted = true;
+
         PreText = "The onrushing figure looks just like a black rip in the air and makes no sound as he runs, but the impact when he hits you is like having a tree-branch swung into your midriff.";
 
         PreText += "\n\n";
@@ -8440,16 +8469,13 @@ public:
     {
         PreText = "With a breathtaking lunge he catches up with the ball and strikes it a sweeping blow which sends it thudding up against the scoring zone.";
 
-        if (Character::VERIFY_SKILL(player, Skill::Type::CHARMS))
+        Character::SCORE(player, player.Cross, 1);
+        
+        if (!Character::VERIFY_SKILL(player, Skill::Type::CHARMS))
         {
             PreText += "\n\nYou are unlucky and it catches you a hard blow on the side of the head. You LOSE 1 Life Point.";
 
             Character::GAIN_LIFE(player, -1);
-        }
-
-        if (player.Life > 0)
-        {
-            PreText += "\n\nWhen the dawn arrives you stagger out on shaking legs to retrieve your pack of belongings. No matter what dangers you have to face now, you cannot conceive of anything more unpleasant than another night in the House of Gloom.";
         }
 
         Text = PreText.c_str();
@@ -9063,6 +9089,11 @@ public:
         Choices.clear();
 
         Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.RitualBallStarted = true;
     }
 
     int Continue(Character::Base &player)
@@ -9698,6 +9729,8 @@ public:
 
     void Event(Character::Base &player)
     {
+        player.RitualBallStarted = true;
+
         PreText = "Without warning, the shadow creature suddenly stops dead and throws his leg out to trip you. You are taken by surprise, since no human opponent could act so fast.";
 
         PreText += "\n\n";
@@ -10296,6 +10329,11 @@ public:
         Controls = Story::Controls::STANDARD;
     }
 
+    void Event(Character::Base &player)
+    {
+        player.RitualBallStarted = true;
+    }
+
     int Continue(Character::Base &player)
     {
         if (Character::VERIFY_CODEWORD(player, Codeword::Type::SHADE))
@@ -10790,6 +10828,8 @@ public:
 
     void Event(Character::Base &player)
     {
+        player.RitualBallStarted = true;
+
         PreText = "Your brother makes the best shot he can, but he is off balance and the ball goes wide. The enemy defensive player sees a chance and comes rushing in, trying to beat you to the ball.";
 
         if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK))
@@ -10820,13 +10860,18 @@ public:
 
         Text = "Morning Star lobs the ball directly towards you. Timing your move perfectly, you hug it to your chest while substituting the blood ball.";
 
-        Image = "images/flying-snake.png";
+        Image = "images/filler1.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Go for a standard scoring shot", 405));
         Choices.push_back(Choice::Base("Risk everything on putting the ball through the stone ring and winning an instant victory", 43));
 
         Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
+        player.RitualBallStarted = true;
     }
 };
 
@@ -11303,6 +11348,8 @@ public:
 
     void Event(Character::Base &player)
     {
+        player.RitualBallStarted = true;
+
         auto score = 1;
 
         if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK))
