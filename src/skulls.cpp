@@ -1110,9 +1110,13 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
                             temp_message = std::string(Item::Descriptions[item]) + " DROPPED!";
 
-                            flash_message = temp_message.c_str();
+                            message = temp_message.c_str();
 
                             flash_color = intRD;
+
+                            start_ticks = SDL_GetTicks();
+
+                            flash_message = true;
                         }
                         else if (mode == Control::Type::STEAL)
                         {
@@ -1128,9 +1132,13 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
                                 temp_message = std::string(Item::Descriptions[item]) + " STOLEN!";
 
-                                flash_message = temp_message.c_str();
+                                message = temp_message.c_str();
 
                                 flash_color = intRD;
+
+                                start_ticks = SDL_GetTicks();
+
+                                flash_message = true;
                             }
                         }
                         else if (mode == Control::Type::USE)
