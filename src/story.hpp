@@ -291,7 +291,7 @@ namespace Story
         controls.push_back(Button(idx + 2, "icons/user.png", idx + 1, idx + 3, compact ? idx + 2 : 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
         controls.push_back(Button(idx + 3, "icons/items.png", idx + 2, idx + 4, compact ? idx + 3 : 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
         controls.push_back(Button(idx + 4, "icons/next.png", idx + 3, idx + 5, compact ? idx + 4 : 1, idx + 4, startx + 4 * gridsize, buttony, Control::Type::NEXT));
-        controls.push_back(Button(idx + 5, "icons/shop.png", idx + 4, idx + 6, compact ? idx + 5 : 1, compact ? idx + 5 : 1, startx + 5 * gridsize, buttony, Control::Type::SHOP));
+        controls.push_back(Button(idx + 5, "icons/shop.png", idx + 4, idx + 6, compact ? idx + 5 : 1, idx + 5, startx + 5 * gridsize, buttony, Control::Type::SHOP));
         controls.push_back(Button(idx + 6, "icons/exit.png", idx + 5, idx + 6, compact ? idx + 6 : 1, idx + 6, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         return controls;
@@ -316,7 +316,7 @@ namespace Story
         controls.push_back(Button(idx + 2, "icons/user.png", idx + 1, idx + 3, compact ? idx + 2 : 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
         controls.push_back(Button(idx + 3, "icons/items.png", idx + 2, idx + 4, compact ? idx + 3 : 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
         controls.push_back(Button(idx + 4, "icons/next.png", idx + 3, idx + 5, compact ? idx + 4 : 1, idx + 4, startx + 4 * gridsize, buttony, Control::Type::NEXT));
-        controls.push_back(Button(idx + 5, "icons/shop.png", idx + 4, idx + 6, compact ? idx + 5 : 1, compact ? idx + 5 : 1, startx + 5 * gridsize, buttony, Control::Type::TRADE));
+        controls.push_back(Button(idx + 5, "icons/shop.png", idx + 4, idx + 6, compact ? idx + 5 : 1, idx + 5, startx + 5 * gridsize, buttony, Control::Type::TRADE));
         controls.push_back(Button(idx + 6, "icons/exit.png", idx + 5, idx + 6, compact ? idx + 6 : 1, idx + 6, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
         return controls;
@@ -4045,14 +4045,12 @@ public:
         Choices.push_back(Choice::Base("Fight your way to safety", 328));
 
         Controls = Story::Controls::STANDARD;
-
-        Take = {Item::Type::CHALICE_OF_LIFE};
-
-        Limit = 1;
     }
 
     void Event(Character::Base &player)
     {
+        Take = {Item::Type::CHALICE_OF_LIFE};
+
         Limit = 1;
     }
 };
@@ -4981,7 +4979,7 @@ public:
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
         {
-            PreText += "\n\nYou remember that you were advised to keep the JADE_BEAD under your tongue until you reached a crossroads. You can take it out of your mouth, and choose to discard it altogether.";
+            PreText += "\n\nYou remember that you were advised to keep the JADE BEAD under your tongue until you reached a crossroads. You can take it out of your mouth, and choose to discard it altogether.";
 
             Choices.push_back(Choice::Base("Discard the JADE BEAD first", 173, Choice::Type::LOSE_ITEM, Item::Type::JADE_BEAD));
         }
@@ -5332,14 +5330,12 @@ public:
         Choices.clear();
 
         Controls = Story::Controls::STANDARD;
-
-        Take = {{Item::Type::GREEN_MIRROR, Item::Type::MAGIC_DRINK, Item::Type::JADE_SWORD}};
-
-        Limit = 2;
     }
 
     void Event(Character::Base &player)
     {
+        Take = {{Item::Type::GREEN_MIRROR, Item::Type::MAGIC_DRINK, Item::Type::JADE_SWORD}};
+
         Limit = 2;
     }
 
@@ -5449,11 +5445,14 @@ public:
         Choices.push_back(Choice::Base("Use the MAN OF GOLD", 306, Item::Type::MAN_OF_GOLD));
         Choices.push_back(Choice::Base("Decide against further exploration of the tombs: return to the canoe and continue on your way", 167));
 
+        Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
         Take = {Item::Type::HAMMER};
 
         Limit = 1;
-
-        Controls = Story::Controls::STANDARD;
     }
 };
 
@@ -6189,10 +6188,6 @@ public:
 
         Image = "images/filler1.png";
 
-        Take = {Item::Type::HAMMER};
-
-        Limit = 1;
-
         Controls = Story::Controls::STANDARD;
     }
 
@@ -6219,6 +6214,10 @@ public:
         }
 
         Text = PreText.c_str();
+
+        Take = {Item::Type::HAMMER};
+
+        Limit = 1;
     }
 
     int Continue(Character::Base &player) { return 283; }
@@ -9564,7 +9563,10 @@ public:
         Choices.clear();
 
         Controls = Story::Controls::STANDARD;
+    }
 
+    void Event(Character::Base &player)
+    {
         Take = {Item::Type::WATERSKIN, Item::Type::SWORD, Item::Type::SPEAR};
 
         Limit = 3;
@@ -10100,6 +10102,10 @@ public:
         Choices.clear();
 
         Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
 
         Take = {Item::Type::POLE};
 
@@ -11242,7 +11248,10 @@ public:
         Choices.clear();
 
         Controls = Story::Controls::STANDARD;
+    }
 
+    void Event(Character::Base &player)
+    {
         Take = {Item::Type::LUMP_OF_CHARCOAL, Item::Type::STONE};
 
         Limit = 2;
@@ -11814,6 +11823,215 @@ public:
     }
 };
 
+class Story427 : public Story::Base
+{
+public:
+    Story427()
+    {
+        ID = 427;
+
+        Text = "Covering your mouth and nose, you sift through the mouldered remains. You find a SHELL NECKLACKE and an IVORY RING adorning the corpse as jewellery. Inside the shattered remnants of the mouth rests a JADE BEAD intended for the dead woman's soul to purchase its passage into the afterlife. Her babies have no such beads -- conventional lore says that they are too young to have souls. You feel sad for them, seeing the tiny skeletons clutched so hopelessly to the mother's dead breast. Even across the gulf of centuries, it is a scene poignant with deep tragedy.\n\nIn front of the sarcophagus you now notice a funerary lamp. It still has little INCENSE inside it.\n\nThe two demons utter a stream of coarse remarks as you climb back down, annoyed at having been kept waiting. You ignore them. Your experience in the tomb has left you feeling melancholy and haunted.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
+        Take = {{Item::Type::SHELL_NECKLACE, Item::Type::IVORY_RING, Item::Type::INCENSE, Item::Type::JADE_BEAD}};
+
+        Limit = 4;
+    }
+
+    int Continue(Character::Base &player) { return 167; }
+};
+
+class Story428 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story428()
+    {
+        ID = 428;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "You glance up. In the gloomy vault of the dragon's throat, giant tonsils hang like a pair of gongs. You can just reach one of the tonsils by standing on tiptoe. You start to tickle it, and soon the dragon gives a gagging cough and spits you out -- along with a torrent of bilious vomit which burns your skin.\n\nYou LOSE 1 Life Point.";
+
+        Character::GAIN_LIFE(player, -1);
+
+        if (player.Life > 0)
+        {
+            PreText += "\n\nYou slowly get to your feet. Kawak's face at this end is blunter, with bulbous white eyes and long tusks. He sees you grimace at the stink of the vomit and remarks in a rumbling voice: \"Be thankful I didn't eat you alive.\"\n\nNodding, you press on deeper towards the Deathlands.";
+        }
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 263; }
+};
+
+class Story429 : public Story::Base
+{
+public:
+    Story429()
+    {
+        ID = 429;
+
+        Text = "Your thrust skewers the hydra at the junction of its four necks. A ghastly multiple shriek splits the air. You are jerked off its feet by its death-throes and its blood gushes out into your face. It snaps feebly at you, but you cling on and sink the weapon deeper until finally it gives a last spasm and fall lifeless.\n\nAs you withdraw the weapon, a large drop of its green life-fluid oozes out of the wound and falls to the ground, congealing to form a rubbery ball such as one might use in the ritual ball contest of your people.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
+        Take = {Item::Type::HYDRA_BLOOD_BALL};
+
+        Limit = 1;
+    }
+
+    int Continue(Character::Base &player)
+    {
+        if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+        {
+            return 15;
+        }
+        else
+        {
+            return 38;
+        }
+    }
+};
+
+class Story430 : public Story::Base
+{
+public:
+    Story430()
+    {
+        ID = 430;
+
+        Text = "\"We might wait for ever for a poor man to show up,\" you say. \"My quest demands rather more urgency than that.\"\n\nSo saying, you retrace your steps to the wooden gate. It is now sealed again by the convoluted knot, but with your dexterity it is the work of a moment to untie it. Returning outside, you untie the knot on the other gate and hurry through the other ledge, where you pick up the hooked POLE lying there. Putting the nobleman's plan into operation, the two of you slowly cross the twin beams, putting your weight onto the hooked poles to counterbalance one another.\n\nThe torrent of blood churns beneath you. One slip and you would both be borne away to your doom. But at last you reach the far bank and step onto firm dry land. With a sigh of relief, the noble casts his pole into the river. You might wish to keep yours.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Keep the POLE", 399, Choice::Type::GET_ITEM, Item::Type::POLE));
+        Choices.push_back(Choice::Base("Leave it", 399));
+
+        Controls = Story::Controls::STANDARD;
+    }
+};
+
+class Story431 : public Story::Base
+{
+public:
+    Story431()
+    {
+        ID = 431;
+
+        Text = "This courtyard is surrounded by low grey walls that lie like borders of soot around a plaza ablaze in the blistering sunshine. In the far wall is a massive of intertwined human bones and skulls. \"They are the previous victims of our master,\" says the chief courtier with a leer when he sees you blanch. \"Soon your own bones will be added to that gate.\"\n\nIgnoring him , you turn your attention to five windowless buildings standing in the wide plaza. \"And those?\" you ask.\n\nThey are the Five Houses of Destiny,\" he says. \"If you can pass one night in each, the gate will open. Then you will gaze on the countenance of Necklace of Skulls.\"\n\nYou wait through a long afternoon until the sun dips into a red hot shimmer along the western horizon. The heat of the day has left you giddy, but you do your best not to show it as the courtiers come to lead you to the first of the buildings. As they open the door, you are confronted by a wave of fiery heat as though from an open kiln. The interior of the building is a single stone hall with a blazing channel of smouldering charcoal set along it. Large stones warmed to red heat surround it. Sweat erupts from your pores as you are ushered inside.\n\n\"This is the House of Fire,\" says the chief courtier. \"Have a good night. I'll come for you in the morning -- should you survive.\"\n\nThe door closes and you are left sealed within the House of Fire. Its smoky confines are swelteringly airless, and your only rest is not true sleep, but a listless swoon brought on by heat exhaustion.\n\nYou LOSE 2 Life Points.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, -2);
+    }
+
+    int Continue(Character::Base &player) { return 403; }
+};
+
+class Story432 : public Story::Base
+{
+public:
+    Story432()
+    {
+        ID = 432;
+
+        Text = "Your eyes can make out nothing in the inky darkness that enfolds you. As you squat down on the guano-spattered floor, there is a flap of leather wings and the first of the bats comes fluttering down towards you. You put an arm up to fend it away. Then suddenly you feel a tingle of cold alarm as you realize someone is standing beside you.\n\n\"This mortal is under my protection,\" says a familiar voice. \"Return to your roosts. There will be no drinking of blood for any of you tonight.\"\n\nThe rustle of wings recedes into the rafters. You turn, straining to make out the stranger in the absolute dark. \"Who are you?\" you ask him.\n\n\"A friend.\" He touches your arm reassuringly. \"You helped me once, now I am returning the favour. Go to sleep now. These bats are my subjects, and they will not dare harm you.\"\n\nYou enjoy a restful night.\n\nYou RECOVER 1 Life Point.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
+        Character::GAIN_LIFE(player, 1);
+
+        Character::REMOVE_CODEWORD(player, Codeword::Type::ZOTZ);
+    }
+
+    int Continue(Character::Base &player) { return 41; }
+};
+
+class Story433 : public Story::Base
+{
+public:
+    Story433()
+    {
+        ID = 433;
+
+        Text = "Your opponents have had enough. They abandon their home and go running off yelling, \"Flee! The lunatic will kill us all!\" You watch them splash through the verges of the pond and vanish into the curtain of undergrowth. You nod in satisfaction. It is only when you examine the roasting carcass on the fire that you discover you made a mistake. It is not a human baby they were cooking, but a monkey. So they were not cannibals after all. They must have been the jungle people that the hunter told you about.\n\nA swift examination of the hut reveals a well-stocked larder containing a HAUNCH OF VENISON, three PAPAYA, a bag of CHILLI PEPPERs and a WATERSKIN.\n\nYou decide against taking the roast monkey. You do not think you could bring yourself to eat anything that looks so much like a person. Now you had better leave before the jungle people return.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
+        Take = {{Item::Type::HAUNCH_OF_VENISON, Item::Type::PAPAYA, Item::Type::PAPAYA, Item::Type::PAPAYA, Item::Type::CHILLI_PEPPERS, Item::Type::WATERSKIN}};
+
+        Limit = 6;
+    }
+
+    int Continue(Character::Base &player) { return 118; }
+};
+
+class Story434 : public Story::Base
+{
+public:
+    Story434()
+    {
+        ID = 434;
+
+        Text = "Exposed to the full heat of the sun, you know you would not last three days. You must rest in the shade in the daytime, travelling on at sunset. By keeping on the move, you can keep warm despite the night-time chill.\n\nYou slip a pebble in your mouth. Sucking it will stave of thirst. You must conserve your water if you are to survive.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = Story::Controls::STANDARD;
+    }
+
+    int Continue(Character::Base &player) { return 46; }
+};
+
 class Story435 : public Story::Base
 {
 public:
@@ -11831,6 +12049,27 @@ public:
     }
 
     int Continue(Character::Base &player) { return 91; }
+};
+
+class Story436 : public Story::Base
+{
+public:
+    Story436()
+    {
+        ID = 436;
+
+        Text = "\"Easy to repay us,\" says one fellow, flashing his teeth in a broad white grin. He holds up the SHAWL you acquired earlier. \"The stabai cause us a lot of mischief. If we had their SHAWL, they wouldn't bother us.\"\n\nAfter some haggling, the jungle people agree to offer you a HAUNCH OF VENISON in exchange for the SHAWL.\n\nYou are ready to set out. As you gather up your belongings, a youth who has been watching you keenly without joining the conversation sidles up to you. \"I could guide you out of the woods if you think you might get lost,\" he suggests. You are unsure how to take this offer. The jungle dwellers do not observe the same rules of hospitality as civilized people, and for all you know he might lead you into a trap.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Let him guide you", 410));
+        Choices.push_back(Choice::Base("Set out alone", 118));
+
+        Trade = std::make_pair(Item::Type::SHAWL, Item::Type::HAUNCH_OF_VENISON);
+
+        Controls = Story::Controls::TRADE;
+    }
 };
 
 class Story437 : public Story::Base
@@ -11864,6 +12103,85 @@ public:
     int Continue(Character::Base &player) { return 300; }
 };
 
+class Story438 : public Story::Base
+{
+public:
+    std::string PreText = "";
+
+    Story438()
+    {
+        ID = 438;
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = Story::Controls::STANDARD;
+    }
+
+    void Event(Character::Base &player)
+    {
+        PreText = "The blistering heat is sapping your last reserves of strength. Your lips are dry cracked husks and your skin is covered in blackened blisters. You cannot endure for long.";
+
+        PreText += "\n\n";
+
+        auto DAMAGE = 2;
+
+        if (Character::VERIFY_SKILL(player, Skill::Type::WILDERNESS_LORE))
+        {
+            PreText += "[WILDERNESS LORE] Your hardiness inures you to the extreme heat. ";
+
+            DAMAGE = -1;
+        }
+
+        PreText += "You LOSE " + std::to_string(-DAMAGE) + " Life Point(s).";
+
+        Character::GAIN_LIFE(player, DAMAGE);
+
+        Text = PreText.c_str();
+    }
+
+    int Continue(Character::Base &player) { return 303; }
+};
+
+class Story439 : public Story::Base
+{
+public:
+    Story439()
+    {
+        ID = 439;
+
+        Text = "You conjure a swarm of little green ants which follow the motion of your wand. Pointing to the dragon's tonsils, which dangle above you in the cavern of his mouth like a pair of giant gongs, you direct the ants to crawl up across them. The ticklish effect of thousands of tiny scuttling legs soon has the desired effect, and the dragon spits you out into the open with a gagging cough.\n\nYou get to your feet and wring the dragon's saliva out of your robes. It could have been worse: he might have thrown up. Kawak hangs at the lip of the canyon, glowering as he spits out ants like a man spitting papaya pips. You hurry off before he turns nasty.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = Story::Controls::STANDARD;
+    }
+
+    int Continue(Character::Base &player) { return 263; }
+};
+
+class Story440 : public Story::Base
+{
+public:
+    Story440()
+    {
+        ID = 440;
+
+        Text = "You smear yourself with the grease of the meat.\n\nSteeling yourself, you walk down into the lake. The bitter cold bites at your flesh, but the insulating layer of deer fat protects you from the worst of it. Half stumbling, half floating, you descend the staircase towards a blaze of pulsating green light.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+        Choices.push_back(Choice::Base("Keep the HAUNCH OF VENISON", 173));
+        Choices.push_back(Choice::Base("Leave it", 173, Choice::Type::LOSE_ITEM, Item::Type::HAUNCH_OF_VENISON));
+
+        Controls = Story::Controls::STANDARD;
+    }
+};
+
 class Story441 : public Story::Base
 {
 public:
@@ -11881,6 +12199,25 @@ public:
     }
 
     int Continue(Character::Base &player) { return 326; }
+};
+
+class Story442 : public Story::Base
+{
+public:
+    Story442()
+    {
+        ID = 442;
+
+        Text = "As you and your brother cross the courtyard and pass through the palace gates, you can feel the ground shaking under your feet. You reach a dune and turn to look back. The pyramid and surrounding buildings are sinking into the sand. In minutes they have vanished entirely, and there is no sign to show that this was ever the spot where Necklace of Skulls dwelt among his bestial courtiers. You look around for the courtiers, but see only a pack of malnourished dogs slinking off amid the dunes.\n\n\"It's a long way home,\" says Morning Star. \"Fraught with danger every step of the way, I shouldn't wonder. Heat, thirst, sandstorms, poisonous snakes ...\" He says all this with a smile.\n\nYou smile too. \"After all we've been through, it'll seem like a picnic! Well brother, what are we waiting for?\"\n\nAnd, turning your faces to the east, you set out across the drifting sands.";
+
+        Image = "images/filler1.png";
+
+        Choices.clear();
+
+        Controls = Story::Controls::STANDARD;
+
+        Type = Story::Type::GOOD;
+    }
 };
 
 class NotImplemented : public Story::Base
@@ -12347,9 +12684,22 @@ auto story423 = Story423();
 auto story424 = Story424();
 auto story425 = Story425();
 auto story426 = Story426();
+auto story427 = Story427();
+auto story428 = Story428();
+auto story429 = Story429();
+auto story430 = Story430();
+auto story431 = Story431();
+auto story432 = Story432();
+auto story433 = Story433();
+auto story434 = Story434();
 auto story435 = Story435();
+auto story436 = Story436();
 auto story437 = Story437();
+auto story438 = Story438();
+auto story439 = Story439();
+auto story440 = Story440();
 auto story441 = Story441();
+auto story442 = Story442();
 
 void InitializeStories()
 {
@@ -12396,9 +12746,9 @@ void InitializeStories()
         &story390, &story391, &story392, &story393, &story394, &story395, &story396, &story397, &story398, &story399,
         &story400, &story401, &story402, &story403, &story404, &story405, &story406, &story407, &story408, &story409,
         &story410, &story411, &story412, &story413, &story414, &story415, &story416, &story417, &story418, &story419,
-        &story420, &story421, &story422, &story423, &story424, &story425, &story426,
-        &story435, &story437,
-        &story441};
+        &story420, &story421, &story422, &story423, &story424, &story425, &story426, &story427, &story428, &story429,
+        &story430, &story431, &story432, &story433, &story434, &story435, &story436, &story437, &story438, &story439,
+        &story440, &story441, &story442};
 }
 
 #endif
