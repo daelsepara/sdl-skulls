@@ -595,7 +595,7 @@ void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font
 SDL_Surface *createHeaderButton(SDL_Window *window, const char *text, SDL_Color color, Uint32 bg, int w, int h, int x)
 {
     auto button = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
-    auto text_surface = createText(text, "fonts/default.ttf", 18, clrWH, w, TTF_STYLE_NORMAL);
+    auto text_surface = createText(text, "fonts/default.ttf", 18, color, w, TTF_STYLE_NORMAL);
 
     if (button && text_surface)
     {
@@ -613,7 +613,7 @@ SDL_Surface *createHeaderButton(SDL_Window *window, const char *text, SDL_Color 
         dst.x = 0;
         dst.y = 0;
 
-        SDL_FillRect(button, &dst, intDB);
+        SDL_FillRect(button, &dst, bg);
 
         dst.x = x < 0 ? (button->w - text_surface->w) / 2 : x;
         dst.y = (button->h - text_surface->h) / 2;
@@ -3175,7 +3175,7 @@ std::string time_string(long deserialised)
     return ss.str();
 }
 
-std::vector<Button> createFilesList(std::vector<std::string> list, int start, int last, int limit, bool save_button)
+std::vector<Button> createFilesList(SDL_Window *window, SDL_Renderer *renderer, std::vector<std::string> list, int start, int last, int limit, bool save_button)
 {
     auto controls = std::vector<Button>();
 
@@ -3198,22 +3198,22 @@ std::vector<Button> createFilesList(std::vector<std::string> list, int start, in
             {
                 auto storyID = std::to_string(character.StoryID);
 
-                game_string += std::string(3 - std::to_string(index + 1).length(), '0') + std::to_string(index) + ".\n";
+                game_string += std::string(3 - std::to_string(index + 1).length(), '0') + std::to_string(index + 1) + ". "  + character.Name + "\n";
                 game_string += "Date: " + time_string(epoch_long) + "\n";
-                game_string += "Section: " + std::string(3 - storyID.length(), '0') + storyID + ": " + character.Name;
-                game_string += " - Life: " + std::to_string(character.Life);
+                game_string += "Section: " + std::string(3 - storyID.length(), '0') + storyID + ": ";
+                game_string += "Life: " + std::to_string(character.Life);
                 game_string += ", Money: " + std::to_string(character.Money);
                 game_string += ", Items: " + std::to_string(character.Items.size());
                 game_string += ", Codewords: " + std::to_string(character.Codewords.size());
             }
 
-            auto text = createText(game_string.length() > 0 ? game_string.c_str() : list[i].c_str(), "fonts/default.ttf", 20, clrBK, textwidth - 2 * (button_space + text_space), TTF_STYLE_NORMAL);
+            auto button = createHeaderButton(window, game_string.c_str(), clrWH, intLB, textwidth - 3 * button_space / 2, 0.125 * SCREEN_HEIGHT, text_space);
 
             auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 2 * text_space);
 
-            controls.push_back(Button(i, text, i, i, (i > 0 ? i - 1 : i), (i < (last - start) ? i + 1 : i), textx + 2 * text_space, y, Control::Type::ACTION));
-            controls[i].W = textwidth - 3 * button_space / 2;
-            controls[i].H = text->h;
+            controls.push_back(Button(i, button, i, i, (i > 0 ? i - 1 : i), (i < (last - start) ? i + 1 : i), textx + 2 * text_space, y, Control::Type::ACTION));
+            controls[i].W = button->w;
+            controls[i].H = button->h;
         }
     }
 
@@ -3263,7 +3263,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
 
         std::vector<std::string> entries;
 
-        int limit = 6;
+        int limit = 4;
 
         auto splash = createImage("images/filler6.png");
 
@@ -3294,7 +3294,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
             last = entries.size();
         }
 
-        auto controls = createFilesList(entries, offset, last, limit, save_botton);
+        auto controls = createFilesList(window, renderer, entries, offset, last, limit, save_botton);
 
         auto current = -1;
         auto selected = false;
@@ -3371,12 +3371,8 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                     {
                         for (auto size = 4; size >= 0; size--)
                         {
-                            drawRect(renderer, controls[i].W + 2 * text_space - 2 * size, controls[i].H + 2 * text_space - 2 * size, controls[i].X - text_space + size, controls[i].Y - text_space + size, intLB);
+                            drawRect(renderer, controls[i].W + 2 * text_space - 2 * size, controls[i].H + 2 * text_space - 2 * size, controls[i].X - text_space + size, controls[i].Y - text_space + size, intDB);
                         }
-                    }
-                    else
-                    {
-                        drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intGR);
                     }
                 }
             }
@@ -3404,7 +3400,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                         last = entries.size();
                     }
 
-                    controls = createFilesList(entries, offset, last, limit, save_botton);
+                    controls = createFilesList(window, renderer, entries, offset, last, limit, save_botton);
 
                     current = -1;
 
@@ -3431,7 +3427,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                         last = entries.size();
                     }
 
-                    controls = createFilesList(entries, offset, last, limit, save_botton);
+                    controls = createFilesList(window, renderer, entries, offset, last, limit, save_botton);
 
                     SDL_Delay(200);
 
@@ -4089,7 +4085,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
             bool scrollUp = false;
             bool scrollDown = false;
             bool hold = false;
-            
+
             Control::Type result;
 
             quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
