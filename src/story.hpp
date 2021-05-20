@@ -1366,7 +1366,10 @@ public:
         Controls = Story::Controls::STANDARD;
     }
 
-    void Event(Character::Base &player) { player.RitualBallStarted = true; }
+    void Event(Character::Base &player)
+    {
+        player.RitualBallStarted = true;
+    }
 
     int Continue(Character::Base &player)
     {
@@ -5210,7 +5213,7 @@ public:
     {
         ID = 181;
 
-        Text = "You walk on until you reach the tree. The figures seated there are of macabre appearance: living skeletons whose bones are green with algae. Roots and soil clump their joints, and you can see snakes burrowing between the bars of their ribcages One raises a grinning skull-face to greet you. As it does, a butterfly opens wings of scarlet and gold across its emerald brow. If you saw such a sight in one of the murals on a temple wall, you might be moved to admire its uncanny beauty. Faced with such a thing in stark reality, however, you find yourself jumping back in fright. You hurry past without acknowledging the skeleton's welcoming gestures.";
+        Text = "You were just beginning to feel confident, but now the shadow men make a daring play which abruptly turns your hopes to bleak despair. You watch aghast as they launch the ball in a smooth trajectory which carries it through the stone ring at the top of the wall. It is a one in a thousand shot, and by the rules of the contest it means that they have won.\n\nNecklace of Skulls' pronouncement falls like an icy wave across the arena: \"The losers' lives are forfeit.\"\n\nA flat metallic twang builds rapidly in the dry air. There is a sour taste on your tongue, and you can feel your hair standing on end. You glance at your partner just in time to see him explode in a blossom of silent white sparks, leaving nothing but a scorched black patch on the dusty ground.\n\nNecklace of Skulls has vaporized him -- snuffed out his life with a casual flick of sorcery! You are horrified by the callous murder, but you cannot waste time brooding on it now. If you don't act quickly, you will be next.";
 
         Image = "images/filler1.png";
 
@@ -5221,10 +5224,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::VENUS))
-        {
-            Character::REMOVE_CODEWORD(player, Codeword::Type::VENUS);
-        }
+        Character::REMOVE_CODEWORD(player, Codeword::Type::VENUS);
     }
 
     int Continue(Character::Base &player) { return 19; }
@@ -9018,7 +9018,7 @@ public:
     {
         ID = 317;
 
-        Text = "You squint in the shimmering glare of the sun, but your eyes cannot make out any shape within the black void of the shrine entrance. The soot-coloured pillars give its darkened interior the look of a fleshless mouth. Again Necklace of Skull's voice rolls along the avenue, each syllable driving like a grave-cool gust of wind through the blistering desert heat. \"Your brother came here before you.\"\n\nRed rage seethes in your heart. \"That's right, you --\"\n\nThe sorcerer's words continue, unperturbed by your outburst. \"He played the ritual ball contest and he lost. His life was forfeit. Now you will play for the same stakes. Behold your antagonists.\" Two long rivulets of shadow flow out of the shrine and down the pyramid steps, looking like spreading pools of black blood against the ebon stone. Reaching the bottom, they rise up in obscenely palpitating columns which gradually take solid form. Human form. Confronting you now are your opponents in the ball contest: two creatures of living shadow fashioned by the sorcerer's magic.";
+        Text = "You squint in the shimmering glare of the sun, but your eyes cannot make out any shape within the black void of the shrine entrance. The soot-coloured pillars give its darkened interior the look of a fleshless mouth. Again Necklace of Skull's voice rolls along the avenue, each syllable driving like a grave-cool gust of wind through the blistering desert heat. \"Your brother came here before you.\"\n\nRed rage seethes in your heart. \"That's right, you --\"\n\nThe sorcerer's words continue, unperturbed by your outburst. \"He played the ritual ball contest and he lost. His life was forfeit. Now you will play for the same stakes. Behold your antagonists.\" Two long rivulets of shadow flow out of the shrine and down the pyramid steps, looking like spreading pools of black blood against the ebon stone. Reaching the bottom, they rise up in obscenely palpitating columns which gradually take solid form. Human form. Confronting you now are your opponents in the ball contest: two creatures of living shadow fashioned by the sorcerer's magic.\n\nThe ritual ball contest has started.";
 
         Image = "images/filler1.png";
 
@@ -11240,7 +11240,7 @@ public:
     {
         ID = 403;
 
-        Text = "The intense fire has burned down to a sullen cindery glow by daybreak. You are dimly aware of the door being swung open, and you begin to crawl feebly across the floor towards the flow of cool morning air. In doing so, your hand brushes against a large lump of charcoal which must have fallen out of the fire during the night. You also notice that one of the round stones which formed the sides of the fire-trough has worked itself loose. It is still warm to the touch, but not unbearably so.\n\n\"Come along,\" snaps the chief courtier impatiently. He sends in a couple of his men, who drag you outside. Staring down at you as your strength returns, he says nastily: \"Did you have a pleasant night?\"\n\n\"Very comfortable,\" you mutter through parched lips. \"What's next?\"\n\n\"Next,\" e says, \"is the House of Bats.\"";
+        Text = "The intense fire has burned down to a sullen cindery glow by daybreak. You are dimly aware of the door being swung open, and you begin to crawl feebly across the floor towards the flow of cool morning air. In doing so, your hand brushes against a large lump of charcoal which must have fallen out of the fire during the night. You also notice that one of the round stones which formed the sides of the fire-trough has worked itself loose. It is still warm to the touch, but not unbearably so.\n\n\"Come along,\" snaps the chief courtier impatiently. He sends in a couple of his men, who drag you outside. Staring down at you as your strength returns, he says nastily: \"Did you have a pleasant night?\"\n\n\"Very comfortable,\" you mutter through parched lips. \"What's next?\"\n\n\"Next,\" he says, \"is the House of Bats.\"";
 
         Image = "images/filler1.png";
 
