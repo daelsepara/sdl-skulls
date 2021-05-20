@@ -3175,7 +3175,7 @@ std::string time_string(long deserialised)
     return ss.str();
 }
 
-std::vector<Button> createFilesList(std::vector<std::string> list, int start, int last, int limit)
+std::vector<Button> createFilesList(std::vector<std::string> list, int start, int last, int limit, bool save_button)
 {
     auto controls = std::vector<Button>();
 
@@ -3198,8 +3198,9 @@ std::vector<Button> createFilesList(std::vector<std::string> list, int start, in
             {
                 auto storyID = std::to_string(character.StoryID);
 
-                game_string = "Date: " + time_string(epoch_long) + "\n";
-                game_string += std::string(3 - storyID.length(), '0') + storyID + ": " + character.Name;
+                game_string += std::string(3 - std::to_string(index + 1).length(), '0') + std::to_string(index) + ".\n";
+                game_string += "Date: " + time_string(epoch_long) + "\n";
+                game_string += "Section: " + std::string(3 - storyID.length(), '0') + storyID + ": " + character.Name;
                 game_string += " - Life: " + std::to_string(character.Life);
                 game_string += ", Money: " + std::to_string(character.Money);
                 game_string += ", Items: " + std::to_string(character.Items.size());
@@ -3216,7 +3217,6 @@ std::vector<Button> createFilesList(std::vector<std::string> list, int start, in
         }
     }
 
-    auto compact = false;
     auto idx = controls.size();
 
     if (list.size() > limit)
@@ -3235,19 +3235,22 @@ std::vector<Button> createFilesList(std::vector<std::string> list, int start, in
             idx++;
         }
     }
-    else
+
+    controls.push_back(Button(idx, "icons/open.png", idx, idx + 1, idx > 0 ? idx - 1 : idx, idx, startx, buttony, Control::Type::LOAD));
+
+    if (save_button)
     {
-        compact = true;
+        controls.push_back(Button(idx + 1, "icons/disk.png", idx, idx + 2, idx > 0 ? idx - 1 : idx + 1, idx + 1, startx + gridsize, buttony, Control::Type::SAVE));
     }
 
-    controls.push_back(Button(idx, "icons/open.png", idx, idx + 1, (compact || idx > 0) ? idx : idx - 1, idx, startx, buttony, Control::Type::LOAD));
-    controls.push_back(Button(idx + 1, "icons/disk.png", idx, idx + 2, (compact || idx > 0) ? idx + 1 : idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::SAVE));
-    controls.push_back(Button(idx + 2, "icons/back-button.png", idx + 1, idx + 2, (compact || idx > 0) ? idx + 2 : idx - 1, idx + 2, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+    idx = controls.size();
+
+    controls.push_back(Button(idx, "icons/back-button.png", idx - 1, idx, list.size() > 0 ? (last - start) : idx, idx, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
     return controls;
 }
 
-Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player)
+Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, bool save_botton)
 {
     auto result = Control::Type::BACK;
     auto done = false;
@@ -3260,7 +3263,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
 
         std::vector<std::string> entries;
 
-        int limit = 8;
+        int limit = 6;
 
         auto splash = createImage("images/filler6.png");
 
@@ -3291,7 +3294,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
             last = entries.size();
         }
 
-        auto controls = createFilesList(entries, offset, last, limit);
+        auto controls = createFilesList(entries, offset, last, limit, save_botton);
 
         auto current = -1;
         auto selected = false;
@@ -3401,7 +3404,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                         last = entries.size();
                     }
 
-                    controls = createFilesList(entries, offset, last, limit);
+                    controls = createFilesList(entries, offset, last, limit, save_botton);
 
                     current = -1;
 
@@ -3428,7 +3431,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                         last = entries.size();
                     }
 
-                    controls = createFilesList(entries, offset, last, limit);
+                    controls = createFilesList(entries, offset, last, limit, save_botton);
 
                     SDL_Delay(200);
 
@@ -3814,7 +3817,18 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     {
                         if (story->Type == Story::Type::NORMAL && player.Life > 0)
                         {
-                            gameScreen(window, renderer, saveCharacter);
+                            auto result = gameScreen(window, renderer, saveCharacter, true);
+
+                            if (result == Control::Type::SAVE)
+                            {
+                                message = "Game saved!";
+
+                                start_ticks = SDL_GetTicks();
+
+                                flash_message = true;
+
+                                flash_color = intLB;
+                            }
                         }
                         else
                         {
@@ -4075,6 +4089,8 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
             bool scrollUp = false;
             bool scrollDown = false;
             bool hold = false;
+            
+            Control::Type result;
 
             quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
@@ -4107,6 +4123,8 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
                     break;
 
                 case Control::Type::LOAD:
+
+                    result = gameScreen(window, renderer, Player, false);
 
                     current = -1;
 
