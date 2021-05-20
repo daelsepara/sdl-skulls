@@ -3198,7 +3198,7 @@ std::vector<Button> createFilesList(SDL_Window *window, SDL_Renderer *renderer, 
             {
                 auto storyID = std::to_string(character.StoryID);
 
-                game_string += std::string(3 - std::to_string(index + 1).length(), '0') + std::to_string(index + 1) + ". "  + character.Name + "\n";
+                game_string += std::string(3 - std::to_string(index + 1).length(), '0') + std::to_string(index + 1) + ". " + character.Name + "\n";
                 game_string += "Date: " + time_string(epoch_long) + "\n";
                 game_string += "Section: " + std::string(3 - storyID.length(), '0') + storyID + ": ";
                 game_string += "Life: " + std::to_string(character.Life);
