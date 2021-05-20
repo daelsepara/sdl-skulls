@@ -1120,6 +1120,22 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                         }
                         else if (mode == Control::Type::USE)
                         {
+                            if (item == Item::Type::MAGIC_DRINK)
+                            {
+                                Character::GAIN_LIFE(player, 5);
+
+                                Item::REMOVE(Items, item);
+
+                                controls.clear();
+
+                                controls = createItemControls(Items);
+
+                                message = "You RECOVER 5 Life Points.";
+
+                                start_ticks = SDL_GetTicks();
+
+                                error = true;
+                            }
                         }
                     }
                 }
@@ -3200,6 +3216,16 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
             controls = Story::ExitControls();
         }
 
+        auto trigger_blessing = player.IsBlessed && saveCharacter.Life > player.Life;
+
+        auto bless_text = createText("You have lost some Life Points. Do you wish to use the War God's Blessing?", "fonts/default.ttf", 20, clrWH, textwidth, TTF_STYLE_NORMAL);
+        auto message_x = (SCREEN_WIDTH - textwidth) / 2;
+        auto message_y = (SCREEN_HEIGHT - messageh) / 2;
+
+        auto message_controls = std::vector<Button>();
+        message_controls.push_back(Button(0, "icons/yes.png", 0, 1, 0, 0, message_x + button_space, message_y + messageh - buttonh - button_space, Control::Type::YES));
+        message_controls.push_back(Button(1, "icons/no.png", 0, 1, 1, 1, message_x + textwidth - button_space - buttonw, message_y + messageh - buttonh - button_space, Control::Type::NO));
+
         // Render the image
         if (window && renderer)
         {
@@ -3274,14 +3300,26 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                 }
 
-                renderButtons(renderer, controls, current, intGR, border_space, border_pts);
+                renderButtons(renderer, controls, trigger_blessing ? -1 : current, intGR, border_space, border_pts);
 
                 bool scrollUp = false;
                 bool scrollDown = false;
 
-                quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+                if (trigger_blessing)
+                {
+                    fillRect(renderer, textwidth, messageh, message_x, message_y, intDB);
+                    renderImage(renderer, bless_text, (SCREEN_WIDTH - bless_text->w) / 2, message_y + text_space);
 
-                if ((selected && current >= 0 && current < controls.size()) || scrollUp || scrollDown || hold)
+                    renderButtons(renderer, message_controls, current, intWH, border_space, border_pts);
+
+                    quit = Input::GetInput(renderer, message_controls, current, selected, scrollUp, scrollDown, hold);
+                }
+                else
+                {
+                    quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+                }
+
+                if (!trigger_blessing && (selected && current >= 0 && current < controls.size()) || scrollUp || scrollDown || hold)
                 {
                     if (controls[current].Type == Control::Type::SCROLL_UP || (controls[current].Type == Control::Type::SCROLL_UP && hold) || scrollUp)
                     {
@@ -3476,7 +3514,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                                 {
                                     if (story->Bye)
                                     {
-                                        auto bye = createText(story->Bye, "fonts/default.ttf", font_size + 4, clrBK, (SCREEN_WIDTH * (1.0 - 2.0 * Margin)), TTF_STYLE_NORMAL);
+                                        auto bye = createText(story->Bye, "fonts/default.ttf", font_size + 4, clrBK, (SCREEN_WIDTH * (1.0 - 2.0 * Margin)) - 2 * text_space, TTF_STYLE_NORMAL);
                                         auto forward = createImage("icons/next.png");
 
                                         if (bye && forward)
@@ -3540,6 +3578,27 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                         break;
                     }
                 }
+                else if (trigger_blessing && (selected && current >= 0 && current < message_controls.size()))
+                {
+                    if (message_controls[current].Type == Control::Type::YES && !hold)
+                    {
+                        player.IsBlessed = false;
+
+                        player.Life = saveCharacter.Life;
+
+                        trigger_blessing = false;
+
+                        message = "You used the blessing to RECOVER the LOST Life Points.";
+
+                        start_ticks = SDL_GetTicks();
+
+                        flash_message = true;
+                    }
+                    else
+                    {
+                        trigger_blessing = false;
+                    }
+                }
             }
         }
 
@@ -3555,6 +3614,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
             SDL_FreeSurface(text);
 
             text = NULL;
+        }
+
+        if (bless_text)
+        {
+            SDL_FreeSurface(bless_text);
+
+            bless_text = NULL;
         }
     }
 

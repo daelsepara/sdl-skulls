@@ -34,7 +34,9 @@ namespace Control
         MINUS,
         TRADE,
         GIVE,
-        STEAL
+        STEAL,
+        YES,
+        NO
     };
 
     class Base
