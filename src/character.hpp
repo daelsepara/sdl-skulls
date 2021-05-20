@@ -24,9 +24,9 @@ namespace Character
     class Base
     {
     public:
-        const char *Name = NULL;
+        std::string Name = "";
 
-        const char *Description = NULL;
+        std::string Description = "";
 
         Character::Type Type = Character::Type::CUSTOM;
 

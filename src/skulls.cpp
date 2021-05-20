@@ -2,7 +2,9 @@
 #include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <ctime>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -257,11 +259,11 @@ SDL_Surface *createText(const char *text, const char *ttf, int font_size, SDL_Co
         TTF_SetFontStyle(font, style);
 
         surface = TTF_RenderText_Blended_Wrapped(font, text, textColor, wrap);
+
+        TTF_CloseFont(font);
+
+        font = NULL;
     }
-
-    TTF_CloseFont(font);
-
-    font = NULL;
 
     TTF_Quit();
 
@@ -575,7 +577,7 @@ void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font
     }
 
     putText(renderer, name_string.c_str(), font, space, clrWH, intDB, TTF_STYLE_NORMAL, (player.IsImmortal ? headerw * 2 : headerw), headerh, startx, starty);
-    putText(renderer, player.Description, font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
+    putText(renderer, player.Description.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, profileh, startx, starty + headerh);
 
     putText(renderer, "Skills", font, space, clrWH, intDB, TTF_STYLE_NORMAL, headerw, headerh, startx, starty + profileh + headerh + marginh);
     putText(renderer, skills.c_str(), font, space, clrBK, intBE, TTF_STYLE_NORMAL, profilew, boxh, startx, starty + profileh + 2 * headerh + marginh);
@@ -2420,7 +2422,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
             auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 2 * text_space);
 
-            controls.push_back(Button(i, text, i, i, (i > 0 ? i - 1 : i), (i < choices.size() ? i + 1 : i), textx + 16, y, Control::Type::ACTION));
+            controls.push_back(Button(i, text, i, i, (i > 0 ? i - 1 : i), (i < choices.size() ? i + 1 : i), textx + 2 * text_space, y, Control::Type::ACTION));
             controls[i].W = textwidth + button_space;
             controls[i].H = text->h;
         }
@@ -3001,7 +3003,8 @@ Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Character
 
 bool saveGame(Character::Base &player)
 {
-    auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+    auto seed = std::chrono::system_clock::now().time_since_epoch() /
+                std::chrono::milliseconds(1);
 
     std::ostringstream buffer;
 
@@ -3070,8 +3073,10 @@ Character::Base loadGame(std::string file_name)
 
         ifs.close();
 
-        auto name = std::string(data["name"]);
-        auto description = std::string(data["description"]);
+        std::string name = std::string(data["name"]);
+
+        std::string description = data["description"];
+
         auto type = static_cast<Character::Type>((int)data["type"]);
 
         auto skills = std::vector<Skill::Base>();
@@ -3153,6 +3158,342 @@ Character::Base loadGame(std::string file_name)
     }
 
     return character;
+}
+
+std::string time_string(long deserialised)
+{
+    auto epoch = std::chrono::time_point<std::chrono::high_resolution_clock>();
+    auto since_epoch = std::chrono::milliseconds(deserialised);
+    auto timestamp = epoch + since_epoch;
+
+    auto in_time_t = std::chrono::system_clock::to_time_t(timestamp);
+
+    std::stringstream ss;
+
+    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+
+    return ss.str();
+}
+
+std::vector<Button> createFilesList(std::vector<std::string> list, int start, int last, int limit)
+{
+    auto controls = std::vector<Button>();
+
+    auto text_space = 8;
+
+    if (list.size() > 0)
+    {
+        for (int i = 0; i < last - start; i++)
+        {
+            std::string game_string = "";
+
+            auto index = start + i;
+
+            auto character = loadGame(list[index]);
+
+            auto epoch = list[index].substr(list[index].find_last_of("/") + 1, list[index].find_last_of(".") - list[index].find_last_of("/") - 1);
+            auto epoch_long = std::stol(epoch);
+
+            if (character.StoryID != -1)
+            {
+                auto storyID = std::to_string(character.StoryID);
+
+                game_string = "Date: " + time_string(epoch_long) + "\n";
+                game_string += std::string(3 - storyID.length(), '0') + storyID + ": " + character.Name;
+                game_string += " - Life: " + std::to_string(character.Life);
+                game_string += ", Money: " + std::to_string(character.Money);
+                game_string += ", Items: " + std::to_string(character.Items.size());
+                game_string += ", Codewords: " + std::to_string(character.Codewords.size());
+            }
+
+            auto text = createText(game_string.length() > 0 ? game_string.c_str() : list[i].c_str(), "fonts/default.ttf", 20, clrBK, textwidth - 2 * (button_space + text_space), TTF_STYLE_NORMAL);
+
+            auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 2 * text_space);
+
+            controls.push_back(Button(i, text, i, i, (i > 0 ? i - 1 : i), (i < (last - start) ? i + 1 : i), textx + 2 * text_space, y, Control::Type::ACTION));
+            controls[i].W = textwidth - 3 * button_space / 2;
+            controls[i].H = text->h;
+        }
+    }
+
+    auto compact = false;
+    auto idx = controls.size();
+
+    if (list.size() > limit)
+    {
+        if (start > 0)
+        {
+            controls.push_back(Button(idx, "icons/up-arrow.png", idx, idx, idx, idx + 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+
+            idx++;
+        }
+
+        if (list.size() - last > 0)
+        {
+            controls.push_back(Button(idx, "icons/down-arrow.png", idx, idx, start > 0 ? idx - 1 : idx, idx + 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+
+            idx++;
+        }
+    }
+    else
+    {
+        compact = true;
+    }
+
+    controls.push_back(Button(idx, "icons/open.png", idx, idx + 1, (compact || idx > 0) ? idx : idx - 1, idx, startx, buttony, Control::Type::LOAD));
+    controls.push_back(Button(idx + 1, "icons/disk.png", idx, idx + 2, (compact || idx > 0) ? idx + 1 : idx - 1, idx + 1, startx + gridsize, buttony, Control::Type::SAVE));
+    controls.push_back(Button(idx + 2, "icons/back-button.png", idx + 1, idx + 2, (compact || idx > 0) ? idx + 2 : idx - 1, idx + 2, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+    return controls;
+}
+
+Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player)
+{
+    auto result = Control::Type::BACK;
+    auto done = false;
+
+    if (window && renderer)
+    {
+        fs::create_directory("save");
+
+        std::string path = "./save/";
+
+        std::vector<std::string> entries;
+
+        int limit = 8;
+
+        auto splash = createImage("images/filler6.png");
+
+        try
+        {
+            for (const auto &entry : fs::directory_iterator(path))
+            {
+                std::string file_name = entry.path();
+
+                if (file_name.substr(file_name.find_last_of(".") + 1) == "save")
+                {
+                    entries.push_back(file_name);
+                }
+            }
+        }
+        catch (std::exception &ex)
+        {
+            std::cerr << "Unable to read save directory!" << std::endl;
+        }
+
+        auto offset = 0;
+        auto last = 0;
+
+        last = offset + limit;
+
+        if (last > entries.size())
+        {
+            last = entries.size();
+        }
+
+        auto controls = createFilesList(entries, offset, last, limit);
+
+        auto current = -1;
+        auto selected = false;
+        auto scrollUp = false;
+        auto scrollDown = false;
+        auto hold = false;
+        auto scrollSpeed = 1;
+        auto space = 8;
+
+        auto selected_file = -1;
+
+        TTF_Init();
+
+        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+
+        auto text_space = 8;
+        auto infoh = 0.06 * SCREEN_HEIGHT;
+        auto boxh = 0.125 * SCREEN_HEIGHT;
+        auto box_space = 10;
+
+        while (!done)
+        {
+            last = offset + limit;
+
+            if (last > entries.size())
+            {
+                last = entries.size();
+            }
+
+            SDL_SetWindowTitle(window, "Necklace of Skulls: LOAD/SAVE game");
+
+            // Fill the surface with background color
+            fillWindow(renderer, intWH);
+
+            fitImage(renderer, splash, startx, starty, splashw, text_bounds);
+
+            fillRect(renderer, textwidth, text_bounds, textx, texty, intBE);
+
+            renderButtons(renderer, controls, current, intGR, border_space, border_pts);
+
+            putText(renderer, "Selected", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+
+            if (selected_file >= 0 && selected_file < entries.size())
+            {
+                std::string game_string = "";
+
+                auto character = loadGame(entries[selected_file]);
+
+                auto epoch = entries[selected_file].substr(entries[selected_file].find_last_of("/") + 1, entries[selected_file].find_last_of(".") - entries[selected_file].find_last_of("/") - 1);
+                auto epoch_long = std::stol(epoch);
+
+                if (character.StoryID != -1)
+                {
+                    auto storyID = std::to_string(character.StoryID);
+
+                    game_string = "Date: " + time_string(epoch_long) + "\n";
+                    game_string += std::string(3 - storyID.length(), '0') + storyID + ": " + character.Name;
+                    game_string += "\nLife: " + std::to_string(character.Life);
+                    game_string += "\nMoney: " + std::to_string(character.Money);
+                }
+
+                putText(renderer, game_string.c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+            }
+            else
+            {
+                fillRect(renderer, splashw, boxh, startx, starty + text_bounds - boxh, intBE);
+            }
+
+            if (last - offset > 0)
+            {
+                for (auto i = 0; i < last - offset; i++)
+                {
+                    if (offset + i == selected_file)
+                    {
+                        for (auto size = 4; size >= 0; size--)
+                        {
+                            drawRect(renderer, controls[i].W + 2 * text_space - 2 * size, controls[i].H + 2 * text_space - 2 * size, controls[i].X - text_space + size, controls[i].Y - text_space + size, intLB);
+                        }
+                    }
+                    else
+                    {
+                        drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intGR);
+                    }
+                }
+            }
+
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if ((selected && current >= 0 && current < controls.size()) || scrollUp || scrollDown || hold)
+            {
+                if (controls[current].Type == Control::Type::SCROLL_UP || (controls[current].Type == Control::Type::SCROLL_UP && hold) || scrollUp)
+                {
+                    if (offset > 0)
+                    {
+                        offset -= scrollSpeed;
+                    }
+
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+
+                    last = offset + limit;
+
+                    if (last > entries.size())
+                    {
+                        last = entries.size();
+                    }
+
+                    controls = createFilesList(entries, offset, last, limit);
+
+                    current = -1;
+
+                    selected = false;
+
+                    SDL_Delay(200);
+                }
+                else if (controls[current].Type == Control::Type::SCROLL_DOWN || ((controls[current].Type == Control::Type::SCROLL_DOWN && hold) || scrollDown))
+                {
+                    if (offset < entries.size() - limit)
+                    {
+                        offset += scrollSpeed;
+                    }
+
+                    if (offset > entries.size() - limit)
+                    {
+                        offset = entries.size() - limit;
+                    }
+
+                    last = offset + limit;
+
+                    if (last > entries.size())
+                    {
+                        last = entries.size();
+                    }
+
+                    controls = createFilesList(entries, offset, last, limit);
+
+                    SDL_Delay(200);
+
+                    current = -1;
+
+                    selected = false;
+                }
+                else if (controls[current].Type == Control::Type::ACTION && !hold)
+                {
+                    if (offset + current == selected_file)
+                    {
+                        selected_file = -1;
+                    }
+                    else
+                    {
+                        selected_file = offset + current;
+                    }
+                }
+                else if (controls[current].Type == Control::Type::LOAD && !hold)
+                {
+                    result = Control::Type::LOAD;
+
+                    done = true;
+
+                    break;
+                }
+                else if (controls[current].Type == Control::Type::SAVE && !hold)
+                {
+                    saveGame(player);
+
+                    result = Control::Type::SAVE;
+
+                    done = true;
+
+                    break;
+                }
+                else if (controls[current].Type == Control::Type::BACK && !hold)
+                {
+                    result = Control::Type::BACK;
+
+                    done = true;
+
+                    break;
+                }
+            }
+        }
+
+        if (font)
+        {
+            TTF_CloseFont(font);
+
+            font = NULL;
+        }
+
+        if (splash)
+        {
+            SDL_FreeSurface(splash);
+
+            splash = NULL;
+        }
+
+        TTF_Quit();
+    }
+
+    return result;
 }
 
 bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
@@ -3473,19 +3814,11 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     {
                         if (story->Type == Story::Type::NORMAL && player.Life > 0)
                         {
-                            saveGame(saveCharacter);
-
-                            message = "Game saved.";
-
-                            start_ticks = SDL_GetTicks();
-
-                            flash_message = true;
-
-                            flash_color = intLB;
+                            gameScreen(window, renderer, saveCharacter);
                         }
                         else
                         {
-                            message = "You cannot save your game at this time.";
+                            message = "You cannot LOAD or SAVE your game at this time.";
 
                             start_ticks = SDL_GetTicks();
 
@@ -3676,6 +4009,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
     if (font)
     {
         TTF_CloseFont(font);
+
+        font = NULL;
     }
 
     TTF_Quit();
