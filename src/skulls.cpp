@@ -1001,7 +1001,10 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
     {
         const char *message = NULL;
 
-        auto error = false;
+        std::string temp_message = "";
+
+        auto flash_message = false;
+        auto flash_color = intRD;
 
         Uint32 start_ticks = 0;
         Uint32 duration = 3000;
@@ -1035,19 +1038,19 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
             fillWindow(renderer, intWH);
 
-            if (error)
+            if (flash_message)
             {
                 if ((SDL_GetTicks() - start_ticks) < duration)
                 {
-                    putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, boxh * 2, startx, starty);
+                    putText(renderer, message, font, text_space, clrWH, flash_color, TTF_STYLE_NORMAL, splashw, boxh * 2, startx, starty);
                 }
                 else
                 {
-                    error = false;
+                    flash_message = false;
                 }
             }
 
-            if (!error)
+            if (!flash_message)
             {
                 if (mode == Control::Type::DROP)
                 {
@@ -1104,6 +1107,12 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                             controls.clear();
 
                             controls = createItemControls(Items);
+
+                            temp_message = std::string(Item::Descriptions[item]) + " DROPPED!";
+
+                            flash_message = temp_message.c_str();
+
+                            flash_color = intRD;
                         }
                         else if (mode == Control::Type::STEAL)
                         {
@@ -1116,25 +1125,42 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                                 controls.clear();
 
                                 controls = createItemControls(Items);
+
+                                temp_message = std::string(Item::Descriptions[item]) + " STOLEN!";
+
+                                flash_message = temp_message.c_str();
+
+                                flash_color = intRD;
                             }
                         }
                         else if (mode == Control::Type::USE)
                         {
                             if (item == Item::Type::MAGIC_DRINK)
                             {
-                                Character::GAIN_LIFE(player, 5);
+                                if (player.Life < player.MAX_LIFE_LIMIT)
+                                {
+                                    Character::GAIN_LIFE(player, 5);
 
-                                Item::REMOVE(Items, item);
+                                    Item::REMOVE(Items, item);
 
-                                controls.clear();
+                                    controls.clear();
 
-                                controls = createItemControls(Items);
+                                    controls = createItemControls(Items);
 
-                                message = "You RECOVER 5 Life Points.";
+                                    message = "You RECOVER 5 Life Points.";
+
+                                    flash_color = intLB;
+                                }
+                                else
+                                {
+                                    message = "You are not INJURED!";
+
+                                    flash_color = intRD;
+                                }
 
                                 start_ticks = SDL_GetTicks();
 
-                                error = true;
+                                flash_message = true;
                             }
                         }
                     }
@@ -3130,6 +3156,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
     auto font_size = 20;
 
     auto flash_message = false;
+    auto flash_color = intRD;
+
     const char *message = NULL;
 
     Uint32 start_ticks = 0;
@@ -3285,14 +3313,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                 {
                     if ((SDL_GetTicks() - start_ticks) < duration)
                     {
-                        if (story->Type == Story::Type::NORMAL || story->Type == Story::Type::DOOM)
-                        {
-                            putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
-                        }
-                        else
-                        {
-                            putText(renderer, message, font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
-                        }
+                        putText(renderer, message, font, text_space, clrWH, flash_color, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
                     }
                     else
                     {
@@ -3361,6 +3382,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             start_ticks = SDL_GetTicks();
 
                             flash_message = true;
+
+                            flash_color = intRD;
                         }
 
                         current = -1;
@@ -3388,6 +3411,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             start_ticks = SDL_GetTicks();
 
                             flash_message = true;
+
+                            flash_color = intRD;
                         }
 
                         current = -1;
@@ -3407,6 +3432,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             start_ticks = SDL_GetTicks();
 
                             flash_message = true;
+
+                            flash_color = intRD;
                         }
 
                         current = -1;
@@ -3426,6 +3453,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             start_ticks = SDL_GetTicks();
 
                             flash_message = true;
+
+                            flash_color = intRD;
                         }
 
                         current = -1;
@@ -3443,6 +3472,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             start_ticks = SDL_GetTicks();
 
                             flash_message = true;
+
+                            flash_color = intLB;
                         }
                         else
                         {
@@ -3451,6 +3482,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             start_ticks = SDL_GetTicks();
 
                             flash_message = true;
+
+                            flash_color = intRD;
                         }
 
                         current = -1;
@@ -3552,6 +3585,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                                 start_ticks = SDL_GetTicks();
 
                                 flash_message = true;
+
+                                flash_color = intRD;
                             }
                         }
                         else if (story->Type == Story::Type::DOOM)
@@ -3561,6 +3596,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             start_ticks = SDL_GetTicks();
 
                             flash_message = true;
+
+                            flash_color = intRD;
                         }
                         else if (story->Type == Story::Type::GOOD)
                         {
@@ -3569,6 +3606,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                             start_ticks = SDL_GetTicks();
 
                             flash_message = true;
+
+                            flash_color = intLB;
                         }
                     }
                     else if (controls[current].Type == Control::Type::BACK && !hold)
@@ -3593,6 +3632,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                         start_ticks = SDL_GetTicks();
 
                         flash_message = true;
+
+                        flash_color = intLB;
                     }
                     else
                     {
