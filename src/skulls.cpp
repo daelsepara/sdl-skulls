@@ -1,7 +1,10 @@
 // Standard IO
+#include <chrono>
 #include <cstdio>
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
+#include <sstream>
 #include <vector>
 
 // Using SDL
@@ -2931,6 +2934,63 @@ Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Character
     return next;
 }
 
+bool saveGame(Character::Base &player)
+{
+    auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+
+    std::ostringstream buffer;
+
+    buffer << "save/" << std::to_string(seed) << ".save";
+
+    nlohmann::json data;
+
+    data["name"] = player.Name;
+    data["description"] = player.Description;
+    data["type"] = player.Type;
+    data["life"] = player.Life;
+    data["money"] = player.Money;
+    data["itemLimit"] = player.ITEM_LIMIT;
+    data["lifeLimit"] = player.MAX_LIFE_LIMIT;
+    data["skillsLimit"] = player.SKILLS_LIMIT;
+    data["donation"] = player.DONATION;
+    data["isBlessed"] = player.IsBlessed;
+    data["isImmortal"] = player.IsImmortal;
+    data["ritualBallStarted"] = player.RitualBallStarted;
+    data["ticks"] = player.Ticks;
+    data["cross"] = player.Cross;
+    data["codewords"] = player.Codewords;
+    data["lostItems"] = player.LostItems;
+    
+    auto skills = std::vector<Skill::Type>();
+    auto lostSkills = std::vector<Skill::Type>();
+
+    for (auto i = 0; i < player.Skills.size(); i++)
+    {
+        skills.push_back(player.Skills[i].Type);
+    }
+
+    for (auto i = 0; i < player.LostSkills.size(); i++)
+    {
+        lostSkills.push_back(player.LostSkills[i].Type);
+    }
+
+    data["skills"] = skills;
+    data["items"] = player.Items;
+    data["lostSkills"] = lostSkills;
+    data["lostMoney"] = player.LostMoney;
+    data["storyID"] = player.StoryID;
+
+    std::string filename = buffer.str();
+
+    std::ofstream file(filename);
+
+    file << data.dump();
+
+    file.close();
+
+    return true;
+}
+
 bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     auto quit = false;
@@ -2939,7 +2999,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
     auto font_size = 20;
 
-    auto error = false;
+    auto flash_message = false;
     const char *message = NULL;
 
     Uint32 start_ticks = 0;
@@ -2961,6 +3021,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
     while (!quit)
     {
+        player.StoryID = story->ID;
+
         // capture player state before running the story
         saveCharacter = player;
 
@@ -2985,8 +3047,6 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
             story->Event(player);
         }
-
-        player.StoryID = story->ID;
 
         int splash_h = 250;
 
@@ -3074,15 +3134,22 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     renderText(renderer, text, intBE, textx + space, texty + space, text_bounds - 2 * space, offset);
                 }
 
-                if (error)
+                if (flash_message)
                 {
                     if ((SDL_GetTicks() - start_ticks) < duration)
                     {
-                        putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
+                        if (story->Type == Story::Type::NORMAL || story->Type == Story::Type::DOOM)
+                        {
+                            putText(renderer, message, font, text_space, clrWH, intRD, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
+                        }
+                        else
+                        {
+                            putText(renderer, message, font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, messageh, startx, starty);
+                        }
                     }
                     else
                     {
-                        error = false;
+                        flash_message = false;
                     }
                 }
 
@@ -3134,7 +3201,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                             start_ticks = SDL_GetTicks();
 
-                            error = true;
+                            flash_message = true;
                         }
 
                         current = -1;
@@ -3161,7 +3228,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                             start_ticks = SDL_GetTicks();
 
-                            error = true;
+                            flash_message = true;
                         }
 
                         current = -1;
@@ -3180,7 +3247,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                             start_ticks = SDL_GetTicks();
 
-                            error = true;
+                            flash_message = true;
                         }
 
                         current = -1;
@@ -3199,7 +3266,32 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                             start_ticks = SDL_GetTicks();
 
-                            error = true;
+                            flash_message = true;
+                        }
+
+                        current = -1;
+
+                        selected = false;
+                    }
+                    else if (controls[current].Type == Control::Type::GAME && !hold)
+                    {
+                        if (story->Type == Story::Type::NORMAL && player.Life > 0)
+                        {
+                            saveGame(saveCharacter);
+
+                            message = "Game saved.";
+
+                            start_ticks = SDL_GetTicks();
+
+                            flash_message = true;
+                        }
+                        else
+                        {
+                            message = "You cannot save your game at this time.";
+
+                            start_ticks = SDL_GetTicks();
+
+                            flash_message = true;
                         }
 
                         current = -1;
@@ -3300,7 +3392,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                                 start_ticks = SDL_GetTicks();
 
-                                error = true;
+                                flash_message = true;
                             }
                         }
                         else if (story->Type == Story::Type::DOOM)
@@ -3309,7 +3401,15 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                             start_ticks = SDL_GetTicks();
 
-                            error = true;
+                            flash_message = true;
+                        }
+                        else if (story->Type == Story::Type::GOOD)
+                        {
+                            message = "You have defeated Necklace of Skulls! This adventure is over. Further adventure awaits!";
+
+                            start_ticks = SDL_GetTicks();
+
+                            flash_message = true;
                         }
                     }
                     else if (controls[current].Type == Control::Type::BACK && !hold)

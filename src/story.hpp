@@ -172,7 +172,6 @@ namespace Story
     enum class Type
     {
         NORMAL = 0,
-        UNCERTAIN,
         GOOD,
         DOOM
     };

@@ -33,3 +33,6 @@
 
 # Directories
 .vscode/*
+
+# saved games
+*.save
