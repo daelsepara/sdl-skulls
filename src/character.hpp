@@ -62,6 +62,8 @@ namespace Character
 
         int StoryID = 0;
 
+        long Epoch = 0;
+
         Base()
         {
         }

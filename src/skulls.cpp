@@ -3016,18 +3016,26 @@ Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Character
     return next;
 }
 
-bool saveGame(Character::Base &player)
+bool saveGame(Character::Base &player, const char *overwrite)
 {
-    auto seed = std::chrono::system_clock::now().time_since_epoch() /
-                std::chrono::milliseconds(1);
+    auto seed = std::chrono::system_clock::now().time_since_epoch() / std::chrono::milliseconds(1);
 
     std::ostringstream buffer;
 
     fs::create_directory("save");
 
-    buffer << "save/" << std::to_string(seed) << ".save";
+    if (overwrite != NULL)
+    {
+        buffer << std::string(overwrite);
+    }
+    else
+    {
+        buffer << "save/" << std::to_string(seed) << ".save";
+    }
 
     nlohmann::json data;
+
+    player.Epoch = seed;
 
     data["name"] = player.Name;
     data["description"] = player.Description;
@@ -3045,6 +3053,7 @@ bool saveGame(Character::Base &player)
     data["cross"] = player.Cross;
     data["codewords"] = player.Codewords;
     data["lostItems"] = player.LostItems;
+    data["epoch"] = player.Epoch;
 
     auto skills = std::vector<Skill::Type>();
     auto lostSkills = std::vector<Skill::Type>();
@@ -3166,6 +3175,15 @@ Character::Base loadGame(std::string file_name)
         character.MAX_LIFE_LIMIT = (int)data["lifeLimit"];
         character.SKILLS_LIMIT = (int)data["skillsLimit"];
         character.StoryID = (int)data["storyID"];
+
+        try
+        {
+            character.Epoch = (long)(data["epoch"]);
+        }
+        catch (std::exception &ex)
+        {
+            character.Epoch = 0;
+        }
     }
     else
     {
@@ -3206,8 +3224,17 @@ std::vector<Button> createFilesList(SDL_Window *window, SDL_Renderer *renderer, 
 
             auto character = loadGame(list[index]);
 
-            auto epoch = list[index].substr(list[index].find_last_of("/") + 1, list[index].find_last_of(".") - list[index].find_last_of("/") - 1);
-            auto epoch_long = std::stol(epoch);
+            long epoch_long;
+
+            if (character.Epoch == 0)
+            {
+                auto epoch = list[index].substr(list[index].find_last_of("/") + 1, list[index].find_last_of(".") - list[index].find_last_of("/") - 1);
+                epoch_long = std::stol(epoch);
+            }
+            else
+            {
+                epoch_long = character.Epoch;
+            }
 
             if (character.StoryID != -1)
             {
@@ -3358,8 +3385,17 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
 
                 auto character = loadGame(entries[selected_file]);
 
-                auto epoch = entries[selected_file].substr(entries[selected_file].find_last_of("/") + 1, entries[selected_file].find_last_of(".") - entries[selected_file].find_last_of("/") - 1);
-                auto epoch_long = std::stol(epoch);
+                long epoch_long;
+
+                if (character.Epoch > 0)
+                {
+                    epoch_long = character.Epoch;
+                }
+                else
+                {
+                    auto epoch = entries[selected_file].substr(entries[selected_file].find_last_of("/") + 1, entries[selected_file].find_last_of(".") - entries[selected_file].find_last_of("/") - 1);
+                    epoch_long = std::stol(epoch);
+                }
 
                 if (character.StoryID != -1)
                 {
@@ -3415,6 +3451,10 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                         }
 
                         controls = createFilesList(window, renderer, entries, offset, last, limit, save_botton);
+
+                        SDL_Delay(200);
+
+                        current = -1;
                     }
 
                     selected = false;
@@ -3441,6 +3481,10 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                         }
 
                         controls = createFilesList(window, renderer, entries, offset, last, limit, save_botton);
+
+                        SDL_Delay(200);
+
+                        current = -1;
                     }
 
                     selected = false;
@@ -3466,7 +3510,14 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                 }
                 else if (controls[current].Type == Control::Type::SAVE && !hold)
                 {
-                    saveGame(player);
+                    if (selected_file != -1)
+                    {
+                        saveGame(player, entries[selected_file].c_str());
+                    }
+                    else
+                    {
+                        saveGame(player, NULL);
+                    }
 
                     result = Control::Type::SAVE;
 
