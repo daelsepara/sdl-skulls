@@ -1,6 +1,6 @@
-# Necklace of Skulls (Virtual Reality Adventures)
+# Necklace of Skulls (Critical IF Gamebooks)
 
-This is an implementation of the **Necklace of Skulls** game book (Virtual Reality Adventures) by [Dave Morris](https://fabledlands.blogspot.com/). The game is written in C/C++ and uses the [Simple DirectMedia Library (SDL)](https://www.libsdl.org/).
+This is an implementation of the **Necklace of Skulls** game book (Critical IF Gamebooks) by [Dave Morris](https://fabledlands.blogspot.com/). The game is written in C/C++ and uses the [Simple DirectMedia Library (SDL)](https://www.libsdl.org/).
 
 # Planned Features
 
@@ -67,3 +67,7 @@ Cover by Jon Hogson (c) 2013 Fabled Lands LLP
 
 ISBN 978-1-909905-02-3
 ```
+
+# Bugs
+
+Feel free to report any bugs, issues, and/or suggestions. Thanks!

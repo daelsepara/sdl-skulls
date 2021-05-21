@@ -44,6 +44,7 @@ bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skil
 bool loseSkills(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int limit);
 bool mainScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool mapScreen(SDL_Window *window, SDL_Renderer *renderer);
+bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
 bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
 bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int id);
 bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit);
@@ -51,6 +52,14 @@ bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pl
 
 int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit);
 int giftScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, Character::Base &player, std::vector<std::pair<Item::Type, int>> gifts, int default_destination);
+
+Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, bool save_botton);
+Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer);
+
+Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
+Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
+
+void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Character::Base &player);
 
 SDL_Surface *createImage(const char *image)
 {
@@ -424,9 +433,9 @@ std::vector<TextButton> createHTextButtons(const char **choices, int num, int te
 
 bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
-    auto quit = false;
+    auto done = false;
 
-    auto *about = "Virtual Reality Adventure Games are solo adventures with a big difference. They're not random. Whether you live or die doesn't depend on a dice roll -- it's up to you.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills: these skills will decide which options are available to you.\n\nAlso note the Life Points and possessions of the character. Life Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during the adventure, but you can never have more Life Points that you started with. You can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other possessions to make room for the new item.\n\nConsider your selection of skills. They establish your special strengths, and will help you to role-play your choices during the adventure. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situation.";
+    auto *about = "Critical IF are gamebooks with a difference. The outcomes are not random. Whether you live or die is a matter not of luck, but of judgement.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills; these will decide which options are available to you. Also note your Life Points and your possessions.\n\nLife Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during your adventure, but you can never have more Life Points than you started with.\n\nYou can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other poessessions to make room for the new item.\n\nConsider your slection of skills. They establish your special strengths, and will help you to role-play your choices during the adventrue. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situtation.\n\nThat's all you need to know. Now choose your character.";
 
     auto splash = createImage("images/pyramid.png");
 
@@ -447,7 +456,7 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         std::vector<TextButton> controls = {TextButton(0, "Back", 0, 0, 0, 0, startx, about_buttony, about_buttonw, about_buttonh, Control::Type::BACK)};
 
-        while (!quit)
+        while (!done)
         {
             // Fill the surface with background color
             fillWindow(renderer, intDB);
@@ -460,7 +469,7 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
             bool scrollDown = false;
             bool hold = false;
 
-            quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
             if (selected && current >= 0 && current < controls.size() && controls[current].Type == Control::Type::BACK)
             {
@@ -475,12 +484,12 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
         text = NULL;
     }
 
-    return quit;
+    return done;
 }
 
 bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
 {
-    auto quit = false;
+    auto done = false;
 
     auto splash = createImage("images/map-one-world.png");
 
@@ -498,7 +507,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
 
         int offset_x = (marginw - (double)text_bounds / splash->h * splash->w) / 2;
 
-        while (!quit)
+        while (!done)
         {
             // Fill the surface with background color
             fillWindow(renderer, intWH);
@@ -511,7 +520,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
             bool scrollDown = false;
             bool hold = false;
 
-            quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
             if (selected && current >= 0 && current < controls.size() && controls[current].Type == Control::Type::BACK)
             {
@@ -524,7 +533,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
         splash = NULL;
     }
 
-    return quit;
+    return done;
 }
 
 void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font, Character::Base &player)
@@ -652,7 +661,7 @@ bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skil
             }
 
             text += std::string(Skills[i].Name) + "\n\n";
-            text += std::string(Skill::ALL[i].Description) + "\n";
+            text += std::string(Skills[i].Description) + "\n";
         }
 
         auto glossary = createText(text.c_str(), "fonts/default.ttf", font_size, clrBK, glossary_width - 2 * space, TTF_STYLE_NORMAL);
