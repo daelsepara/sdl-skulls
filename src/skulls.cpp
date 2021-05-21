@@ -8,15 +8,9 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-
-#if __cplusplus < 201703L // If the version of C++ is less than 17
-#include <experimental/filesystem>
-// It was still in the experimental:: namespace
-namespace fs = std::experimental::filesystem;
-#else
 #include <filesystem>
+
 namespace fs = std::filesystem;
-#endif
 
 // Using SDL
 #include <SDL.h>
@@ -3318,21 +3312,30 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
 
         auto splash = createImage("images/filler6.png");
 
+        auto saved_games = std::multimap<std::filesystem::file_time_type, std::string, std::greater<std::filesystem::file_time_type>>();
+
         try
         {
             for (const auto &entry : fs::directory_iterator(path))
             {
+                auto time_stamp = entry.last_write_time();
+
                 std::string file_name = entry.path();
 
                 if (file_name.substr(file_name.find_last_of(".") + 1) == "save")
                 {
-                    entries.push_back(file_name);
+                    saved_games.insert(std::make_pair(time_stamp, file_name));
                 }
             }
         }
         catch (std::exception &ex)
         {
             std::cerr << "Unable to read save directory!" << std::endl;
+        }
+
+        for (auto const &entry : saved_games)
+        {
+            entries.push_back(entry.second);
         }
 
         auto offset = 0;
