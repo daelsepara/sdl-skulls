@@ -4,12 +4,12 @@ This is an implementation of the **Necklace of Skulls** game book (Virtual Reali
 
 # Planned Features
 
-- Keyboard friendly with Mouse and Gamepad support (*DONE*)
-- Fully digitized gameplay (*DONE*)
-- Quality of life improvements to record keeping (*PARTIAL*)
-- Load / Save game at any point (*DONE*)
+- Keyboard friendly with Mouse and Gamepad support (**DONE**)
+- Fully digitized gameplay (**DONE**)
+- Quality of life improvements to record keeping (**PARTIAL**)
+- Load / Save game at any point (**DONE**)
 - Sound
-- Multiplatform (Linux/Windows/OSX) (*PARTIAL*)
+- Multiplatform Linux/Windows/OSX (**PARTIAL**)
 
 # Current Progress (Screenshots)
 
