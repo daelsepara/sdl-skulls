@@ -53,6 +53,10 @@ This is an implementation of the **Necklace of Skulls** game book (Critical IF G
 
 ![Inventory Screen](/screenshots/inventory-screen.png)
 
+**Loading and Saving Games**
+
+![Loading and Saving Games](/screenshots/load-save-screen.png)
+
 # Copyright Information 
 
 ```
