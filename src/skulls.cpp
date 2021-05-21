@@ -3502,11 +3502,16 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                 }
                 else if (controls[current].Type == Control::Type::LOAD && !hold)
                 {
-                    result = Control::Type::LOAD;
+                    if (selected_file >= 0 && selected_file < entries.size())
+                    {
+                        player = loadGame(entries[selected_file]);
 
-                    done = true;
+                        result = Control::Type::LOAD;
 
-                    break;
+                        done = true;
+
+                        break;
+                    }
                 }
                 else if (controls[current].Type == Control::Type::SAVE && !hold)
                 {
@@ -3886,6 +3891,25 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                                 flash_color = intLB;
                             }
+                            else if (result == Control::Type::LOAD)
+                            {
+                                if (saveCharacter.StoryID >= 0 && saveCharacter.Life > 0)
+                                {
+                                    player = saveCharacter;
+
+                                    story = (Story::Base *)findStory(saveCharacter.StoryID);
+
+                                    message = "Game loaded!";
+
+                                    start_ticks = SDL_GetTicks();
+
+                                    flash_message = true;
+
+                                    flash_color = intLB;
+
+                                    continue;
+                                }
+                            }
                         }
                         else
                         {
@@ -4185,6 +4209,15 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
                 case Control::Type::LOAD:
 
                     result = gameScreen(window, renderer, Player, false);
+
+                    if (result == Control::Type::LOAD)
+                    {
+                        // TODO: add sanity check to the loaded player
+                        if (Player.StoryID >= 0 && Player.Life > 0)
+                        {
+                            storyScreen(window, renderer, Player, Player.StoryID);
+                        }
+                    }
 
                     current = -1;
 
