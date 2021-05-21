@@ -615,7 +615,7 @@ public:
 
         Text = "Cleverness is not so much a question of intelligence. It has a lot to do with just having a smart attitude. Where others look for the obvious answer to any problem, you have a habit of being contrary -- of always trying the unexpected first. You find it usually works.\n\nLike now: the average person would climb to the top of the steps and probably have to tackle some devious puzzle or demonic monster in the shrine above. You check out the opposite approach, and discover that the steps not only lead up but also descend beneath the water. It's a near certainty that this is the route you must take.";
 
-        Image = "images/filler1.png";
+        Image = "images/pyramid.png";
 
         Choices.clear();
 
@@ -929,7 +929,7 @@ public:
 
         Text = "Convinced though you are by the strength of this argument, the Matriarch seems unimpressed. \"I wonder what you will find?\" she muses. \"The truth as to Morning Star's fate, perhaps. But also you may discover a deeper truth.\"\n\nShe turns aside to gaze up at the shimmering sunbeams slanting through the windows, showing her profile in an expression of disdain. \"You are useless to the clan until you learn wisdom, Evening Star. Depart whenever you wish.\"\n\nShe says nothing more. Awkwardly, you get to your feet and retreat from the room with a hesitant bow.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -1211,7 +1211,7 @@ public:
 
         Text = "Your amulet is held around your neck by a thong, which snaps as you are getting off the raft. You give a yelp of alarm and try to grab the amulet before it falls into the water, but for once luck is not with you and it slips through your fingers. However, instead of sinking without trace the amulet comes to rest just under the surface. You stoop to retrieve it, and in doing so you notice something rather interesting; the stairway does not just lead up to the shrine atop the pyramid; it also leads down beneath the lake.\n\nIs that the route you should take? Or is there some secret you must discover inside the shrine first? As you resecure the amulet around your neck, you ponder your next action.";
 
-        Image = "images/filler1.png";
+        Image = "images/pyramid.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Ascend to the shrine", 58));
@@ -1336,7 +1336,7 @@ public:
 
         Text = "You are waiting by the door when the dog-like courtiers come to release you in th e morning. The chief is not with them, but later in the day he comes over to where you are sitting at the edge of the plaza and asks: \"How are you enjoying your stay?\"\n\n\"If I were to be candid, I would say your hospitality leaves much to be desired,\" you reply, forcing a note of flippancy into your voice with some effort. \"But I feel this can be excused on the grounds that you received few visitors in these parts.\"\n\n\"On the contrary,\" he says with a broad smile, \"we often have people for dinner.\"\n\nStifling a shudder at this veiled threat, you ask what your next ordeal is to be.\n\nHe glances at the sound, which is already declining in the sky. \"You will shortly discover that for yourself. We call it the House of Knives.\"\n\nSoon afterwards you are taken to the third building. Here the floor is covered with knives of sharp green obsidian. As the sun sets, the knives come to life, springing up to slice at the air expectantly. The door crunches solidly into the place behind you. \"Now,\" the chief courtier calls through it, \"I expect you'll be cut down to size.\"";
 
-        Image = "images/filler1.png";
+        Image = "images/filler4.png";
 
         Controls = Story::Controls::STANDARD;
     }
@@ -1494,7 +1494,7 @@ public:
     {
         ID = 46;
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
 
@@ -1809,7 +1809,7 @@ public:
 
         Text = "Perhaps you will find the answers to your questions in the shrine. You climb to the top of the steps, pausing for a moment at the threshold of the shrine. The entrance is a block of shadow, dingy with foreboding. But you have no choice. Bowing as every mortal must when in the presence of the gods, you go inside.\n\nIt is a shrine to God of the Pole Star, as you can tell immediately by the striped glyphs on the altar. He is the celestial guide whom all travellers pray to when they have lost their way. You doubt if anyone has ever needed his help as much as you do now.";
 
-        Image = "images/filler1.png";
+        Image = "images/pyramid.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Offer INCENSE", 82, Choice::Type::LOSE_ITEM, Item::Type::INCENSE));
@@ -4100,7 +4100,7 @@ public:
 
         Text = "You are surprised to find the market almost deserted. Contrary to your assumption, most of the populace are not headed here, but are streaming to the causeway that leads north out of the city.\n\nThe stalls are set up under awnings whose cool shade is welcoming after the dusty heat of the road.\n\nYou stand back and examine the wares on offer. The traders are doing so little business that you should have the chance of some real bargains.\n\nYou make a show of strolling casually past a number of stalls, careful not to give any sign of interest in the items you want most. This will help you when the haggling starts.\n\nYou can check out what they have on sale.";
 
-        Image = "images/filler1.png";
+        Image = "images/yashuna.png";
 
         Choices.clear();
 
@@ -4339,7 +4339,7 @@ public:
 
         Text = "The palace of Necklace of Skulls cannot be far from here, since it is reputed to lie at the western rim of the world. With a wry glance at the shimmering sun, you set out across the dunes.\n\nThankfully, the sun sets at last and the cool of evening comes on the breeze. By this time you are weary with heat and thirst, but you know you must press on to cover as much ground as possible. The stars emerge like a thousand gleaming pebbles seen in a stream. Moonlight soaks the sand in hues of charcoal and silver.\n\nYou reach the crest of a dune to find a dramatic scene unfolding before your eyes. Only thirty paces away, a warrior in jaguar-hide cloak stands confronting a giant serpent with four heads. The warrior's servant holds up a burning torch to give more light as his master moves forward. The torchlight looks like fresh blood along the monster's gruesome fang-rimmed jaws.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler4.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Rush in to attack the monster", 175));
@@ -4534,7 +4534,7 @@ public:
 
         Text = "When can you reply with a well-mannered but firm objection, the lord immediately recognizes you as a fellow noble and apologizes. \"I took you for a common trader,\" he says, bowing contritely. \"I am very story.\"\n\n\"These are difficult times,\" you say. \"Are all these people refugees from the Great City?\"\n\nHe glances along the quay. \"Either from there or the outlying farmlands. The attack on the city has sent a shockwave across the civilized world. From this day, certain fundamentals we have always taken for granted are suddenly thrown into question.\"\n\n\"Such as where to get a servant capable of mixing a decent cup of spiced cocoa,\" you put in.\n\nHe laughs. \"Exactly. Well, I'd better find another ship for my family to travel in.\"\n\nYou wave your hand expansively. \"Not at all! I shan't be needing this one again, since I'm travelling on inland. I think perhaps if you gave my, er, servants here a few cacao for their trouble they could take you back to Balak.\"\n\nYour travelling companions smile and nod their thanks to you when the lord's back is turned. Without another word, you take up your pack and set out towards Shakalla.";
 
-        Image = "images/filler1.png";
+        Image = "images/maya-noble.png";
 
         Choices.clear();
 
@@ -4725,7 +4725,7 @@ public:
 
         Text = "The causeway soon peters out and you leave the fields and orchards far behind. Light woodland begins to be replaced by the luxuriant foliage of the thick forest. After a few days you find yourself walking through deep leaf-rooted glades. Rainfall is more plentiful here than in the arid northern peninsula that is your homeland, and you are startled by the resulting profusion of vegetation and wildlife. For several days you subsist well enough on a diet of wild plums, avocados and breadnuts, but increasingly you find the plants of the region to be unfamiliar and you are no longer certain what is safe to eat.\n\nArriving at a wooden house, you introduce yourself the family living there. The man is a hunter who tells you that he formerly farmed a small plot near Yashuna. \"But lately the rains have been unreliable,\" he adds. \"At last I decided to bring my family south where the land is more bountiful.\"\n\n\"Are there no dangers to living close to the forest?\" you ask, casting a wary eye at the forbidding gloom between the tall tree-trunks.\n\nHe nods and draws deeply on his pipe. \"Many! Apart from supernatural creatures such as the spiteful stabai and the strangler beast, there are also jungle people who will brook no outsiders in their territory. They claim to be the guardians of the World Tree, which supports the sky itself.\"\n\nThe hunter asks no payment for the food and hospitality he gives you but you feel obliged to offer him a cacao anyway. Then, bidding these kind people farewell, you set off west towards the great city of Nachan.";
 
-        Image = "images/filler1.png";
+        Image = "images/yashuna.png";
 
         Choices.clear();
 
@@ -5050,7 +5050,7 @@ public:
 
         Text = "You rush down the side of the dune and past the warrior, ignoring his gasp of surprise. You are eager to have the glory of killing this creature.\n\nYou gained the codeword ANGEL.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler3.png";
 
         Choices.clear();
 
@@ -5278,7 +5278,7 @@ public:
 
         Text = "\"Well, what are you waiting for?\" snaps the lord. \"I told you to get out of the ship as my family and I will now be needing it. If you expect payment --\"\n\nYou leap out onto the quay, \"Payment? For this wretched craft?\" you cry in an incredulous tone. \"Why, it has nearly cost me my life three times since I left home!\"\n\n\"It looks sturdy enough,\" he says dubiously.\n\n\"Cursed is what it is! Cursed by a woodland imp who dwelt in the tree from which the vessel was built. And cursed am I for being foolish enough to set sail in such a vessel, for I lost my aunt and most of my belongings when it last capsized under me!\"\n\nThe Lord looks at the vessel, then at the swelling crowd of refugees. Superstitious fear is struggling with necessity in his mind. \"I'll take the risk,\" he decides.\n\n\"You're a brave man and no mistake!\" you say with an admiring sigh. \"Still, I can't let you take the ship for nothing.\"\n\n\"I'm not paying you,\" he says witheringly.\n\n\"Of course not, sir. I'll pay you, for taking it off my hands.\" You reach for your money-pouch. \"I think -- well twenty cacao would be fair, considering the trouble it's given me...\"\n\nThat convinces him. He backs away, dragging his family with him. \"Keep your money! We'll find another ship.\"\n\nBidding your travelling companions farewell, you set out towards Shakalla.";
 
-        Image = "images/filler1.png";
+        Image = "images/maya-noble.png";
 
         Choices.clear();
 
@@ -5456,7 +5456,7 @@ public:
 
         Text = "The hard veins of luminous crystal running through the cavern wall make fine handholds. You quickly ascend to the ledge and stand inspecting the tombs. Each is sealed by a massive slab of stone bearing an engraved image of the person buried within. At first glance they look too solid for you to have nay hope of gaining entry, but then you notice that there is one slab which already has a crack in it. Even better, you discover a HAMMER lying on the ledge. You estimate that it would be an hour's hard work to smash a way into the tomb.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::ROGUERY.Name, 283, Skill::Type::ROGUERY));
@@ -5503,7 +5503,7 @@ public:
 
         Text = "Your are invited to join King Cloud Jaguar and the nobles of his court in the steam-bath adjoining the palace. This is a domed room which is entered through an aperture so low that each bather has to crawl through on hands and knees.\n\nInside are rows of stone benches, and the middle of the floor is taken up by a pit filled with pebbles which have been warmed earlier in a fire until they are red-hot. Servants brings pitchers of scented water which sizzles on contact with the hot pebbles, releasing clouds of steam that make the sweat pour from your skin. At first you can hardly stand to draw a breath, but gradually you get used to the sweltering heat and start to enjoy the cleansing feeling. An old nobleman nudges you and hands you some herbs. \"Rub these on your body,\" he grunts. \"Most invigorating!\"\n\nYou regain vitality (2 Life Points) owing to the restorative effect of the herbs and the steam-bath. You also get the chance to ask about the next day's festivities, and you are told that this is the anniversary of the old king's death. When Cloud Jaguar learns of your quest, he is very impressed by your bravery. \"The pillaging of the Great City will have dire consequences,\" he says. \"I have heard tales of demons and werewolves ransacking the temples. Perhaps you can find out the truth on the matter.\"\n\nYou bow respectfully. \"I will try, your Majesty.\"\n\n\"You will spend the night in the shrine atop my father's pyramid,\" he continues. \"A tube connects the shrine to the tomb chamber. If it is the will of the gods, my father's spirit may appear to you and offer guidance.\"\n\nYou cannot refuse without giving offence. Whatever you think of meeting the late king's ghost, you must do as Cloud Jaguar has commanded. You spend the rest of the day in a mood of excitement tinged with dread, and at nightfall you are taken up to the top of the pyramid and left alone to await the ghost's appearance.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler7.png";
 
         Choices.clear();
 
@@ -5546,7 +5546,7 @@ public:
     {
         ID = 194;
 
-        Image = "images/filler1.png";
+        Image = "images/filler6.png";
 
         Choices.clear();
 
@@ -5998,7 +5998,7 @@ public:
     {
         ID = 206;
 
-        Image = "images/filler1.png";
+        Image = "images/maya-noble.png";
 
         Choices.clear();
 
@@ -6205,7 +6205,7 @@ public:
     {
         ID = 213;
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Controls = Story::Controls::STANDARD;
     }
@@ -6460,7 +6460,7 @@ public:
 
         Text = "The hydra rolls its massive coils across the sand towards you. It moves slowly, but its heads can strike out with lightning speed. You will need to keep your wits about you if you are to survive this battle.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler3.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Try dodging away from its attack", 245));
@@ -6662,7 +6662,7 @@ public:
     {
         ID = 229;
 
-        Image = "images/filler1.png";
+        Image = "images/filler2.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Entice it out under the colonnade", 362));
@@ -6816,7 +6816,7 @@ public:
 
         Text = "A young man and woman are brought forward by the priests and led to a shrine at the western edge of the hole. A steep flight of steps descends from the shrine towards a platform covered with sacred glyphs. As golden pectorals are placed over the couple's shoulders, it becomes clear that they are going to be sacrificed. They have chosen to jump into the sinkhole, carrying the people's prayers to the Rain God who dwells under the world.\n\n";
 
-        Image = "images/filler1.png";
+        Image = "images/cenote.png";
 
         Choices.clear();
 
@@ -6882,7 +6882,7 @@ public:
 
         Text = "A gust of wind carrying a rotting miasmal stench tells you that you are approaching the end of the tunnel. The demons steer along a side passage towards a patch of grey daylight, emerging under a sky the colour of wet limestone. This tributary of the river is barely more than a muddy trickle. The rank smell hangs over a dreary expanse of marshland which stretches off into the distance. No matter which way you look, all you can see is a landscape of sour white clay covered with scum-covered ponds and grey tufts of reeds.\n\nYou put in at a rotting wooden jetty and the demons wait for you to disembark. \"Hope you enjoyed the voyage,\" cackles one.\n\n\"It's customary to show your appreciation,\" says the other as you clamber onto the jetty.\n\n\"That's right!\" says the first as though it has only just occurred to him. \"Got a JADE BEAD you could let us have?\"";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Controls = Story::Controls::STANDARD;
     }
@@ -6942,7 +6942,7 @@ public:
 
         Text = "You join the queue of people waiting outside the palace in the hope of being granted an audience. When it comes to your turn, a snooty courtier soon makes it plain that you will have to bribe him if you want your gift taken to the King.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Bribe him (3 cacao)", 285, Choice::Type::LOSE_MONEY, 3));
@@ -7322,7 +7322,7 @@ public:
 
         Text = "You slice off the top of one of the cacti and drink its sap. The taste is unpleasantly bitter. You manage to resist the urge to vomit, knowing that to do so now would mean your death. Resting until your stomach stops gurgling, you head on across the barren sun-bleached land.\n\nYou LOSE 3 Life Points.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler4.png";
 
         Choices.clear();
 
@@ -7414,7 +7414,7 @@ public:
 
         Text = "The priest sees your bracelet and turns to look at you with new interest. You do not entire like the expression of alert scrutiny on his face. He reminds you of an eagle studying a mouse. \"Ah, I see you are one of the chosen,\" he says, calling to a group of priestly warriors near by.\n\n\"The chosen what?\" you ask.\n\nHe gives you a puzzled look. \"Why, one of those chosen to carry our petition to the Rain God,\" he replies.\n\nThe guards close in at your shoulders. The priest gestures towards the sunken lake, and suddenly the truth dawns. They mean to cast you into the pit as a living sacrifice to the gods.";
 
-        Image = "images/filler1.png";
+        Image = "images/cenote.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Resist the fate they have in store for you", 281));
@@ -7509,7 +7509,7 @@ public:
 
         Text = "Just when it seems certain that the canoe will get stuck in the passage, immuring you below the earth for ever, you realize that the gap is widening. The canoe drifts on into a vast tunnel through which runs a wide underground river. Misty blue light sparkles on the water and trickles across the glistening rock. It appears to emanate from veins of glassy stone which you can see running through the walls of the tunnel.\n\nThe demons manoeuvre their craft between a forest of stalagmites which protrude from the water like thin fangs. Once on the open river they begin to ply their oars with vigour, propelling the canoe amid whoops of crazed glee.\n\nYou gaze in awe at the wondrous sight surrounding you. The tunnel is far wider than any stream to be found in the dry countryside around Koba, with walls rising almost vertically to a shadow-filled roof a hundred metres above your head. The air here is hot and musty and has a vile taste that makes you cough, but other than that you could almost imagine you are being steered along a canyon in the open air.\n\nRounding a bend in the river, you notice a series of stone doors set off a ledge high up in the right-hand wall of the tunnel. \"The cave tombs of the first ancestors,\" says the demon in the back of the boat when he sees where you are looking.\n\n\"I expect you'll want to take a closer look,\" says the other demon and, without waiting for a reply, they row over to the side of the river and steady the canoe below the ledge.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("[AGILITY] Climb up to the tombs", 190, Skill::Type::AGILITY));
@@ -7529,7 +7529,7 @@ public:
 
         Text = "You decide on another course of action.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("[CUNNING] Try one of your devious schemes", 308, Skill::Type::CUNNING));
@@ -7768,7 +7768,7 @@ public:
 
         Text = "Stooping Eagle and his servant are led off across the courtyard towards a group of buildings. \"They will be our guests also, but in another part of the palace from you,\" says the chief of the courtiers, smiling to display a sharp set of teeth.\n\n\"Do not worry, friend,\" Stooping Eagle calls back to you, \"we have only to persevere and our swords shall drink the fiend's blood eventually!\"\n\nYou would like to resists the courtiers, but there too many to fight in your weakened state. \"After five nights I will be taken to Necklace of Skulls?\" you ask. It occurs to you that five nights' rest will leave you all the fitter to deal with the wizard.\n\nThe chief courtier dips his head. \"Exactly. Our master lives in the inner precinct of the palace.\" He gestures with a thin hairy hand towards a pyramid that towers over the inner courtyard. The black colouring of the pyramid makes it look like a crack of the night sky that has lingered on after sunrise.\n\n\"Take me to my quarters, then,\" you tell him.\n\nThe assembled courtiers give a high howling laugh at this. \"Not so fast,\" titters their chief when he has recovered himself. \"First you have to choose your route to our compound.\"";
 
-        Image = "images/filler1.png";
+        Image = "images/courtiers.png";
 
         Choices.clear();
 
@@ -7934,7 +7934,7 @@ public:
 
         Text = "The water between the two ships seethes, the a vast fanged maw bursts to the surface and long tentacles slash towards the sky. The pirates stare in terror, then scramble over one another in their mad haste to change course. You watch with a smile as they recede into the distance.\n\nThe trader is crouching in the bottom of the hull.\n\n\"A seas monster,\" he whimpers. \"It's come to kill us and seize all my goods!\"\n\nThe two boys are leaping up and down with whoops of joy, pulling faces at the fleeing pirates. One of them turns to his father. \"Oh, Dad,\" he says. \"It was just an illusion!\"";
 
-        Image = "images/filler1.png";
+        Image = "images/pirates.png";
 
         Choices.clear();
 
@@ -8172,7 +8172,7 @@ public:
 
         Text = "You must select an item from your possessions";
 
-        Image = "images/filler1.png";
+        Image = "images/filler5.png";
 
         std::vector<std::pair<Item::Type, int>> gifts = {
             {Item::Type::MAN_OF_GOLD, 192},
@@ -8390,7 +8390,7 @@ public:
 
         Text = "Your companion is led off across the courtyard towards a group of buildings. He looks back at you with sudden alarm, only to be jostled by the throng of dog-like courtiers surrounding him. \"Do not be afraid,\" you call after him. \"Courage and determination will win us through the trials to come.\"\n\nThe chief courtier picks at his teeth and murmurs in a mocking tone. \"By the look of him, he doesn't share your sterling qualities. Timidity and wretchedness seem more his mark.\"\n\nYou watch until the poor man is bustled inside, then round on the chief courtier. \"I demand to be taken to Necklace of Skulls.\"\n\n\"In good time,\" he chortles. \"Have I not invited you to be our guest first? After five nights you will be admitted to the sanctum of our master.\" He points a long hairy finger towards the pyramid that towers over the inner courtyard. The black colouring of the building makes it look like a sliver of night that remains to defy the daytime.\n\n\"Take me to my quarters, then,\" you tell him.\n\nThe assembled courtiers give a high howling laugh at this. \"Not so fast,\" titters the chief when he has recovered himself. \"First you have to choose your route to our compound.\"";
 
-        Image = "images/filler1.png";
+        Image = "images/courtiers.png";
 
         Choices.clear();
 
@@ -8409,7 +8409,7 @@ public:
 
         Text = "You lick your lips nervously and venture another step closer to the burly hound. Its snarl becomes a roar as it throws itself at your throat.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler2.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Stand your ground and fight", 229));
@@ -8473,7 +8473,7 @@ public:
         PreText = "With a breathtaking lunge he catches up with the ball and strikes it a sweeping blow which sends it thudding up against the scoring zone.";
 
         Character::SCORE(player, player.Cross, 1);
-        
+
         if (!Character::VERIFY_SKILL(player, Skill::Type::CHARMS))
         {
             PreText += "\n\nYou are unlucky and it catches you a hard blow on the side of the head. You LOSE 1 Life Point.";
@@ -8551,7 +8551,7 @@ public:
 
         Text = "Your first dart hits a pirate right between his white-rimmed eyes and he slumps over the side with a groan. The others react to this with screeches of rage, paddling furiously to catch up with your own vessel. By the time the gap has been closed to ten paces, you have slain two more of them with your BLOWGUN and they are beginning to have second thoughts. When they see you slide another dart into the BLOWGUN, they throw up their hands in a gesture of surrender and go veering off towards the horizon -- no doubt in search of easier pickings.";
 
-        Image = "images/filler1.png";
+        Image = "images/pirates.png";
 
         Choices.clear();
 
@@ -9049,7 +9049,7 @@ public:
 
         Text = "You squint in the shimmering glare of the sun, but your eyes cannot make out any shape within the black void of the shrine entrance. The soot-coloured pillars give its darkened interior the look of a fleshless mouth. Again Necklace of Skull's voice rolls along the avenue, each syllable driving like a grave-cool gust of wind through the blistering desert heat. \"Your brother came here before you.\"\n\nRed rage seethes in your heart. \"That's right, you --\"\n\nThe sorcerer's words continue, unperturbed by your outburst. \"He played the ritual ball contest and he lost. His life was forfeit. Now you will play for the same stakes. Behold your antagonists.\" Two long rivulets of shadow flow out of the shrine and down the pyramid steps, looking like spreading pools of black blood against the ebon stone. Reaching the bottom, they rise up in obscenely palpitating columns which gradually take solid form. Human form. Confronting you now are your opponents in the ball contest: two creatures of living shadow fashioned by the sorcerer's magic.\n\nThe ritual ball contest has started.";
 
-        Image = "images/filler1.png";
+        Image = "images/ballgame-arena.png";
 
         Choices.clear();
 
@@ -9160,7 +9160,7 @@ public:
     {
         ID = 320;
 
-        Image = "images/filler1.png";
+        Image = "images/pirates.png";
 
         Choices.clear();
 
@@ -10254,7 +10254,7 @@ public:
     {
         ID = 362;
 
-        Image = "images/filler1.png";
+        Image = "images/filler7.png";
 
         Choices.clear();
 
@@ -10392,7 +10392,7 @@ public:
 
         Text = "Cowering under the trees at the back of the beach you find a very old man. His clothing is ragged, but the few scraps of adornment that he retains indicate a person of wealth and prestige. This impression is confirmed when he opens his mouth, saying, \"If you have come to kill me, I pray that you do so quickly, at least.\"\n\n\"We haven't come to kill you,\" you reply, extending your hand in friendship.\n\nHe returns a hopeful smile. \"I am Jade Thunder, once a great wizard. A contest with my arch-rival brought me to this desolate spot, and here we fought our last battle. I slew him, but with his dying breath he sealed my wand within a barrier of fire and now I cannot use my magic to return home.\"\n\nYou go with him to a spot further up the beach. Great magic has obviously been at work here, impossibly warping the trees and leaving the coconuts with silent staring faces. The sand underfoot has a dozen colours. In the centre of the clearing, a circle of crackling green flame surrounds a wand.\n\nYou try helping Jade recover his wand.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler3.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::CUNNING.Name, 21, Skill::Type::CUNNING));
@@ -10414,7 +10414,7 @@ public:
 
         Text = "\"In times gone by, heretics and madmen were cast out from the town by this gate,\" says one of the guards. \"As they went, some would scratch pictures of what they expected to find in the far west.\"\n\n\"That's why it's called the Gate of Exiles,\" says the other man. \"I reckon you must be one of the few people who've taken this route by choice.\"\n\n\"I didn't have a choice,\" you say.\n\nTaking up your pack, you walk out into the waiting desert.";
 
-        Image = "images/filler1.png";
+        Image = "images/gate-of-exiles.png";
 
         Choices.clear();
 
@@ -10923,7 +10923,7 @@ public:
 
         Text = "\"It is protection against the dust demons,\" explains one of the guards. \"They are invisible sprites who whip up whirlwinds and drive them like ravaging beasts onto those who travel in the desert.\"\n\nYou cast a brief glance at the boulder. \"Not much protection, surely? The demons could just steer their whirlwinds around it.\"\n\n\"No,\" says the other man in a tone that suggests they tell this legend to every wayfarer, \"because dust demons can only travel in long straight paths. They can't turn easily.\"\n\n\"Or so the priest Spitting Viper told us,\" chimes in the first man.\n\nBidding them farewell, you take up your pack and walk out into the waiting desert.";
 
-        Image = "images/filler1.png";
+        Image = "images/gate-of-exiles.png";
 
         Choices.clear();
 
@@ -11271,7 +11271,7 @@ public:
 
         Text = "You have no weapon strong enough to penetrate the monster's scaly hide. Snarling at your impudence in attacking it, it envelops you in its four necks like a ma closing his fist on a gnat. Fangs sharper than flakes of obsidian sink deep into your flesh and it raises your bloody carcass aloft to the night sky with a great shriek of inhuman glee. You sold your life valiantly, but you failed.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler3.png";
 
         Type = Story::Type::DOOM;
 
@@ -11375,7 +11375,7 @@ public:
 
         Text = "The storm blows itself out towards dawn, leaving you all shaking with exhaustion. You look around. Unbroken sea surrounds you. The only clue to your course is the sun boiling its way through a bank of low cloud across the horizon, but the sight of circling gulls tells you that land is near. You know that it cannot be the mainland. As a green swathe of foliage appears in the distance, you realize you have found the fabled Isle of the Iguana.\n\nGetting closer, you find a coast of high cliffs which the sea has pounded into fanciful shapes. You sail under an arch of white rock and around a headland that reminds you of a serpent's mouth, arriving at last at a stretch of pebble-strewn beach.\n\n\"The ship was badly damaged in the storm,\" says one of the sailors, pointing to the water collecting in the bottom of the hull. \"We must put in here for repairs.\"\n\nYou gained the codeword EB.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler3.png";
 
         Choices.clear();
 
@@ -11582,7 +11582,7 @@ public:
 
         Text = "The shrine at the top of the pyramid is a small dark chamber fronted by a portico supported by strong square pillars. You can see the mouth of the spirit tube, fashioned in the shape of a slim snake. You know that the hollow tube extends all the way down through the interior of the pyramid to the tomb chamber deep in its heart. It is an eerie feeling to think that when you speak into the tube your words echo down into the ear of the dead king.\n\nYou keep a lone vigil long into the night. As the moon reaches its zenith, there is a soft soughing of wind up the spirit tube. Suddenly you realize you are unable to move. You will not admit to fear, but you are struck with awe to see a long curl of glowing green mist ooze out of the mouth of the tube. It hangs there in the shadows of the shrine, slowly curling in the air, gradually coming into focus in the form of a translucent snake. As you watch, the snake opens its jaws and the head of a man pushes into view, extruding from inside the snake's body until he has entirely emerged except for his left leg, which remains within its throat. He is a glistening red colour, as though covered in fresh blood, and as nude as a newborn baby.\n\nYou bow your head humbly to the cold flagstones, knowing that this is the spirit of King Sky Shield.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler7.png";
 
         Choices.clear();
 
@@ -11861,7 +11861,7 @@ public:
 
         Text = "Not far off, a young priestess is overseeing the work of a group of artisans. Out of curiosity you stroll over and see that they are decorating a temple wall with an overlay of stucco. Apprentices trowel the plaster into place and then senior artisans work with the speed and assurance of past masters, sculpting images of heroes, princes and gods as the priestess directs. Then, while the stucco is still damp, a second team steps in with pots of dye and applies bright colours. You can only marvel at the skill of the men's work.\n\nThe figures depicted in the frieze looks so startlingly vivid that you could almost imagine them coming to life and stepping out of the stucco.";
 
-        Image = "images/filler1.png";
+        Image = "images/street-scene.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Go over and talk to the priestess", 54));
@@ -11940,7 +11940,7 @@ public:
 
         Text = "Your thrust skewers the hydra at the junction of its four necks. A ghastly multiple shriek splits the air. You are jerked off its feet by its death-throes and its blood gushes out into your face. It snaps feebly at you, but you cling on and sink the weapon deeper until finally it gives a last spasm and fall lifeless.\n\nAs you withdraw the weapon, a large drop of its green life-fluid oozes out of the wound and falls to the ground, congealing to form a rubbery ball such as one might use in the ritual ball contest of your people.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler3.png";
 
         Choices.clear();
 
@@ -11995,7 +11995,7 @@ public:
 
         Text = "This courtyard is surrounded by low grey walls that lie like borders of soot around a plaza ablaze in the blistering sunshine. In the far wall is a massive of intertwined human bones and skulls. \"They are the previous victims of our master,\" says the chief courtier with a leer when he sees you blanch. \"Soon your own bones will be added to that gate.\"\n\nIgnoring him , you turn your attention to five windowless buildings standing in the wide plaza. \"And those?\" you ask.\n\nThey are the Five Houses of Destiny,\" he says. \"If you can pass one night in each, the gate will open. Then you will gaze on the countenance of Necklace of Skulls.\"\n\nYou wait through a long afternoon until the sun dips into a red hot shimmer along the western horizon. The heat of the day has left you giddy, but you do your best not to show it as the courtiers come to lead you to the first of the buildings. As they open the door, you are confronted by a wave of fiery heat as though from an open kiln. The interior of the building is a single stone hall with a blazing channel of smouldering charcoal set along it. Large stones warmed to red heat surround it. Sweat erupts from your pores as you are ushered inside.\n\n\"This is the House of Fire,\" says the chief courtier. \"Have a good night. I'll come for you in the morning -- should you survive.\"\n\nThe door closes and you are left sealed within the House of Fire. Its smoky confines are swelteringly airless, and your only rest is not true sleep, but a listless swoon brought on by heat exhaustion.\n\nYou LOSE 2 Life Points.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler7.png";
 
         Choices.clear();
 
@@ -12019,7 +12019,7 @@ public:
 
         Text = "Your eyes can make out nothing in the inky darkness that enfolds you. As you squat down on the guano-spattered floor, there is a flap of leather wings and the first of the bats comes fluttering down towards you. You put an arm up to fend it away. Then suddenly you feel a tingle of cold alarm as you realize someone is standing beside you.\n\n\"This mortal is under my protection,\" says a familiar voice. \"Return to your roosts. There will be no drinking of blood for any of you tonight.\"\n\nThe rustle of wings recedes into the rafters. You turn, straining to make out the stranger in the absolute dark. \"Who are you?\" you ask him.\n\n\"A friend.\" He touches your arm reassuringly. \"You helped me once, now I am returning the favour. Go to sleep now. These bats are my subjects, and they will not dare harm you.\"\n\nYou enjoy a restful night.\n\nYou RECOVER 1 Life Point.";
 
-        Image = "images/filler1.png";
+        Image = "images/filler4.png";
 
         Choices.clear();
 
