@@ -62,7 +62,12 @@ namespace Character
 
         int StoryID = 0;
 
+#ifdef _WIN32
+        long long Epoch = 0;
+#else
         long Epoch = 0;
+#endif
+
 
         Base()
         {

@@ -251,7 +251,7 @@ void renderText(SDL_Renderer *renderer, SDL_Surface *text, Uint32 bg, int x, int
 // create text image with line wrap limit
 SDL_Surface *createText(const char *text, const char *ttf, int font_size, SDL_Color textColor, int wrap, int style = TTF_STYLE_NORMAL)
 {
-    SDL_Surface *surface;
+    SDL_Surface *surface = NULL;
 
     TTF_Init();
 
@@ -3181,7 +3181,12 @@ Character::Base loadGame(std::string file_name)
 
         try
         {
+
+#ifdef _WIN32
+            character.Epoch = (long long)(data["epoch"]);
+#else
             character.Epoch = (long)(data["epoch"]);
+#endif
         }
         catch (std::exception &ex)
         {
@@ -3196,6 +3201,25 @@ Character::Base loadGame(std::string file_name)
     return character;
 }
 
+#ifdef _WIN32
+std::string time_string(long long deserialised)
+{
+    auto epoch = std::chrono::time_point<std::chrono::system_clock>();
+    auto since_epoch = std::chrono::milliseconds(deserialised);
+    std::chrono::system_clock::time_point timestamp = epoch + since_epoch;
+
+    auto in_time_t = std::chrono::system_clock::to_time_t(timestamp);
+
+    std::stringstream ss;
+
+    if (in_time_t >= 0)
+    {
+        ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+    }
+    
+    return ss.str();
+}
+#else
 std::string time_string(long deserialised)
 {
     auto epoch = std::chrono::time_point<std::chrono::high_resolution_clock>();
@@ -3210,6 +3234,7 @@ std::string time_string(long deserialised)
 
     return ss.str();
 }
+#endif
 
 std::vector<Button> createFilesList(SDL_Window *window, SDL_Renderer *renderer, std::vector<std::string> list, int start, int last, int limit, bool save_button)
 {
@@ -3227,7 +3252,11 @@ std::vector<Button> createFilesList(SDL_Window *window, SDL_Renderer *renderer, 
 
             auto character = loadGame(list[index]);
 
-            long epoch_long;
+#ifdef _WIN32
+            long long epoch_long;
+#else
+            long epoch_long
+#endif
 
             if (character.Epoch == 0)
             {
@@ -3320,7 +3349,11 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
             {
                 auto time_stamp = entry.last_write_time();
 
+#ifdef _WIN32
+                std::string file_name = entry.path().string();
+#else
                 std::string file_name = entry.path();
+#endif
 
                 if (file_name.substr(file_name.find_last_of(".") + 1) == "save")
                 {
@@ -3397,7 +3430,11 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
 
                 auto character = loadGame(entries[selected_file]);
 
+#ifdef _WIN32
+                long long epoch_long;
+#else
                 long epoch_long;
+#endif
 
                 if (character.Epoch > 0)
                 {
@@ -3416,7 +3453,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                     game_string = "Date: " + time_string(epoch_long) + "\n";
                     game_string += std::string(3 - storyID.length(), '0') + storyID + ": " + character.Name;
                     game_string += "\nLife: " + std::to_string(character.Life);
-                    game_string += "\nMoney: " + std::to_string(character.Money);
+                    game_string += " Money: " + std::to_string(character.Money);
                 }
 
                 putText(renderer, game_string.c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
