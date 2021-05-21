@@ -3916,7 +3916,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                                     flash_color = intLB;
 
-                                    continue;
+                                    break;
                                 }
                             }
                         }
