@@ -33,6 +33,8 @@ This is an implementation of the **Necklace of Skulls** game book (Critical IF G
 
 ![Story Screen](/screenshots/story-screen.png)
 
+![Story with Large Art](/screenshots/story-screen-splash.png)
+
 **Map screen**
 
 ![Map Screen](/screenshots/map-screen.png)
