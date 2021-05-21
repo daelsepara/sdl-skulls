@@ -68,7 +68,6 @@ namespace Character
         long Epoch = 0;
 #endif
 
-
         Base()
         {
         }
