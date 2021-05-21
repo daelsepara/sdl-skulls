@@ -31,9 +31,9 @@ namespace fs = std::filesystem;
 
 // Forward declarations
 bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer);
-bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player);
+bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
 bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player);
-bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> &Items, Control::Type mode, int limit);
+bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story, std::vector<Item::Type> &Items, Control::Type mode, int limit);
 bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skill::Base> Skills);
 bool loseSkills(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int limit);
 bool mainScreen(SDL_Window *window, SDL_Renderer *renderer);
@@ -393,7 +393,7 @@ void renderButtons(SDL_Renderer *renderer, std::vector<Button> controls, int cur
 
 std::vector<TextButton> createHTextButtons(const char **choices, int num, int text_buttonh, int text_x, int text_y)
 {
-    std::vector<TextButton> controls = std::vector<TextButton>();
+    auto controls = std::vector<TextButton>();
 
     if (num > 0)
     {
@@ -572,11 +572,28 @@ void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font
     // Fill the surface with background color
     fillWindow(renderer, intWH);
 
-    std::string name_string = player.Name;
+    auto name_string = player.Name;
 
-    if (player.IsImmortal)
+    if (player.IsImmortal || player.IsBlessed)
     {
-        name_string += " (Immortal)";
+        name_string += " (";
+
+        if (player.IsImmortal)
+        {
+            name_string += "Immortal";
+
+            if (player.IsBlessed)
+            {
+                name_string += ", ";
+            }
+        }
+
+        if (player.IsBlessed)
+        {
+            name_string += "Blessed";
+        }
+
+        name_string += ")";
     }
 
     putText(renderer, name_string.c_str(), font, space, clrWH, intDB, TTF_STYLE_NORMAL, (player.IsImmortal ? headerw * 2 : headerw), headerh, startx, starty);
@@ -597,7 +614,7 @@ void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font
 
 SDL_Surface *createHeaderButton(SDL_Window *window, const char *text, SDL_Color color, Uint32 bg, int w, int h, int x)
 {
-    auto button = SDL_CreateRGBSurface(0, w, h, 32, 0, 0, 0, 0);
+    auto button = SDL_CreateRGBSurface(0, w, h, arrow_size, 0, 0, 0, 0);
     auto text_surface = createText(text, "fonts/default.ttf", 18, color, w, TTF_STYLE_NORMAL);
 
     if (button && text_surface)
@@ -741,11 +758,167 @@ bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skil
     return false;
 }
 
-bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player)
+bool greenMirror(SDL_Window *window, SDL_Renderer *renderer, Character::Base player, Story::Base *story)
+{
+    std::string title = "Necklace of Skulls: GREEN MIRROR";
+
+    if (window && renderer)
+    {
+        auto space = 8;
+        auto font_size = 20;
+
+        const int future_width = SCREEN_WIDTH * (1.0 - 2.0 * Margin) - arrow_size - 2 * space;
+
+        std::string text;
+
+        auto done = false;
+
+        auto controls = std::vector<Button>();
+
+        controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+        controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+        controls.push_back(Button(2, "icons/back-button.png", 1, 2, 1, 2, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        auto scrollSpeed = 20;
+        auto hold = false;
+
+        auto selected = false;
+        auto current = -1;
+        auto offset = 0;
+
+        std::string future_text = "You used the GREEN MIRROR to look into your future...\n\n";
+
+        if (story->Choices.size() > 0)
+        {
+            for (auto i = 0; i < story->Choices.size(); i++)
+            {
+                if (i > 0)
+                {
+                    future_text += "\n" + std::string(future_width / 10, '-') + "\n\n";
+                }
+
+                auto simPlayer = player;
+
+                future_text += "[" + std::string(story->Choices[i].Text) + "]\n\n";
+
+                // simulate going into the future
+                auto future_story = (Story::Base *)findStory(story->Choices[i].Destination);
+
+                auto background = 0;
+
+                while (background != -1)
+                {
+                    background = future_story->Background(simPlayer);
+
+                    if (background >= 0)
+                    {
+                        future_story = (Story::Base *)findStory(background);
+                    }
+                }
+
+                future_story->Event(simPlayer);
+
+                future_text += future_story->Text;
+            }
+        }
+        else
+        {
+            auto simPlayer = player;
+
+            // simulate going into the future
+            auto future_story = (Story::Base *)findStory(story->Continue(simPlayer));
+
+            auto background = 0;
+
+            while (background != -1)
+            {
+                background = future_story->Background(simPlayer);
+
+                if (background >= 0)
+                {
+                    future_story = (Story::Base *)findStory(background);
+                }
+            }
+
+            future_story->Event(simPlayer);
+
+            future_text += "... " + std::string(future_story->Text);
+        }
+
+        auto future = createText(future_text.c_str(), "fonts/default.ttf", 20, clrBK, future_width - 2 * space, TTF_STYLE_NORMAL);
+
+        while (!done)
+        {
+            SDL_SetWindowTitle(window, title.c_str());
+
+            // Fill the surface with background color
+            fillWindow(renderer, intWH);
+
+            fillRect(renderer, future_width, text_bounds, startx, starty, intBE);
+
+            renderText(renderer, future, intBE, startx + space, starty + space, text_bounds - 2 * space, offset);
+
+            renderButtons(renderer, controls, current, intGR, border_space, border_pts);
+
+            bool scrollUp = false;
+            bool scrollDown = false;
+
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+
+            if ((selected && current >= 0 && current < controls.size()) || scrollUp || scrollDown || hold)
+            {
+                if (controls[current].Type == Control::Type::SCROLL_UP || (controls[current].Type == Control::Type::SCROLL_UP && hold) || scrollUp)
+                {
+                    if (offset > 0)
+                    {
+                        offset -= scrollSpeed;
+                    }
+
+                    if (offset < 0)
+                    {
+                        offset = 0;
+                    }
+                }
+                else if (controls[current].Type == Control::Type::SCROLL_DOWN || ((controls[current].Type == Control::Type::SCROLL_DOWN && hold) || scrollDown))
+                {
+                    if (future->h >= text_bounds - 2 * space)
+                    {
+                        if (offset < future->h - text_bounds + 2 * space)
+                        {
+                            offset += scrollSpeed;
+                        }
+
+                        if (offset > future->h - text_bounds + 2 * space)
+                        {
+                            offset = future->h - text_bounds + 2 * space;
+                        }
+                    }
+                }
+                else if (controls[current].Type == Control::Type::BACK && !hold)
+                {
+                    done = true;
+
+                    break;
+                }
+            }
+        }
+
+        if (future)
+        {
+            SDL_FreeSurface(future);
+
+            future = NULL;
+        }
+    }
+
+    return false;
+}
+
+bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     std::string title = "Necklace of Skulls: Adventure Sheet";
 
-    auto quit = false;
+    auto done = false;
 
     // Render the image
     if (window && renderer)
@@ -794,7 +967,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
         if (font)
         {
-            while (!quit)
+            while (!done)
             {
                 SDL_SetWindowTitle(window, title.c_str());
 
@@ -815,7 +988,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                 bool scrollDown = false;
                 bool hold = false;
 
-                quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+                done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
                 if (selected && current >= 0 && current < controls.size())
                 {
@@ -833,7 +1006,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                     }
                     else if (controls[current].Type == Control::Type::ACTION)
                     {
-                        inventoryScreen(window, renderer, player, player.Items, Control::Type::USE, 0);
+                        inventoryScreen(window, renderer, player, story, player.Items, Control::Type::USE, 0);
 
                         current = -1;
 
@@ -874,7 +1047,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 {
     std::string title = "Necklace of Skulls: Select Character";
 
-    auto quit = false;
+    auto done = false;
 
     Character::Base player = Character::WARRIOR;
 
@@ -905,7 +1078,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 
         if (font)
         {
-            while (!quit)
+            while (!done)
             {
                 SDL_SetWindowTitle(window, title.c_str());
 
@@ -929,7 +1102,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 
                         selected = false;
 
-                        quit = true;
+                        done = true;
 
                         break;
                     }
@@ -963,7 +1136,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 
                         selected = false;
 
-                        quit = true;
+                        done = true;
 
                         break;
                     }
@@ -1015,7 +1188,7 @@ std::vector<Button> createItemControls(std::vector<Item::Type> Items)
     return controls;
 }
 
-bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> &Items, Control::Type mode, int limit)
+bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story, std::vector<Item::Type> &Items, Control::Type mode, int limit)
 {
     if (Items.size() > 0)
     {
@@ -1051,6 +1224,17 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
         auto infoh = 0.06 * SCREEN_HEIGHT;
         auto boxh = 0.125 * SCREEN_HEIGHT;
         auto box_space = 10;
+        auto messageh = 0.25 * SCREEN_HEIGHT;
+
+        auto mirror_text = createText("The GREEN MIRROR disappears after one use. Do you wish to continue?", "fonts/default.ttf", 20, clrWH, textwidth - 2 * text_space, TTF_STYLE_NORMAL);
+        auto message_x = (SCREEN_WIDTH - textwidth) / 2;
+        auto message_y = (SCREEN_HEIGHT - messageh) / 2;
+
+        auto message_controls = std::vector<Button>();
+        message_controls.push_back(Button(0, "icons/yes.png", 0, 1, 0, 0, message_x + button_space, message_y + messageh - buttonh - button_space, Control::Type::YES));
+        message_controls.push_back(Button(1, "icons/no.png", 0, 1, 1, 1, message_x + textwidth - button_space - buttonw, message_y + messageh - buttonh - button_space, Control::Type::NO));
+
+        auto trigger_mirror = false;
 
         while (!done)
         {
@@ -1100,7 +1284,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
-            renderButtons(renderer, controls, current, intGR, text_space, text_space / 2);
+            renderButtons(renderer, controls, trigger_mirror ? -1 : current, intGR, text_space, text_space / 2);
 
             for (auto i = 0; i < player.Items.size(); i++)
             {
@@ -1110,9 +1294,21 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                 }
             }
 
-            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+            if (!trigger_mirror)
+            {
+                done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+            }
+            else
+            {
+                fillRect(renderer, textwidth, messageh, message_x, message_y, intLB);
+                renderImage(renderer, mirror_text, (SCREEN_WIDTH - mirror_text->w) / 2, message_y + text_space);
 
-            if (selected)
+                renderButtons(renderer, message_controls, current, intWH, border_space, border_pts);
+
+                done = Input::GetInput(renderer, message_controls, current, selected, scrollUp, scrollDown, hold);
+            }
+
+            if (selected && !trigger_mirror)
             {
                 if (controls[current].Type == Control::Type::ACTION && !hold)
                 {
@@ -1190,6 +1386,40 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
                                 flash_message = true;
                             }
+                            else if (item == Item::Type::PAPAYA || item == Item::Type::MAIZE_CAKES)
+                            {
+                                if (player.Life < player.MAX_LIFE_LIMIT)
+                                {
+                                    Character::GAIN_LIFE(player, 1);
+
+                                    Item::REMOVE(Items, item);
+
+                                    controls.clear();
+
+                                    controls = createItemControls(Items);
+
+                                    message = "You RECOVER 1 Life Point.";
+
+                                    flash_color = intLB;
+                                }
+                                else
+                                {
+                                    message = "You are not INJURED!";
+
+                                    flash_color = intRD;
+                                }
+
+                                start_ticks = SDL_GetTicks();
+
+                                flash_message = true;
+                            }
+                            else if (item == Item::Type::GREEN_MIRROR)
+                            {
+                                if (!trigger_mirror)
+                                {
+                                    trigger_mirror = true;
+                                }
+                            }
                         }
                     }
                 }
@@ -1198,6 +1428,37 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                     done = true;
 
                     break;
+                }
+            }
+            else if (selected && trigger_mirror)
+            {
+                if (message_controls[current].Type == Control::Type::YES && !hold)
+                {
+                    greenMirror(window, renderer, player, story);
+
+                    trigger_mirror = false;
+
+                    Item::REMOVE(Items, Item::Type::GREEN_MIRROR);
+
+                    controls.clear();
+
+                    controls = createItemControls(Items);
+
+                    message = "The GREEN MIRROR vanishes without a trace!";
+
+                    flash_color = intLB;
+
+                    start_ticks = SDL_GetTicks();
+
+                    flash_message = true;
+                }
+                else if (message_controls[current].Type == Control::Type::NO && !hold)
+                {
+                    current = -1;
+
+                    selected = false;
+
+                    trigger_mirror = false;
                 }
             }
         }
@@ -1945,12 +2206,12 @@ bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
         auto idx = 0;
 
-        auto button_plus = createHeaderButton(window, "+", clrWH, intDB, 32, 32, -1);
-        auto button_minus = createHeaderButton(window, "-", clrWH, intDB, 32, 32, -1);
+        auto button_plus = createHeaderButton(window, "+", clrWH, intDB, arrow_size, arrow_size, -1);
+        auto button_minus = createHeaderButton(window, "-", clrWH, intDB, arrow_size, arrow_size, -1);
         auto button_size = 35;
 
         controls.push_back(Button(idx, button_plus, idx, idx + 1, idx, idx + 2, textx + 2 * text_space, texty + button_size + 2 * box_space, Control::Type::PLUS));
-        controls.push_back(Button(idx + 1, button_minus, idx, idx + 1, idx, idx + 2, textx + 2 * text_space + button_space + 32, texty + button_size + 2 * box_space, Control::Type::MINUS));
+        controls.push_back(Button(idx + 1, button_minus, idx, idx + 1, idx, idx + 2, textx + 2 * text_space + button_space + arrow_size, texty + button_size + 2 * box_space, Control::Type::MINUS));
         controls.push_back(Button(idx + 2, "icons/yes.png", idx + 2, idx + 2, idx + 1, idx + 2, startx, buttony, Control::Type::ACTION));
         controls.push_back(Button(idx + 3, "icons/back-button.png", idx + 3, idx + 3, idx, idx + 3, (1 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
 
@@ -2335,7 +2596,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
                                 while (!Character::VERIFY_POSSESSIONS(player))
                                 {
-                                    inventoryScreen(window, renderer, player, player.Items, Control::Type::DROP, 0);
+                                    inventoryScreen(window, renderer, player, story, player.Items, Control::Type::DROP, 0);
                                 }
 
                                 message = std::string(std::string(Item::Descriptions[item]) + " purchased.");
@@ -2361,7 +2622,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 }
                 else if (controls[current].Type == Control::Type::CHARACTER && !hold)
                 {
-                    characterScreen(window, renderer, player);
+                    characterScreen(window, renderer, player, story);
 
                     current = -1;
 
@@ -2369,7 +2630,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 }
                 else if (controls[current].Type == Control::Type::USE && !hold)
                 {
-                    inventoryScreen(window, renderer, player, player.Items, Control::Type::USE, 0);
+                    inventoryScreen(window, renderer, player, story, player.Items, Control::Type::USE, 0);
 
                     current = -1;
 
@@ -2420,7 +2681,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
         auto selected = false;
         auto current = -1;
-        auto quit = false;
+        auto done = false;
         auto scrollUp = false;
         auto scrollDown = false;
         auto hold = false;
@@ -2466,7 +2727,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
             }
         }
 
-        while (!quit)
+        while (!done)
         {
             if (story->Title)
             {
@@ -2523,7 +2784,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 }
             }
 
-            quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
+            done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
             if (selected && current >= 0 && current < controls.size())
             {
@@ -2535,7 +2796,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                         {
                             next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                            quit = true;
+                            done = true;
 
                             break;
                         }
@@ -2545,7 +2806,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2564,7 +2825,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2583,7 +2844,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2602,12 +2863,12 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                             while (!Character::VERIFY_POSSESSIONS(player))
                             {
-                                inventoryScreen(window, renderer, player, player.Items, Control::Type::DROP, 0);
+                                inventoryScreen(window, renderer, player, story, player.Items, Control::Type::DROP, 0);
                             }
 
                             next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                            quit = true;
+                            done = true;
 
                             break;
                         }
@@ -2619,7 +2880,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2638,7 +2899,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                             next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                            quit = true;
+                            done = true;
 
                             break;
                         }
@@ -2650,7 +2911,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2669,7 +2930,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2690,7 +2951,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
                             }
                             else
                             {
@@ -2715,7 +2976,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                 {
                                     next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                    quit = true;
+                                    done = true;
 
                                     break;
                                 }
@@ -2749,7 +3010,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2768,7 +3029,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2794,7 +3055,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2820,7 +3081,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2846,7 +3107,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             {
                                 next = (Story::Base *)findStory(story->Choices[current].Destination);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2881,7 +3142,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                     next = story;
                                 }
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2902,7 +3163,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                                 next = (Story::Base *)findStory(nextID);
 
-                                quit = true;
+                                done = true;
 
                                 break;
                             }
@@ -2940,7 +3201,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                                         next = story;
                                     }
 
-                                    quit = true;
+                                    done = true;
 
                                     break;
                                 }
@@ -2950,7 +3211,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 }
                 else if (controls[current].Type == Control::Type::CHARACTER && !hold)
                 {
-                    characterScreen(window, renderer, player);
+                    characterScreen(window, renderer, player, story);
 
                     current = -1;
 
@@ -2958,7 +3219,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 }
                 else if (controls[current].Type == Control::Type::USE && !hold)
                 {
-                    inventoryScreen(window, renderer, player, player.Items, Control::Type::USE, 0);
+                    inventoryScreen(window, renderer, player, story, player.Items, Control::Type::USE, 0);
 
                     current = -1;
 
@@ -2976,7 +3237,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 {
                     next = story;
 
-                    quit = true;
+                    done = true;
 
                     break;
                 }
@@ -3836,7 +4097,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     {
                         if (story->Type == Story::Type::NORMAL && player.Life > 0)
                         {
-                            characterScreen(window, renderer, player);
+                            characterScreen(window, renderer, player, story);
                         }
                         else
                         {
@@ -3865,7 +4126,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     {
                         if (story->Type == Story::Type::NORMAL && player.Life > 0)
                         {
-                            inventoryScreen(window, renderer, player, player.Items, Control::Type::USE, 0);
+                            inventoryScreen(window, renderer, player, story, player.Items, Control::Type::USE, 0);
                         }
                         else
                         {
@@ -4013,13 +4274,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                                 {
                                     while (story->ToLose.size() > story->Limit)
                                     {
-                                        inventoryScreen(window, renderer, player, story->ToLose, Control::Type::STEAL, story->Limit);
+                                        inventoryScreen(window, renderer, player, story, story->ToLose, Control::Type::STEAL, story->Limit);
                                     }
                                 }
 
                                 while (!Character::VERIFY_POSSESSIONS(player))
                                 {
-                                    inventoryScreen(window, renderer, player, player.Items, Control::Type::DROP, 0);
+                                    inventoryScreen(window, renderer, player, story, player.Items, Control::Type::DROP, 0);
                                 }
 
                                 current = -1;
