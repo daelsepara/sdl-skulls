@@ -807,7 +807,7 @@ public:
 
         Text = "You have time to take a single step towards the black pyramid, then a howl rings out from the shrine -- a howl of such gruesome fury that your sweat runs icy on your brow. The courtiers abandon any semblance of human form and, transforming into wild dogs, scatter with yelps of fear.\n\nThe shadow men dissolve as Necklace of Skulls draws all his power back into himself. There is a rumbling from deep within the pyramid. The roof of the shrine trembles, then splits apart as something rises up through it. The pillars topple; masonry blocks crack open. Necklace of Skulls stands revealed atop the pyramid.\n\nHe is twice the height of a man -- a parody of human form with dead grey features and grotesquely long limbs with too many joints. The eyes are deep sockets under a caul of shrivelled flesh. His robe is sewn from ragged strips of blood-drenched skin; you realize with a shudder they are the flayed skins of men. Around his neck hangs a long chain of gore-spattered skulls, each with living eyes filled with eternal torment.\n\nNecklace of Skulls stands in the rubble of his shrine like a loathsome insect just emerged from a chrysalis. He points a thin finger at you. \"Evening Star,\" he hisses. \"Now you will know the taste of death.\"";
 
-        Image = "images/filler1.png";
+        Image = "images/necklace-of-skulls.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::TARGETING.Name, 204, Skill::Type::TARGETING));
@@ -5902,7 +5902,7 @@ public:
     {
         ID = 204;
 
-        Image = "images/filler1.png";
+        Image = "images/necklace-of-skulls.png";
 
         Choices.clear();
 
@@ -6592,7 +6592,7 @@ public:
     {
         ID = 227;
 
-        Image = "images/filler1.png";
+        Image = "images/necklace-of-skulls.png";
 
         Choices.clear();
 
@@ -7873,7 +7873,7 @@ public:
     {
         ID = 273;
 
-        Image = "images/filler1.png";
+        Image = "images/necklace-of-skulls.png";
 
         Choices.clear();
 
