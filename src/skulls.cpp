@@ -1381,7 +1381,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 {
     auto done = false;
 
-    if (player.Items.size() > 0)
+    if (limit > 0)
     {
         const char *message = NULL;
 
