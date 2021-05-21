@@ -2667,11 +2667,14 @@ public:
     {
         if (player.Ticks > 6)
         {
-            return 134;
-        }
-        else if (Character::VERIFY_CODEWORDS_ANY(player, {Codeword::Type::SHADE, Codeword::Type::ANGEL}))
-        {
-            return 19;
+            if (Character::VERIFY_CODEWORDS_ANY(player, {Codeword::Type::SHADE, Codeword::Type::ANGEL}))
+            {
+                return 134;
+            }
+            else
+            {
+                return 19;
+            }
         }
         else
         {
