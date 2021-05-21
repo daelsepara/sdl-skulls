@@ -886,14 +886,15 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 
         auto font_size = 18;
 
-        const char *choices[4] = {"Previous", "Next", "Glossary", "Start"};
+        const char *choices[5] = {"Previous", "Next", "Glossary", "Start", "Back"};
 
-        auto controls = createHTextButtons(choices, 4, main_buttonh, startx - 20, SCREEN_HEIGHT * (1.0 - Margin) - main_buttonh);
+        auto controls = createHTextButtons(choices, 5, main_buttonh, startx, SCREEN_HEIGHT * (1.0 - Margin) - main_buttonh);
 
         controls[0].Type = Control::Type::BACK;
         controls[1].Type = Control::Type::NEXT;
         controls[2].Type = Control::Type::GLOSSARY;
         controls[3].Type = Control::Type::NEW;
+        controls[4].Type = Control::Type::QUIT;
 
         TTF_Init();
 
@@ -948,6 +949,20 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
                         glossaryScreen(window, renderer, Skill::ALL);
 
                         current = -1;
+                    }
+                    else if (controls[current].Type == Control::Type::QUIT)
+                    {
+                        player = Character::Base();
+
+                        player.StoryID = -1;
+
+                        current = -1;
+
+                        selected = false;
+
+                        quit = true;
+
+                        break;
                     }
 
                     selected = false;
@@ -3386,52 +3401,47 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                     if (offset > 0)
                     {
                         offset -= scrollSpeed;
+
+                        if (offset < 0)
+                        {
+                            offset = 0;
+                        }
+
+                        last = offset + limit;
+
+                        if (last > entries.size())
+                        {
+                            last = entries.size();
+                        }
+
+                        controls = createFilesList(window, renderer, entries, offset, last, limit, save_botton);
                     }
-
-                    if (offset < 0)
-                    {
-                        offset = 0;
-                    }
-
-                    last = offset + limit;
-
-                    if (last > entries.size())
-                    {
-                        last = entries.size();
-                    }
-
-                    controls = createFilesList(window, renderer, entries, offset, last, limit, save_botton);
-
-                    current = -1;
 
                     selected = false;
-
-                    SDL_Delay(200);
                 }
                 else if (controls[current].Type == Control::Type::SCROLL_DOWN || ((controls[current].Type == Control::Type::SCROLL_DOWN && hold) || scrollDown))
                 {
-                    if (offset < entries.size() - limit)
+                    if (entries.size() - last > 0)
                     {
-                        offset += scrollSpeed;
+                        if (offset < entries.size() - limit)
+                        {
+                            offset += scrollSpeed;
+                        }
+
+                        if (offset > entries.size() - limit)
+                        {
+                            offset = entries.size() - limit;
+                        }
+
+                        last = offset + limit;
+
+                        if (last > entries.size())
+                        {
+                            last = entries.size();
+                        }
+
+                        controls = createFilesList(window, renderer, entries, offset, last, limit, save_botton);
                     }
-
-                    if (offset > entries.size() - limit)
-                    {
-                        offset = entries.size() - limit;
-                    }
-
-                    last = offset + limit;
-
-                    if (last > entries.size())
-                    {
-                        last = entries.size();
-                    }
-
-                    controls = createFilesList(window, renderer, entries, offset, last, limit, save_botton);
-
-                    SDL_Delay(200);
-
-                    current = -1;
 
                     selected = false;
                 }
@@ -4098,7 +4108,10 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
 
                     Player = selectCharacter(window, renderer);
 
-                    storyScreen(window, renderer, Player, storyID);
+                    if (Player.StoryID != -1)
+                    {
+                        storyScreen(window, renderer, Player, storyID);
+                    }
 
                     current = -1;
 
