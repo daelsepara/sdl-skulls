@@ -3216,7 +3216,7 @@ std::string time_string(long long deserialised)
     {
         ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
     }
-    
+
     return ss.str();
 }
 #else
@@ -3255,7 +3255,7 @@ std::vector<Button> createFilesList(SDL_Window *window, SDL_Renderer *renderer, 
 #ifdef _WIN32
             long long epoch_long;
 #else
-            long epoch_long
+            long epoch_long;
 #endif
 
             if (character.Epoch == 0)
