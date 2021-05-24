@@ -1678,7 +1678,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
         auto infoh = 0.06 * SCREEN_HEIGHT;
         auto boxh = 0.125 * SCREEN_HEIGHT;
 
-        auto selection = std::vector<Item::Type>();
+        auto selection = std::vector<int>();
 
         while (!done)
         {
@@ -1706,7 +1706,14 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 {
                     if (limit > 1)
                     {
-                        take_message = "You can TAKE up to " + std::to_string(limit) + " items.";
+                        if (items.size() == limit)
+                        {
+                            take_message = "You can TAKE any number of items.";
+                        }
+                        else
+                        {
+                            take_message = "You can TAKE up to " + std::to_string(limit) + " items.";
+                        }
                     }
                     else
                     {
@@ -1732,7 +1739,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                         take += ", ";
                     }
 
-                    take += std::string(Item::Descriptions[selection[i]]);
+                    take += std::string(Item::Descriptions[items[selection[i]]]);
                 }
             }
 
@@ -1745,7 +1752,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
             for (auto i = 0; i < items.size(); i++)
             {
-                if (Item::VERIFY(selection, items[i]))
+                if (std::find(selection.begin(), selection.end(), i) != selection.end())
                 {
                     drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intDB);
                 }
@@ -1759,15 +1766,17 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 {
                     if (current >= 0 && current < items.size())
                     {
-                        if (Item::VERIFY(selection, items[current]))
+                        auto result = Item::FIND(selection, current);
+
+                        if (result >= 0)
                         {
-                            Item::REMOVE(selection, items[current]);
+                            selection.erase(selection.begin() + result);
                         }
                         else
                         {
                             if (selection.size() < limit)
                             {
-                                Item::ADD(selection, items[current]);
+                                selection.push_back(current);
                             }
                         }
                     }
@@ -1778,7 +1787,14 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 }
                 else if (controls[current].Type == Control::Type::CONFIRM && !hold)
                 {
-                    Character::GET_ITEMS(player, selection);
+                    auto take = std::vector<Item::Type>();
+
+                    for (auto i = 0; i < selection.size(); i++)
+                    {
+                        take.push_back(items[i]);
+                    }
+
+                    Character::GET_ITEMS(player, take);
 
                     current = -1;
 
@@ -3763,11 +3779,14 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                         controls = createFilesList(window, renderer, entries, offset, last, limit, save_botton);
 
                         SDL_Delay(200);
+                    }
+
+                    if (offset <= 0)
+                    {
+                        selected = false;
 
                         current = -1;
                     }
-
-                    selected = false;
                 }
                 else if (controls[current].Type == Control::Type::SCROLL_DOWN || ((controls[current].Type == Control::Type::SCROLL_DOWN && hold) || scrollDown))
                 {
@@ -3794,10 +3813,21 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
 
                         SDL_Delay(200);
 
-                        current = -1;
+                        if (offset > 0)
+                        {
+                            if (controls[current].Type != Control::Type::SCROLL_DOWN)
+                            {
+                                current++;
+                            }
+                        }
                     }
 
-                    selected = false;
+                    if (entries.size() - last <= 0)
+                    {
+                        selected = false;
+
+                        current = -1;
+                    }
                 }
                 else if (controls[current].Type == Control::Type::ACTION && !hold)
                 {

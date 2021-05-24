@@ -189,5 +189,22 @@ namespace Item
         return has;
     }
 
+    int FIND(std::vector<int> items, int item)
+    {
+        auto found = -1;
+
+        for (auto i = 0; i < items.size(); i++)
+        {
+            if (items[i] == item)
+            {
+                found = i;
+
+                break;
+            }
+        }
+
+        return found;
+    }
+
 } // namespace Item
 #endif
