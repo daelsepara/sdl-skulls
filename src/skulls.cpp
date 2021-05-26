@@ -2974,13 +2974,13 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
             }
 
-            if (!story->Image || (splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && !player.RitualBallStarted)
+            if (!story->Image || ((splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && !player.RitualBallStarted))
             {
                 putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
                 putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
             }
 
-            if (!story->Image || (splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && player.RitualBallStarted)
+            if (!story->Image || ((splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && player.RitualBallStarted))
             {
                 std::string score_string = "Ticks: " + std::to_string(player.Ticks) + "\nCross: " + std::to_string(player.Cross);
                 putText(renderer, "SCORES", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
@@ -3670,7 +3670,7 @@ Character::Base loadGame(std::string file_name)
         try
         {
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__arm__)
             character.Epoch = (long long)(data["epoch"]);
 #else
             character.Epoch = (long)(data["epoch"]);
@@ -3689,7 +3689,7 @@ Character::Base loadGame(std::string file_name)
     return character;
 }
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__arm__)
 std::string time_string(long long deserialised)
 {
     auto epoch = std::chrono::time_point<std::chrono::system_clock>();
@@ -3740,7 +3740,7 @@ std::vector<Button> createFilesList(SDL_Window *window, SDL_Renderer *renderer, 
 
             auto character = loadGame(list[index]);
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__arm__)
             long long epoch_long;
 #else
             long epoch_long;
@@ -3749,7 +3749,12 @@ std::vector<Button> createFilesList(SDL_Window *window, SDL_Renderer *renderer, 
             if (character.Epoch == 0)
             {
                 auto epoch = list[index].substr(list[index].find_last_of("/") + 1, list[index].find_last_of(".") - list[index].find_last_of("/") - 1);
+#if defined(_WIN32) || defined(__arm__)
+                epoch_long = std::stoull(epoch);
+#else
                 epoch_long = std::stol(epoch);
+#endif
+
             }
             else
             {
@@ -3837,7 +3842,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
             {
                 auto time_stamp = entry.last_write_time();
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__arm__)
                 std::string file_name = entry.path().string();
 #else
                 std::string file_name = entry.path();
@@ -3918,7 +3923,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
 
                 auto character = loadGame(entries[selected_file]);
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__arm__)
                 long long epoch_long;
 #else
                 long epoch_long;
@@ -3931,7 +3936,11 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                 else
                 {
                     auto epoch = entries[selected_file].substr(entries[selected_file].find_last_of("/") + 1, entries[selected_file].find_last_of(".") - entries[selected_file].find_last_of("/") - 1);
+#if defined(_WIN32) || defined(__arm__)
+                    epoch_long = std::stoull(epoch);
+#else
                     epoch_long = std::stol(epoch);
+#endif
                 }
 
                 if (character.StoryID != -1)
@@ -4254,13 +4263,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
                 }
 
-                if (!story->Image || (splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && !player.RitualBallStarted)
+                if (!story->Image || ((splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && !player.RitualBallStarted))
                 {
                     putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
                     putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
                 }
 
-                if (!story->Image || (splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && player.RitualBallStarted)
+                if (!story->Image || ((splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && player.RitualBallStarted))
                 {
                     std::string score_string = "Ticks: " + std::to_string(player.Ticks) + "\nCross: " + std::to_string(player.Cross);
                     putText(renderer, "SCORES", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
@@ -4305,7 +4314,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
                 }
 
-                if (!trigger_blessing && (selected && current >= 0 && current < controls.size()) || scrollUp || scrollDown || hold)
+                if (!trigger_blessing && ((selected && current >= 0 && current < controls.size()) || scrollUp || scrollDown || hold))
                 {
                     if (controls[current].Type == Control::Type::SCROLL_UP || (controls[current].Type == Control::Type::SCROLL_UP && hold) || scrollUp)
                     {
