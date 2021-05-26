@@ -41,7 +41,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer);
 bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
 bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
 bool storyScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, int id);
-bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit);
+bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int TakeLimit);
 bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Item::Type mine, Item::Type theirs);
 
 int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit);
@@ -1159,6 +1159,66 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
     return player;
 }
 
+std::vector<Button> createItemList(SDL_Window *window, SDL_Renderer *renderer, std::vector<Item::Type> list, int start, int last, int limit, bool confirm_button)
+{
+    auto text_space = 8;
+
+    auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space);
+
+    auto controls = std::vector<Button>();
+
+    if (list.size() > 0)
+    {
+        for (int i = 0; i < last - start; i++)
+        {
+            auto index = start + i;
+
+            std::string item_string = Item::Descriptions[list[index]];
+
+            auto text = createText(item_string.c_str(), "fonts/default.ttf", 20, clrBK, textwidth - 4 * text_space, TTF_STYLE_NORMAL);
+
+            auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 2 * text_space);
+
+            controls.push_back(Button(i, text, i, i, (i > 0 ? i - 1 : i), (i < (last - start) ? i + 1 : i), textx + 2 * text_space, y, Control::Type::ACTION));
+
+            controls[i].W = textwidth - 4 * text_space;
+            controls[i].H = text->h;
+        }
+    }
+
+    auto idx = controls.size();
+
+    if (list.size() > limit)
+    {
+        if (start > 0)
+        {
+            controls.push_back(Button(idx, "icons/up-arrow.png", idx, idx, idx, idx + 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+
+            idx++;
+        }
+
+        if (list.size() - last > 0)
+        {
+            controls.push_back(Button(idx, "icons/down-arrow.png", idx, idx, start > 0 ? idx - 1 : idx, idx + 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+
+            idx++;
+        }
+    }
+
+    if (confirm_button)
+    {
+        idx = controls.size();
+
+        controls.push_back(Button(idx, "icons/yes.png", idx - 1, idx + 1, idx - 1, idx, startx, buttony, Control::Type::CONFIRM));
+    }
+
+    idx = controls.size();
+
+    controls.push_back(Button(idx, "icons/back-button.png", idx - 1, idx, list.size() > 0 ? (last - start) : idx, idx, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+    return controls;
+}
+
 std::vector<Button> createItemControls(std::vector<Item::Type> Items)
 {
     auto text_space = 8;
@@ -1192,6 +1252,16 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 {
     if (Items.size() > 0)
     {
+        auto scrollSpeed = 1;
+        auto display_limit = 8;
+        auto offset = 0;
+        auto last = offset + display_limit;
+
+        if (last > Items.size())
+        {
+            last = Items.size();
+        }
+
         const char *message = NULL;
 
         std::string temp_message = "";
@@ -1206,9 +1276,9 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
         auto text_space = 8;
 
-        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * text_space;
+        auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space);
 
-        auto controls = createItemControls(Items);
+        auto controls = createItemList(window, renderer, Items, offset, last, display_limit, false);
 
         TTF_Init();
 
@@ -1238,6 +1308,13 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
         while (!done)
         {
+            last = offset + display_limit;
+
+            if (last > Items.size())
+            {
+                last = Items.size();
+            }
+
             SDL_SetWindowTitle(window, "Necklace of Skulls: Possessions");
 
             fillWindow(renderer, intWH);
@@ -1282,17 +1359,16 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
             putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
             putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
 
-            fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
+            fillRect(renderer, textwidth, text_bounds, textx, texty, intBE);
+
+            for (auto idx = offset; idx < last; idx++)
+            {
+                auto i = idx - offset;
+
+                drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intDB);
+            }
 
             renderButtons(renderer, controls, trigger_mirror ? -1 : current, intGR, text_space, text_space / 2);
-
-            for (auto i = 0; i < player.Items.size(); i++)
-            {
-                if (i != current)
-                {
-                    drawRect(renderer, controls[i].W + 2 * text_space, controls[i].H + 2 * text_space, controls[i].X - text_space, controls[i].Y - text_space, intDB);
-                }
-            }
 
             if (!trigger_mirror)
             {
@@ -1301,6 +1377,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
             else
             {
                 fillRect(renderer, textwidth, messageh, message_x, message_y, intLB);
+
                 renderImage(renderer, mirror_text, (SCREEN_WIDTH - mirror_text->w) / 2, message_y + text_space);
 
                 renderButtons(renderer, message_controls, current, intWH, border_space, border_pts);
@@ -1310,19 +1387,106 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
             if (selected && !trigger_mirror)
             {
-                if (controls[current].Type == Control::Type::ACTION && !hold)
+                if (controls[current].Type == Control::Type::SCROLL_UP || (controls[current].Type == Control::Type::SCROLL_UP && hold) || scrollUp)
                 {
-                    if (current >= 0 && current < Items.size())
+                    if (offset > 0)
                     {
-                        auto item = Items[current];
+                        offset -= scrollSpeed;
+
+                        if (offset < 0)
+                        {
+                            offset = 0;
+                        }
+
+                        last = offset + display_limit;
+
+                        if (last > Items.size())
+                        {
+                            last = Items.size();
+                        }
+
+                        controls.clear();
+
+                        controls = createItemList(window, renderer, Items, offset, last, display_limit, false);
+
+                        SDL_Delay(50);
+                    }
+
+                    if (offset <= 0)
+                    {
+                        current = -1;
+
+                        selected = false;
+                    }
+                }
+                else if (controls[current].Type == Control::Type::SCROLL_DOWN || ((controls[current].Type == Control::Type::SCROLL_DOWN && hold) || scrollDown))
+                {
+                    if (Items.size() - last > 0)
+                    {
+                        if (offset < Items.size() - display_limit)
+                        {
+                            offset += scrollSpeed;
+                        }
+
+                        if (offset > Items.size() - display_limit)
+                        {
+                            offset = Items.size() - display_limit;
+                        }
+
+                        last = offset + display_limit;
+
+                        if (last > Items.size())
+                        {
+                            last = Items.size();
+                        }
+
+                        controls.clear();
+
+                        controls = createItemList(window, renderer, Items, offset, last, display_limit, false);
+
+                        SDL_Delay(50);
+
+                        if (offset > 0)
+                        {
+                            if (controls[current].Type != Control::Type::SCROLL_DOWN)
+                            {
+                                current++;
+                            }
+                        }
+                    }
+
+                    if (Items.size() - last <= 0)
+                    {
+                        selected = false;
+
+                        current = -1;
+                    }
+                }
+                else if (controls[current].Type == Control::Type::ACTION && !hold)
+                {
+                    if ((current + offset >= 0) && (current + offset) < Items.size())
+                    {
+                        auto item = Items[current + offset];
 
                         if (mode == Control::Type::DROP)
                         {
-                            Item::REMOVE(Items, item);
+                            Items.erase(Items.begin() + (current + offset));
+
+                            if (offset > 0)
+                            {
+                                offset--;
+                            }
+
+                            last = offset + display_limit;
+
+                            if (last > Items.size())
+                            {
+                                last = Items.size();
+                            }
 
                             controls.clear();
 
-                            controls = createItemControls(Items);
+                            controls = createItemList(window, renderer, Items, offset, last, display_limit, false);
 
                             temp_message = std::string(Item::Descriptions[item]) + " DROPPED!";
 
@@ -1338,13 +1502,24 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                         {
                             if (Items.size() > limit)
                             {
-                                Item::REMOVE(Items, item);
+                                Items.erase(Items.begin() + (current + offset));
 
                                 Character::LOSE_ITEMS(player, {item});
 
-                                controls.clear();
+                                if (offset > 0)
+                                {
+                                    offset--;
+                                }
 
-                                controls = createItemControls(Items);
+                                last = offset + display_limit;
+
+                                if (last > Items.size())
+                                {
+                                    last = Items.size();
+                                }
+
+                                controls.clear();
+                                controls = createItemList(window, renderer, Items, offset, last, display_limit, false);
 
                                 temp_message = std::string(Item::Descriptions[item]) + " STOLEN!";
 
@@ -1365,11 +1540,23 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                                 {
                                     Character::GAIN_LIFE(player, 5);
 
-                                    Item::REMOVE(Items, item);
+                                    Items.erase(Items.begin() + (current + offset));
+
+                                    if (offset > 0)
+                                    {
+                                        offset--;
+                                    }
+
+                                    last = offset + display_limit;
+
+                                    if (last > Items.size())
+                                    {
+                                        last = Items.size();
+                                    }
 
                                     controls.clear();
 
-                                    controls = createItemControls(Items);
+                                    controls = createItemList(window, renderer, Items, offset, last, display_limit, false);
 
                                     message = "You RECOVER 5 Life Points.";
 
@@ -1392,11 +1579,23 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
                                 {
                                     Character::GAIN_LIFE(player, 1);
 
-                                    Item::REMOVE(Items, item);
+                                    Items.erase(Items.begin() + (current + offset));
+
+                                    if (offset > 0)
+                                    {
+                                        offset--;
+                                    }
+
+                                    last = offset + display_limit;
+
+                                    if (last > Items.size())
+                                    {
+                                        last = Items.size();
+                                    }
 
                                     controls.clear();
 
-                                    controls = createItemControls(Items);
+                                    controls = createItemList(window, renderer, Items, offset, last, display_limit, false);
 
                                     message = "You RECOVER 1 Life Point.";
 
@@ -1440,9 +1639,21 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
                     Item::REMOVE(Items, Item::Type::GREEN_MIRROR);
 
+                    if (offset > 0)
+                    {
+                        offset--;
+                    }
+
+                    last = offset + display_limit;
+
+                    if (last > Items.size())
+                    {
+                        last = Items.size();
+                    }
+
                     controls.clear();
 
-                    controls = createItemControls(Items);
+                    controls = createItemList(window, renderer, Items, offset, last, display_limit, false);
 
                     message = "The GREEN MIRROR vanishes without a trace!";
 
@@ -1638,11 +1849,11 @@ int giftScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, C
     return storyID;
 }
 
-bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit)
+bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int TakeLimit)
 {
     auto done = false;
 
-    if (limit > 0)
+    if (TakeLimit > 0)
     {
         const char *message = NULL;
 
@@ -1704,15 +1915,15 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
                 if (items.size() > 1)
                 {
-                    if (limit > 1)
+                    if (TakeLimit > 1)
                     {
-                        if (items.size() == limit)
+                        if (items.size() == TakeLimit)
                         {
                             take_message = "You can TAKE any number of items.";
                         }
                         else
                         {
-                            take_message = "You can TAKE up to " + std::to_string(limit) + " items.";
+                            take_message = "You can TAKE up to " + std::to_string(TakeLimit) + " items.";
                         }
                     }
                     else
@@ -1774,7 +1985,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                         }
                         else
                         {
-                            if (selection.size() < limit)
+                            if (selection.size() < TakeLimit)
                             {
                                 selection.push_back(current);
                             }
@@ -3979,7 +4190,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
             text = createText(story->Text, "fonts/default.ttf", font_size, clrDB, textwidth, TTF_STYLE_NORMAL);
         }
 
-        auto compact = text->h <= text_bounds - 2 * text_space;
+        auto compact = text && text->h <= text_bounds - 2 * text_space;
 
         if (story->Controls == Story::Controls::STANDARD)
         {

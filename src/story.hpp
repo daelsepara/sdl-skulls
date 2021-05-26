@@ -8318,6 +8318,8 @@ public:
 
         Text = PreText.c_str();
     }
+
+    int Continue(Character::Base &player) { return 336; }
 };
 
 class Story291 : public Story::Base
