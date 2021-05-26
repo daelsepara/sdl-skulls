@@ -3749,12 +3749,12 @@ std::vector<Button> createFilesList(SDL_Window *window, SDL_Renderer *renderer, 
             if (character.Epoch == 0)
             {
                 auto epoch = list[index].substr(list[index].find_last_of("/") + 1, list[index].find_last_of(".") - list[index].find_last_of("/") - 1);
+
 #if defined(_WIN32) || defined(__arm__)
                 epoch_long = std::stoull(epoch);
 #else
                 epoch_long = std::stol(epoch);
 #endif
-
             }
             else
             {
@@ -3936,6 +3936,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                 else
                 {
                     auto epoch = entries[selected_file].substr(entries[selected_file].find_last_of("/") + 1, entries[selected_file].find_last_of(".") - entries[selected_file].find_last_of("/") - 1);
+
 #if defined(_WIN32) || defined(__arm__)
                     epoch_long = std::stoull(epoch);
 #else
