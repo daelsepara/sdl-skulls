@@ -10240,7 +10240,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base(Skill::ROGUERY.Name, 86, Skill::Type::ROGUERY));
         Choices.push_back(Choice::Base("[SPELLS] Use a wand", 109, Choice::Type::SKILL_ALL, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
-        Choices.push_back(Choice::Base("Tru using the MAN OF GOLD", 131, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Try using the MAN OF GOLD", 131, Item::Type::MAN_OF_GOLD));
         Choices.push_back(Choice::Base("Otherwise", 154));
 
         Controls = Story::Controls::STANDARD;
