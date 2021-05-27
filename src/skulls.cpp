@@ -431,7 +431,7 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 
     auto *about = "Critical IF are gamebooks with a difference. The outcomes are not random. Whether you live or die is a matter not of luck, but of judgement.\n\nTo start your adventure simply choose your character. Each character has a unique selection of four skills; these will decide which options are available to you. Also note your Life Points and your possessions.\n\nLife Points are lost each time you are wounded. If you are ever reduced to zero Life Points, you have been killed and the adventure ends. Sometimes you can recover Life Points during your adventure, but you can never have more Life Points than you started with.\n\nYou can carry up to eight possessions at a time. If you are at this limit and find something else you want, drop one of your other poessessions to make room for the new item.\n\nConsider your slection of skills. They establish your special strengths, and will help you to role-play your choices during the adventrue. If you arrive at an entry which lists options for more than one of your skills, you can choose which skill to use in that situtation.\n\nThat's all you need to know. Now choose your character.";
 
-    auto splash = createImage("images/pyramid.png");
+    auto splash = createImage("images/skulls-vr.png");
 
     auto text = createText(about, "fonts/default.ttf", 18, clrWH, SCREEN_WIDTH * (1.0 - 3 * Margin) - splashw);
 
@@ -4122,6 +4122,18 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
     return result;
 }
 
+void clipValue(int &val, int min, int max)
+{
+    if (val < min)
+    {
+        val = min;
+    }
+    if (val > max)
+    {
+        val = max;
+    }
+}
+
 bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story)
 {
     auto quit = false;
@@ -4162,7 +4174,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
         auto run_once = true;
 
         SDL_Surface *splash = NULL;
-
+        SDL_Texture *splashTexture = NULL;
         SDL_Surface *text = NULL;
 
         if (run_once)
@@ -4190,6 +4202,11 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
             if (splash->w != splashw)
             {
                 splash_h = (int)((double)splashw / splash->w * splash->h);
+            }
+
+            if (splash)
+            {
+                splashTexture = SDL_CreateTextureFromSurface(renderer, splash);
             }
         }
 
@@ -4298,16 +4315,73 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                 renderButtons(renderer, controls, trigger_blessing ? -1 : current, intGR, border_space, border_pts);
 
-                bool scrollUp = false;
-                bool scrollDown = false;
-
                 if (trigger_blessing)
                 {
                     fillRect(renderer, textwidth, messageh, message_x, message_y, intLB);
+
                     renderImage(renderer, bless_text, (SCREEN_WIDTH - bless_text->w) / 2, message_y + text_space);
 
                     renderButtons(renderer, message_controls, current, intWH, border_space, border_pts);
+                }
 
+                bool scrollUp = false;
+                bool scrollDown = false;
+
+                if (splash)
+                {
+                    auto mousex = 0;
+                    auto mousey = 0;
+
+                    auto state = SDL_GetMouseState(&mousex, &mousey);
+
+                    auto zoomw = (int)(0.80 * (double)textwidth);
+                    auto zoomh = (int)(0.80 * (double)text_bounds);
+
+                    clipValue(zoomw, 0, splash->w);
+                    clipValue(zoomh, 0, splash->h);
+
+                    auto boundx = splashw;
+
+                    if (splash_h == text_bounds)
+                    {
+                        boundx = (int)((double)splash_h / splash->h * (double)splash->w);
+                    }
+
+                    if (mousex >= startx && mousex <= (startx + boundx) && mousey >= starty && mousey <= (starty + splash_h))
+                    {
+                        auto scalex = (double)(mousex - startx) / boundx;
+                        auto scaley = (double)(mousey - starty) / splash_h;
+
+                        int centerx = (int)(scalex * (double)splash->w);
+                        int centery = (int)(scaley * (double)splash->h);
+
+                        clipValue(centerx, zoomw / 2, splash->w - zoomw / 2);
+                        clipValue(centery, zoomh / 2, splash->h - zoomh / 2);
+
+                        if (splashTexture)
+                        {
+                            SDL_Rect src;
+                            
+                            src.w = zoomw;
+                            src.h = zoomh;
+                            src.x = centerx - zoomw / 2;
+                            src.y = centery - zoomh / 2;
+
+                            SDL_Rect dst;
+
+                            dst.w = zoomw;
+                            dst.h = zoomh;
+                            dst.x = (textx + (textwidth - zoomw) / 2);
+                            dst.y = (texty + (text_bounds - zoomh) / 2);
+
+                            SDL_RenderCopy(renderer, splashTexture, &src, &dst);
+                            drawRect(renderer, dst.w, dst.h, dst.x, dst.y, intBK);
+                        }
+                    }
+                }
+
+                if (trigger_blessing)
+                {
                     quit = Input::GetInput(renderer, message_controls, current, selected, scrollUp, scrollDown, hold);
                 }
                 else
@@ -4645,6 +4719,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
             SDL_FreeSurface(splash);
 
             splash = NULL;
+        }
+
+        if (splashTexture)
+        {
+            SDL_DestroyTexture(splashTexture);
+
+            splashTexture = NULL;
         }
 
         if (text)
