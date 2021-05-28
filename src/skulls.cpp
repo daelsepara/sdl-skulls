@@ -1954,8 +1954,8 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
                 }
             }
 
-            putText(renderer, "SELECTED", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
-            putText(renderer, selection.size() > 0 ? take.c_str() : "(None)", font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+            putText(renderer, "SELECTED", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (3 * boxh + infoh));
+            putText(renderer, selection.size() > 0 ? take.c_str() : "(None)", font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, 3 * boxh, startx, starty + text_bounds - 3 * boxh);
 
             fillRect(renderer, textwidth + arrow_size + button_space, text_bounds, textx, texty, intBE);
 
@@ -4361,7 +4361,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                         if (splashTexture)
                         {
                             SDL_Rect src;
-                            
+
                             src.w = zoomw;
                             src.h = zoomh;
                             src.x = centerx - zoomw / 2;
