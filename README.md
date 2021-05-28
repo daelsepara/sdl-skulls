@@ -70,6 +70,7 @@ Map copyright (c) 1993 Leo Hartas
 Interior Illustrations (c) 1993 Russ Nicholson
 Cover by Jon Hogson (c) 2013 Fabled Lands LLP
 
+The author has asserted his moral rights.
 
 ISBN 978-1-909905-02-3
 ```
@@ -77,3 +78,7 @@ ISBN 978-1-909905-02-3
 # Bugs
 
 Feel free to report any bugs, issues, and/or suggestions. Thanks!
+
+# Other Gamebooks implemented with SDL
+
+[Heart of Ice](https://www.github.com/daelsepara/sdl-heart)
