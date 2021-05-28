@@ -10774,7 +10774,7 @@ public:
     {
         ID = 383;
 
-        Text = "Legend states that a rich man can only enter the afterlife if led there by a poor man. Judging by his regalia, the figure you saw walking ahead of you was rich, and he evidently did not get rid of his money when he passed the idol or the bowl would not be empty. The sensible thing to do would therefore be to get rid of all your money at this point.";
+        Text = "You toss the ball into the hound's open jaws. It immediately crouches down on the ground and starts gnawing at the ball wagging its tail contentedly, and you are able to slip past unchallenged.\n\nThe courtiers are waiting for you in the inner courtyard. \"Ah, you fool,\" says the chief with a yelp of crowing laughter. \"You just wasted your best weapon!\"\n\n\"Then I'll just have to try that much harder from now on, won't I?\" you reply.";
 
         Image = "images/filler1.png";
 
