@@ -4287,7 +4287,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
                 }
 
-                if (!story->Image || ((splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && player.RitualBallStarted))
+                if ((!story->Image || (splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space))) && player.RitualBallStarted)
                 {
                     std::string score_string = "Ticks: " + std::to_string(player.Ticks) + "\nCross: " + std::to_string(player.Cross);
                     putText(renderer, "SCORES", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
