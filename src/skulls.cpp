@@ -433,7 +433,7 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 
     auto splash = createImage("images/skulls-vr.png");
 
-    auto text = createText(about, "fonts/default.ttf", 18, clrWH, SCREEN_WIDTH * (1.0 - 3 * Margin) - splashw);
+    auto text = createText(about, FONT_FILE, 18, clrWH, SCREEN_WIDTH * (1.0 - 3 * Margin) - splashw);
 
     // Render the image
     if (window && renderer && splash && text)
@@ -457,7 +457,7 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 
             fitImage(renderer, splash, startx, starty, splashw, text_bounds);
             renderText(renderer, text, intDB, startx * 2 + splashw, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
-            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
+            renderTextButtons(renderer, controls, FONT_FILE, current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
 
             bool scrollUp = false;
             bool scrollDown = false;
@@ -615,7 +615,7 @@ void renderAdventurer(SDL_Window *window, SDL_Renderer *renderer, TTF_Font *font
 SDL_Surface *createHeaderButton(SDL_Window *window, const char *text, SDL_Color color, Uint32 bg, int w, int h, int x)
 {
     auto button = SDL_CreateRGBSurface(0, w, h, arrow_size, 0, 0, 0, 0);
-    auto text_surface = createText(text, "fonts/default.ttf", 18, color, w, TTF_STYLE_NORMAL);
+    auto text_surface = createText(text, FONT_FILE, 18, color, w, TTF_STYLE_NORMAL);
 
     if (button && text_surface)
     {
@@ -675,7 +675,7 @@ bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skil
             text += std::string(Skills[i].Description) + "\n";
         }
 
-        auto glossary = createText(text.c_str(), "fonts/default.ttf", font_size, clrBK, glossary_width - 2 * space, TTF_STYLE_NORMAL);
+        auto glossary = createText(text.c_str(), FONT_FILE, font_size, clrBK, glossary_width - 2 * space, TTF_STYLE_NORMAL);
 
         auto quit = false;
 
@@ -845,7 +845,7 @@ bool greenMirror(SDL_Window *window, SDL_Renderer *renderer, Character::Base pla
             future_text += "... " + std::string(future_story->Text);
         }
 
-        auto future = createText(future_text.c_str(), "fonts/default.ttf", 20, clrBK, future_width - 2 * space, TTF_STYLE_NORMAL);
+        auto future = createText(future_text.c_str(), FONT_FILE, 20, clrBK, future_width - 2 * space, TTF_STYLE_NORMAL);
 
         while (!done)
         {
@@ -963,7 +963,7 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", font_size);
+        auto font = TTF_OpenFont(FONT_FILE, font_size);
 
         if (font)
         {
@@ -1074,7 +1074,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", font_size);
+        auto font = TTF_OpenFont(FONT_FILE, font_size);
 
         if (font)
         {
@@ -1084,7 +1084,7 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 
                 renderAdventurer(window, renderer, font, Character::Classes[character]);
 
-                renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
+                renderTextButtons(renderer, controls, FONT_FILE, current, clrWH, intBK, intRD, 20, TTF_STYLE_NORMAL);
 
                 bool scrollUp = false;
                 bool scrollDown = false;
@@ -1175,7 +1175,7 @@ std::vector<Button> createItemList(SDL_Window *window, SDL_Renderer *renderer, s
 
             std::string item_string = Item::Descriptions[list[index]];
 
-            auto text = createText(item_string.c_str(), "fonts/default.ttf", 20, clrBK, textwidth - 4 * text_space, TTF_STYLE_NORMAL);
+            auto text = createText(item_string.c_str(), FONT_FILE, 20, clrBK, textwidth - 4 * text_space, TTF_STYLE_NORMAL);
 
             auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 2 * text_space);
 
@@ -1231,7 +1231,7 @@ std::vector<Button> createItemControls(std::vector<Item::Type> Items)
 
     for (auto idx = 0; idx < Items.size(); idx++)
     {
-        auto text = createText(Item::Descriptions[Items[idx]], "fonts/default.ttf", font_size, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
+        auto text = createText(Item::Descriptions[Items[idx]], FONT_FILE, font_size, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
 
         auto y = texty + (idx > 0 ? controls[idx - 1].Y + controls[idx - 1].H : 2 * text_space);
 
@@ -1282,7 +1282,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+        auto font = TTF_OpenFont(FONT_FILE, 20);
 
         auto selected = false;
         auto current = -1;
@@ -1296,7 +1296,7 @@ bool inventoryScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
         auto box_space = 10;
         auto messageh = 0.25 * SCREEN_HEIGHT;
 
-        auto mirror_text = createText("The GREEN MIRROR disappears after one use. Do you wish to continue?", "fonts/default.ttf", 20, clrWH, textwidth - 2 * text_space, TTF_STYLE_NORMAL);
+        auto mirror_text = createText("The GREEN MIRROR disappears after one use. Do you wish to continue?", FONT_FILE, 20, clrWH, textwidth - 2 * text_space, TTF_STYLE_NORMAL);
         auto message_x = (SCREEN_WIDTH - textwidth) / 2;
         auto message_y = (SCREEN_HEIGHT - messageh) / 2;
 
@@ -1716,7 +1716,7 @@ int giftScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, C
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+        auto font = TTF_OpenFont(FONT_FILE, 20);
 
         auto selected = false;
         auto current = -1;
@@ -1877,7 +1877,7 @@ bool takeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+        auto font = TTF_OpenFont(FONT_FILE, 20);
 
         auto selected = false;
         auto current = -1;
@@ -2048,7 +2048,7 @@ std::vector<Button> createSkillControls(std::vector<Skill::Base> Skills)
 
     for (auto idx = 0; idx < Skills.size(); idx++)
     {
-        auto text = createText(Skills[idx].Name, "fonts/default.ttf", 20, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
+        auto text = createText(Skills[idx].Name, FONT_FILE, 20, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
 
         auto y = texty + (idx > 0 ? controls[idx - 1].Y + controls[idx - 1].H : 2 * text_space);
 
@@ -2087,7 +2087,7 @@ bool loseSkills(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+        auto font = TTF_OpenFont(FONT_FILE, 20);
 
         auto selected = false;
         auto current = -1;
@@ -2272,7 +2272,7 @@ int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &playe
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+        auto font = TTF_OpenFont(FONT_FILE, 20);
 
         auto selected = false;
         auto current = -1;
@@ -2444,7 +2444,7 @@ bool donateScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+        auto font = TTF_OpenFont(FONT_FILE, 20);
 
         auto selected = false;
         auto current = -1;
@@ -2584,7 +2584,7 @@ bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pl
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+        auto font = TTF_OpenFont(FONT_FILE, 20);
 
         auto selected = false;
         auto current = -1;
@@ -2702,7 +2702,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
             std::string choice = std::string(Item::Descriptions[item]) + " (" + std::to_string(price) + " cacao)";
 
-            auto text = createText(choice.c_str(), "fonts/default.ttf", 16, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
+            auto text = createText(choice.c_str(), FONT_FILE, 16, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
 
             auto y = texty + (idx > 0 ? controls[idx - 1].Y + controls[idx - 1].H : 2 * text_space);
 
@@ -2718,7 +2718,7 @@ bool shopScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pla
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+        auto font = TTF_OpenFont(FONT_FILE, 20);
 
         auto selected = false;
         auto current = -1;
@@ -2924,7 +2924,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
         for (int i = 0; i < choices.size(); i++)
         {
-            auto text = createText(choices[i].Text, "fonts/default.ttf", 20, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
+            auto text = createText(choices[i].Text, FONT_FILE, 20, clrBK, textwidth + button_space, TTF_STYLE_NORMAL);
 
             auto y = texty + (i > 0 ? controls[i - 1].Y + controls[i - 1].H : 2 * text_space);
 
@@ -2942,7 +2942,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+        auto font = TTF_OpenFont(FONT_FILE, 20);
 
         int splash_h = splashw;
 
@@ -3888,7 +3888,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
 
         TTF_Init();
 
-        auto font = TTF_OpenFont("fonts/default.ttf", 20);
+        auto font = TTF_OpenFont(FONT_FILE, 20);
 
         auto text_space = 8;
         auto infoh = 0.06 * SCREEN_HEIGHT;
@@ -3915,7 +3915,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
 
             renderButtons(renderer, controls, current, intGR, border_space, border_pts);
 
-            putText(renderer, "Selected", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
+            putText(renderer, "Selected", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * boxh + infoh));
 
             if (selected_file >= 0 && selected_file < entries.size())
             {
@@ -3954,11 +3954,11 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
                     game_string += " Money: " + std::to_string(character.Money);
                 }
 
-                putText(renderer, game_string.c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+                putText(renderer, game_string.c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, 2 * boxh, startx, starty + text_bounds - 2 * boxh);
             }
             else
             {
-                fillRect(renderer, splashw, boxh, startx, starty + text_bounds - boxh, intBE);
+                fillRect(renderer, splashw, 2 * boxh, startx, starty + text_bounds - 2 * boxh, intBE);
             }
 
             if (last - offset > 0)
@@ -4152,7 +4152,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
     TTF_Init();
 
-    auto font = TTF_OpenFont("fonts/default.ttf", font_size);
+    auto font = TTF_OpenFont(FONT_FILE, font_size);
     auto text_space = 8;
     auto messageh = 0.25 * SCREEN_HEIGHT;
 
@@ -4214,7 +4214,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
         {
             auto textwidth = ((1 - Margin) * SCREEN_WIDTH) - (textx + arrow_size + button_space) - 2 * space;
 
-            text = createText(story->Text, "fonts/default.ttf", font_size, clrDB, textwidth, TTF_STYLE_NORMAL);
+            text = createText(story->Text, FONT_FILE, font_size, clrDB, textwidth, TTF_STYLE_NORMAL);
         }
 
         auto compact = text && text->h <= text_bounds - 2 * text_space;
@@ -4238,7 +4238,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
         auto trigger_blessing = player.IsBlessed && saveCharacter.Life > player.Life;
 
-        auto bless_text = createText("You have lost some Life Points. Do you wish to use the War God's Blessing?", "fonts/default.ttf", 20, clrWH, textwidth - 2 * text_space, TTF_STYLE_NORMAL);
+        auto bless_text = createText("You have lost some Life Points. Do you wish to use the War God's Blessing?", FONT_FILE, 20, clrWH, textwidth - 2 * text_space, TTF_STYLE_NORMAL);
         auto message_x = (SCREEN_WIDTH - textwidth) / 2;
         auto message_y = (SCREEN_HEIGHT - messageh) / 2;
 
@@ -4618,7 +4618,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                                 {
                                     if (story->Bye)
                                     {
-                                        auto bye = createText(story->Bye, "fonts/default.ttf", font_size + 4, clrBK, (SCREEN_WIDTH * (1.0 - 2.0 * Margin)) - 2 * text_space, TTF_STYLE_NORMAL);
+                                        auto bye = createText(story->Bye, FONT_FILE, font_size + 4, clrBK, (SCREEN_WIDTH * (1.0 - 2.0 * Margin)) - 2 * text_space, TTF_STYLE_NORMAL);
                                         auto forward = createImage("icons/next.png");
 
                                         if (bye && forward)
@@ -4770,7 +4770,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
 
     auto splash = createImage("images/skulls-cover.png");
 
-    auto text = createText(introduction, "fonts/default.ttf", font_size, clrWH, SCREEN_WIDTH * (1.0 - 3.0 * Margin) - splashw);
+    auto text = createText(introduction, FONT_FILE, font_size, clrWH, SCREEN_WIDTH * (1.0 - 3.0 * Margin) - splashw);
 
     auto title = "Necklace of Skulls";
 
@@ -4807,7 +4807,7 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID = 0)
 
             fitImage(renderer, splash, startx, starty, splashw, text_bounds);
             renderText(renderer, text, intDB, startx * 2 + splashw, starty, SCREEN_HEIGHT * (1.0 - 2 * Margin), 0);
-            renderTextButtons(renderer, controls, "fonts/default.ttf", current, clrWH, intBK, intRD, font_size, TTF_STYLE_NORMAL);
+            renderTextButtons(renderer, controls, FONT_FILE, current, clrWH, intBK, intRD, font_size, TTF_STYLE_NORMAL);
 
             bool scrollUp = false;
             bool scrollDown = false;

@@ -3,6 +3,8 @@
 
 #include <SDL.h>
 
+const char *FONT_FILE = "fonts/bookman-old-style.ttf";
+
 const SDL_Color clrBK = {0, 0, 0, 0};
 const SDL_Color clrDB = {7, 7, 58, 0};
 const SDL_Color clrWH = {255, 255, 255, 0};
