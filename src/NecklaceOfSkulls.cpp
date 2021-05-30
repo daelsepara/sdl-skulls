@@ -10,11 +10,6 @@
 #include <vector>
 #include <filesystem>
 
-#if defined(_WIN32)
-#include <windows.h>
-#include <shlobj.h>
-#endif
-
 namespace fs = std::filesystem;
 
 // Using SDL
@@ -33,6 +28,19 @@ namespace fs = std::filesystem;
 #include "skills.hpp"
 #include "character.hpp"
 #include "story.hpp"
+
+#if defined(_WIN32)
+
+#include <windows.h>
+#include <shlobj.h>
+
+#else
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+
+#endif
 
 // Forward declarations
 bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer);
@@ -3521,15 +3529,15 @@ bool saveGame(Character::Base &player, const char *overwrite)
 #if defined(_WIN32)
 
     PWSTR path_str;
-    
+
     SHGetKnownFolderPath(FOLDERID_Documents, KF_FLAG_DEFAULT, NULL, &path_str);
-    
+
     std::wstring wpath(path_str);
-    
+
     CoTaskMemFree(path_str);
 
     std::string save(wpath.length(), ' ');
-    
+
     std::copy(wpath.begin(), wpath.end(), save.begin());
 
     save += "/Saved Games/Necklace of Skulls";
@@ -3537,9 +3545,16 @@ bool saveGame(Character::Base &player, const char *overwrite)
     std::string path = save + "/";
 
 #else
-    
-    std::string save = "save";
-    std::string path = "./" + save + "/";
+
+    const char *homedir;
+
+    if ((homedir = getenv("HOME")) == NULL)
+    {
+        homedir = getpwuid(getuid())->pw_dir;
+    }
+
+    std::string save = std::string(homedir) + "/Documents/Saved Games/Necklace of Skulls";
+    std::string path = save + "/";
 
 #endif
 
@@ -3856,24 +3871,30 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
     {
 #if defined(_WIN32)
         PWSTR path_str;
-        
+
         SHGetKnownFolderPath(FOLDERID_Documents, KF_FLAG_DEFAULT, NULL, &path_str);
-        
+
         std::wstring wpath(path_str);
-        
+
         CoTaskMemFree(path_str);
 
         std::string save(wpath.length(), ' ');
-        
+
         std::copy(wpath.begin(), wpath.end(), save.begin());
 
         save += "/Saved Games/Necklace of Skulls";
 
         std::string path = save + "/";
 #else
-        std::string save = "save";
+        const char *homedir;
 
-        std::string path = "./" + save + "/";
+        if ((homedir = getenv("HOME")) == NULL)
+        {
+            homedir = getpwuid(getuid())->pw_dir;
+        }
+
+        std::string save = std::string(homedir) + "/Documents/Saved Games/Necklace of Skulls";
+        std::string path = save + "/";
 #endif
 
         fs::create_directories(save);
