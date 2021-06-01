@@ -173,7 +173,8 @@ namespace Story
     {
         NORMAL = 0,
         GOOD,
-        DOOM
+        DOOM,
+        RESTART
     };
 
     enum class Controls
@@ -5700,6 +5701,8 @@ class Story196 : public Story::Base
 public:
     Story196()
     {
+        Type = Story::Type::NORMAL;
+
         ID = 196;
 
         Text = "You start out along the road, relieved at the fact that this leaves the dazzling sun of the underworld at your back. You trudge on for hours. For more than hours. Time begins to have no meaning. It seems you are waling on sand, illuminated by a ruddy glow. Your pulse sounds like the roar of the tide. The redness becomes a deep gloomy haze. You feel you can hardly breathe. Each step weighs you down, but you struggle onward towards a blaze of light...\n\nYou awaken with a sobbing intake of breath. You are back in your clanhouse in Koba. You have returned through time and space to the start of your adventure. You have a chance to begin again, forewarned by your previous mistakes.";
@@ -5713,14 +5716,21 @@ public:
 
     void Event(Character::Base &player)
     {
-        for (auto i = 0; i < Character::Classes.size(); i++)
+        if (player.Type != Character::Type::CUSTOM)
         {
-            if (player.Type == Character::Classes[i].Type)
+            for (auto i = 0; i < Character::Classes.size(); i++)
             {
-                player = Character::Classes[i];
+                if (player.Type == Character::Classes[i].Type)
+                {
+                    player = Character::Classes[i];
 
-                break;
+                    break;
+                }
             }
+        }
+        else
+        {
+            Type = Story::Type::RESTART;
         }
     }
 
