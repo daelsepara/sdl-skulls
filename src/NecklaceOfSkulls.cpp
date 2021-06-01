@@ -2981,19 +2981,19 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                 splash_h = fitImage(renderer, splash, startx, starty, splashw, text_bounds);
             }
 
-            if (!story->Image || (splash && splash_h < (text_bounds - (boxh + infoh))))
+            if (!splash || (splash && splash_h < (text_bounds - (boxh + infoh))))
             {
                 putText(renderer, "Life", font, text_space, clrWH, (player.Life > 0 && story->Type != Story::Type::DOOM) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
                 putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
             }
 
-            if (!story->Image || ((splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && !player.RitualBallStarted))
+            if (!splash || ((splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && !player.RitualBallStarted))
             {
                 putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
                 putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
             }
 
-            if (!story->Image || ((splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && player.RitualBallStarted))
+            if (!splash || ((splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && player.RitualBallStarted))
             {
                 std::string score_string = "Ticks: " + std::to_string(player.Ticks) + "\nCross: " + std::to_string(player.Cross);
                 putText(renderer, "SCORES", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
@@ -4270,13 +4270,13 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
         {
             splash = createImage(story->Image);
 
-            if (splash->w != splashw)
-            {
-                splash_h = (int)((double)splashw / splash->w * splash->h);
-            }
-
             if (splash)
             {
+                if (splash->w != splashw)
+                {
+                    splash_h = (int)((double)splashw / splash->w * splash->h);
+                }
+
                 splashTexture = SDL_CreateTextureFromSurface(renderer, splash);
             }
         }
@@ -4341,24 +4341,24 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                 // Fill the surface with background color
                 fillWindow(renderer, intWH);
 
-                if (story->Image)
+                if (splash)
                 {
                     splash_h = fitImage(renderer, splash, startx, texty, splashw, text_bounds);
                 }
 
-                if (!story->Image || (splash && splash_h < (text_bounds - (boxh + infoh))))
+                if (!splash || (splash && splash_h < (text_bounds - (boxh + infoh))))
                 {
                     putText(renderer, "Life", font, text_space, clrWH, (player.Life > 0 && story->Type != Story::Type::DOOM) ? intDB : intRD, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (boxh + infoh));
                     putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
                 }
 
-                if (!story->Image || ((splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && !player.RitualBallStarted))
+                if (!splash || ((splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space)) && !player.RitualBallStarted))
                 {
                     putText(renderer, "Money", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
                     putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, intBE, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
                 }
 
-                if ((!story->Image || (splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space))) && player.RitualBallStarted)
+                if ((!splash || (splash && splash_h < text_bounds - (2 * (boxh + infoh) + box_space))) && player.RitualBallStarted)
                 {
                     std::string score_string = "Ticks: " + std::to_string(player.Ticks) + "\nCross: " + std::to_string(player.Cross);
                     putText(renderer, "SCORES", font, text_space, clrWH, intDB, TTF_STYLE_NORMAL, splashw, infoh, startx, starty + text_bounds - (2 * (boxh + infoh) + box_space));
