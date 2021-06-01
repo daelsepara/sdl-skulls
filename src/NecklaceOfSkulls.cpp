@@ -60,8 +60,9 @@ bool tradeScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &pl
 int eatScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, std::vector<Item::Type> items, int limit);
 int giftScreen(SDL_Window *window, SDL_Renderer *renderer, Story::Base *story, Character::Base &player, std::vector<std::pair<Item::Type, int>> gifts, int default_destination);
 
-Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, bool save_botton);
+Character::Base customCharacter(SDL_Window *window, SDL_Renderer *renderer);
 Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer);
+Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, bool save_botton);
 
 Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
 Story::Base *renderChoices(SDL_Window *window, SDL_Renderer *renderer, Character::Base &player, Story::Base *story);
