@@ -62,8 +62,12 @@ This is an implementation of the **Necklace of Skulls** game book (Critical IF G
 # Copyright Information 
 
 ```
+DEDICATED TO M.A.R. BARKER
+
+A Critical IF gamebook
+
 Originally published 1993 by Mammoth an imprint of Reed Consumer Books Limited
-Revised edition published 2013 by Fabled Lands Publishing an Imprint of Fabled Lands LLP
+Revised edition published 2013 by Fabled Lands Publishing an imprint of Fabled Lands LLP
 
 Text copyright (c) 1993, 2013 Dave Morris
 Map copyright (c) 1993 Leo Hartas
@@ -82,3 +86,4 @@ Feel free to report any bugs, issues, and/or suggestions. Thanks!
 # Other Gamebooks implemented with SDL
 
 [Heart of Ice](https://www.github.com/daelsepara/sdl-heart)
+[Down Among the Dead Men](https://www.github.com/daelsepara/sdl-dead)
