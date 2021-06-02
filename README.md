@@ -85,5 +85,5 @@ Feel free to report any bugs, issues, and/or suggestions. Thanks!
 
 # Other Gamebooks implemented with SDL
 
-[Heart of Ice](https://www.github.com/daelsepara/sdl-heart)
-[Down Among the Dead Men](https://www.github.com/daelsepara/sdl-dead)
+- [Heart of Ice](https://www.github.com/daelsepara/sdl-heart)
+- [Down Among the Dead Men](https://www.github.com/daelsepara/sdl-dead)
