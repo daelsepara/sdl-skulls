@@ -4736,8 +4736,16 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                 }
                 else
                 {
-                    SDL_SetWindowTitle(window, (std::string("Necklace of Skulls: ") + std::to_string(story->ID)).c_str());
+                    if (story->ID > 0)
+                    {
+                        SDL_SetWindowTitle(window, (std::string("Necklace of Skulls: ") + std::string(3 - std::to_string(story->ID).length(), '0') + std::to_string(story->ID)).c_str());
+                    }
+                    else
+                    {
+                        SDL_SetWindowTitle(window, "Necklace of Skulls");
+                    }
                 }
+
 
                 // Fill the surface with background color
                 fillWindow(renderer, intWH);
