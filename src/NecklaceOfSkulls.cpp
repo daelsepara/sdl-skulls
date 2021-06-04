@@ -503,7 +503,7 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
     auto texture = SDL_CreateTextureFromSurface(renderer, splash);
 
     // Render the image
-    if (window && renderer && splash)
+    if (window && renderer && splash && texture)
     {
         SDL_SetWindowTitle(window, "Map: One World");
 
