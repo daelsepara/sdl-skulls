@@ -4269,7 +4269,7 @@ std::vector<Button> createFilesList(SDL_Window *window, SDL_Renderer *renderer, 
 
             if (character.StoryID != -1)
             {
-                auto storyID = std::to_string(character.StoryID);
+                auto storyID = std::to_string(std::abs(character.StoryID));
 
                 game_string += std::string(3 - std::to_string(index + 1).length(), '0') + std::to_string(index + 1) + ". " + character.Name + "\n";
                 game_string += "Date: " + time_string(epoch_long) + "\n";
@@ -4478,7 +4478,7 @@ Control::Type gameScreen(SDL_Window *window, SDL_Renderer *renderer, Character::
 
                 if (character.StoryID != -1)
                 {
-                    auto storyID = std::to_string(character.StoryID);
+                    auto storyID = std::to_string(std::abs(character.StoryID));
 
                     game_string = "Date: " + time_string(epoch_long) + "\n";
                     game_string += std::string(3 - storyID.length(), '0') + storyID + ": " + character.Name;
