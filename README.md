@@ -87,3 +87,4 @@ Feel free to report any bugs, issues, and/or suggestions. Thanks!
 
 - [Heart of Ice](https://www.github.com/daelsepara/sdl-heart)
 - [Down Among the Dead Men](https://www.github.com/daelsepara/sdl-dead)
+- [Green Blood](https://www.github.com/daelsepara/sdl-green)
