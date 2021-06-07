@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=Necklace of Skulls
+Comment=Necklace of Skulls
+Version=1.0.1
+TryExec=/usr/local/games/NecklaceOfSkulls/NecklaceOfSkulls.exe
+Exec=/usr/local/games/NecklaceOfSkulls/NecklaceOfSkulls.exe
+Icon=/usr/local/games/NecklaceOfSkulls/icons/maya.png
+Path=/usr/local/games/NecklaceOfSkulls
+Terminal=false
+Categories=Game
+Type=Application
+
+Name[en_DK]=Necklace of Skulls
+Name[en_US]=Necklace of Skulls
