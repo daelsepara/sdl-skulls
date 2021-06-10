@@ -4195,7 +4195,7 @@ Character::Base loadGame(std::string file_name)
     return character;
 }
 
-#if defined(_WIN32) || defined(__arm__)
+#if defined(_WIN32) || defined(__arm__) || defined(__APPLE__)
 std::string time_string(long long deserialised)
 {
     auto epoch = std::chrono::time_point<std::chrono::system_clock>();
