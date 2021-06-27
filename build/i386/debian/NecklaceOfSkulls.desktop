@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Necklace of Skulls
 Comment=Necklace of Skulls
-Version=1.0.1
+Version=1.0.2
 TryExec=/usr/local/games/NecklaceOfSkulls/NecklaceOfSkulls.exe
 Exec=/usr/local/games/NecklaceOfSkulls/NecklaceOfSkulls.exe
 Icon=/usr/local/games/NecklaceOfSkulls/icons/maya.png

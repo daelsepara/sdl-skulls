@@ -16,6 +16,7 @@ namespace Control
         SCROLL_UP,
         SCROLL_DOWN,
         MAP,
+        CHART,
         CHARACTER,
         GAME,
         NEW,
@@ -36,8 +37,13 @@ namespace Control
         TRADE,
         GIVE,
         STEAL,
+        LOSE,
         YES,
-        NO
+        NO,
+        BUY,
+        SELL,
+        BARTER,
+        GENDER
     };
 
     class Base

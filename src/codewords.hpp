@@ -44,5 +44,24 @@ namespace Codeword
         {Codeword::Type::ZAZ, "Zaz"},
         {Codeword::Type::ZOTZ, "Zotz"}};
 
+    std::vector<Codeword::Type> Invisible = {};
+
+    bool IsInvisible(Codeword::Type codeword)
+    {
+        auto invisible = false;
+
+        for (auto i = 0; i < Codeword::Invisible.size(); i++)
+        {
+            if (Codeword::Invisible[i] == codeword)
+            {
+                invisible = true;
+
+                break;
+            }
+        }
+
+        return invisible;
+    }
+
 } // namespace Codeword
 #endif
