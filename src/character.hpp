@@ -9,6 +9,13 @@
 
 namespace Character
 {
+    enum class Gender
+    {
+        NONE = 0,
+        MALE,
+        FEMALE
+    };
+
     enum class Type
     {
         CUSTOM = 0,
@@ -49,18 +56,24 @@ namespace Character
         bool RitualBallStarted = false;
 
         int Ticks = 0;
+
         int Cross = 0;
-
-        std::vector<Skill::Base> Skills = std::vector<Skill::Base>();
-        std::vector<Item::Type> Items = std::vector<Item::Type>();
-        std::vector<Codeword::Type> Codewords = std::vector<Codeword::Type>();
-
-        std::vector<Item::Type> LostItems = std::vector<Item::Type>();
-        std::vector<Skill::Base> LostSkills = std::vector<Skill::Base>();
 
         int LostMoney = 0;
 
         int StoryID = 0;
+
+        std::vector<Skill::Base> Skills = std::vector<Skill::Base>();
+
+        std::vector<Item::Base> Items = std::vector<Item::Base>();
+
+        std::vector<Codeword::Type> Codewords = std::vector<Codeword::Type>();
+
+        std::vector<Item::Base> LostItems = std::vector<Item::Base>();
+
+        std::vector<Skill::Base> LostSkills = std::vector<Skill::Base>();
+
+        Character::Gender Gender = Character::Gender::NONE;
 
 #if defined(_WIN32) || defined(__arm__)
         long long Epoch = 0;
@@ -72,26 +85,16 @@ namespace Character
         {
         }
 
-        Base(const char *name, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Type> items, int money)
+        Base(const char *name, Character::Type type, const char *description, std::vector<Skill::Base> skills, int money)
         {
             Name = name;
+            Type = type;
             Description = description;
             Skills = skills;
-            Items = items;
             Money = money;
         }
 
-        Base(const char *name, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Type> items, std::vector<Codeword::Type> codewords, int money)
-        {
-            Name = name;
-            Description = description;
-            Skills = skills;
-            Codewords = codewords;
-            Items = items;
-            Money = money;
-        }
-
-        Base(const char *name, Character::Type type, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Type> items, int money)
+        Base(const char *name, Character::Type type, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Base> items, int money)
         {
             Name = name;
             Type = type;
@@ -101,37 +104,39 @@ namespace Character
             Money = money;
         }
 
-        Base(const char *name, Character::Type type, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Type> items, std::vector<Codeword::Type> codewords, int money)
+        Base(const char *name, Character::Type type, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Base> items, int life, int money)
         {
             Name = name;
             Type = type;
             Description = description;
             Skills = skills;
-            Codewords = codewords;
-            Items = items;
-            Money = money;
-        }
-
-        Base(const char *name, Character::Type type, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Type> items, std::vector<Codeword::Type> codewords, int life, int money)
-        {
-            Name = name;
-            Type = type;
-            Description = description;
-            Skills = skills;
-            Codewords = codewords;
             Items = items;
             Life = life;
+            MAX_LIFE_LIMIT = life;
+            Money = money;
+        }
+
+        Base(const char *name, Character::Type type, const char *description, std::vector<Skill::Base> skills, std::vector<Item::Base> items, std::vector<Codeword::Type> codewords, int life, int money)
+        {
+            Name = name;
+            Type = type;
+            Description = description;
+            Skills = skills;
+            Items = items;
+            Codewords = codewords;
+            Life = life;
+            MAX_LIFE_LIMIT = life;
             Money = money;
         }
     };
 
-    auto WARRIOR = Base("The Warrior", Character::Type::WARRIOR, "A proud noble of the Maya people, and strong in the arts of war, you tolerate no insolence from any man.", {Skill::AGILITY, Skill::ETIQUETTE, Skill::SWORDPLAY, Skill::UNARMED_COMBAT}, {Item::Type::SWORD}, 10);
-    auto HUNTER = Base("The Hunter", Character::Type::HUNTER, "You can keep pace with the deer of the woods, wrestle jaguars, and your blowgun can bring down a bird in flight. Your sharp instincts make you almost a creature of the wild yourself.", {Skill::AGILITY, Skill::TARGETING, Skill::UNARMED_COMBAT, Skill::WILDERNESS_LORE}, {Item::Type::BLOWGUN}, 10);
-    auto MYSTIC = Base("The Mystic", Character::Type::MYSTIC, "You feel that other's lives are mundane. You learnt your skills from solitary, exploration and the dreams that came while you lay asleep under the stars.", {Skill::AGILITY, Skill::CHARMS, Skill::TARGETING, Skill::WILDERNESS_LORE}, {Item::Type::MAGIC_AMULET, Item::Type::BLOWGUN}, 10);
+    auto WARRIOR = Base("The Warrior", Character::Type::WARRIOR, "A proud noble of the Maya people, and strong in the arts of war, you tolerate no insolence from any man.", {Skill::AGILITY, Skill::ETIQUETTE, Skill::SWORDPLAY, Skill::UNARMED_COMBAT}, {Item::SWORD}, 10);
+    auto HUNTER = Base("The Hunter", Character::Type::HUNTER, "You can keep pace with the deer of the woods, wrestle jaguars, and your blowgun can bring down a bird in flight. Your sharp instincts make you almost a creature of the wild yourself.", {Skill::AGILITY, Skill::TARGETING, Skill::UNARMED_COMBAT, Skill::WILDERNESS_LORE}, {Item::BLOWGUN}, 10);
+    auto MYSTIC = Base("The Mystic", Character::Type::MYSTIC, "You feel that other's lives are mundane. You learnt your skills from solitary, exploration and the dreams that came while you lay asleep under the stars.", {Skill::AGILITY, Skill::CHARMS, Skill::TARGETING, Skill::WILDERNESS_LORE}, {Item::MAGIC_AMULET, Item::BLOWGUN}, 10);
     auto WAYFARER = Base("The Wayfarer", Character::Type::WAYFARER, "You have travelled widely and witnessed countless strange sights. Your wanderings have taught you many useful skills.", {Skill::CUNNING, Skill::FOLKLORE, Skill::SEAFARING, Skill::WILDERNESS_LORE}, {}, 10);
-    auto MERCHANT = Base("The Merchant", Character::Type::MERCHANT, "Daring adventure, subtle villainy, and always one eye open for a tidy profit -- these are your tenets.", {Skill::CUNNING, Skill::ROGUERY, Skill::SEAFARING, Skill::SWORDPLAY}, {Item::Type::SWORD}, 15);
-    auto ACOLYTE = Base("The Acolyte", Character::Type::ACOLYTE, "You are master of many skills, but you know it is the god who shape man's destiny.", {Skill::ETIQUETTE, Skill::FOLKLORE, Skill::SPELLS, Skill::SWORDPLAY}, {Item::Type::MAGIC_WAND, Item::Type::SWORD}, 10);
-    auto SORCERER = Base("The Sorcerer", Character::Type::SORCERER, "Born into a high clan, you were schooled in sorcery by priests and wise men. Now you can twist reality itself to suit your wishes.", {Skill::CHARMS, Skill::ETIQUETTE, Skill::ROGUERY, Skill::SPELLS}, {Item::Type::MAGIC_AMULET, Item::Type::MAGIC_WAND}, 10);
+    auto MERCHANT = Base("The Merchant", Character::Type::MERCHANT, "Daring adventure, subtle villainy, and always one eye open for a tidy profit -- these are your tenets.", {Skill::CUNNING, Skill::ROGUERY, Skill::SEAFARING, Skill::SWORDPLAY}, {Item::SWORD}, 15);
+    auto ACOLYTE = Base("The Acolyte", Character::Type::ACOLYTE, "You are master of many skills, but you know it is the god who shape man's destiny.", {Skill::ETIQUETTE, Skill::FOLKLORE, Skill::SPELLS, Skill::SWORDPLAY}, {Item::MAGIC_WAND, Item::SWORD}, 10);
+    auto SORCERER = Base("The Sorcerer", Character::Type::SORCERER, "Born into a high clan, you were schooled in sorcery by priests and wise men. Now you can twist reality itself to suit your wishes.", {Skill::CHARMS, Skill::ETIQUETTE, Skill::ROGUERY, Skill::SPELLS}, {Item::MAGIC_AMULET, Item::MAGIC_WAND}, 10);
     auto CUSTOM = Character::Base("Custom Character", Character::Type::CUSTOM, "This is a player generated character.", {}, {}, 10);
 
     std::vector<Character::Base> Classes = {WARRIOR, HUNTER, MYSTIC, WAYFARER, MERCHANT, ACOLYTE, SORCERER};
@@ -144,7 +149,7 @@ namespace Character
         {
             for (auto i = 0; i < player.Items.size(); i++)
             {
-                if (player.Items[i] == item)
+                if (player.Items[i].Type == item && player.Items[i].Charge != 0)
                 {
                     found = i;
 
@@ -184,29 +189,36 @@ namespace Character
         {
             for (auto i = 0; i < items.size(); i++)
             {
-                if (FIND_ITEM(player, items[i]) >= 0)
+                auto result = Character::FIND_ITEM(player, items[i]);
+
+                if (result >= 0)
                 {
                     found++;
                 }
             }
         }
 
-        return found == items.size();
+        return found >= items.size();
     }
 
-    int COUNT_ITEMS(Character::Base &player, std::vector<Item::Type> items)
+    int COUNT_ITEMS(Character::Base &player, std::vector<Item::Base> items)
     {
         auto found = 0;
 
         for (auto i = 0; i < items.size(); i++)
         {
-            if (FIND_ITEM(player, items[i]) >= 0)
+            if (Character::FIND_ITEM(player, items[i].Type) >= 0)
             {
                 found++;
             }
         }
 
         return found;
+    }
+
+    bool VERIFY_ITEMS_ANY(Character::Base &player, std::vector<Item::Base> items)
+    {
+        return Character::COUNT_ITEMS(player, items) > 0;
     }
 
     // Checks if player has the skill and the required item
@@ -222,7 +234,7 @@ namespace Character
                 {
                     if (player.Skills[i].Requirement != Item::Type::NONE)
                     {
-                        found = VERIFY_ITEMS(player, {player.Skills[i].Requirement});
+                        found = Character::VERIFY_ITEMS(player, {player.Skills[i].Requirement});
                     }
                     else
                     {
@@ -233,7 +245,6 @@ namespace Character
                 }
             }
         }
-
         return found;
     }
 
@@ -307,7 +318,7 @@ namespace Character
                 {
                     for (auto j = 0; j < items.size(); j++)
                     {
-                        if (FIND_ITEM(player, items[j]) >= 0)
+                        if (Character::FIND_ITEM(player, items[j]) >= 0)
                         {
                             found++;
                         }
@@ -320,20 +331,20 @@ namespace Character
     }
 
     // verify that player has the skill and ANY of the items
-    bool VERIFY_SKILL_ANY(Character::Base &player, Skill::Type skill, std::vector<Item::Type> items)
+    bool VERIFY_SKILL_ANY_ITEMS(Character::Base &player, Skill::Type skill, std::vector<Item::Type> items)
     {
-        return FIND_SKILL_ITEMS(player, skill, items) > 0;
+        return Character::FIND_SKILL_ITEMS(player, skill, items) > 0;
     }
 
     // verify that player has the skill and ALL of the items
-    bool VERIFY_SKILL_ALL(Character::Base &player, Skill::Type skill, std::vector<Item::Type> items)
+    bool VERIFY_SKILL_ALL_ITEMS(Character::Base &player, Skill::Type skill, std::vector<Item::Type> items)
     {
-        return FIND_SKILL_ITEMS(player, skill, items) == items.size();
+        return Character::FIND_SKILL_ITEMS(player, skill, items) >= items.size();
     }
 
     bool VERIFY_SKILL_ITEM(Character::Base &player, Skill::Type skill, Item::Type item)
     {
-        return VERIFY_SKILL_ALL(player, skill, {item});
+        return Character::VERIFY_SKILL_ALL_ITEMS(player, skill, {item});
     }
 
     int FIND_CODEWORD(Character::Base &player, Codeword::Type codeword)
@@ -364,7 +375,7 @@ namespace Character
         {
             for (auto i = 0; i < codewords.size(); i++)
             {
-                auto result = FIND_CODEWORD(player, codewords[i]);
+                auto result = Character::FIND_CODEWORD(player, codewords[i]);
 
                 if (result >= 0)
                 {
@@ -378,17 +389,17 @@ namespace Character
 
     bool VERIFY_CODEWORDS_ANY(Character::Base &player, std::vector<Codeword::Type> codewords)
     {
-        return FIND_CODEWORDS(player, codewords) > 0;
+        return Character::FIND_CODEWORDS(player, codewords) > 0;
     }
 
     bool VERIFY_CODEWORDS_ALL(Character::Base &player, std::vector<Codeword::Type> codewords)
     {
-        return FIND_CODEWORDS(player, codewords) == codewords.size();
+        return Character::FIND_CODEWORDS(player, codewords) == codewords.size();
     }
 
-    bool VERIFY_CODEWORD(Character::Base &player, Codeword::Type codeword)
+    bool VERIFY_CODEWORDS(Character::Base &player, std::vector<Codeword::Type> codewords)
     {
-        return VERIFY_CODEWORDS_ALL(player, {codeword});
+        return Character::VERIFY_CODEWORDS_ALL(player, codewords);
     }
 
     bool VERIFY_LIFE(Character::Base &player, int threshold = 0)
@@ -401,7 +412,7 @@ namespace Character
         return player.Items.size() <= player.ITEM_LIMIT;
     }
 
-    void GET_ITEMS(Character::Base &player, std::vector<Item::Type> items)
+    void GET_ITEMS(Character::Base &player, std::vector<Item::Base> items)
     {
         player.Items.insert(player.Items.end(), items.begin(), items.end());
     }
@@ -410,7 +421,7 @@ namespace Character
     {
         for (auto i = 0; i < codewords.size(); i++)
         {
-            if (!VERIFY_CODEWORD(player, codewords[i]))
+            if (!Character::VERIFY_CODEWORDS(player, {codewords[i]}))
             {
                 player.Codewords.push_back(codewords[i]);
             }
@@ -419,7 +430,7 @@ namespace Character
 
     void REMOVE_CODEWORD(Character::Base &player, Codeword::Type codeword)
     {
-        if (VERIFY_CODEWORD(player, codeword))
+        if (Character::VERIFY_CODEWORDS(player, {codeword}))
         {
             auto result = FIND_CODEWORD(player, codeword);
 
@@ -430,11 +441,11 @@ namespace Character
         }
     }
 
-    void GET_UNIQUE_ITEMS(Character::Base &player, std::vector<Item::Type> items)
+    void GET_UNIQUE_ITEMS(Character::Base &player, std::vector<Item::Base> items)
     {
         for (auto i = 0; i < items.size(); i++)
         {
-            if (!VERIFY_ITEMS(player, {items[i]}))
+            if (!Character::VERIFY_ITEMS(player, {items[i].Type}))
             {
                 player.Items.push_back(items[i]);
             }
@@ -447,7 +458,7 @@ namespace Character
         {
             for (auto i = 0; i < items.size(); i++)
             {
-                auto result = FIND_ITEM(player, items[i]);
+                auto result = Character::FIND_ITEM(player, items[i]);
 
                 if (result >= 0)
                 {
@@ -463,7 +474,7 @@ namespace Character
         {
             for (auto i = 0; i < skills.size(); i++)
             {
-                auto result = FIND_SKILL(player, skills[i]);
+                auto result = Character::FIND_SKILL(player, skills[i]);
 
                 if (result >= 0)
                 {
@@ -496,6 +507,11 @@ namespace Character
     {
         player.Money += money;
 
+        if (money < 0)
+        {
+            player.LostMoney -= money;
+        }
+
         if (player.Money < 0)
         {
             player.Money = 0;
@@ -514,7 +530,7 @@ namespace Character
         player.LostMoney = player.LostMoney;
         player.Money = 0;
 
-        LOSE_POSSESSIONS(player);
+        Character::LOSE_POSSESSIONS(player);
     }
 
     void SCORE(Character::Base &player, int &scorer, int score)

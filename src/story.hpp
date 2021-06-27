@@ -15,28 +15,37 @@ namespace Choice
     enum class Type
     {
         NORMAL = 0, // No requirements
-        ITEM,
-        GET_ITEM,
-        GIVE_ITEM,
+        ITEMS,
+        GET_ITEMS,
+        GIVE_ITEMS,
         SKILL,
         CODEWORD,
         MONEY,
         LIFE,
         ANY_ITEM,
-        ALL_ITEMS,
         ANY_SKILL,
+        ALL_ITEMS,
         SKILL_ITEM,
         SKILL_ANY,
         SKILL_ALL,
         FIRE_WEAPON,
-        LOSE_ITEM,
+        LOSE_ITEMS,
         LOSE_MONEY,
         LOSE_ALL,
         LOSE_SKILLS,
+        GET_CODEWORD,
+        LOSE_CODEWORD,
+        GAIN_MONEY,
+        GIVE,
+        BRIBE,
+        TAKE,
+        PAY_WITH,
         DONATE,
         EAT,
         EAT_HEAL,
-        GIFT
+        GIFT,
+        SELL,
+        BARTER
     };
 
     class Base
@@ -48,26 +57,15 @@ namespace Choice
 
         Skill::Type Skill = Skill::Type::NONE;
 
-        std::vector<Item::Type> Items = std::vector<Item::Type>();
+        std::vector<Item::Base> Items = std::vector<Item::Base>();
+
         std::vector<std::pair<Item::Type, int>> Gifts = std::vector<std::pair<Item::Type, int>>();
 
-        Item::Type Item = Item::Type::NONE;
-
-        Codeword::Type Codeword = Codeword::Type::NONE;
+        std::vector<Codeword::Type> Codewords = std::vector<Codeword::Type>();
 
         int Value = 0;
 
         int Destination = -1;
-
-        Base(Choice::Type type, const char *text, int destination, Skill::Type skill, Item::Type item, int value)
-        {
-            Type = type;
-            Text = text;
-            Destination = destination;
-            Item = item;
-            Skill = skill;
-            Value = value;
-        }
 
         Base(const char *text, int destination)
         {
@@ -75,21 +73,21 @@ namespace Choice
             Destination = destination;
         }
 
-        Base(const char *text, int destination, Skill::Type skill, Item::Type item)
+        Base(const char *text, int destination, Skill::Type skill, std::vector<Item::Base> items)
         {
             Text = text;
             Destination = destination;
             Type = Choice::Type::SKILL_ITEM;
-            Item = item;
+            Items = items;
             Skill = skill;
         }
 
-        Base(const char *text, int destination, Item::Type item)
+        Base(const char *text, int destination, std::vector<Item::Base> items)
         {
             Text = text;
             Destination = destination;
-            Type = Choice::Type::ITEM;
-            Item = item;
+            Type = Choice::Type::ITEMS;
+            Items = items;
         }
 
         Base(const char *text, int destination, Skill::Type skill)
@@ -100,12 +98,12 @@ namespace Choice
             Skill = skill;
         }
 
-        Base(const char *text, int destination, Codeword::Type codeword)
+        Base(const char *text, int destination, std::vector<Codeword::Type> codewords)
         {
             Text = text;
             Destination = destination;
             Type = Choice::Type::CODEWORD;
-            Codeword = codeword;
+            Codewords = codewords;
         }
 
         Base(const char *text, int destination, Choice::Type type, int value)
@@ -123,15 +121,7 @@ namespace Choice
             Type = type;
         }
 
-        Base(const char *text, int destination, Choice::Type type, Item::Type item)
-        {
-            Text = text;
-            Destination = destination;
-            Type = type;
-            Item = item;
-        }
-
-        Base(const char *text, int destination, Choice::Type type, std::vector<Item::Type> items)
+        Base(const char *text, int destination, Choice::Type type, std::vector<Item::Base> items)
         {
             Text = text;
             Destination = destination;
@@ -139,7 +129,7 @@ namespace Choice
             Items = items;
         }
 
-        Base(const char *text, int destination, Choice::Type type, Skill::Type skill, std::vector<Item::Type> items)
+        Base(const char *text, int destination, Choice::Type type, Skill::Type skill, std::vector<Item::Base> items)
         {
             Text = text;
             Destination = destination;
@@ -148,13 +138,21 @@ namespace Choice
             Items = items;
         }
 
-        Base(const char *text, int destination, Choice::Type type, std::vector<Item::Type> items, int value)
+        Base(const char *text, int destination, Choice::Type type, std::vector<Item::Base> items, int value)
         {
             Text = text;
             Destination = destination;
             Type = type;
             Items = items;
             Value = value;
+        }
+
+        Base(const char *text, int destination, Choice::Type type, std::vector<Codeword::Type> codewords)
+        {
+            Text = text;
+            Destination = destination;
+            Type = type;
+            Codewords = codewords;
         }
 
         Base(const char *text, int destination, std::vector<std::pair<Item::Type, int>> gifts)
@@ -173,8 +171,8 @@ namespace Story
     {
         NORMAL = 0,
         GOOD,
-        DOOM,
-        RESTART
+        RESTART,
+        DOOM
     };
 
     enum class Controls
@@ -182,7 +180,11 @@ namespace Story
         NONE = 0,
         STANDARD,
         SHOP,
-        TRADE
+        BUY_AND_SELL,
+        SELL,
+        TRADE,
+        BARTER,
+        BARTER_AND_SHOP
     };
 
     class Base
@@ -201,14 +203,18 @@ namespace Story
         Story::Controls Controls = Story::Controls::NONE;
 
         std::vector<Choice::Base> Choices = std::vector<Choice::Base>();
-        std::vector<std::pair<Item::Type, int>> Shop = std::vector<std::pair<Item::Type, int>>();
-        std::pair<Item::Type, Item::Type> Trade;
+
+        std::vector<std::pair<Item::Base, int>> Shop = std::vector<std::pair<Item::Base, int>>();
+        std::vector<std::pair<Item::Base, int>> Sell = std::vector<std::pair<Item::Base, int>>();
+
+        std::pair<Item::Base, Item::Base> Trade;
+        std::vector<std::pair<Item::Base, std::vector<Item::Base>>> Barter = std::vector<std::pair<Item::Base, std::vector<Item::Base>>>();
 
         // Player selects items to take up to a certain limit
-        std::vector<Item::Type> Take = std::vector<Item::Type>();
+        std::vector<Item::Base> Take = std::vector<Item::Base>();
 
         // Player selects items to lose
-        std::vector<Item::Type> ToLose = std::vector<Item::Type>();
+        std::vector<Item::Base> ToLose = std::vector<Item::Base>();
 
         int Limit = 0;
 
@@ -297,6 +303,57 @@ namespace Story
         return controls;
     }
 
+    std::vector<Button> SellControls(bool compact = false)
+    {
+        auto idx = 0;
+
+        auto controls = std::vector<Button>();
+
+        if (!compact)
+        {
+            controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+            controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+
+            idx = 2;
+        }
+
+        controls.push_back(Button(idx, "icons/map.png", idx, idx + 1, compact ? idx : 1, idx, startx, buttony, Control::Type::MAP));
+        controls.push_back(Button(idx + 1, "icons/disk.png", idx, idx + 2, compact ? idx + 1 : 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
+        controls.push_back(Button(idx + 2, "icons/user.png", idx + 1, idx + 3, compact ? idx + 2 : 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+        controls.push_back(Button(idx + 3, "icons/items.png", idx + 2, idx + 4, compact ? idx + 3 : 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
+        controls.push_back(Button(idx + 4, "icons/next.png", idx + 3, idx + 5, compact ? idx + 4 : 1, idx + 4, startx + 4 * gridsize, buttony, Control::Type::NEXT));
+        controls.push_back(Button(idx + 5, "icons/selling.png", idx + 4, idx + 6, compact ? idx + 5 : 1, idx + 5, startx + 5 * gridsize, buttony, Control::Type::SELL));
+        controls.push_back(Button(idx + 6, "icons/exit.png", idx + 5, idx + 6, compact ? idx + 6 : 1, idx + 6, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        return controls;
+    }
+
+    std::vector<Button> BuyAndSellControls(bool compact = false)
+    {
+        auto idx = 0;
+
+        auto controls = std::vector<Button>();
+
+        if (!compact)
+        {
+            controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+            controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+
+            idx = 2;
+        }
+
+        controls.push_back(Button(idx, "icons/map.png", idx, idx + 1, compact ? idx : 1, idx, startx, buttony, Control::Type::MAP));
+        controls.push_back(Button(idx + 1, "icons/disk.png", idx, idx + 2, compact ? idx + 1 : 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
+        controls.push_back(Button(idx + 2, "icons/user.png", idx + 1, idx + 3, compact ? idx + 2 : 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+        controls.push_back(Button(idx + 3, "icons/items.png", idx + 2, idx + 4, compact ? idx + 3 : 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
+        controls.push_back(Button(idx + 4, "icons/next.png", idx + 3, idx + 5, compact ? idx + 4 : 1, idx + 4, startx + 4 * gridsize, buttony, Control::Type::NEXT));
+        controls.push_back(Button(idx + 5, "icons/shop.png", idx + 4, idx + 6, compact ? idx + 5 : 1, idx + 5, startx + 5 * gridsize, buttony, Control::Type::SHOP));
+        controls.push_back(Button(idx + 6, "icons/selling.png", idx + 5, idx + 7, compact ? idx + 6 : 1, idx + 6, startx + 6 * gridsize, buttony, Control::Type::SELL));
+        controls.push_back(Button(idx + 7, "icons/exit.png", idx + 6, idx + 7, compact ? idx + 7 : 1, idx + 7, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        return controls;
+    }
+
     std::vector<Button> TradeControls(bool compact = false)
     {
         auto idx = 0;
@@ -322,6 +379,57 @@ namespace Story
         return controls;
     }
 
+    std::vector<Button> BarterControls(bool compact = false)
+    {
+        auto idx = 0;
+
+        auto controls = std::vector<Button>();
+
+        if (!compact)
+        {
+            controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+            controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+
+            idx = 2;
+        }
+
+        controls.push_back(Button(idx, "icons/map.png", idx, idx + 1, compact ? idx : 1, idx, startx, buttony, Control::Type::MAP));
+        controls.push_back(Button(idx + 1, "icons/disk.png", idx, idx + 2, compact ? idx + 1 : 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
+        controls.push_back(Button(idx + 2, "icons/user.png", idx + 1, idx + 3, compact ? idx + 2 : 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+        controls.push_back(Button(idx + 3, "icons/items.png", idx + 2, idx + 4, compact ? idx + 3 : 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
+        controls.push_back(Button(idx + 4, "icons/next.png", idx + 3, idx + 5, compact ? idx + 4 : 1, idx + 4, startx + 4 * gridsize, buttony, Control::Type::NEXT));
+        controls.push_back(Button(idx + 5, "icons/exhange.png", idx + 4, idx + 6, compact ? idx + 5 : 1, idx + 5, startx + 5 * gridsize, buttony, Control::Type::BARTER));
+        controls.push_back(Button(idx + 6, "icons/exit.png", idx + 5, idx + 6, compact ? idx + 6 : 1, idx + 6, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        return controls;
+    }
+
+    std::vector<Button> BarterAndShopControls(bool compact = false)
+    {
+        auto idx = 0;
+
+        auto controls = std::vector<Button>();
+
+        if (!compact)
+        {
+            controls.push_back(Button(0, "icons/up-arrow.png", 0, 1, 0, 1, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + border_space, Control::Type::SCROLL_UP));
+            controls.push_back(Button(1, "icons/down-arrow.png", 0, 2, 0, 2, (1.0 - Margin) * SCREEN_WIDTH - arrow_size, texty + text_bounds - arrow_size - border_space, Control::Type::SCROLL_DOWN));
+
+            idx = 2;
+        }
+
+        controls.push_back(Button(idx, "icons/map.png", idx, idx + 1, compact ? idx : 1, idx, startx, buttony, Control::Type::MAP));
+        controls.push_back(Button(idx + 1, "icons/disk.png", idx, idx + 2, compact ? idx + 1 : 1, idx + 1, startx + gridsize, buttony, Control::Type::GAME));
+        controls.push_back(Button(idx + 2, "icons/user.png", idx + 1, idx + 3, compact ? idx + 2 : 1, idx + 2, startx + 2 * gridsize, buttony, Control::Type::CHARACTER));
+        controls.push_back(Button(idx + 3, "icons/items.png", idx + 2, idx + 4, compact ? idx + 3 : 1, idx + 3, startx + 3 * gridsize, buttony, Control::Type::USE));
+        controls.push_back(Button(idx + 4, "icons/next.png", idx + 3, idx + 5, compact ? idx + 4 : 1, idx + 4, startx + 4 * gridsize, buttony, Control::Type::NEXT));
+        controls.push_back(Button(idx + 5, "icons/shop.png", idx + 4, idx + 6, compact ? idx + 5 : 1, idx + 5, startx + 5 * gridsize, buttony, Control::Type::SHOP));
+        controls.push_back(Button(idx + 6, "icons/exchange.png", idx + 5, idx + 7, compact ? idx + 6 : 1, idx + 6, startx + 6 * gridsize, buttony, Control::Type::BARTER));
+        controls.push_back(Button(idx + 7, "icons/exit.png", idx + 6, idx + 7, compact ? idx + 7 : 1, idx + 7, (1.0 - Margin) * SCREEN_WIDTH - buttonw, buttony, Control::Type::BACK));
+
+        return controls;
+    }
+
     std::vector<Button> ExitControls(bool compact = false)
     {
         auto idx = 0;
@@ -340,7 +448,6 @@ namespace Story
 
         return controls;
     }
-
 } // namespace Story
 
 class NotImplemented : public Story::Base
@@ -434,7 +541,7 @@ public:
 
         Choices.clear();
 
-        Shop = {{Item::Type::OWL, 2}};
+        Shop = {{Item::OWL, 2}};
 
         Controls = Story::Controls::SHOP;
     }
@@ -537,7 +644,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("[SEAFARING]", 76, Skill::Type::SEAFARING));
-        Choices.push_back(Choice::Base("Use a ROPE", 99, Item::Type::ROPE));
+        Choices.push_back(Choice::Base("Use a ROPE", 99, {Item::ROPE}));
         Choices.push_back(Choice::Base("Otherwise", 214));
 
         Controls = Story::Controls::STANDARD;
@@ -707,7 +814,7 @@ public:
     {
         PreText = "A peasant shows up at last, emerging on the adjacent ledge beside the river. Time passes in a dream-like way here; you cannot tell if hours or days have gone by while you were waiting. You keenly feel the urgency of your quest.\n\nThe noble gets to his feet. \"Since I was here first, I shall travel on with this man,\" he says to you once he has explained the situation to the peasant. \"No doubt another poor man will arrive eventually. I'll throw back the poles once I'm across, so that you will be able to use them.\"\n\nDespite the fact that he was here first, you have to insist that you go across at once. He reacts with indignation, and a struggle ensues. A life of luxury has left him no match for you, with your ardency and youthful vigour. You subdue him and take the pole for yourself.";
 
-        if (!Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_BEAD}) && !Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
+        if (!Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_BEAD}) && !Character::VERIFY_SKILL(player, Skill::Type::UNARMED_COMBAT))
         {
             Character::GAIN_LIFE(player, -1);
 
@@ -733,8 +840,6 @@ public:
         ID = 14;
 
         Text = "You address the sentinel by what you think is his name, only to realize your mistake at once. He gives a high howl of immortal outrage and lashes out with his bone sceptre. It slices through the air like a falling star, giving you no chance to react. You hear yourself cry out in agony at the blow, but the curious thing is that you never discover where you have been hurt. By the time you look down, you are already dead.";
-
-        Image = "images/filler1.png";
 
         Type = Story::Type::DOOM;
 
@@ -847,7 +952,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::ANGEL}))
         {
             Character::REMOVE_CODEWORD(player, Codeword::Type::ANGEL);
         }
@@ -873,7 +978,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("[TARGETING]", 204, Skill::Type::TARGETING));
-        Choices.push_back(Choice::Base("[SPELLS]", 227, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS]", 227, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("MELEE: Charge straight at him", 250));
         Choices.push_back(Choice::Base("MELEE: Charge at him zigzagging as you run", 273));
 
@@ -1039,7 +1144,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::GET_ITEMS(player, {Item::Type::GOLD_DIADEM});
+        Character::GET_ITEMS(player, {Item::GOLD_DIADEM});
     }
 
     int Continue(Character::Base &player) { return 390; }
@@ -1195,13 +1300,11 @@ public:
     {
         ID = 33;
 
-        Image = "images/filler1.png";
-
         Choices.clear();
 
-        Choices.push_back(Choice::Base("[SPELLS]", 439, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS]", 439, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("[CUNNING]", 428, Skill::Type::CUNNING));
-        Choices.push_back(Choice::Base("Use CHILLI PEPPERS", 125, Item::Type::CHILLI_PEPPERS));
+        Choices.push_back(Choice::Base("Use CHILLI PEPPERS", 125, {Item::CHILLI_PEPPERS}));
 
         Controls = Story::Controls::STANDARD;
     }
@@ -1218,7 +1321,7 @@ public:
         {
             PreText += "\n\nYou realize that at last the passage is beginning to slope upwards again. You are climbing out of the canyon, towards the dragon's other head. Sure enough, the awful heat gradually subsides. When you reach the top of your gruelling ascent, however, a further shock awaits you. The dragon's hind and jaws are closed. You are trapped in here.";
 
-            if (!Character::VERIFY_SKILL(player, Skill::Type::CUNNING) && !Character::VERIFY_SKILL_ANY(player, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}) && !Character::VERIFY_ITEMS(player, {Item::Type::CHILLI_PEPPERS}))
+            if (!Character::VERIFY_SKILL(player, Skill::Type::CUNNING) && !Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}) && !Character::VERIFY_ITEMS(player, {Item::Type::CHILLI_PEPPERS}))
             {
                 PreText += "\n\nYour days will end in the maw of the the dragon.";
 
@@ -1303,7 +1406,7 @@ public:
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
         {
-            Choices.push_back(Choice::Base("Discard the JADE BEAD", 174, Choice::Type::LOSE_ITEM, Item::Type::JADE_BEAD));
+            Choices.push_back(Choice::Base("Discard the JADE BEAD", 174, Choice::Type::LOSE_ITEMS, {Item::JADE_BEAD}));
         }
 
         Choices.push_back(Choice::Base("Continue", 180));
@@ -1342,9 +1445,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("[SPELLS] Try to revivify the dead man, though it would probably use up all your magical power", 108, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
-        Choices.push_back(Choice::Base("You can expend your magic using a GOLD DIADEM", 130, Item::Type::GOLD_DIADEM));
-        Choices.push_back(Choice::Base("... or a CHALIFE OF LIFE", 153, Item::Type::CHALICE_OF_LIFE));
+        Choices.push_back(Choice::Base("[SPELLS] Try to revivify the dead man, though it would probably use up all your magical power", 108, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
+        Choices.push_back(Choice::Base("You can expend your magic using a GOLD DIADEM", 130, {Item::GOLD_DIADEM}));
+        Choices.push_back(Choice::Base("... or a CHALIFE OF LIFE", 153, {Item::CHALICE_OF_LIFE}));
         Choices.push_back(Choice::Base("Otherwise", 176));
 
         Controls = Story::Controls::STANDARD;
@@ -1409,7 +1512,7 @@ public:
 
         if (!Character::VERIFY_ITEMS(player, {Item::Type::HAUNCH_OF_VENISON}))
         {
-            Choices.push_back(Choice::Base("Use a STONE", 87, Item::Type::STONE));
+            Choices.push_back(Choice::Base("Use a STONE", 87, {Item::STONE}));
             Choices.push_back(Choice::Base("Otherwise", 110));
         }
     }
@@ -1440,7 +1543,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::POKTAPOK}))
         {
             return 65;
         }
@@ -1459,8 +1562,6 @@ public:
     Story043()
     {
         ID = 43;
-
-        Image = "images/filler1.png";
 
         Choices.clear();
 
@@ -1528,7 +1629,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::GET_ITEMS(player, {Item::Type::MAGIC_DRINK});
+        Character::GET_ITEMS(player, {Item::MAGIC_DRINK});
     }
 
     int Continue(Character::Base &player) { return 135; }
@@ -1680,7 +1781,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("[CUNNING] You don't mind losing the SHAWL", 425, Skill::Type::CUNNING, Item::Type::SHAWL));
+        Choices.push_back(Choice::Base("[CUNNING] You don't mind losing the SHAWL", 425, Skill::Type::CUNNING, {Item::SHAWL}));
         Choices.push_back(Choice::Base("Release your grip and fall back off the tree", 400));
         Choices.push_back(Choice::Base("Cling on and risk letting the monstrous arm seize you", 3));
 
@@ -1864,7 +1965,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("[CUNNING]", 377, Skill::Type::CUNNING));
-        Choices.push_back(Choice::Base("[SPELLS]", 11, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS]", 11, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("Battle with the creature: attack it now while it is still attached to its host", 104));
         Choices.push_back(Choice::Base("Wait until nightfall", 100));
 
@@ -1884,7 +1985,7 @@ public:
         Image = "images/pyramid.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Offer INCENSE", 82, Choice::Type::LOSE_ITEM, Item::Type::INCENSE));
+        Choices.push_back(Choice::Base("Offer INCENSE", 82, Choice::Type::LOSE_ITEMS, {Item::INCENSE}));
         Choices.push_back(Choice::Base("Offer your own life blood (LOSE 1 Life Point)", 82, Choice::Type::LIFE, -1));
 
         Controls = Story::Controls::STANDARD;
@@ -1928,7 +2029,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("[TARGETING]", 217, Skill::Type::TARGETING));
-        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 241, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 241, {Item::MAN_OF_GOLD}));
         Choices.push_back(Choice::Base("March along the causeway", 194));
         Choices.push_back(Choice::Base("Head directly for the jetty by leaving the causeway and wading through the maggots", 171));
 
@@ -2175,7 +2276,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("[FOLKLORE]", 345, Skill::Type::FOLKLORE));
-        Choices.push_back(Choice::Base("[SPELLS]", 92, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS]", 92, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("Stand ready to fight the demons off", 115));
         Choices.push_back(Choice::Base("Run back towards the cliffs", 137));
 
@@ -2201,7 +2302,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::GET_UNIQUE_ITEMS(player, {Item::Type::LETTER_OF_INTRODUCTION});
+        Character::GET_UNIQUE_ITEMS(player, {Item::LETTER_OF_INTRODUCTION});
     }
 
     int Continue(Character::Base &player) { return 93; }
@@ -2281,7 +2382,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             DAMAGE = -2;
 
@@ -2367,7 +2468,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Keep the PADDLE", 53, Choice::Type::GET_ITEM, Item::Type::PADDLE));
+        Choices.push_back(Choice::Base("Keep the PADDLE", 53, Choice::Type::GET_ITEMS, {Item::PADDLE}));
         Choices.push_back(Choice::Base("Leave it", 53));
 
         Controls = Story::Controls::STANDARD;
@@ -2383,14 +2484,12 @@ public:
 
         Image = "images/filler1.png";
 
-        Choices.clear();
-
         Controls = Story::Controls::STANDARD;
     }
 
     int Background(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK) && !Character::VERIFY_SKILL(player, Skill::Type::ETIQUETTE))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::POKTAPOK}) && !Character::VERIFY_SKILL(player, Skill::Type::ETIQUETTE))
         {
             return 215;
         }
@@ -2431,8 +2530,6 @@ public:
 
         Image = "images/filler1.png";
 
-        Choices.clear();
-
         Controls = Story::Controls::STANDARD;
     }
 
@@ -2444,7 +2541,7 @@ public:
 
         Choices.clear();
 
-        if (!Character::VERIFY_CODEWORD(player, Codeword::Type::PSYCHODUCT))
+        if (!Character::VERIFY_CODEWORDS(player, {Codeword::Type::PSYCHODUCT}))
         {
             PreText += "\n\nYou spend a restful night at Fire Serpent's home. The next day, you decide to...";
 
@@ -2504,10 +2601,10 @@ public:
     {
         Choices.clear();
 
-        if (!Character::VERIFY_SKILL(player, Skill::Type::FOLKLORE) && !Character::VERIFY_CODEWORD(player, Codeword::Type::PAKAL))
+        if (!Character::VERIFY_SKILL(player, Skill::Type::FOLKLORE) && !Character::VERIFY_CODEWORDS(player, {Codeword::Type::PAKAL}))
         {
             Choices.push_back(Choice::Base("Cross the canyon by leaping from one spire to the next", 147));
-            Choices.push_back(Choice::Base("Use a BLOWGUN to cross more safely", 170, Item::Type::BLOWGUN));
+            Choices.push_back(Choice::Base("Use a BLOWGUN to cross more safely", 170, {Item::BLOWGUN}));
         }
     }
 
@@ -2585,7 +2682,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SPELLS, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             return 128;
         }
@@ -2793,7 +2890,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::SAKBE))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::SAKBE}))
         {
             Choices[1].Destination = 114;
         }
@@ -2812,8 +2909,6 @@ public:
     Story092()
     {
         ID = 92;
-
-        Image = "images/filler1.png";
 
         Choices.clear();
         Choices.push_back(Choice::Base("Do battle with the demons", 115));
@@ -2864,11 +2959,11 @@ public:
         Choices.clear();
 
         Shop = {
-            {Item::Type::WATERSKIN, 2},
-            {Item::Type::ROPE, 3},
-            {Item::Type::FIREBRAND, 2},
-            {Item::Type::POT_OF_DYE, 2},
-            {Item::Type::CHILLI_PEPPERS, 1}};
+            {Item::WATERSKIN, 2},
+            {Item::ROPE, 3},
+            {Item::FIREBRAND, 2},
+            {Item::POT_OF_DYE, 2},
+            {Item::CHILLI_PEPPERS, 1}};
 
         Controls = Story::Controls::SHOP;
     }
@@ -3004,27 +3099,27 @@ public:
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::MAGIC_AMULET}))
         {
-            ToLose.push_back({Item::Type::MAGIC_AMULET});
+            ToLose.push_back({Item::MAGIC_AMULET});
         }
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::SHAWL}))
         {
-            ToLose.push_back({Item::Type::SHAWL});
+            ToLose.push_back({Item::SHAWL});
         }
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::JADE_BEAD}))
         {
-            ToLose.push_back({Item::Type::JADE_BEAD});
+            ToLose.push_back({Item::JADE_BEAD});
         }
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::MAGIC_DRINK}))
         {
-            ToLose.push_back({Item::Type::MAGIC_DRINK});
+            ToLose.push_back({Item::MAGIC_DRINK});
         }
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::MAIZE_CAKES}))
         {
-            ToLose.push_back({Item::Type::MAIZE_CAKES});
+            ToLose.push_back({Item::MAIZE_CAKES});
         }
 
         if (ToLose.size() > 1)
@@ -3035,9 +3130,9 @@ public:
         }
         else if (ToLose.size() == 1)
         {
-            PreText += "\n\nThe monkeys managed to filch the " + std::string(Item::Descriptions[ToLose[0]]) + ".";
+            PreText += "\n\nThe monkeys managed to filch the " + ToLose[0].Description + ".";
 
-            Character::LOSE_ITEMS(player, {ToLose[0]});
+            Character::LOSE_ITEMS(player, {ToLose[0].Type});
         }
         else
         {
@@ -3060,7 +3155,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Keep the PADDLE", 53, Choice::Type::GET_ITEM, Item::Type::PADDLE));
+        Choices.push_back(Choice::Base("Keep the PADDLE", 53, Choice::Type::GET_ITEMS, {Item::PADDLE}));
         Choices.push_back(Choice::Base("Leave it", 53));
 
         Controls = Story::Controls::STANDARD;
@@ -3121,7 +3216,7 @@ public:
 
         Choices.clear();
 
-        if (!Character::VERIFY_CODEWORD(player, Codeword::Type::PSYCHODUCT))
+        if (!Character::VERIFY_CODEWORDS(player, {Codeword::Type::PSYCHODUCT}))
         {
             Character::GAIN_LIFE(player, 1);
 
@@ -3158,7 +3253,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             DAMAGE = -6;
 
@@ -3199,7 +3294,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Jump into the sacred well", 327));
-        Choices.push_back(Choice::Base("[SPELLS] Cast a protective enchantment first", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS] Cast a protective enchantment first", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
 
         Controls = Story::Controls::STANDARD;
     }
@@ -3272,7 +3367,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::GET_ITEMS(player, {Item::Type::BROTHERS_SKULL});
+        Character::GET_ITEMS(player, {Item::BROTHERS_SKULL});
     }
 
     int Continue(Character::Base &player) { return 200; }
@@ -3512,7 +3607,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("[SPELLS]", 92, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS]", 92, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("Flee for your life", 137));
 
         Controls = Story::Controls::STANDARD;
@@ -3526,7 +3621,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             DAMAGE = -1;
 
@@ -3588,7 +3683,7 @@ public:
 
         Bye = "Bidding the peasant good.day, you set off once more towards Yashuna";
 
-        Shop = {{Item::Type::SERPENT_BRACELET, 1}};
+        Shop = {{Item::SERPENT_BRACELET, 1}};
 
         Controls = Story::Controls::SHOP;
     }
@@ -3817,7 +3912,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Use LETTER OF INTRODUCTION", 370, Item::Type::LETTER_OF_INTRODUCTION));
+        Choices.push_back(Choice::Base("Use LETTER OF INTRODUCTION", 370, {Item::LETTER_OF_INTRODUCTION}));
         Choices.push_back(Choice::Base("[SEAFARING]", 391, Skill::Type::SEAFARING));
         Choices.push_back(Choice::Base("Otherwise", 158));
 
@@ -3932,8 +4027,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Use a STONE and LUMP OF CHARCOAL", 155, Choice::Type::ALL_ITEMS, {Item::Type::STONE, Item::Type::LUMP_OF_CHARCOAL}));
-        Choices.push_back(Choice::Base("Use a FIREBRAND", 319, Item::Type::FIREBRAND));
+        Choices.push_back(Choice::Base("Use a STONE and LUMP OF CHARCOAL", 155, Choice::Type::ALL_ITEMS, {Item::STONE, Item::LUMP_OF_CHARCOAL}));
+        Choices.push_back(Choice::Base("Use a FIREBRAND", 319, {Item::FIREBRAND}));
         Choices.push_back(Choice::Base("Otherwise", 178));
 
         Controls = Story::Controls::STANDARD;
@@ -3971,7 +4066,7 @@ public:
 
         if (player.Life > 0)
         {
-            if (Character::VERIFY_CODEWORD(player, Codeword::Type::SHADE))
+            if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::SHADE}))
             {
                 Choices[1].Destination = 203;
             }
@@ -4015,18 +4110,16 @@ public:
 
         Image = "images/giant.png";
 
-        Choices.clear();
-
         Controls = Story::Controls::STANDARD;
     }
 
     void Event(Character::Base &player)
     {
-        Character::GET_ITEMS(player, {Item::Type::BROTHERS_SKULL});
+        Character::GET_ITEMS(player, {Item::BROTHERS_SKULL});
 
         Choices.clear();
 
-        if (!Character::VERIFY_CODEWORD(player, Codeword::Type::SAKBE))
+        if (!Character::VERIFY_CODEWORDS(player, {Codeword::Type::SAKBE}))
         {
             Choices.push_back(Choice::Base("Head on to Tahil by land", 228));
             Choices.push_back(Choice::Base("Head on to Tahil by sea", 251));
@@ -4086,7 +4179,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Take the MAN OF GOLD", 93, Choice::Type::GET_ITEM, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Take the MAN OF GOLD", 93, Choice::Type::GET_ITEMS, {Item::MAN_OF_GOLD}));
         Choices.push_back(Choice::Base("Choose from the rest of the treasures", 185));
 
         Controls = Story::Controls::STANDARD;
@@ -4108,7 +4201,7 @@ public:
 
         Bye = "Bidding the peasant a curt good-day, you continue along the causeway towards Yashuna";
 
-        Shop = {{Item::Type::PAPAYA, 1}};
+        Shop = {{Item::PAPAYA, 1}};
 
         Controls = Story::Controls::SHOP;
     }
@@ -4136,7 +4229,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Take = {Item::Type::CHALICE_OF_LIFE};
+        Take = {Item::CHALICE_OF_LIFE};
 
         Limit = 1;
     }
@@ -4150,8 +4243,6 @@ public:
         ID = 141;
 
         Text = "A grip of iron closes on your arm and you are dragged bodily into the black pit inside the tree. A musky stench makes you reel as you a are pinned against a wall of moss and decaying wood. The creature's body is covered with rough scales and it begins to strangle you with remorseless strength. You can do nothing to save yourself, and your last thought is of the GOLD DIADEM clutched in your hand. You batter it against the creature in a futile struggle, bending the soft metal with no care for its value now. You will be the richest corpse in the forest.";
-
-        Image = "images/filler1.png";
 
         Type = Story::Type::DOOM;
 
@@ -4175,11 +4266,11 @@ public:
         Choices.clear();
 
         Shop = {
-            {Item::Type::WATERSKIN, 1},
-            {Item::Type::ROPE, 2},
-            {Item::Type::TERRACOTTA_EFFIGY, 3},
-            {Item::Type::BLOWGUN, 3},
-            {Item::Type::INCENSE, 3}};
+            {Item::WATERSKIN, 1},
+            {Item::ROPE, 2},
+            {Item::TERRACOTTA_EFFIGY, 3},
+            {Item::BLOWGUN, 3},
+            {Item::INCENSE, 3}};
 
         Controls = Story::Controls::SHOP;
     }
@@ -4239,8 +4330,6 @@ public:
         ID = 145;
 
         Text = "The snake's head jabs forward and you feel its fangs sink into your flesh. A sensation like acid burning its way across your chest is immediately followed by a creeping numbness; panic is replaced by ghastly calm. You stare at the hooded monster coiled at your breast. It looks like a suckling demon in one of the mythological murals on temple walls. You watch the waves of muscular effort which pulse along its neck as it pumps the contents of its venom sac into your veins.\n\nYou slump to the ledge, unable to feel the cold stone against your flesh. A cloudy film moves in from the edges of your vision. The eyes of the serpent glimmer like the first stars of evening...\n\nDarkness falls.";
-
-        Image = "images/flying-snake.png";
 
         Type = Story::Type::DOOM;
 
@@ -4525,7 +4614,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::POKTAPOK}))
         {
             PreText = "You manage to send the ball soaring to strike one of the zones marked out along the top of the wall. You score a point.";
 
@@ -4541,7 +4630,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::SHADE))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::SHADE}))
         {
             return 203;
         }
@@ -4681,7 +4770,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::GET_UNIQUE_ITEMS(player, {Item::Type::LETTER_OF_INTRODUCTION});
+        Character::GET_UNIQUE_ITEMS(player, {Item::LETTER_OF_INTRODUCTION});
     }
 
     int Continue(Character::Base &player) { return 93; }
@@ -4699,8 +4788,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Give some food from your own pack (MAIZE CAKES)", 186, Choice::Type::GIVE_ITEM, Item::Type::MAIZE_CAKES));
-        Choices.push_back(Choice::Base("Give some food from your own pack (PAPAYA)", 186, Choice::Type::GIVE_ITEM, Item::Type::PAPAYA));
+        Choices.push_back(Choice::Base("Give some food from your own pack (MAIZE CAKES)", 186, Choice::Type::GIVE_ITEMS, {Item::MAIZE_CAKES}));
+        Choices.push_back(Choice::Base("Give some food from your own pack (PAPAYA)", 186, Choice::Type::GIVE_ITEMS, {Item::PAPAYA}));
         Choices.push_back(Choice::Base("Stand by and watch them pick the fruit", 96));
 
         Controls = Story::Controls::STANDARD;
@@ -4733,7 +4822,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             PreText += "[SWORDPLAY] ";
 
@@ -4777,7 +4866,7 @@ public:
 
             PreText += "\n\nThe stabai have made themselves scarce, affrighted by the monster's anger. You are alone. Running until you have left the dead tree far behind, you lean breathlessly against a fallen log to examine the diadem. It is inlaid with a jade plaque in the cruciform shape of the sacred Tree of Life (GOLD DIADEM). You drop it into your pack ruefully, as it cost you dear.";
 
-            Character::GET_ITEMS(player, {Item::Type::GOLD_DIADEM});
+            Character::GET_ITEMS(player, {Item::GOLD_DIADEM});
         }
 
         Text = PreText.c_str();
@@ -4834,7 +4923,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             DAMAGE = -2;
 
@@ -5073,11 +5162,11 @@ public:
         {
             PreText += "\n\nYou remember that you were advised to keep the JADE BEAD under your tongue until you reached a crossroads. You can take it out of your mouth, and choose to discard it altogether.";
 
-            Choices.push_back(Choice::Base("Discard the JADE BEAD first", 173, Choice::Type::LOSE_ITEM, Item::Type::JADE_BEAD));
+            Choices.push_back(Choice::Base("Discard the JADE BEAD first", 173, Choice::Type::LOSE_ITEMS, {Item::JADE_BEAD}));
         }
 
         Choices.push_back(Choice::Base("[FOLKLORE]", 289, Skill::Type::FOLKLORE));
-        Choices.push_back(Choice::Base("[SPELLS]", 312, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS]", 312, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("Take the white road", 243));
         Choices.push_back(Choice::Base("Take the red road", 196));
         Choices.push_back(Choice::Base("Take the black road", 219));
@@ -5423,7 +5512,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Take = {{Item::Type::GREEN_MIRROR, Item::Type::MAGIC_DRINK, Item::Type::JADE_SWORD}};
+        Take = {{Item::GREEN_MIRROR, Item::MAGIC_DRINK, Item::JADE_SWORD}};
 
         Limit = 2;
     }
@@ -5468,7 +5557,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::GET_ITEMS(player, {Item::Type::HAUNCH_OF_VENISON});
+        Character::GET_ITEMS(player, {Item::HAUNCH_OF_VENISON});
 
         Character::GAIN_LIFE(player, 1);
     }
@@ -5488,11 +5577,11 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Trade a parcel of MAIZE CAKES", 211, Choice::Type::ITEM, Item::Type::MAIZE_CAKES));
+        Choices.push_back(Choice::Base("Trade a parcel of MAIZE CAKES", 211, {Item::MAIZE_CAKES}));
         Choices.push_back(Choice::Base("Go north", 120));
         Choices.push_back(Choice::Base("Go south", 165));
 
-        Shop = {{Item::Type::LOBSTER_POT, 2}};
+        Shop = {{Item::LOBSTER_POT, 2}};
 
         Controls = Story::Controls::SHOP;
     }
@@ -5531,7 +5620,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("[ROGUERY]", 283, Skill::Type::ROGUERY));
         Choices.push_back(Choice::Base("Break the tomb open using the HAMMER", 329));
-        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 306, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 306, {Item::MAN_OF_GOLD}));
         Choices.push_back(Choice::Base("Decide against further exploration of the tombs: return to the canoe and continue on your way", 167));
 
         Controls = Story::Controls::STANDARD;
@@ -5539,7 +5628,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Take = {Item::Type::HAMMER};
+        Take = {Item::HAMMER};
 
         Limit = 1;
     }
@@ -5631,7 +5720,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             DAMAGE = -2;
 
@@ -5683,7 +5772,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             DAMAGE = -2;
 
@@ -5711,8 +5800,6 @@ class Story196 : public Story::Base
 public:
     Story196()
     {
-        Type = Story::Type::NORMAL;
-
         ID = 196;
 
         Text = "You start out along the road, relieved at the fact that this leaves the dazzling sun of the underworld at your back. You trudge on for hours. For more than hours. Time begins to have no meaning. It seems you are waling on sand, illuminated by a ruddy glow. Your pulse sounds like the roar of the tide. The redness becomes a deep gloomy haze. You feel you can hardly breathe. Each step weighs you down, but you struggle onward towards a blaze of light...\n\nYou awaken with a sobbing intake of breath. You are back in your clanhouse in Koba. You have returned through time and space to the start of your adventure. You have a chance to begin again, forewarned by your previous mistakes.";
@@ -5726,6 +5813,8 @@ public:
 
     void Event(Character::Base &player)
     {
+        Type = Story::Type::NORMAL;
+
         if (player.Type != Character::Type::CUSTOM)
         {
             for (auto i = 0; i < Character::Classes.size(); i++)
@@ -5882,7 +5971,7 @@ public:
     {
         Choices.clear();
 
-        if (!Character::VERIFY_CODEWORD(player, Codeword::Type::ZAZ))
+        if (!Character::VERIFY_CODEWORDS(player, {Codeword::Type::ZAZ}))
         {
             Choices.push_back(Choice::Base("[FOLKLORE]", 267, Skill::Type::FOLKLORE));
             Choices.push_back(Choice::Base("[ROGUERY]", 290, Skill::Type::ROGUERY));
@@ -5930,7 +6019,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::IGNIS))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::IGNIS}))
         {
             return 248;
         }
@@ -5999,7 +6088,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::VENUS))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::VENUS}))
         {
             return 240;
         }
@@ -6020,6 +6109,8 @@ public:
         ID = 205;
 
         Image = "images/filler1.png";
+
+        Choices.clear();
 
         Controls = Story::Controls::STANDARD;
     }
@@ -6142,7 +6233,7 @@ public:
 
         if (Character::VERIFY_ITEMS(player, {Item::Type::MAGIC_DRINK}))
         {
-            PreText += Item::Descriptions[Item::Type::MAGIC_DRINK];
+            PreText += Item::MAGIC_DRINK.Name;
             PreText += "\n\nIt can be used once during your adventure. It will restore 5 lost Life Points, up to the limit of your initial Life Points score.";
 
             selected++;
@@ -6155,7 +6246,7 @@ public:
                 PreText += "\n\n";
             }
 
-            PreText += Item::Descriptions[Item::Type::GREEN_MIRROR];
+            PreText += Item::GREEN_MIRROR.Name;
             PreText += "\n\nIt can be used once -- and only once -- at any point in your adventure before deciding which you will choose.";
 
             selected++;
@@ -6168,7 +6259,7 @@ public:
                 PreText += "\n\n";
             }
 
-            PreText += Item::Descriptions[Item::Type::JADE_SWORD];
+            PreText += Item::JADE_SWORD.Name;
             PreText += "\n\nIt counts as both a sword and a wand for the purposes of skill-use.";
 
             selected++;
@@ -6224,7 +6315,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::GET_ITEMS(player, {Item::Type::HAUNCH_OF_VENISON});
+        Character::GET_ITEMS(player, {Item::HAUNCH_OF_VENISON});
 
         Character::GAIN_LIFE(player, 1);
     }
@@ -6247,7 +6338,7 @@ public:
         Choices.push_back(Choice::Base("Make your way north out of the city", 120));
         Choices.push_back(Choice::Base("Go south towards the forest", 165));
 
-        Trade = std::make_pair(Item::Type::MAIZE_CAKES, Item::Type::PARCEL_OF_SALT);
+        Trade = std::make_pair(Item::MAIZE_CAKES, Item::PARCEL_OF_SALT);
 
         Controls = Story::Controls::TRADE;
     }
@@ -6261,8 +6352,6 @@ public:
         ID = 212;
 
         Text = "You open your mouth to speak and the JADE BEAD rolls out. It falls, bounces off the rock and disappears into the water with a tiny splash.\n\nIn the same moment, the tenebrous image of the Rain God leaps into sharp focus. You see him as clearly now as if all the sun's light were focused just where he is standing. Everything else goes plunging into darkness. Your vision is filled with the blazing presence of the divinity.\n\nHis face is far from human; you can see that now. He opens his hand in the traditional beneficent gesture of royalty throughout the ages, inviting you to speak.\n\n\"O supreme lord...\"\n\nYou falter. How can you address a god?\n\nThen you hear his voice inside your head, telling you that he knows why you have been sent. He accepts the sacrifice. Your life will buy the heavy rains needed to irrigate the crops.\n\nYou try to open your mouth to tell him more -- about your quest to find your brother, about the thirst for truth and for vengeance on the sorcerer in the western desert. But you are too drowsy. The dazzling radiance of the Rain God's aura is veiled by a wave of darkness. You relax, strangely content.\n\nIn the gloom of the underworld, a monstrous serpent contentedly laps up the last of your blood and dives beneath the water.";
-
-        Image = "images/filler1.png";
 
         Type = Story::Type::DOOM;
 
@@ -6304,13 +6393,13 @@ public:
         if (!Character::VERIFY_SKILL(player, Skill::Type::ROGUERY))
         {
             Choices.push_back(Choice::Base("Smash the tomb open using the HAMMER", 329));
-            Choices.push_back(Choice::Base("Use the MAN OF GOLD", 306, Item::Type::MAN_OF_GOLD));
+            Choices.push_back(Choice::Base("Use the MAN OF GOLD", 306, {Item::MAN_OF_GOLD}));
             Choices.push_back(Choice::Base("Decide against violating the tombs and return to the canoe, continuing on your way", 167));
         }
 
         Text = PreText.c_str();
 
-        Take = {Item::Type::HAMMER};
+        Take = {Item::HAMMER};
 
         Limit = 1;
     }
@@ -6326,8 +6415,6 @@ public:
         ID = 214;
 
         Text = "You try to paddle the canoe, but the current is too strong. You are borne helplessly on to an underground waterfall and flung out as the canoe goes plunging over the brink. Something strikes your head. There is a blaze of painful light, then darkness as you go under the surface. You drift down towards the river bed, dimly aware that your life ebbing away with the thin trickle of air bubbles rising from your slack jaw.";
-
-        Image = "images/filler1.png";
 
         Type = Story::Type::DOOM;
 
@@ -6365,8 +6452,6 @@ public:
     {
         ID = 216;
 
-        Image = "images/filler1.png";
-
         Choices.clear();
 
         Controls = Story::Controls::STANDARD;
@@ -6378,7 +6463,7 @@ public:
 
         PreText = "You spend a minute staring down into the rolling billows of gritty smoke. It ought to be a mercy that you cannot see the bottom of the canyon, but in fact the faint glare of those distant fires only evokes the worst fears of your imagination. You make several run-ups to the edge of the canyon, stopping short each time with a gasp of sudden panic. But at last, dredging up every drop of courage, you manage to force yourself to leap out towards the first spire of rock.\n\nYou misjudged your landing. For a long agonizing second you are left teetering on the brink. Then you slip, barely managing to catch hold of the spire in time to prevent yourself plunging down into the volcanic abyss. It is only when you wrap your limbs around the spire that you discover it is baking hot. You do not have the strength to pull yourself up, and the heat will soon force you to relinquish your grip.";
 
-        if (!Character::VERIFY_CODEWORD(player, Codeword::Type::ZOTZ))
+        if (!Character::VERIFY_CODEWORDS(player, {Codeword::Type::ZOTZ}))
         {
             PreText += " You are left to morbidly consider your fate in the last minutes before your strength gives out.";
 
@@ -6434,7 +6519,7 @@ public:
 
         Choices.clear();
 
-        if (!Character::VERIFY_ANY_SKILLS(player, {Skill::Type::AGILITY, Skill::Type::ROGUERY}) && !Character::VERIFY_SKILL_ANY(player, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}))
+        if (!Character::VERIFY_ANY_SKILLS(player, {Skill::Type::AGILITY, Skill::Type::ROGUERY}) && !Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SPELLS, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             PreText += "\n\nYou will have to give up on your plan and decide what to do the next morning.";
 
@@ -6448,7 +6533,7 @@ public:
         {
             Choices.push_back(Choice::Base("[AGILITY]", 354, Skill::Type::AGILITY));
             Choices.push_back(Choice::Base("[ROGUERY]", 374, Skill::Type::ROGUERY));
-            Choices.push_back(Choice::Base("[SPELLS]", 396, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+            Choices.push_back(Choice::Base("[SPELLS]", 396, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
         }
 
         Text = PreText.c_str();
@@ -6500,7 +6585,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::ANGEL}))
         {
             return 269;
         }
@@ -6626,7 +6711,7 @@ public:
         {
             return 421;
         }
-        else if (Character::VERIFY_CODEWORD(player, Codeword::Type::ZOTZ))
+        else if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::ZOTZ}))
         {
             return 432;
         }
@@ -6702,7 +6787,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::VENUS))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::VENUS}))
         {
             return 442;
         }
@@ -6760,7 +6845,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             DAMAGE = -1;
 
@@ -6904,7 +6989,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::CENOTE))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::CENOTE}))
         {
             Character::REMOVE_CODEWORD(player, Codeword::Type::CENOTE);
 
@@ -6972,7 +7057,7 @@ public:
 
         if (!Character::VERIFY_SKILL(player, Skill::Type::FOLKLORE))
         {
-            Choices.push_back(Choice::Base("Give them JADE BEAD", 53, Choice::Type::GIVE_ITEM, Item::Type::JADE_BEAD));
+            Choices.push_back(Choice::Base("Give them JADE BEAD", 53, Choice::Type::GIVE_ITEMS, {Item::JADE_BEAD}));
             Choices.push_back(Choice::Base("Continue", 53));
         }
     }
@@ -7278,7 +7363,7 @@ public:
         Choices.push_back(Choice::Base("Fight it", 362));
         Choices.push_back(Choice::Base("[CUNNING]", 270, Skill::Type::CUNNING));
         Choices.push_back(Choice::Base("[TARGETING]", 316, Skill::Type::TARGETING));
-        Choices.push_back(Choice::Base("Use the HYDRA BLOOD BALL", 383, Item::Type::HYDRA_BLOOD_BALL));
+        Choices.push_back(Choice::Base("Use the HYDRA BLOOD BALL", 383, {Item::HYDRA_BLOOD_BALL}));
 
         Controls = Story::Controls::STANDARD;
     }
@@ -7342,8 +7427,6 @@ public:
 
         Text = "You do not even get a dozen paces. Contemptuously, Necklace of Skulls raises one of his many-jointed limbs and brings a gout of celestial darkness streaming down from the cobalt sky. You are engulfed in icy shadow, and can only writhe in silent horror as the spell sucks you out of this world and carries you down through the ground towards the abode ghosts. You have failed.";
 
-        Image = "images/necklace-of-skulls.png";
-
         Type = Story::Type::DOOM;
 
         Choices.clear();
@@ -7364,8 +7447,8 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Travel with him and help with the defence (SWORD and BLOWGUN)", 300, Choice::Type::ALL_ITEMS, {Item::Type::SWORD, Item::Type::BLOWGUN}));
-        Choices.push_back(Choice::Base("... or with a JADE SWORD and BLOWGUN", 300, Choice::Type::ALL_ITEMS, {Item::Type::JADE_SWORD, Item::Type::BLOWGUN}));
+        Choices.push_back(Choice::Base("Travel with him and help with the defence (SWORD and BLOWGUN)", 300, Choice::Type::ALL_ITEMS, {Item::SWORD, Item::BLOWGUN}));
+        Choices.push_back(Choice::Base("... or with a JADE SWORD and BLOWGUN", 300, Choice::Type::ALL_ITEMS, {Item::JADE_SWORD, Item::BLOWGUN}));
         Choices.push_back(Choice::Base("Pay for your passage (6 cacao)", 300, Choice::Type::LOSE_MONEY, 6));
         Choices.push_back(Choice::Base("Travel overland instead", 228));
 
@@ -7381,8 +7464,6 @@ public:
         ID = 252;
 
         Text = "It is an arduous climb in the dry noon heat. You reach the city exhausted, and are grateful for the goblet of water that is put into your hands by a smiling priest. He beckons to a throng of richly attired warriors whose red face-paint and black helmet feathers make their welcoming smiles look rather fierce. \"We're glad to greet such an esteemed guest,\" says one.\n\n\"You are just the sort of person we're looking for these days,\" mutters another, hand resting casually on his sword-hilt.\n\n\"Why not come this way and spruce yourself up?\" says another, resting his strong arm across your weary shoulders.\n\nYou are led to the altar platform on top of the city's main pyramid, where more smiling priests await you. And if you feel like a turkey who's being invited to a feast, you are not far wrong.";
-
-        Image = "images/filler1.png";
 
         Type = Story::Type::DOOM;
 
@@ -7464,8 +7545,6 @@ public:
 
         Text = "The rumbling in your belly grows more insistent. You must find something to eat or you risk starving here in the forest's depths.";
 
-        Choices.clear();
-
         Controls = Story::Controls::STANDARD;
     }
 
@@ -7473,9 +7552,9 @@ public:
     {
         Choices.clear();
 
-        if (Character::COUNT_ITEMS(player, {Item::Type::MAIZE_CAKES, Item::Type::PAPAYA, Item::Type::OWL, Item::Type::HAUNCH_OF_VENISON, Item::Type::SALTED_MEAT}))
+        if (Character::COUNT_ITEMS(player, {Item::MAIZE_CAKES, Item::PAPAYA, Item::OWL, Item::HAUNCH_OF_VENISON, Item::SALTED_MEAT}))
         {
-            Choices.push_back(Choice::Base("Eat from your provisions", 279, Choice::Type::EAT_HEAL, {Item::Type::MAIZE_CAKES, Item::Type::PAPAYA, Item::Type::OWL, Item::Type::HAUNCH_OF_VENISON, Item::Type::SALTED_MEAT}, 1));
+            Choices.push_back(Choice::Base("Eat from your provisions", 279, Choice::Type::EAT_HEAL, {Item::MAIZE_CAKES, Item::PAPAYA, Item::OWL, Item::HAUNCH_OF_VENISON, Item::SALTED_MEAT}, 1));
         }
         else
         {
@@ -7497,7 +7576,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Resist the fate they have in store for you", 281));
-        Choices.push_back(Choice::Base("[SPELLS] Cast a protective enchantment", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS] Cast a protective enchantment", 304, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("Agree to being thrown into the pit", 327));
 
         Controls = Story::Controls::STANDARD;
@@ -7572,7 +7651,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::OLMEK))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::OLMEK}))
         {
             Character::REMOVE_CODEWORD(player, Codeword::Type::OLMEK);
         }
@@ -7592,7 +7671,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("[AGILITY] Climb up to the tombs", 190, Skill::Type::AGILITY));
-        Choices.push_back(Choice::Base("Use magic to get up there (SPELLS and ROPE)", 213, Skill::Type::SPELLS, Item::Type::ROPE));
+        Choices.push_back(Choice::Base("Use magic to get up there (SPELLS and ROPE)", 213, Skill::Type::SPELLS, {Item::ROPE}));
         Choices.push_back(Choice::Base("Do not to explore the tombs", 236));
 
         Controls = Story::Controls::STANDARD;
@@ -7659,7 +7738,7 @@ public:
     {
         Choices.clear();
 
-        if (!Character::VERIFY_SKILL(player, Skill::Type::FOLKLORE) && !Character::VERIFY_CODEWORD(player, Codeword::Type::CALABASH))
+        if (!Character::VERIFY_SKILL(player, Skill::Type::FOLKLORE) && !Character::VERIFY_CODEWORDS(player, {Codeword::Type::CALABASH}))
         {
             Choices.push_back(Choice::Base("Stay here as the woman asked you to", 100));
             Choices.push_back(Choice::Base("Sneak a look under a pitcher", 333));
@@ -7704,7 +7783,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             DAMAGE = -1;
 
@@ -7991,7 +8070,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::VENUS))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::VENUS}))
         {
             return 240;
         }
@@ -8036,7 +8115,7 @@ public:
         Choices.push_back(Choice::Base("Head directly towards Shakalla", 298));
         Choices.push_back(Choice::Base("Detour to the coast and make your way via Tahil", 228));
 
-        Shop = {{Item::Type::SALTED_MEAT, 1}};
+        Shop = {{Item::SALTED_MEAT, 1}};
 
         Controls = Story::Controls::SHOP;
     }
@@ -8097,7 +8176,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Keep the SHAWL", 302, Choice::Type::GET_ITEM, Item::Type::SHAWL));
+        Choices.push_back(Choice::Base("Keep the SHAWL", 302, Choice::Type::GET_ITEMS, {Item::SHAWL}));
         Choices.push_back(Choice::Base("Leave the SHAWL", 324));
 
         Controls = Story::Controls::STANDARD;
@@ -8141,7 +8220,7 @@ public:
         Image = "images/pirates.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("[SPELLS]", 274, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS]", 274, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("[TARGETING]", 297, Skill::Type::TARGETING));
         Choices.push_back(Choice::Base("Otherwise", 320));
 
@@ -8192,7 +8271,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::GET_ITEMS(player, {Item::Type::CHALICE_OF_LIFE});
+        Character::GET_ITEMS(player, {Item::CHALICE_OF_LIFE});
     }
 
     int Continue(Character::Base &player) { return 258; }
@@ -8210,11 +8289,11 @@ public:
         Image = "images/flying-snake.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("[SWORDPLAY] Try closing with the snake to fight it", 375, Choice::Type::SKILL_ANY, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SWORDPLAY] Try closing with the snake to fight it", 375, Choice::Type::SKILL_ANY, Skill::Type::SWORDPLAY, {Item::SWORD, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("[UNARMED COMBAT]", 375, Skill::Type::UNARMED_COMBAT));
         Choices.push_back(Choice::Base("[TARGETING] Shoot it", 352, Skill::Type::TARGETING));
         Choices.push_back(Choice::Base("[CHARMS] Cast a protective enchantment", 394, Skill::Type::CHARMS));
-        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 413, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 413, {Item::MAN_OF_GOLD}));
         Choices.push_back(Choice::Base("Give up any hope of looting the tomb and climb back down to the canoe while you still can", 167));
 
         Controls = Story::Controls::STANDARD;
@@ -8278,7 +8357,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Search for the two-headed dragon", 309));
-        Choices.push_back(Choice::Base("Use a BLOWGUN to get across", 170, Item::Type::BLOWGUN));
+        Choices.push_back(Choice::Base("Use a BLOWGUN to get across", 170, {Item::BLOWGUN}));
         Choices.push_back(Choice::Base("Try jumping between the spires of rock", 147));
 
         Controls = Story::Controls::STANDARD;
@@ -8295,6 +8374,8 @@ public:
         Text = "All signs are that the woman is a victim of one of the parasitical monsters that people call nightcrawlers. These are disembodied heads that latch onto a human host, sinking tendrils deep into the flesh that allow them to control their victim like a puppet. By day they prefer to shield themselves from the sun, which no doubt explains the overturned pitcher on the woman's shoulder. After nightfall they detach from the host and go gliding about in search of blood to feed on.\n\nYou know that salt prevents the night-crawler from fixing onto its prey.";
 
         Image = "images/filler1.png";
+
+        Choices.clear();
 
         Controls = Story::Controls::STANDARD;
     }
@@ -8384,7 +8465,7 @@ public:
         }
         else if (player.Items.size() == 1)
         {
-            Character::LOSE_ITEMS(player, {player.Items[0]});
+            Character::LOSE_ITEMS(player, {player.Items[0].Type});
         }
         else
         {
@@ -8427,7 +8508,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             BLOCKED = true;
 
@@ -8590,7 +8671,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             DAMAGE += 2;
 
@@ -8653,8 +8734,6 @@ public:
 
         Image = "images/filler1.png";
 
-        Choices.clear();
-
         Bye = "Days turn to weeks. At last you catch sight of the town of Shakalla in the distance. Beyond it lies the great stony rim of the desert, crouching like a baleful predator at the edge of the world.";
 
         Controls = Story::Controls::STANDARD;
@@ -8672,11 +8751,11 @@ public:
 
             Choices.push_back(Choice::Base("Continue", 321));
         }
-        else if (Character::COUNT_ITEMS(player, {Item::Type::MAIZE_CAKES, Item::Type::PAPAYA, Item::Type::OWL, Item::Type::HAUNCH_OF_VENISON, Item::Type::SALTED_MEAT}))
+        else if (Character::COUNT_ITEMS(player, {Item::MAIZE_CAKES, Item::PAPAYA, Item::OWL, Item::HAUNCH_OF_VENISON, Item::SALTED_MEAT}))
         {
             PreText += "\n\nHaving no skills to hunt for food, you are forced to eat from your provisions.";
 
-            Choices.push_back(Choice::Base("Eat from your provisions", 321, Choice::Type::EAT, {Item::Type::MAIZE_CAKES, Item::Type::PAPAYA, Item::Type::OWL, Item::Type::HAUNCH_OF_VENISON, Item::Type::SALTED_MEAT}, 2));
+            Choices.push_back(Choice::Base("Eat from your provisions", 321, Choice::Type::EAT, {Item::MAIZE_CAKES, Item::PAPAYA, Item::OWL, Item::HAUNCH_OF_VENISON, Item::SALTED_MEAT}, 2));
         }
         else
         {
@@ -8725,7 +8804,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("Prevent his appropriation of the vessel using [ETIQUETTE] ", 159, Skill::Type::ETIQUETTE));
         Choices.push_back(Choice::Base("Use [CUNNING]", 183, Skill::Type::CUNNING));
-        Choices.push_back(Choice::Base("[SWORDPLAY] Fight", 206, Choice::Type::SKILL_ANY, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SWORDPLAY] Fight", 206, Choice::Type::SKILL_ANY, Skill::Type::SWORDPLAY, {Item::SWORD, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("You are not bothered about him taking the vessel, you can just set out towards Shakalla", 85));
 
         Controls = Story::Controls::STANDARD;
@@ -8768,8 +8847,8 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("[FOLKLORE]", 255, Skill::Type::FOLKLORE));
-        Choices.push_back(Choice::Base("Return the SHAWL", 347, Item::Type::SHAWL));
-        Choices.push_back(Choice::Base("Keep the SHAWL", 369, Item::Type::SHAWL));
+        Choices.push_back(Choice::Base("Return the SHAWL", 347, {Item::SHAWL}));
+        Choices.push_back(Choice::Base("Keep the SHAWL", 369, {Item::SHAWL}));
 
         Controls = Story::Controls::STANDARD;
     }
@@ -8839,9 +8918,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 351, Item::Type::MAN_OF_GOLD));
-        Choices.push_back(Choice::Base("... the PARCEL OF SALT", 372, Item::Type::PARCEL_OF_SALT));
-        Choices.push_back(Choice::Base("... the FIREBRAND", 393, Item::Type::FIREBRAND));
+        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 351, {Item::MAN_OF_GOLD}));
+        Choices.push_back(Choice::Base("... the PARCEL OF SALT", 372, {Item::PARCEL_OF_SALT}));
+        Choices.push_back(Choice::Base("... the FIREBRAND", 393, {Item::FIREBRAND}));
         Choices.push_back(Choice::Base("Otherwise, you will have to fight", 328));
 
         Controls = Story::Controls::STANDARD;
@@ -8861,7 +8940,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Retreat back down to the canoe", 167));
-        Choices.push_back(Choice::Base("[SWORDPLAY] Close with the snake and fight it", 375, Choice::Type::SKILL_ANY, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SWORDPLAY] Close with the snake and fight it", 375, Choice::Type::SKILL_ANY, Skill::Type::SWORDPLAY, {Item::SWORD, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("[UNARMED COMBAT]", 375, Skill::Type::UNARMED_COMBAT));
         Choices.push_back(Choice::Base("[TARGETING] Shoot it", 352, Skill::Type::TARGETING));
         Choices.push_back(Choice::Base("[CHARMS] Cast a protective enchantment", 394, Skill::Type::CHARMS));
@@ -8932,9 +9011,9 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Let Kawak have the JADE BEAD", 33, Choice::Type::GIVE_ITEM, Item::Type::JADE_BEAD));
-        Choices.push_back(Choice::Base("Employ the MAN OF GOLD", 79, Item::Type::MAN_OF_GOLD));
-        Choices.push_back(Choice::Base("Use a BLOWGUN", 170, Item::Type::BLOWGUN));
+        Choices.push_back(Choice::Base("Let Kawak have the JADE BEAD", 33, Choice::Type::GIVE_ITEMS, {Item::JADE_BEAD}));
+        Choices.push_back(Choice::Base("Employ the MAN OF GOLD", 79, {Item::MAN_OF_GOLD}));
+        Choices.push_back(Choice::Base("Use a BLOWGUN", 170, {Item::BLOWGUN}));
         Choices.push_back(Choice::Base("Try crossing via the line of stepping-stones formed by the tips of the rock spires", 147));
 
         Controls = Story::Controls::STANDARD;
@@ -8984,8 +9063,6 @@ public:
     {
         ID = 311;
 
-        Image = "images/flying-head.png";
-
         Choices.clear();
 
         Controls = Story::Controls::STANDARD;
@@ -8997,7 +9074,7 @@ public:
 
         PreText = "You roll forward, carrying yourself and your hideous foe to the ground. It emits a gurgle of vaunting glee as it presses the stump of its neck against your shoulder, trying to drive its vampiric tendrils into your flesh and make you its willing host.";
 
-        if (!Character::VERIFY_SKILL(player, Skill::Type::CHARMS) && !Character::VERIFY_CODEWORD(player, Codeword::Type::SALVATION))
+        if (!Character::VERIFY_SKILL(player, Skill::Type::CHARMS) && !Character::VERIFY_CODEWORDS(player, {Codeword::Type::SALVATION}))
         {
             PreText += "\n\nYou have no defence against the creature's malign magic and you are doomed to become its next victim.";
 
@@ -9151,7 +9228,7 @@ public:
         {
             return 340;
         }
-        else if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+        else if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::ANGEL}))
         {
             return 363;
         }
@@ -9185,7 +9262,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::SHADE))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::SHADE}))
         {
             return 385;
         }
@@ -9261,7 +9338,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             DAMAGE = -3;
 
@@ -9316,8 +9393,6 @@ public:
         ID = 322;
 
         Text = "You become weaker and weaker. Finally you collapse and lie stretched out on the hard sun-blistered ground, too weak to rise. You feel like one who has been chosen for sacrifice to the gods, spread-eagled and helpless. Your eyes are stinging. You stare up at the sky, which first blackens until it is like ink, then explodes in a hazy burst of light. Now you are weightless, dropping down an endless tunnel that leads into the bowels of the earth...\n\nAnd so you die, far out in the cruel desert with only the vultures to witness your last agonized moments. Perhaps you will be reunited with your brother in the afterlife -- but only the gods can say.";
-
-        Image = "images/filler1.png";
 
         Type = Story::Type::DOOM;
 
@@ -9439,11 +9514,11 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("[SPELLS]", 411, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("[SPELLS]", 411, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
         Choices.push_back(Choice::Base("[CHARMS]", 189, Skill::Type::CHARMS));
         Choices.push_back(Choice::Base("[CUNNING]", 371, Skill::Type::CUNNING));
         Choices.push_back(Choice::Base("[SEAFARING]", 392, Skill::Type::SEAFARING));
-        Choices.push_back(Choice::Base("Use a BLOWGUN", 5, Item::Type::BLOWGUN));
+        Choices.push_back(Choice::Base("Use a BLOWGUN", 5, {Item::BLOWGUN}));
         Choices.push_back(Choice::Base("Otherwise", 28));
 
         Controls = Story::Controls::STANDARD;
@@ -9473,8 +9548,6 @@ public:
     {
         ID = 328;
 
-        Image = "images/filler1.png";
-
         Choices.clear();
 
         Controls = Story::Controls::STANDARD;
@@ -9490,7 +9563,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             DAMAGE = -3;
 
@@ -9536,7 +9609,7 @@ public:
         Choices.clear();
         Choices.push_back(Choice::Base("[CHARMS] Cast a protective enchantment", 394, Skill::Type::CHARMS));
         Choices.push_back(Choice::Base("[UNARMED COMBAT]", 191, Skill::Type::UNARMED_COMBAT));
-        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 413, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 413, {Item::MAN_OF_GOLD}));
         Choices.push_back(Choice::Base("Otherwise", 145));
 
         Controls = Story::Controls::STANDARD;
@@ -9635,8 +9708,6 @@ public:
 
         Text = "The monster is impervious to your blows. More strands of long black hair wrap themselves around you. It is like fighting an octopus. You can do nothing to prevent it dragging itself closer until finally its jaws close on your windpipe. You feel yourself weakening, and then there is a crunching of cartilage and a pink spray of blood. Your blood.";
 
-        Image = "images/flying-head.png";
-
         Type = Story::Type::DOOM;
 
         Choices.clear();
@@ -9683,7 +9754,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Take = {Item::Type::WATERSKIN, Item::Type::SWORD, Item::Type::SPEAR};
+        Take = {Item::WATERSKIN, Item::SWORD, Item::SPEAR};
 
         Limit = 3;
     }
@@ -9731,8 +9802,8 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("[AGILITY]", 16, Skill::Type::AGILITY));
-        Choices.push_back(Choice::Base("Use a BLOWGUN", 39, Choice::Type::LOSE_ITEM, Item::Type::BLOWGUN));
-        Choices.push_back(Choice::Base("... or a SPEAR", 39, Choice::Type::LOSE_ITEM, Item::Type::SPEAR));
+        Choices.push_back(Choice::Base("Use a BLOWGUN", 39, Choice::Type::LOSE_ITEMS, {Item::BLOWGUN}));
+        Choices.push_back(Choice::Base("... or a SPEAR", 39, Choice::Type::LOSE_ITEMS, {Item::SPEAR}));
         Choices.push_back(Choice::Base("Otherwise", 63));
 
         Controls = Story::Controls::STANDARD;
@@ -9770,18 +9841,18 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Use the GOLD DIADEM", 404, Item::Type::GOLD_DIADEM));
-        Choices.push_back(Choice::Base("... or the CHALICE OF LIFE", 422, Item::Type::CHALICE_OF_LIFE));
-        Choices.push_back(Choice::Base("[SPELLS] ... or a WAND", 18, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+        Choices.push_back(Choice::Base("Use the GOLD DIADEM", 404, {Item::GOLD_DIADEM}));
+        Choices.push_back(Choice::Base("... or the CHALICE OF LIFE", 422, {Item::CHALICE_OF_LIFE}));
+        Choices.push_back(Choice::Base("[SPELLS] ... or a WAND", 18, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
 
         Controls = Story::Controls::STANDARD;
     }
 
     int Background(Character::Base &player)
     {
-        if (!Character::VERIFY_ITEMS(player, {Item::Type::GOLD_DIADEM}) && !Character::VERIFY_ITEMS(player, {Item::Type::CHALICE_OF_LIFE}) && !Character::VERIFY_SKILL_ANY(player, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}))
+        if (!Character::VERIFY_ITEMS(player, {Item::Type::GOLD_DIADEM}) && !Character::VERIFY_ITEMS(player, {Item::Type::CHALICE_OF_LIFE}) && !Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SPELLS, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
-            if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+            if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::ANGEL}))
             {
                 return 363;
             }
@@ -9847,8 +9918,6 @@ public:
 
         Text = "You have defeated the sorcerer. His monstrous body topples onto the steps of his black pyramid and begins to seethe with putrid vapours. With the magic that sustained him unnaturally throughout the centuries now broken, Necklace of Skulls decomposes into dank grey dust.\n\nThe walls of the palace begin to stir. You can feel the ground trembling underfoot. You hurry back through the courtyard and out of the gates. After a dozen pace you cannot resist the urge to look back. The pyramid and surrounding buildings are sinking into the sand. In minutes they have vanished entirely, and there is no sign to show that this was the spot where Necklace of Skulls once dwelt among his bestial courtiers. You look around for the courtiers, but see only a pack of malnourished dogs slinking off amid the dunes.\n\nIt is over. You turn your face to the east. You have a long journey back to civilization. If only you had been able to save your brother...\n\nYou dismiss such thoughts with a shrug. It is too late for regrets. At least you avenged Morning Star's death and rid the world of an evil monster.\n\nOne of the dogs gives a howl. You look round, into the glowering darkness along the western horizon that marks the boundary of the Deathlands. That is where your brother is now.\n\nYou look east, then west again. Civilization -- or further adventure? Only you can decide which way your destiny beckons. This quest is ended, but perhaps further adventures still await you? The only limit is your own imagination.";
 
-        Image = "images/filler1.png";
-
         Choices.clear();
 
         Controls = Story::Controls::STANDARD;
@@ -9890,11 +9959,11 @@ public:
         Choices.clear();
 
         Shop = {
-            {Item::Type::WATERSKIN, 4},
-            {Item::Type::MAGIC_WAND, 16},
-            {Item::Type::FLINT_KNIFE, 1},
-            {Item::Type::BLOWGUN, 3},
-            {Item::Type::BLANKET, 2}};
+            {Item::WATERSKIN, 4},
+            {Item::MAGIC_WAND, 16},
+            {Item::FLINT_KNIFE, 1},
+            {Item::BLOWGUN, 3},
+            {Item::BLANKET, 2}};
 
         Controls = Story::Controls::SHOP;
     }
@@ -10175,8 +10244,6 @@ public:
 
         Text = "You walk on until overtaken by nightfall and exhaustion. Sitting down under the spreading foliage of a calabash tree, you consider looking for a more comfortable place to spend the night. You have passed a few peasant huts among the canals lining your route, but at the moment you cannot see any glimmers of lamplight to indicate habitation. Since it is a warm and sultry night, you decide to sleep out in the open.\n\nYou are woken by something heavy falling on your shoulder. It is pitch dark. Your heart is thudding, your nerves taught with unreasoning fear. You hear a slurping sound and turn your head. A horrible inhuman face is pressed up close to yours. Its lips are slick with your blood, but that is not the worst of it. You see that the monstrous head is sprouting from your own shoulder, and then you start to scream.\n\nYour adventure has come to a grisly end.";
 
-        Image = "images/filler1.png";
-
         Type = Story::Type::DOOM;
 
         Choices.clear();
@@ -10222,7 +10289,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Take = {Item::Type::POLE};
+        Take = {Item::POLE};
 
         Limit = 1;
     }
@@ -10293,7 +10360,7 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (!Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}) && !Character::VERIFY_ITEMS(player, {Item::Type::FLINT_KNIFE}) && !Character::VERIFY_ITEMS(player, {Item::Type::SPEAR}))
+        if (!Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}) && !Character::VERIFY_ITEMS(player, {Item::Type::FLINT_KNIFE}) && !Character::VERIFY_ITEMS(player, {Item::Type::SPEAR}))
         {
             return 402;
         }
@@ -10317,8 +10384,8 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("[ROGUERY]", 86, Skill::Type::ROGUERY));
-        Choices.push_back(Choice::Base("[SPELLS] Use a wand", 109, Choice::Type::SKILL_ALL, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
-        Choices.push_back(Choice::Base("Try using the MAN OF GOLD", 131, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("[SPELLS] Use a wand", 109, Choice::Type::SKILL_ALL, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
+        Choices.push_back(Choice::Base("Try using the MAN OF GOLD", 131, {Item::MAN_OF_GOLD}));
         Choices.push_back(Choice::Base("Otherwise", 154));
 
         Controls = Story::Controls::STANDARD;
@@ -10349,7 +10416,7 @@ public:
 
         PreText += "\n\n";
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             PreText += "[SWORDPLAY] ";
 
@@ -10419,11 +10486,11 @@ public:
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::SHADE))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::SHADE}))
         {
             return 385;
         }
-        else if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+        else if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::ANGEL}))
         {
             return 405;
         }
@@ -10476,8 +10543,8 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("[CUNNING]", 21, Skill::Type::CUNNING));
-        Choices.push_back(Choice::Base("[SPELLS] Cast spells with your own wand", 435, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
-        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 45, Item::Type::MAN_OF_GOLD));
+        Choices.push_back(Choice::Base("[SPELLS] Cast spells with your own wand", 435, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
+        Choices.push_back(Choice::Base("Use the MAN OF GOLD", 45, {Item::MAN_OF_GOLD}));
         Choices.push_back(Choice::Base("Walk boldly into the flames", 68));
         Choices.push_back(Choice::Base("Decide against helping him", 437));
 
@@ -10780,8 +10847,6 @@ public:
 
         Text = "No expression shows on the hard mask-like face as you make your genuflection. There is no roar of rage to show he is affronted, nor flash of sullen anger in his eye. He only raises his sceptre slowly, as though to emphasize a point he is about to make .Then, before you have a chance to move, he brings the sceptre swishing down to split your skull open like a melon. Your adventure ends suddenly and horribly for you.";
 
-        Image = "images/filler1.png";
-
         Type = Story::Type::DOOM;
 
         Choices.clear();
@@ -10916,7 +10981,7 @@ public:
 
         PreText = "Your brother makes the best shot he can, but he is off balance and the ball goes wide. The enemy defensive player sees a chance and comes rushing in, trying to beat you to the ball.";
 
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::POKTAPOK}))
         {
             PreText = "\n\nYou wrest possession from him and score a point.";
 
@@ -10987,9 +11052,9 @@ public:
         {
             PreText = "You are stranded unless you risk helping Jade Thunder.";
 
-            Choices.push_back(Choice::Base("[SPELLS] Use a wand", 435, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::Type::MAGIC_WAND, Item::Type::JADE_SWORD}));
+            Choices.push_back(Choice::Base("[SPELLS] Use a wand", 435, Choice::Type::SKILL_ANY, Skill::Type::SPELLS, {Item::MAGIC_WAND, Item::JADE_SWORD}));
             Choices.push_back(Choice::Base("[CUNNING]", 21, Skill::Type::CUNNING));
-            Choices.push_back(Choice::Base("Use the MAN OF GOLD", 45, Item::Type::MAN_OF_GOLD));
+            Choices.push_back(Choice::Base("Use the MAN OF GOLD", 45, {Item::MAN_OF_GOLD}));
             Choices.push_back(Choice::Base("Otherwise", 68));
         }
 
@@ -11036,7 +11101,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Character::GET_ITEMS(player, {Item::Type::JADE_BEAD, Item::Type::MAIZE_CAKES});
+        Character::GET_ITEMS(player, {Item::JADE_BEAD, Item::MAIZE_CAKES});
     }
 
     int Continue(Character::Base &player) { return 25; }
@@ -11055,7 +11120,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Dismiss the stabai and try to find your own way back to the trail", 324));
-        Choices.push_back(Choice::Base("Return the SHAWL in the hope of gaining the stabai's goodwill", 347, Item::Type::SHAWL));
+        Choices.push_back(Choice::Base("Return the SHAWL in the hope of gaining the stabai's goodwill", 347, {Item::SHAWL}));
         Choices.push_back(Choice::Base("Continue to let them guide you", 168));
 
         Controls = Story::Controls::STANDARD;
@@ -11108,8 +11173,6 @@ public:
         ID = 393;
 
         Text = "You light the firebrand and thrust it straight into the face of the nearest of the creatures -- the one hanging on the rock directly above your head. It throws up its stubby arms with a sickening bleat of anguish and falls, dashing you to the ground and smothering the burning brand. Before you can struggle free and rise to your feet, the rest of the creatures have slithered forward and seized you in their slimy fingers. You try to fight, but there are too many of them. All you can do is scream in panic as they overwhelm you. Your adventure has come to a horrible end.";
-
-        Image = "images/filler1.png";
 
         Type = Story::Type::DOOM;
 
@@ -11269,7 +11332,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Do the same (JADE BEAD)", 59, Choice::Type::LOSE_ITEM, Item::Type::JADE_BEAD));
+        Choices.push_back(Choice::Base("Do the same (JADE BEAD)", 59, Choice::Type::LOSE_ITEMS, {Item::JADE_BEAD}));
         Choices.push_back(Choice::Base("Otherwise", 83));
 
         Controls = Story::Controls::STANDARD;
@@ -11319,7 +11382,7 @@ public:
         {
             PreText += "\n\nStruggling to your feet, you limp away before the creature can descend from its arboreal lair to pursue you. The stabai have flitted away, terrified of the creature's wrath. When you are safely away from the tree, you clean the muck off the diadem and hold it up in a shaft of sunlight. It is a gold circlet of the sort that sometimes adorn the heads of great nobles. Sacred symbols are stamped into the metal and there is a jade inlay in the fourfold shape of the World Tree, the source of life itself in the mythology of your people (GOLD DIADEM).";
 
-            Character::GET_ITEMS(player, {Item::Type::GOLD_DIADEM});
+            Character::GET_ITEMS(player, {Item::GOLD_DIADEM});
         }
 
         Text = PreText.c_str();
@@ -11337,8 +11400,6 @@ public:
 
         Text = "You greet the sentinel by name. He receives your greeting with barely a change in expression. Only in a narrowing of those burning eyes and a drooping of the chiselled lips do you begin to sense your error.\n\nHis sceptre flashes out without warning, shattering your breast-bone and drinking through into your heart. Impaled, you give a last spasm before death congeals on your features. You have met your doom.";
 
-        Image = "images/filler1.png";
-
         Type = Story::Type::DOOM;
 
         Choices.clear();
@@ -11355,8 +11416,6 @@ public:
         ID = 402;
 
         Text = "You have no weapon strong enough to penetrate the monster's scaly hide. Snarling at your impudence in attacking it, it envelops you in its four necks like a ma closing his fist on a gnat. Fangs sharper than flakes of obsidian sink deep into your flesh and it raises your bloody carcass aloft to the night sky with a great shriek of inhuman glee. You sold your life valiantly, but you failed.";
-
-        Image = "images/filler3.png";
 
         Type = Story::Type::DOOM;
 
@@ -11384,7 +11443,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Take = {Item::Type::LUMP_OF_CHARCOAL, Item::Type::STONE};
+        Take = {Item::LUMP_OF_CHARCOAL, Item::STONE};
 
         Limit = 2;
     }
@@ -11442,7 +11501,7 @@ public:
 
         auto score = 1;
 
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::POKTAPOK))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::POKTAPOK}))
         {
             score = 2;
         }
@@ -11588,7 +11647,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Keep the GOLDEN HELMET", 97, Choice::Type::GET_ITEM, Item::Type::GOLDEN_HELMET));
+        Choices.push_back(Choice::Base("Keep the GOLDEN HELMET", 97, Choice::Type::GET_ITEMS, {Item::GOLDEN_HELMET}));
         Choices.push_back(Choice::Base("Leave it", 97));
 
         Controls = Story::Controls::STANDARD;
@@ -11709,8 +11768,6 @@ public:
 
         Image = "images/filler1.png";
 
-        Choices.clear();
-
         Controls = Story::Controls::STANDARD;
     }
 
@@ -11718,7 +11775,7 @@ public:
     {
         Choices.clear();
 
-        if (!Character::VERIFY_CODEWORD(player, Codeword::Type::OLMEK))
+        if (!Character::VERIFY_CODEWORDS(player, {Codeword::Type::OLMEK}))
         {
             Choices.push_back(Choice::Base("Set off walking along the coast towards Tahil", 228));
             Choices.push_back(Choice::Base("Try to get a passage on a ship", 251));
@@ -11771,7 +11828,7 @@ public:
 
         auto DAMAGE = -2;
 
-        if (Character::VERIFY_SKILL_ANY(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
+        if (Character::VERIFY_SKILL_ANY_ITEMS(player, Skill::Type::SWORDPLAY, {Item::Type::SWORD, Item::Type::JADE_SWORD}))
         {
             PreText += "[SWORDPLAY] ";
 
@@ -11815,7 +11872,7 @@ public:
         Choices.push_back(Choice::Base("[FOLKLORE]", 247, Skill::Type::FOLKLORE));
         Choices.push_back(Choice::Base("[TARGETING] Use a BLOWGUN", 316, Skill::Type::TARGETING));
         Choices.push_back(Choice::Base("Rely on [CUNNING]", 270, Skill::Type::CUNNING));
-        Choices.push_back(Choice::Base("Use the HYDRA BLOOD BALL", 383, Item::Type::HYDRA_BLOOD_BALL));
+        Choices.push_back(Choice::Base("Use the HYDRA BLOOD BALL", 383, {Item::HYDRA_BLOOD_BALL}));
         Choices.push_back(Choice::Base("Fight the beast", 293));
 
         Controls = Story::Controls::STANDARD;
@@ -11935,7 +11992,7 @@ public:
     void Event(Character::Base &player)
     {
         Character::LOSE_ITEMS(player, {Item::Type::SHAWL});
-        Character::GET_ITEMS(player, {Item::Type::GOLD_DIADEM});
+        Character::GET_ITEMS(player, {Item::GOLD_DIADEM});
     }
 
     int Continue(Character::Base &player) { return 324; };
@@ -11979,7 +12036,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Take = {{Item::Type::SHELL_NECKLACE, Item::Type::IVORY_RING, Item::Type::INCENSE, Item::Type::JADE_BEAD}};
+        Take = {{Item::SHELL_NECKLACE, Item::IVORY_RING, Item::INCENSE, Item::JADE_BEAD}};
 
         Limit = 4;
     }
@@ -12038,14 +12095,14 @@ public:
 
     void Event(Character::Base &player)
     {
-        Take = {Item::Type::HYDRA_BLOOD_BALL};
+        Take = {Item::HYDRA_BLOOD_BALL};
 
         Limit = 1;
     }
 
     int Continue(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::ANGEL))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::ANGEL}))
         {
             return 15;
         }
@@ -12068,7 +12125,7 @@ public:
         Image = "images/filler1.png";
 
         Choices.clear();
-        Choices.push_back(Choice::Base("Keep the POLE", 399, Choice::Type::GET_ITEM, Item::Type::POLE));
+        Choices.push_back(Choice::Base("Keep the POLE", 399, Choice::Type::GET_ITEMS, {Item::POLE}));
         Choices.push_back(Choice::Base("Leave it", 399));
 
         Controls = Story::Controls::STANDARD;
@@ -12143,7 +12200,7 @@ public:
 
     void Event(Character::Base &player)
     {
-        Take = {{Item::Type::HAUNCH_OF_VENISON, Item::Type::PAPAYA, Item::Type::PAPAYA, Item::Type::PAPAYA, Item::Type::CHILLI_PEPPERS, Item::Type::WATERSKIN}};
+        Take = {{Item::HAUNCH_OF_VENISON, Item::PAPAYA, Item::PAPAYA, Item::PAPAYA, Item::CHILLI_PEPPERS, Item::WATERSKIN}};
 
         Limit = 6;
     }
@@ -12204,7 +12261,7 @@ public:
         Choices.push_back(Choice::Base("Let him guide you", 410));
         Choices.push_back(Choice::Base("Set out alone", 118));
 
-        Trade = std::make_pair(Item::Type::SHAWL, Item::Type::HAUNCH_OF_VENISON);
+        Trade = std::make_pair(Item::SHAWL, Item::HAUNCH_OF_VENISON);
 
         Controls = Story::Controls::TRADE;
     }
@@ -12228,7 +12285,7 @@ public:
 
     int Background(Character::Base &player)
     {
-        if (Character::VERIFY_CODEWORD(player, Codeword::Type::EB))
+        if (Character::VERIFY_CODEWORDS(player, {Codeword::Type::EB}))
         {
             return 387;
         }
@@ -12314,7 +12371,7 @@ public:
 
         Choices.clear();
         Choices.push_back(Choice::Base("Keep the HAUNCH OF VENISON", 173));
-        Choices.push_back(Choice::Base("Leave it", 173, Choice::Type::LOSE_ITEM, Item::Type::HAUNCH_OF_VENISON));
+        Choices.push_back(Choice::Base("Leave it", 173, Choice::Type::LOSE_ITEMS, {Item::HAUNCH_OF_VENISON}));
 
         Controls = Story::Controls::STANDARD;
     }
@@ -12347,8 +12404,6 @@ public:
         ID = 442;
 
         Text = "As you and your brother cross the courtyard and pass through the palace gates, you can feel the ground shaking under your feet. You reach a dune and turn to look back. The pyramid and surrounding buildings are sinking into the sand. In minutes they have vanished entirely, and there is no sign to show that this was ever the spot where Necklace of Skulls dwelt among his bestial courtiers. You look around for the courtiers, but see only a pack of malnourished dogs slinking off amid the dunes.\n\n\"It's a long way home,\" says Morning Star. \"Fraught with danger every step of the way, I shouldn't wonder. Heat, thirst, sandstorms, poisonous snakes ...\" He says all this with a smile.\n\nYou smile too. \"After all we've been through, it'll seem like a picnic! Well brother, what are we waiting for?\"\n\nAnd, turning your faces to the east, you set out across the drifting sands.";
-
-        Image = "images/filler1.png";
 
         Choices.clear();
 
