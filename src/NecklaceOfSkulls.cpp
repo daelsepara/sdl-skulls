@@ -4846,7 +4846,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                 SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-                putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, BE_50, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+                putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, BE_80, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
 
                 SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
             }
@@ -4857,7 +4857,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                 SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-                putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, BE_50, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+                putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, BE_80, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
 
                 SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
             }
@@ -4870,7 +4870,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
                 std::string score_string = "Ticks: " + std::to_string(player.Ticks) + "\nCross: " + std::to_string(player.Cross);
 
-                putText(renderer, score_string.c_str(), font, text_space, clrBK, BE_50, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+                putText(renderer, score_string.c_str(), font, text_space, clrBK, BE_80, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
 
                 SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
             }
@@ -4889,7 +4889,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
 
             SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-            fillRect(renderer, textwidth, text_bounds, textx, texty, BE_50);
+            fillRect(renderer, textwidth, text_bounds, textx, texty, BE_80);
 
             SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 
@@ -4938,13 +4938,41 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             }
                             else
                             {
-                                if (Item::VERIFY(player.Items, story->Choices[current].Items[0]))
+                                bool loaded = true;
+                                int weapons = 0;
+
+                                for (auto i = 0; i < story->Choices[current].Items.size(); i++)
                                 {
-                                    message = "The weapon you are carrying is not loaded!";
+                                    // Check if items (weapons) are loaded
+                                    if (Item::VERIFY(player.Items, story->Choices[current].Items[i]))
+                                    {
+                                        weapons++;
+
+                                        loaded = false;
+                                    }
+                                }
+
+                                if (!loaded && weapons > 0)
+                                {
+                                    if (weapons > 1)
+                                    {
+                                        message = "The weapons you are carrying are not loaded!";
+                                    }
+                                    else
+                                    {
+                                        message = "The weapon you are carrying is not loaded!";
+                                    }
                                 }
                                 else
                                 {
-                                    message = "You do not have the required item!";
+                                    if (story->Choices[current].Items.size() > 1)
+                                    {
+                                        message = "You do not have the required items!";
+                                    }
+                                    else
+                                    {
+                                        message = "You do not have the required item!";
+                                    }
                                 }
 
                                 start_ticks = SDL_GetTicks();
@@ -6000,7 +6028,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-                    putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, BE_50, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
+                    putText(renderer, (std::to_string(player.Life)).c_str(), font, text_space, clrBK, BE_80, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - boxh);
 
                     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
                 }
@@ -6011,7 +6039,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-                    putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, BE_50, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+                    putText(renderer, (std::to_string(player.Money) + std::string(" cacao")).c_str(), font, text_space, clrBK, BE_80, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
 
                     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
                 }
@@ -6024,14 +6052,14 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                     std::string score_string = "Ticks: " + std::to_string(player.Ticks) + "\nCross: " + std::to_string(player.Cross);
 
-                    putText(renderer, score_string.c_str(), font, text_space, clrBK, BE_50, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
+                    putText(renderer, score_string.c_str(), font, text_space, clrBK, BE_80, TTF_STYLE_NORMAL, splashw, boxh, startx, starty + text_bounds - (2 * boxh + infoh + box_space));
 
                     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
                 }
 
                 SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-                fillRect(renderer, textwidth, text_bounds, textx, texty, BE_50);
+                fillRect(renderer, textwidth, text_bounds, textx, texty, BE_80);
 
                 if (story->Text && text)
                 {
@@ -6343,7 +6371,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                                     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-                                    fillRect(renderer, (1.0 - 2.0 * Margin) * SCREEN_WIDTH, bye->h + 2 * text_space, startx, ((buttony - button_space) - (bye->h + 2 * text_space)) / 2, BE_50);
+                                    fillRect(renderer, (1.0 - 2.0 * Margin) * SCREEN_WIDTH, bye->h + 2 * text_space, startx, ((buttony - button_space) - (bye->h + 2 * text_space)) / 2, BE_80);
 
                                     renderText(renderer, bye, 0, (SCREEN_WIDTH - bye->w) / 2, ((buttony - button_space) - bye->h) / 2, (buttony - button_space), 0);
 
