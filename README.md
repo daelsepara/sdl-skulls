@@ -1,4 +1,5 @@
 # Necklace of Skulls (Critical IF Gamebooks)
+[![C/C++ CI](https://github.com/daelsepara/sdl-skulls/actions/workflows/NecklaceOfSkulls.yml/badge.svg)](https://github.com/daelsepara/sdl-skulls/actions/workflows/NecklaceOfSkulls.yml)
 
 This is an implementation of the **Necklace of Skulls** game book (Critical IF Gamebooks) by [Dave Morris](https://fabledlands.blogspot.com/). The game is written in C/C++ and uses the [Simple DirectMedia Library (SDL)](https://www.libsdl.org/).
 
