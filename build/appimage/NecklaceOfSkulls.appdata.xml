@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>com.games.NecklaceOfSkulls</id>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>GPL-3.0</project_license>
+	<name>com.games.NecklaceOfSkulls</name>
+	<summary>Necklace of Skulls (SDL)</summary>
+	<description>
+		<p>This is an Implementation of Necklace of Skulls gamebook in C++ and SDL.</p>
+	</description>
+	<url type="homepage">https://github.com/daelsepara/sdl-skulls/</url>
+	<screenshots>
+		<screenshot typegi="default">
+			<image>https://raw.githubusercontent.com/daelsepara/sdl-skulls/main/src/icons/maya.png</image>
+		</screenshot>
+	</screenshots>
+	<provides>
+		<id>com.games.NecklaceOfSkulls.desktop</id>
+	</provides>
+</component>

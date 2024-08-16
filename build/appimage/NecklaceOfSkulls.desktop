@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Necklace of Skulls
+Exec=NecklaceOfSkulls.exe
+TryExec=NecklaceOfSkulls.exe
+Icon=maya
+Terminal=false
+Categories=Game;
+Type=Application
+Name[en_DK]=Necklace of Skulls
+Name[en_US]=Necklace of Skulls

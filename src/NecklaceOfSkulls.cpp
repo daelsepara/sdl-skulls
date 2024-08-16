@@ -127,14 +127,6 @@ void createWindow(Uint32 flags, SDL_Window **window, SDL_Renderer **renderer, co
 
             surface = NULL;
         }
-
-        SDL_SetRenderDrawColor(*renderer, 0, 0, 0, 255);
-        SDL_RenderClear(*renderer);
-        SDL_RenderPresent(*renderer);
-
-        SDL_SetRenderDrawColor(*renderer, 0, 0, 0, 255);
-        SDL_RenderClear(*renderer);
-        SDL_RenderPresent(*renderer);
     }
 }
 
@@ -6000,7 +5992,7 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
 
                 fillWindow(renderer, intWH);
 
-                //Fill the surface with background
+                // Fill the surface with background
                 stretchImage(renderer, background, 0, 0, SCREEN_WIDTH, buttony - button_space);
 
                 if (splash)
@@ -6503,6 +6495,8 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID)
 
         auto text_space = 8;
 
+        auto first = true;
+
         while (!done)
         {
             // Fill the surface with background
@@ -6521,6 +6515,27 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID)
             bool hold = false;
 
             Control::Type result;
+
+            if (first)
+            {
+                SDL_Event user_event;
+
+                user_event.type = SDL_MOUSEMOTION;
+
+                user_event.motion.x = controls[0].X;
+
+                user_event.motion.y = controls[0].Y;
+
+                user_event.motion.xrel = controls[0].W / 2;
+
+                user_event.motion.yrel = controls[0].H / 2;
+
+                SDL_PushEvent(&user_event);
+
+                SDL_PumpEvents();
+
+                first = false;
+            }
 
             done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
