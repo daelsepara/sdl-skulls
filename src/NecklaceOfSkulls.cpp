@@ -726,8 +726,8 @@ bool greenMirror(SDL_Window *window, SDL_Renderer *renderer, Character::Base pla
 
             renderButtons(renderer, controls, current, intDB, border_space, border_pts, (offset > 0), future && offset < (future->h - text_bounds + 2 * text_space));
 
-            bool scrollUp = false;
-            bool scrollDown = false;
+            auto scrollUp = false;
+            auto scrollDown = false;
 
             done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
@@ -850,9 +850,9 @@ bool characterScreen(SDL_Window *window, SDL_Renderer *renderer, Character::Base
 
                 renderButtons(renderer, controls, current, intDB, space, space / 2);
 
-                bool scrollUp = false;
-                bool scrollDown = false;
-                bool hold = false;
+                auto scrollUp = false;
+                auto scrollDown = false;
+                auto hold = false;
 
                 done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
@@ -948,8 +948,8 @@ bool glossaryScreen(SDL_Window *window, SDL_Renderer *renderer, std::vector<Skil
 
             renderButtons(renderer, controls, current, intDB, border_space, border_pts, (offset > 0), glossary && offset < (glossary->h - text_bounds + 2 * space));
 
-            bool scrollUp = false;
-            bool scrollDown = false;
+            auto scrollUp = false;
+            auto scrollDown = false;
 
             quit = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
@@ -2487,9 +2487,9 @@ Character::Base customCharacter(SDL_Window *window, SDL_Renderer *renderer)
 
         auto font = TTF_OpenFont(FONT_FILE, font_size);
 
-        bool scrollUp = false;
-        bool scrollDown = false;
-        bool hold = false;
+        auto scrollUp = false;
+        auto scrollDown = false;
+        auto hold = false;
         auto scrollSpeed = 1;
         auto selection = std::vector<int>();
         auto infoh = 0.07 * SCREEN_HEIGHT;
@@ -2825,9 +2825,9 @@ Character::Base selectCharacter(SDL_Window *window, SDL_Renderer *renderer)
 
             renderTextButtons(renderer, controls, FONT_FILE, current, clrWH, intBK, intRD, font20, TTF_STYLE_NORMAL);
 
-            bool scrollUp = false;
-            bool scrollDown = false;
-            bool hold = false;
+            auto scrollUp = false;
+            auto scrollDown = false;
+            auto hold = false;
 
             Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
@@ -2956,9 +2956,9 @@ bool aboutScreen(SDL_Window *window, SDL_Renderer *renderer)
 
             renderTextButtons(renderer, controls, FONT_FILE, current, clrWH, intBK, intRD, font_size, TTF_STYLE_NORMAL);
 
-            bool scrollUp = false;
-            bool scrollDown = false;
-            bool hold = false;
+            auto scrollUp = false;
+            auto scrollDown = false;
+            auto hold = false;
 
             done = Input::GetInput(renderer, controls, current, selected, scrollUp, scrollDown, hold);
 
@@ -4639,9 +4639,9 @@ bool mapScreen(SDL_Window *window, SDL_Renderer *renderer)
 
             renderButtons(renderer, controls, current, intDB, 8, 4);
 
-            bool scrollUp = false;
-            bool scrollDown = false;
-            bool hold = false;
+            auto scrollUp = false;
+            auto scrollDown = false;
+            auto hold = false;
 
             if (splash && texture)
             {
@@ -4919,7 +4919,7 @@ Story::Base *processChoices(SDL_Window *window, SDL_Renderer *renderer, Characte
                             else
                             {
                                 bool loaded = true;
-                                int weapons = 0;
+                                auto weapons = 0;
 
                                 for (auto i = 0; i < story->Choices[current].Items.size(); i++)
                                 {
@@ -6058,8 +6058,8 @@ bool processStory(SDL_Window *window, SDL_Renderer *renderer, Character::Base &p
                     }
                 }
 
-                bool scrollUp = false;
-                bool scrollDown = false;
+                auto scrollUp = false;
+                auto scrollDown = false;
 
                 if (splash)
                 {
@@ -6510,9 +6510,9 @@ bool mainScreen(SDL_Window *window, SDL_Renderer *renderer, int storyID)
 
             renderTextButtons(renderer, controls, FONT_FILE, current, clrWH, intBK, intRD, font_size, TTF_STYLE_NORMAL);
 
-            bool scrollUp = false;
-            bool scrollDown = false;
-            bool hold = false;
+            auto scrollUp = false;
+            auto scrollDown = false;
+            auto hold = false;
 
             Control::Type result;
 
